@@ -869,8 +869,9 @@ input[type='radio']:checked~label .circle-radio {
     height: 21px;
     background: url('polygon.c2df5e4a.png');
     background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: 101% 101%;
     margin-top: 2px;
+    
 }
 
 /* Misc */
