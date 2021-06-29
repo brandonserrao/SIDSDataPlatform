@@ -33399,15 +33399,15 @@ exports.MapboxStyleSwitcherControl = MapboxStyleSwitcherControl;
       
 },{"_css_loader":"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"data/sidsNames.json":[function(require,module,exports) {
 module.exports = [{
-  "NAME_0": "Pacific Region",
+  "NAME_0": "Region: Pacific",
   "bb": [[-136.1, -14.1], [-141.1, -23.9]],
   "GID_0": "PCF"
 }, {
-  "NAME_0": "Carribean Region",
+  "NAME_0": "Region: Caribbean",
   "bb": [[-89.28, 1.43], [-53.86, 27.08]],
   "GID_0": "CBR"
 }, {
-  "NAME_0": "Atlantic, Indian, and South China Sea",
+  "NAME_0": "Region: Atlantic, Indian, and South China Sea",
   "bb": [[-17.8, -26.4], [94.8, 30.1]],
   "GID_0": "KNA"
 }, {
