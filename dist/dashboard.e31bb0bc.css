@@ -44,6 +44,7 @@
     padding: 0;
     right: 0;
     max-width: 1400px;
+    overflow: hidden;
     
 }
 
@@ -62,12 +63,11 @@
 #map {
     margin: 0;
     padding: 0;
-    position:fixed;
+    position: fixed;
     top: 0;
     z-index: 0;
     height: 100%;
     width: 82.5vw;
-   
     overflow: hidden;
 }
 
@@ -175,6 +175,9 @@
     appearance: none;
     cursor: pointer;
 }
+.no-scroll{
+    overflow: hidden;
+  }
 
 .downarrow {
     width: 8.54px;
@@ -269,7 +272,7 @@
 
 .main-wrapper {
     margin-left: 14px;
-    margin-top: 20vh;
+    margin-top: 15vh;
     position: relative;
     /*Sebastian added this */
     width: 26%;
