@@ -856,7 +856,7 @@ input[type='radio']:checked~label .circle-radio {
 .population-per-km {
     max-width: 350px;
     margin-top: 12px;
-    background-color: rgba(221, 221, 221, 0.8);
+    background-color: rgba(221, 221, 221, 1);
     border-radius: 10px;
     padding: 10px;
     margin-left: 30px;
