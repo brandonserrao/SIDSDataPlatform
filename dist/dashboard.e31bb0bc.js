@@ -43035,6 +43035,7 @@ $('select[name="dataset-selection"]').on('change', function () {
   if (this.selectedOptions[0].innerHTML === 'GDP per Capita' || this.selectedOptions[0].innerHTML === 'Population Density') {
     map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0.0);
     $('.year-timeline-wrapper').show();
+    $('#layer-id').hide();
 
     if (this.selectedOptions[0].innerHTML === 'Population Density') {
       $('#icon3d').show();
