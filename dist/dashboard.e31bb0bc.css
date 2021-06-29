@@ -944,7 +944,7 @@ input[type='radio']:checked~label .circle-radio {
     animation: spin 2s linear infinite;
     z-index: 300;
     left: 45%;
-    top: 35%;
+    top: 25%;
   }
   
   @keyframes spin {
