@@ -900,7 +900,7 @@ input[type='radio']:checked~label .circle-radio {
     position: absolute;
     top: 28.76px;
     right: 18px;
-    background: url('dist/up-arrow.6046179d.svg');
+    /*background: url('up-arrow.6046179d.svg'); */
     background-repeat: no-repeat;
     background-size: 100% 100%;
     cursor: pointer;
@@ -912,7 +912,7 @@ input[type='radio']:checked~label .circle-radio {
     position: absolute;
     top: 38px;
     right: 18px;
-    background: url('dist/down-arrow.39fba8f1.svg');
+    /*background: url('down-arrow.39fba8f1.svg'); */
     background-repeat: no-repeat;
     background-size: 100% 100%;
     cursor: pointer;
@@ -935,7 +935,7 @@ input[type='radio']:checked~label .circle-radio {
 }
 
 #loader-gis {
-    position: relative;
+    position: fixed;
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3498db; /* Blue */
     border-radius: 50%;
@@ -943,8 +943,8 @@ input[type='radio']:checked~label .circle-radio {
     height: 120px;
     animation: spin 2s linear infinite;
     z-index: 300;
-    left: 45%;
-    top: 25%;
+    left: 50%;
+    top: 35%;
   }
   
   @keyframes spin {
