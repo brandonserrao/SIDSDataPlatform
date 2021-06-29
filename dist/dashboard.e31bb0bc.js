@@ -41980,7 +41980,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 //import names from './data/sidsNames.json'
 function addButton(names, allTheLayers) {
   var sidsHolder = document.getElementById('country-select');
+  
   names.map(function (x) {
+    console.log('SEB DEBUG ' + x.NAME_0);
     var btn = document.createElement("option");
     btn.innerHTML = x.NAME_0;
     btn.classList.add('sidsb');
@@ -42133,7 +42135,10 @@ var map = new _mapboxGl.default.Map({
   style: 'mapbox://styles/mapbox/satellite-streets-v11',
   center: [-71.4, 19.1],
   // starting position [lng, lat]
-  zoom: 7 //pitch: 55
+  zoom: 7, //pitch: 55,
+  maxZoom: 20,
+  minZoom: 2
+
 
 });
 var yearList = [];
@@ -42320,6 +42325,7 @@ wrapper.addEventListener('click', function (event) {
 
   if (!event.target.id.includes('data')) {
     var currbb = (0, _lodash.default)(_sidsNames.default, ['GID_0', event.target.id]); //sourceData.allSidsSource.lastName = currbb.NAME_0;
+    console.log(currbb.NAME_0);
 
     var v2 = new _mapboxGl.default.LngLatBounds([currbb.bb[0], currbb.bb[1]]);
     map.fitBounds(v2, {
