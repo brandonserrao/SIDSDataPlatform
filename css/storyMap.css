@@ -1,0 +1,88 @@
+/*
+-----------------------
+SCSS
+------------------*/
+:root {
+  --color-climate: #0DB14B;
+  --color-blue: #11878D;
+  --color-digital:#F58220;
+}
+
+/* 
+Style-guide: https://levelup.gitconnected.com/css-only-custom-styled-select-99b1b022bfbf
+*/
+#storyMapTitle {
+  padding-top: 50px;
+}
+
+.storyMapPanel {
+  background-image: url("../images/storyMapTemp.jpg");
+  background-size: 100%;
+  background-color: #F4F5F8;
+  background-repeat: no-repeat;
+  padding-top: 4%;
+}
+
+.storyMapPanel .col-lg-4 {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.storyMapPanel .col-lg-4 p {
+  margin-right: 0.75rem;
+  margin-left: 0.75rem;
+}
+
+.storyMapPanel h1 {
+  font-size: 30px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.storyMapPanel h3 {
+  font-size: 18px;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+
+.storyMapPanel h5 {
+  font-size: 14px;
+  text-align: left;
+  font-style: bold;
+}
+
+.storyMapPanel p {
+  font-size: 11px;
+  text-align: left;
+}
+
+#bubbleMap {
+  height: 280px;
+}
+
+#story {
+  overflow-y: scroll;
+  max-height: 250px;
+}
+
+#storyImage {
+  overflow: hidden;
+  max-height: 250px;
+  margin: 0;
+  padding: 0;
+}
+
+#storyImage img {
+  width: 100%;
+}
+
+.subscribe {
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+/*# sourceMappingURL=storyMap.css.map */

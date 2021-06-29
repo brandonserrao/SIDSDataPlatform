@@ -1,0 +1,61 @@
+/*
+-----------------------
+SCSS
+------------------*/
+:root {
+  --color-primary: #00587a;
+  --color-primary-light: #008891;
+  --color-primary-dark: #0f3057;
+  --color-climate: #0DB14B;
+  --color-blue: #11878D;
+  --color-digital:#F58220;
+}
+
+/* 
+Style-guide: https://levelup.gitconnected.com/css-only-custom-styled-select-99b1b022bfbf
+*/
+#countryDataPanel .col-lg-4 {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#countryDataPanel .col-lg-4 p {
+  margin-right: 0.75rem;
+  margin-left: 0.75rem;
+}
+
+#countryDataPanel h1 {
+  font-size: 30px;
+  text-align: center;
+  font-weight: bold;
+  color: black;
+}
+
+#countryDataPanel h3 {
+  font-size: 18px;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+
+#countryDataPanel h5 {
+  font-size: 14px;
+  text-align: center;
+}
+
+#countryDataPanel p {
+  font-size: 12px;
+  text-align: center;
+}
+
+#countryDataSelectors {
+  padding: 40px;
+}
+
+#countryDataViz img {
+  width: 90%;
+  height: auto;
+}
+
+/*# sourceMappingURL=countryData.css.map */
