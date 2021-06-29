@@ -42,6 +42,9 @@
 #gisPanel {
     margin: 0;
     padding: 0;
+    right: 0;
+    max-width: 1400px;
+    
 }
 
 .password {
@@ -57,13 +60,15 @@
   }
 
 #map {
-    position: relative;
+    margin: 0;
+    padding: 0;
+    position:fixed;
     top: 0;
-    /*z-index: 0; */
-    height: 100vh;
+    z-index: 0;
+    height: 100%;
     width: 82.5vw;
    
-    /*overflow: hidden; */
+    overflow: hidden;
 }
 
 .row-flex {
@@ -81,7 +86,7 @@
 }
 
 .logos {
-    position: absolute;
+    position: relative;
     top: 30px;
     left: 30px;
     z-index: 1;
@@ -109,7 +114,7 @@
 
 .top-right {
     position: relative;
-    top: 30px;
+    top: 0px;
     right: 30px;
     z-index: 1;
 }
@@ -935,8 +940,8 @@ input[type='radio']:checked~label .circle-radio {
     display: none;
 }
 
-#loader-gis {
-    position: fixed;
+.loader-gis {
+    position: absolute;
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3498db; /* Blue */
     border-radius: 50%;

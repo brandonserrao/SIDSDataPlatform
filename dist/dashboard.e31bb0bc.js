@@ -42314,6 +42314,17 @@ button3dWrapper.addEventListener('click', function (event) {
   }
 });
 
+map.on('click', function() {
+  var center = map.getCenter();
+  console.log(center);
+
+})
+
+map.on('zoom', function() {
+  var center = map.getCenter();
+  console.log(center); 
+})
+
 $('#country-select').on('change', function(){
   //console.log(this);
   var clicked = this.selectedOptions[0].id
@@ -42791,7 +42802,7 @@ function addHexSource() {
     //$('.loader').remove();
     map.once('idle', function(){
       console.log('hi')
-      $('#loader-gis').remove()
+      $('.loader-gis').remove()
     })
   });
 } /////ui js
