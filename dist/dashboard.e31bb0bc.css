@@ -175,8 +175,8 @@
     appearance: none;
     cursor: pointer;
 }
-.no-scroll{
-    overflow: hidden;
+#no-scroll{
+    overflow-y: hidden;
   }
 
 .downarrow {

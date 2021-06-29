@@ -170,6 +170,12 @@ function nFormatter(num, digits) {
   $(document).ready(function(){
     $("a").on('click', function(event) {
       console.log(this.hash)
+      if(this.hash === '#gisPanel') {
+        console.log('hihi')
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
       if (this.hash !== "") {
         event.preventDefault();
         var hash = this.hash;
