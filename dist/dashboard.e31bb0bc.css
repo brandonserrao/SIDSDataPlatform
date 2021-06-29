@@ -283,7 +283,7 @@
 .app-body {
     max-width: 360px;
     margin: 10px 0;
-    background-color: rgba(221, 221, 221, 0.7);
+    background-color: rgba(221, 221, 221, 0.8);
     padding: 10px 21px;
     border-radius: 10px;
     transition: 1s ease-in-out all;
@@ -846,7 +846,7 @@ input[type='radio']:checked~label .circle-radio {
     height: 200px;
     margin-top: 12px;
     border-radius: 10px;
-    background-color: #DDDDDD;
+    background-color: rgba(221, 221, 221, 0.8);
     margin-left: 30px;
     /*sebastian added */
     position: relative;
@@ -856,7 +856,7 @@ input[type='radio']:checked~label .circle-radio {
 .population-per-km {
     max-width: 350px;
     margin-top: 12px;
-    background-color: #ffffff;
+    background-color: rgba(221, 221, 221, 0.8);
     border-radius: 10px;
     padding: 10px;
     margin-left: 30px;
