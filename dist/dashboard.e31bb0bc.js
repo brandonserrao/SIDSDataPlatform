@@ -41982,7 +41982,7 @@ function addButton(names, allTheLayers) {
   var sidsHolder = document.getElementById('country-select');
   
   names.map(function (x) {
-    console.log('SEB DEBUG ' + x.NAME_0);
+    //console.log('SEB DEBUG ' + x.NAME_0);
     var btn = document.createElement("option");
     btn.innerHTML = x.NAME_0;
     btn.classList.add('sidsb');
@@ -42313,8 +42313,31 @@ button3dWrapper.addEventListener('click', function (event) {
     });
   }
 });
+
+$('#country-select').on('change', function(){
+  //console.log(this);
+  var clicked = this.selectedOptions[0].id
+  
+  var currbb = (0, _lodash.default)(_sidsNames.default, ['GID_0', clicked]); //sourceData.allSidsSource.lastName = currbb.NAME_0;
+    console.log(currbb.NAME_0);
+
+    var v2 = new _mapboxGl.default.LngLatBounds([currbb.bb[0], currbb.bb[1]]);
+    map.fitBounds(v2, {
+      linear: true,
+      padding: {
+        top: 10,
+        bottom: 25,
+        left: 15,
+        right: 5
+      },
+      pitch: 0
+    });
+    
+})
+
 var wrapper = document.getElementById('country-select');
 wrapper.addEventListener('click', function (event) {
+  console.log(event.target.id);
   var isOption = event.target.nodeName === "OPTION";
 
   if (!isOption) {
