@@ -42759,7 +42759,11 @@ function addHexSource() {
         'fill-opacity': 0
       }
     }, firstSymbolId);
-    $('.loader').remove();
+    //$('.loader').remove();
+    map.once('idle', function(){
+      console.log('hi')
+      $('#loader-gis').remove()
+    })
   });
 } /////ui js
 
