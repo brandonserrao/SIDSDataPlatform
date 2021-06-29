@@ -961,4 +961,8 @@ input[type='radio']:checked~label .circle-radio {
     100% { transform: rotate(360deg); }
   }
 
+a:link {
+  color: #787887;
+}
+
 /*# sourceMappingURL=dist/dashboard.e31bb0bc.css.map */
