@@ -161,10 +161,16 @@ function updateChoroLegend() {
         .text(function (d, i) {
             //extent will be a two-element array, format it however you want:
             //return format(extent[0]) + " - " + format(+extent[1])
-            if (selectedViz == "Spider") {
+                    
+            
+            if (selectedViz == "Spider"||selectedViz=="Global View") {
                 return ""
             }
             else {
+                if(selectedPage=="mviTab"){
+return "Multidimensional Vulnerability Index"
+                }
+else{
                 try {
                     indi = $(".indiActive")[0].id
                 }
@@ -174,6 +180,7 @@ function updateChoroLegend() {
                 return wdiMeta[indi]["Indicator Name"]//["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " + 
 
             }
+        }
         })
 
 
@@ -771,7 +778,9 @@ function updateChoropleth(indicator) {
        
         $(".choroText").each(function (d) {
             //which is this only mviCountryListSpider? it doesn't check which tab is selected
-                if (mviCountryListSpider.includes(this.innerHTML)||(indicator=="Region"&&selectedPage=="countryDataTab")) {
+
+            console.log(indicator,selectedPage,selectedViz)
+                if (selectedPage=="mviTab"&&mviCountryListSpider.includes(this.innerHTML)||(indicator=="Region"&&selectedPage=="countryDataTab")) {
                   
                     $(this).css("fill-opacity", 1)
                 }
@@ -1007,7 +1016,7 @@ console.log(TT)
 
                     else {
                         //show country name
-                        if (selectedViz == "Multi-indicator" || selectedViz == "Bar Chart" || selectedViz == "Spider") {
+                        if (selectedViz == "Multi-indicator" || selectedViz == "Bar Chart" || selectedViz == "Spider"||selectedViz=="Global View") {
                             return (regionColors(countryJson[this.id].Region, "Y") + " shadow countrySvg")
                         }
                         else {
@@ -2265,7 +2274,7 @@ $("#mviTab").click(function () {
         $(".selectedViz").trigger("click")
     }, .01)
 
-    $("#countryDataTitle").text("SIDS Multidimensional Vulnerability")
+    $("#countryDataTitle").text("Towards a Multidimensional Vulnerability Index")
 
 });
 
