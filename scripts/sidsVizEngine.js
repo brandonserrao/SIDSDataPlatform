@@ -780,7 +780,7 @@ function updateChoropleth(indicator) {
             //which is this only mviCountryListSpider? it doesn't check which tab is selected
 
             console.log(indicator,selectedPage,selectedViz)
-                if (selectedPage=="mviTab"&&mviCountryListSpider.includes(this.innerHTML)||(indicator=="Region"&&selectedPage=="countryDataTab")) {
+                if (selectedPage=="mviTab"&&mviCountryListSpider.includes(this.innerHTML)||(indicator=="Region"&&selectedPage=="countryDataTab"&&selectedViz=="Choropleth")) {
                   
                     $(this).css("fill-opacity", 1)
                 }
@@ -971,7 +971,7 @@ console.log(TT)
 
     selectedPage = $('.is-active').attr('id')
     ///draw choropleth scale
-    if (indicator != "Region" && selectedPage == "countryDataTab") {
+    if (selectedPage == "countryDataTab") {
 
         /* break the data values into 9 ranges of €100 each   */
 
@@ -1011,12 +1011,13 @@ console.log(TT)
                      if (indicatorData[countryJson[this.id].Country] == "No Data" || typeof indicatorData[countryJson[this.id].Country] != "number") {
                         //hide country name
                         noData.push(countryJson[this.id].Country)
-                        return "nodata countrySvg"
+                        if(indicator=="Region"){return  (regionColors(countryJson[this.id].Region, "Y") + " shadow countrySvg")}else{
+                        return "nodata countrySvg"}
                     }
 
                     else {
                         //show country name
-                        if (selectedViz == "Multi-indicator" || selectedViz == "Bar Chart" || selectedViz == "Spider"||selectedViz=="Global View") {
+                        if (selectedViz == "Multi-indicator" || selectedViz == "Bar Chart" || selectedViz == "Spider"||selectedViz=="Global View"||indicator=="Region") {
                             return (regionColors(countryJson[this.id].Region, "Y") + " shadow countrySvg")
                         }
                         else {
@@ -1033,9 +1034,14 @@ console.log(TT)
 
             });
 
-if(indicator!="Region"){
+
         $(".choroText").each(function (d) {
          //   console.log(this.innerHTML)
+if(indicator=="Region"&&selectedViz=="Choropleth"){
+    $(this).css("fill-opacity", 1)
+    d3.select(this).attr("transform","scale(1,1)")
+}else{
+
             if (noData.includes(this.innerHTML)||selectedViz=="Global View") {
                 $(this).css("fill-opacity", 0)
             }
@@ -1044,6 +1050,7 @@ if(indicator!="Region"){
                 $(this).css("fill-opacity", 1)
                 d3.select(this).attr("transform","scale(1,1)")
             }
+        }
         })
 
         if (selectedPage == "countryDataTab") {
@@ -1064,7 +1071,7 @@ if(indicator!="Region"){
         })
         }
         }
-    }
+    
 
 
 
