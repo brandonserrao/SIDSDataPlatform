@@ -13,8 +13,8 @@ mapboxgl.accessToken =
     style: 'mapbox://styles/mapbox/satellite-streets-v11', 
     center: [-71.4, 19.1], // starting position [lng, lat]
     zoom: 7,
-    maxZoom: 10,
-    minZoom: 6
+    //maxZoom: ,
+    //minZoom: 
     //pitch: 55
   });
 
