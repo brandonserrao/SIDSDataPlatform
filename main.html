@@ -17,6 +17,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.2.13/dist/semantic.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
 
     <!-- Bootstrap core CSS -->
 
@@ -35,7 +36,7 @@
     <link href="css/choropleth.css" rel="stylesheet">
     <link href="css/mvi.css" rel="stylesheet">
     <link href="css/qna.css" rel="stylesheet">
-    <link rel="stylesheet" href="dist/dashboard.e31bb0bc.css">
+    <link href="gisPanel/gis.css" rel="stylesheet">
 
 </head>
 
@@ -230,7 +231,7 @@
 
                                 </select>
                                 <span class="downarrow"></span>
-                            </div>
+                            </div> 
                             <!--<div class="icon1"></div>-->
                         </div>
 
@@ -252,15 +253,25 @@
                             <div class="icon3"></div>
                             <div class="plot-select-menu">
                                 <select name="hexbin-change" id="plot-select">
+                                   <!-- <option value="hex1">1km Hexbins</option>-->
                                     <option selected="" value="hex5">5km Hexbins</option>
                                     <option value="hex10">10km Hexbins</option>
                                     <option value="admin1">Admin Regions 1</option>
                                     <option value="admin2">Admin Regions 2</option>
                                 </select>
-                                <span class="selection-dropdown-arrow up left-arrow"></span>
-                                <span class="selection-dropdown-arrow down right-arrow"></span>
+                                <span class="downarrow"></span>
                             </div>
+                        </div>
 
+                        <div class="row-flex" style="justify-content:flex-end;margin-top:15px;">
+                            <div class="country-select-menu" id="country-select-id">
+                                <select id="basemap-switch">
+                                    <option value="Satellite With Labels">Satellite With Labels</option>
+                                    <option value='Light'>Light</option>
+                                    <option value='Satellite Imagery'>Satellite No Labels</option>
+                                </select>
+                                <span class="downarrow"></span>
+                            </div>
                         </div>
 
                         <!--<div class="row-flex add-chart-button-wrap">
@@ -1380,7 +1391,12 @@
     <script src="jsImport/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.2.13/dist/semantic.min.js"></script>
     <script src="https://storage.googleapis.com/code.getmdl.io/1.1.0/material.min.js"></script>
-
+    <!--GIS PANEL STUFF-->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+    <script src="https://unpkg.com/pbf@3.0.5/dist/pbf.js"></script>
+    <script src="https://unpkg.com/geobuf@3.0.2/dist/geobuf.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.2/chroma.min.js"></script>
 
     <!--Tooltips-->
     <!--<script src="scripts/tooltips/tooltipPNT.js"></script>-->
@@ -1414,6 +1430,7 @@
     <script src="scripts/qna.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="gisPanel/sidsNames.js"></script>
 
     <!--<script src="dist/dashboard.e31bb0bc.js"></script>-->
     <script>
@@ -1421,7 +1438,7 @@
 
             var script = document.createElement("script");
             script.type = "text/javascript";
-            script.src = "dist/dashboard.e31bb0bc.js";
+            script.src = "gisPanel/newgis.js";
             script.id = 'gisScript'
             document.getElementsByTagName("head")[0].appendChild(script);
             return false;
