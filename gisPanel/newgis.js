@@ -381,7 +381,7 @@ mapboxgl.accessToken =
 
   const wrapper = document.getElementById('country-select');
   wrapper.addEventListener('click', (event) => {
-
+    console.log(map.getZoom())
     const isOption = event.target.nodeName === "OPTION";
     if (!isOption) {
       return;
@@ -1056,8 +1056,8 @@ map.on('mouseleave', 'hex5', function () {
           //otherhex
           hex5
         ],
-        'minzoom': 6,
-        'maxzoom': 10
+        'minzoom': 3,
+        'maxzoom': 12
       })
       sourceData.hex5Source.data = hex5;
 
