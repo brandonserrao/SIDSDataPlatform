@@ -379,22 +379,29 @@ mapboxgl.accessToken =
 
   }) */
 
-  const wrapper = document.getElementById('country-select');
-  wrapper.addEventListener('click', (event) => {
+  //const wrapper = document.getElementById('country-select');
+  //wrapper.addEventListener('click', (event) => {
+  
+  $("#country-select").change(function(event) {
+
+      //console.log(this.children(":selected"));
+    console.log($(this).val());
+  
     console.log(map.getZoom())
-    const isOption = event.target.nodeName === "OPTION";
+    /*const isOption = event.target.nodeName === "OPTION";
     if (!isOption) {
       return;
-    }
+    } */
 
-    console.log(event.target.id);
+    //console.log(event.target.id);
 
-        map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0)
-        var currbb = _.find(names, ['GID_0', event.target.id ])
+    map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0)
+    //console.log(names);
+    var currbb = _.find(names, ['NAME_0', $(this).val().toString() ])
+    //console.log(currbb);
+    //sourceData.allSidsSource.lastName = currbb.NAME_0;
 
-        //sourceData.allSidsSource.lastName = currbb.NAME_0;
-
-        var v2 = new mapboxgl.LngLatBounds([currbb.bb[0], currbb.bb[1]])
+    var v2 = new mapboxgl.LngLatBounds([currbb.bb[0], currbb.bb[1]])
           map.fitBounds(v2, {
           linear: true,
           padding: {top: 10, bottom:25, left: 15, right: 5},
