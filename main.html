@@ -215,74 +215,99 @@
                 <div class="container panel mdl-tabs__panel hidden" id="gisPanel">
 
                     <div id='map'>
-                        <div class="loader-gis"></div>
+                        <div class="loader-gis">
+                            <svg
+                              version="1.1"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="170"
+                              height="170"
+                              viewbox="0 0 200 173.20508075688772"
+                            >
+                              <path
+                                fill="#003399"
+                                d="M0 86.60254037844386L50 0L150 0L200 86.60254037844386L150 173.20508075688772L50 173.20508075688772Z"
+                              ></path>
+                            </svg>
+                          </div>
+                        <div id='top-right-wrap'>
+                            <div id='close-side'>&harr;</div>
+                            <div class="country-select-menu" id='country-select-id'>
+                                <select id='country-select'>
+                                    <option value="Select Country or Region">Select Country or Region</option>
+                                </select>
+                                
+                            </div>
+                    
+                            <div id="list1" class="dropdown-check-list" tabindex="100">
+                                <span class="anchor">Select Overlay</span>
+                                <ul id="items" class="items">
+                                    <li><input id='admin1-input' value="admin1-overlay" type="checkbox" /> Admin Regions 1 </li>
+                                    <li><input id='admin2-input' value="admin2-overlay" type="checkbox" /> Admin Regions 2</li>
+                                    <li><input id='underwater'  value="underwater-overlay" type='checkbox' /> Underwater Cables </li>
+                                    
+                                </ul>
+                            </div>
+                    
+                            <div class="country-select-menu hexsize">
+                                <select name="hexbin-change" id="plot-select">
+                                    <option value='hex1'>1km hexbins</option>
+                                    <option selected value="hex5">5km hexbins</option>
+                                    <option value="hex10">10km hexbin</option>
+                                    <option value="admin1">Admin 1 Regions</option>
+                                    <option value="admin2">Admin 2 Regions</option>
+                                </select>
+                            </div>
+                    
+                            <div class="country-select-menu" id="country-select-id">
+                                <select id="basemap-switch">
+                                    <option value="Mapbox Satellite Streets">Satellite With Labels</option>
+                                    <option value='Mapbox Light'>Light Basemap</option>
+                                    <option value='Satellite Imagery'>Satellite No Labels</option>
+                                </select>
+                                
+                            </div>
+                    
+                            <div class="country-select-menu" id="country-select-id">
+                                <div class='download' id='datadownload'>Download Data</div>
+                            </div>
+                    
+                            <div class="country-select-menu" id="country-select-id">
+                                <div id="addLabels" class="addLabels" onclick="addLabels()">Remove Labels</div>
+                                <div id="icon3d" class="icon2"></div>
+                            </div>
+                    
+                        <div class="country-select-menu" id="country-select-id">
+                            <div class='opacityslider'>
+                                <div id='opacityslider'>
+                                    <input type="range" id="volume" value="8" name="volume"
+                                        min="0" max="10">	
+                                </div>
+                                <label id='volume' for="volume">Opacity</label>
+                            </div>
+                        </div>
+                            
+                    
                     </div>
+                    </div> <!--end map-->
                     <div class="logos row-flex align-items-center">
                         <div class="UNDP-logo"></div>
                         <div class="rising-up-for-sids"></div>
                     </div>
-                    <!-- Top Right Column -->
-                    <div class="col-flex top-right">
 
-                        <div class="row-flex" style="justify-content:flex-end;">
-                            <div class="country-select-menu" id="country-select-id">
-                                <select id="country-select">
-                                    <option value="Select Country or Region">Select Region or Country</option>
 
-                                </select>
-                                <span class="downarrow"></span>
-                            </div> 
-                            <!--<div class="icon1"></div>-->
+                    <div id="myModal" class="modal">
+                        <!-- Modal content -->
+                        <div class="modal-content">
+                          <span class="close">&times;</span>
+                          <p>Check Attributes You Would Like to Include:</p>
+                          <ul id="download-attributes"></ul>
+                          <ul id="download-buttons">
+                            <button id="shp">Download Shapefile</button>
+                            <button id="gjn">Download GeoJSON</button>
+                          </ul>
                         </div>
-
-                        <div class="row-flex" style="justify-content:flex-end;margin-top:15px;">
-                            <div id="icon3d" style="display: none;" class="icon2"></div>
-                            <div class="add-overlay-menu">
-                                <select name="overlay-select" id="add-overlay">
-                                    <option value="Select Country or Region">Add Overlays</option>
-                                    <option value="admin1">Admin Regions 1</option>
-                                    <option value="admin2">Admin Regions 2</option>
-
-                                </select>
-                                <span class="downarrow"></span>
-                            </div>
-
-                        </div>
-
-                        <div class="row-flex" style="justify-content:flex-end;margin-top:15px;">
-                            <div class="icon3"></div>
-                            <div class="plot-select-menu">
-                                <select name="hexbin-change" id="plot-select">
-                                   <!-- <option value="hex1">1km Hexbins</option>-->
-                                    <option selected="" value="hex5">5km Hexbins</option>
-                                    <option value="hex10">10km Hexbins</option>
-                                    <option value="admin1">Admin Regions 1</option>
-                                    <option value="admin2">Admin Regions 2</option>
-                                </select>
-                                <span class="downarrow"></span>
-                            </div>
-                        </div>
-
-                        <div class="row-flex" style="justify-content:flex-end;margin-top:15px;">
-                            <div class="country-select-menu" id="country-select-id">
-                                <select id="basemap-switch">
-                                    <option value="Satellite With Labels">Satellite With Labels</option>
-                                    <option value='Light'>Light</option>
-                                    <option value='Satellite Imagery'>Satellite No Labels</option>
-                                </select>
-                                <span class="downarrow"></span>
-                            </div>
-                        </div>
-
-                        <!--<div class="row-flex add-chart-button-wrap">
-              <div class="add-chart-button row-flex align-items-center">
-                <div class="plus-sign"></div>
-                <div class="text-add-chart">Add chart</div>
-              </div>
-            </div>-->
-
-                    </div>
-                    <!-- Top right Column End -->
+                      </div>
+                    
 
                     <div class="container main-wrapper">
                         <!-- Collapse button -->
@@ -306,8 +331,8 @@
                       <option value="Example Dataset 3">Example Dataset 3</option>
                       <option value="Example Dataset 4">Example Dataset 4</option> -->
                                         </select>
-                                        <span class="selection-dropdown-arrow up dataset-select-uparrow"></span>
-                                        <span class="selection-dropdown-arrow down dataset-select-downarrow"></span>
+                                       <!-- <span class="selection-dropdown-arrow up dataset-select-uparrow"></span>
+                                        <span class="selection-dropdown-arrow down dataset-select-downarrow"></span> -->
                                     </div>
                                 </div>
 
@@ -319,8 +344,8 @@
                                             <option value="default" selected="">Select Layer</option>
                                             <option value="Example 2">Example 2</option>
                                         </select>
-                                        <span class="selection-dropdown-arrow up dataset-select-uparrow"></span>
-                                        <span class="selection-dropdown-arrow down dataset-select-downarrow"></span>
+                                        <!--<span class="selection-dropdown-arrow up dataset-select-uparrow"></span>
+                                        <span class="selection-dropdown-arrow down dataset-select-downarrow"></span> -->
                                     </div>
 
 
@@ -366,139 +391,7 @@
 
                     </div>
 
-                    <!-- </div> -->
-
-                    <!--<div id="map"></div> -->
-
-                    <!--<div id='map'>
-            
-            
-            <div class="logos row-flex align-items-center">
-              <div class="UNDP-logo"></div>
-              <div class="rising-up-for-sids"></div>
-            </div>
-            
-            <div class="col-flex top-right">
-          
-              <div class="row-flex" style="justify-content:flex-end;">
-                <div class="country-select-menu" id='country-select-id'>
-                  <select id='country-select'>
-                    <option value="Select Country or Region">Select Country or Region</option>
-                    
-                  </select>
-                  <span class="downarrow"></span>
-                </div>
-               
-              </div>
-          
-              <div class="row-flex" style="justify-content:flex-end;margin-top:15px;">
-                <div id='icon3d' style="display: none;" class="icon2"></div>
-                <div class="add-overlay-menu">
-                  <select name='overlay-select' id='add-overlay'>
-                    <option value="Select Country or Region">Add overlays</option>
-                    <option value="admin1">Admin Regions 1</option>
-                    <option value="admin2">Admin Regions 2</option>
-                    
-                  </select>
-                  <span class="downarrow"></span>
-                </div>
                 
-              </div>
-          
-              <div class="row-flex" style="justify-content:flex-end;margin-top:15px;">
-                <div class="icon3"></div>
-                <div class="plot-select-menu">
-                  <select name="hexbin-change" id="plot-select">
-                    <option selected value="hex5">5km hexbins</option>
-                    <option value="hex10">10km hexbin</option>
-                    <option value="admin1">Admin 1 Regions</option>
-                    <option value="admin2">Admin 2 Regions</option>
-                  </select>
-                  <span class="selection-dropdown-arrow up left-arrow"></span>
-                  <span class="selection-dropdown-arrow down right-arrow"></span>
-                </div>
-                
-              </div>
-          
-            </div>
-            <div id='loader-gis'></div>
-          
-            <div class="container main-wrapper">
-            
-              <div class="collapse-btn">
-                <svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'>
-                  <path fill='none' stroke='#eee' stroke-linecap='round' stroke-linejoin='round' stroke-width='48'
-                    d='M328 112L184 256l144 144' />
-                </svg>
-              </div>
-              
-          
-              <div class="app-body">
-                
-                <div class="row">
-          
-                  <div class="col-12">
-                    <div class="custom-selection-dropdown selection-dropdown-1">
-                      <label>Dataset</label>
-                      <select class="form-select data-set-selection" id='dataDrop' aria-label="Dataset" name="dataset-selection">
-                        <option value="start" selected>Select Dataset</option>
-                        
-                      </select>
-                      <span class="selection-dropdown-arrow up dataset-select-uparrow"></span>
-                      <span class="selection-dropdown-arrow down dataset-select-downarrow"></span>
-                    </div>
-                  </div>
-          
-                  <div class="col-12">
-          
-                    <div id='layer-id' class="custom-selection-dropdown selection-dropdown-1">
-                      <label>Layer</label>
-                      <select id='layer-drop' class="form-select" aria-label="Layer" name="layer-selection">
-                        <option value="default" selected>Select Layer</option>
-                        <option value="Example 2">Example 2</option>
-                      </select>
-                      <span class="selection-dropdown-arrow up dataset-select-uparrow"></span>
-                      <span class="selection-dropdown-arrow down dataset-select-downarrow"></span>
-                    </div>
-          
-                  </div>
-                </div>
-          
-                <div class="row">
-                  <div class="col-12">
-          
-                    <div class="year-timeline-wrapper">
-          
-                      <div class="year-timeline-controls">
-                        <a href="#" id="year-play-pause" class="play">
-                          <span>Play / Pause</span>
-                        </a>
-                      </div>
-          
-                      <div class="year-timeline"></div>
-          
-                    </div>
-          
-                  </div>
-                </div>
-          
-              </div>
-            </div>
-            <div class="population-density-box col-flex">
-              <div class="col-flex" style="overflow-y:auto; padding:0px 6px 0px 0px;margin:12px 4px 12px 16px;">
-                <div id='infoBoxTitle' style="font-size:16px;font-weight:700;">SIDS Geospatial Platform</div>
-                <div id='infoBoxText' style="font-size:12px;font-weight:500;margin-top:10px;">This map visualizes data for the SIDS at different resolutions. Select a dataset above or a country to view spatial data about that region.</div>
-                <div id='infoBoxLink' style="font-size:12px;font-weight:500;margin-top:10px;"></div>
-              </div>
-            </div>
-            <div class="population-per-km col-flex">
-              <div class="row-flex space-evenly" style="margin-top:4px;font-size: 14px;" id='legendTitle'>Select a Dataset and Layer to view data on the map.</div>
-              <div class="row-flex space-evenly" id='updateLegend'></div>
-              
-            </div>
-            
-          </div>-->
-                    <!-- end map -->
                 </div>
                 <!--end gisPanel -->
 
@@ -1412,7 +1305,7 @@
     <script src="scripts/script.js"></script>
 
     <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
-
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
 
     <!-- <script src="scripts/wheelzoom.js"></script>
   <script src="scripts/dragBack.js"></script> -->
@@ -1430,9 +1323,15 @@
     <script src="scripts/qna.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://github.com/niklasvh/html2canvas/releases/download/0.4.1/html2canvas.js"></script>
     <script src="gisPanel/sidsNames.js"></script>
+    <!--<script src="gisPanel/newgis.js"></script>-->
+    
+    <script src="gisPanel/addSources.js"></script>
+    <script src="gisPanel/shpwrite.js"></script>
+    
 
-    <!--<script src="dist/dashboard.e31bb0bc.js"></script>-->
+   
     <script>
         $('#gisTab').one('click', function() {
 
