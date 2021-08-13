@@ -1,5 +1,21 @@
+body {
+    
+   overflow-y: hidden;
+}
 
+.password {
+   /* display: flex; */
+   top: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 400;
+    background-color: black;
+    align-items: center;
+    text-align: center;
+  }
 
+  
 #opacity-slider {
     background-color: #DDDDDD;
 }
@@ -12,13 +28,12 @@
     top: 0;
     z-index: 0;
     height: 100vh;
-    width: 83.5%;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
+    width: 100vw;
    
     
 }
+
+
 
 
 input[type=checkbox] {
@@ -47,11 +62,6 @@ input[type=checkbox] {
     font-weight: bold;
    
 }
-
-#gisPanel {
-    margin: 0;
-    padding: 0;
-}
  
    
 
@@ -73,7 +83,7 @@ input[type=checkbox] {
 .logos {
     position: fixed;
     top: 30px;
-    left: 285px;
+    left: 30px;
     z-index: 1;
 }
 
@@ -81,7 +91,6 @@ input[type=checkbox] {
     width: 31px;
     height: 65px;
     background: url('./assets/UNDP-logo.svg');
-    
     background-repeat: no-repeat;
     background-size: 100% 100%;
     margin-right: 13px;
@@ -102,7 +111,7 @@ input[type=checkbox] {
     width: 300px;
    /* position: relative; */
     position: absolute;
-   /* border: 1px solid red; */
+    border: 1px sold red;
     top: 0px;
     right: 30px;
     z-index: 1;
@@ -114,7 +123,7 @@ input[type=checkbox] {
 
 
 
-#addLabels, #datadownload {
+#addLabels, #datadownload, #screenshot {
 
 
     padding: 8px 8px 8px 8px;
@@ -145,7 +154,7 @@ input[type=checkbox] {
     margin-top: 10px;
 }
 
-#addLabels:hover {
+#addLabels:hover, #screenshot:hover, #datadownload:hover {
     background: #818f98;
 }
 
@@ -220,10 +229,6 @@ input[type=checkbox] {
     background-size: 100% 100%;
 } */
 
-#icon3d {
-    display: none;
-}
-
 .icon2 {
     width: 34px;
     height: 34px;
@@ -232,7 +237,7 @@ input[type=checkbox] {
     background: url('./assets/icon2.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    border-radius: 10px;
+    /*border-radius: 10px; */
 }
 
 .plot-select-menu {
@@ -336,14 +341,18 @@ input[type=checkbox] {
     /*border-radius: 10px; */
     transition: 0.5s ease-in-out all;
     opacity: 1;
-    height: 200px;
+    height: 200px
     
 }
+
+
+
 
 .app-body.collapsed {
     opacity: 0;
     z-index: -999;
     pointer-events: none;
+    
 }
 
 /* Custom Selection Boxes */
@@ -506,6 +515,11 @@ input[type=checkbox] {
     z-index: 2;
 }
 
+
+#icon3d {
+    display: none;
+}
+
 #icon3d:hover {
     cursor: pointer;
 }
@@ -522,6 +536,11 @@ input[type=checkbox] {
     align-items: center;
     justify-content: center;
     z-index: 4;
+}
+
+#start {
+    font-family: FontAwesome;
+    content: '\1f9ed';
 }
 
 #year-play-pause>span {
@@ -719,7 +738,9 @@ input[type='radio']:checked~label .circle-radio {
 
 .icon-grid {
     display: grid;
+    position: absolute;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    z-index: 40000;
 }
 
 .grid-container .icon-grid img {
@@ -743,7 +764,7 @@ input[type='radio']:checked~label .circle-radio {
     max-width: 436px;
     position: absolute;
     z-index: -99;
-    left: 194px;
+    left: 384px;
     top: 0px;
     width: 300px;
 }
@@ -830,6 +851,7 @@ input[type='radio']:checked~label .circle-radio {
 }
 
 .collapse-btn {
+    
     width: 30px;
     height: 50px;
     line-height: 50px;
@@ -851,6 +873,7 @@ input[type='radio']:checked~label .circle-radio {
 .collapse-btn.collapsed {
     transform: rotate(180deg);
 }
+
 #close-side.collapsed {
     transform: rotate(0deg);
 }
@@ -883,9 +906,9 @@ input[type='radio']:checked~label .circle-radio {
     margin: 0;
 }
 
-.main-wrapper .select2-container {
+/*.main-wrapper .select2-container {
     width: 100% !important;
-}
+} */
 
 /* Scrollbar */
 
@@ -1020,13 +1043,11 @@ input[type='radio']:checked~label .circle-radio {
   }
 
   .loader-gis svg {
-    stroke-width: 8;
-    fill-opacity: 0.5;
-    animation: pulse 1s linear infinite;
-    stroke: #003399;
-}
-
-  
+      stroke-width: 8;
+      fill-opacity: 0.5;
+      animation: pulse 1s linear infinite;
+      stroke: #003399;
+  }
 
   @keyframes pulse {
     0% {
@@ -1096,6 +1117,8 @@ input[type='radio']:checked~label .circle-radio {
     overflow: auto; 
     background-color: rgb(0,0,0);
 }
+
+
 .modal-content {
     
     background-color: #fefefe;
@@ -1121,6 +1144,11 @@ input[type='radio']:checked~label .circle-radio {
       margin-bottom: 0;
       text-align: center;
   }
+
+  .modal-content > h1 {
+    margin-bottom: 0;
+    text-align: center;
+}
 
   button {
     text-decoration: none;
@@ -1167,6 +1195,18 @@ button:hover{
     
 }
 
+.closebutton {
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+    background: whitesmoke;
+    float: right;
+}
+
 
 .country-select-menu select {
     
@@ -1184,6 +1224,10 @@ button:hover{
     appearance: none;
     cursor: pointer;
     text-align: center;
+}
+
+.mapboxgl-ctrl-top-right {
+    z-index: 5;
 }
 
 
@@ -1205,26 +1249,30 @@ button:hover{
     
 }
 
-
-
-.closebutton {
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
-    padding: 10px;
-    font-weight: bold;
-    text-align: center;
-    background: whitesmoke;
-    float: right;
+#close-side {
+    transform: rotate(180deg);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    background-color: #838383;
+    height: 40px;
+    width: 20px;
+    top: 50%;
+    left: -19px;
 }
 
+
+
+#close-side:hover {
+    cursor: pointer;
+}
 
 
 .dropdown-check-list {
     display: inline-block;
     font-size: 14px;
-    width: 100%;
     
   }
   .dropdown-check-list .anchor {
@@ -1234,13 +1282,8 @@ button:hover{
     padding: 5px 50px 5px 10px;
     border: 1px solid #ccc;
     background: #DDDDDD;
-    border-radius: 10px;
-    width: 90%;
+   /* border-radius: 10px; */
     
-  }
-
-  #layer-drop {
-      max-width: 259px;
   }
 
   
@@ -1265,12 +1308,10 @@ button:hover{
   .dropdown-check-list ul.items {
     padding: 2px;
     display: none;
-    margin: 10px;
-    margin-top: 0;
+    margin: 0;
     border: 1px solid #ccc;
     border-top: none;
     background: #DDDDDD;
-    border-radius: 10px;
     
   }
   .dropdown-check-list ul.items li {
@@ -1281,24 +1322,23 @@ button:hover{
     display: block;
   }
 
-  #close-side {
-    transform: rotate(180deg);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    background-color: #838383;
-    height: 40px;
-    width: 20px;
-    top: 50%;
-    left: -19px;
-    border-radius: 0px;
-}
 
+  #draw-sidebar {
+      display: none;
+      top: 0;
+      position: fixed;
+      width: 25%;
+      background-color: whitesmoke;
+      z-index: 40;
+      height: 100vh;
+      transition: 0.3s;
+  }
 
-
-#close-side:hover {
-    cursor: pointer;
-}
+  #sidebar-text {
+      padding-top: 10px;
+      margin-top: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+  }
 
