@@ -225,7 +225,7 @@ function RadarChart(parent_selector, options, countryList, pillar, dataFull) {
 			.call(wrap, cfg.wrapWidth)
 			.style("pointer-events","auto")
 			.on('mouseover', function (d, i) {
-
+console.log(d)
 				try { sourceLink = metadata[0][d].sourceLink }
 				catch (error) { sourceLink = "Link" }
 				try {
@@ -276,6 +276,22 @@ function RadarChart(parent_selector, options, countryList, pillar, dataFull) {
 			})
 			.on('click', function (d, i) {
 				window.open(metadata[0][d].sourceLink, '_blank');
+// ///change what happens here to:
+// //select that indicator in dropdown
+// //click on countryDataTab
+
+
+// // setSelectedIndicator(document.getElementById('countryCategory'), "all")
+// // setSelectedIndicatorCategory(document.getElementById('countrySelect'), country)
+// $("#countryDataTab h5").click()
+
+// $(".mdl-tabs__tab").removeClass("is-active")
+// $("#countryDataTab").addClass("is-active")
+
+
+// console.log("clicked on country ")
+
+
 
 			});
 
@@ -503,12 +519,15 @@ function RadarChart(parent_selector, options, countryList, pillar, dataFull) {
 				tooltip.transition()
 					.style('display', 'block')
 					.text(function () {
-						value = nFormatter(dataFull[pillar.slice(0, -4)][0].axes.filter(obj => { return obj.axis === d.axis })[0].value, 2)
+						value = dataFull[pillar.slice(0, -4)][0].axes.filter(obj => { return obj.axis === d.axis })[0].value
 						if (isNaN(value)) {
+							console.log(value)
 							return ""
+							
 						}
+						
 						else {
-							return value + ", " + rankFormat(d.value.toString()) + cfg.unit;
+							return nFormatter(value,2) + ", " + rankFormat(d.value.toString()) + cfg.unit;
 						}
 					})
 			}
@@ -620,10 +639,10 @@ function countryProfileInit() {
 		//for(category in ["Profile"]){
 		for (indicator in allKeyData[countryCode]["Profile"]) {
 			newIndi = {}
-			newIndi["axis"] = indicator
+			newIndi["axis"] = indicator.replace(/,/g, '')
 			try {
 				//	console.log(metadata[0][el.axis]["sourceName"])
-				newIndi["source"] = metadata[0][el.axis]["sourceName"]
+				newIndi["source"] = metadata[0][el.axis]["sourceName"].replace(/,/g, '')
 			}
 			catch (error) {
 				//	console.log("no source for "+el.axis)
@@ -642,13 +661,13 @@ function countryProfileInit() {
 			for (indicator in allKeyData[countryCode][pillars[pillar]]) {
 				newIndi = {}
 				el = allKeyData[countryCode][pillars[pillar]][indicator]
-				newIndi["axis"] = el.axis
+				newIndi["axis"] = el.axis.replace(/,/g, '')
 
 
 
 				try {
 					//		console.log(metadata[0][el.axis]["sourceName"])
-					newIndi["source"] = metadata[0][el.axis]["sourceName"]
+					newIndi["source"] = metadata[0][el.axis]["sourceName"].replace(/,/g, '')
 				}
 				catch (error) {
 					console.log("no source for " + el.axis)
@@ -668,10 +687,10 @@ function countryProfileInit() {
 		//for(category in ["Finance"]){
 		for (indicator in allKeyData[countryCode]["Finance"]) {
 			newIndi = {}
-			newIndi["axis"] = indicator
+			newIndi["axis"] = indicator.replace(/,/g, '')
 			try {
 				//	console.log(metadata[0][el.axis]["sourceName"])
-				newIndi["source"] = metadata[0][el.axis]["sourceName"]
+				newIndi["source"] = metadata[0][el.axis]["sourceName"].replace(/,/g, '')
 			}
 			catch (error) {
 				//	console.log("no source for "+el.axis)
@@ -710,7 +729,7 @@ function countryProfileInit() {
 	function compileCountryData() {
 		var x = document.getElementById("countrySelect");
 		countryCode = x.value;
-		countryName = allKeyData[countryCode].Profile.Country
+		countryName = allKeyData[countryCode]["Profile"]["Country"]
 		countryDict = allKeyData[countryCode]["Profile"]
 
 
@@ -735,15 +754,19 @@ function countryProfileInit() {
 	else{hdiClass="No data"
 hdi="No data"}
 
-
+if (countryDict["Country Office"]=="CO"){
+countryOffice=countryName+" CO"
+}else{
+	countryOffice=countryDict["Country Office"]
+}
 		// update country info 
 		$("#countryProfileInfo").html("<b>Population: </b>".concat(numberWithCommas(countryDict["Population"]).toString(), "<br>\
                   <b>Region: </b>", countryDict["Region"], "<br>\
-                  <b>Languages: </b>", countryDict["Languages"], "<br>\
+                  <b>Official Language: </b>", countryDict["Official Language"], "<br>\
                   <b>Surface Area: </b>", numberWithCommas(countryDict["Surface Area"]).toString(), " km<sup>2</sup> <br>\
-                  <b>HDI: </b>", hdi,"<br>\
-				  <b> HDI Classification: </b>",hdiClass,"<br>\
-				  <b>Income Group: </b>", countryDict["Income Classification"]));
+                  <b>HDI: </b>", hdi.toString()+", "+hdiClass,"<br>\
+				  <b>Income Group: </b>", countryDict["Income Classification"],"<br>\
+				  <b>Country Office: </b>","<a href=",countryDict["Country Page"]," style='color:purple'>",countryOffice,"</a>"));
 		$("#countryProfileTitle").html("<h4>" + countryName + "</h4>")
 
 		$("#reliefMap").attr("src", "maps/relief/".concat(countryCode, "Relief.png"))
@@ -1130,6 +1153,9 @@ hdi="No data"}
 
 
 	$("#countryViewTab").click(function () {
+
+
+		
 		setTimeout(() => {
 			compileCountryData();
 		}, 1);

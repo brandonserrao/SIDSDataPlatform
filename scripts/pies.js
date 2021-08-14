@@ -1,5 +1,6 @@
+
 var portfolioPieWidth = 560,
-	portfolioPieHeight = 120,
+	portfolioPieHeight = window.innerHeight/5.1-5,
 	radius = Math.min(portfolioPieWidth, portfolioPieHeight) / 2;
 
 var pie = d3.pie()
@@ -19,6 +20,8 @@ var outerArc = d3.arc()
 	.outerRadius(radius * 0.9);
 
 var pieKey = function (d) { return d.data.category; };
+
+$("#regionPie").css("height",window.innerHeight/5)
 
 //pie chart initializations
 
@@ -52,7 +55,8 @@ var colorRegion = d3.scaleOrdinal()
 	.domain(["Caribbean", "AIS", "Pacific"])
 	.range(["#008080", "#97002B", "#F0A500"]);
 
-svgRegionPie.attr("transform", "translate(" + portfolioPieWidth / 2.2 + "," + portfolioPieHeight / 1.8 + ")");
+	//here to change left-margin of pies (coefficient of pieWidth)
+svgRegionPie.attr("transform", "translate(" + portfolioPieWidth / 2.7 + "," + portfolioPieHeight / 1.8 + ")");
 svgFundingPie.attr("transform", "translate(" + portfolioPieWidth / 2.7 + "," + portfolioPieHeight / 1.8 + ")");
 
 
@@ -387,8 +391,114 @@ function updatePieChart(svgNum, colorFunc, pieData) {
 
 	polyline.exit()
 		.remove();
+
+		updatePieTooltips(pieData)
+
 }
 
 function midAngle(d) {
 	return d.startAngle + (d.endAngle - d.startAngle) / 2;
 }
+
+
+
+
+function initPieTooltips() {
+    const slices = $(".slice")
+
+    console.log("bars", slices)
+
+    slices.each(function (index) {
+
+        $('#pieTooltips').append('<div class="pieTooltip tooltips" style="width:230px" id="tooltipPie' +
+            (index).toString() + '" role="tooltip"><div class="jjpieTooltip" id="jjtooltipPie' +
+            pieSlices[index].replace(/ /g,'') + '"></div><div class="arrow" data-popper-arrow></div></div>')
+        // console.log(index+": yo");
+    });
+
+    const pieTooltips = $(".pieTooltip")
+        .each(function () {
+            //console.log(index+": tt");
+        });
+
+    //console.log(tooltips)
+
+    piePopperInstance = new Array();
+
+    for (i = 0; i < slices.length; i++) {
+        piePopperInstance[i] = Popper.createPopper(slices[i], pieTooltips[i],
+            {
+                placement: 'right',
+                modifiers: [
+                    {
+                        name: 'offset',
+                        options: {
+                            offset: [0, 0],
+                        },
+                    },],
+            });
+    }
+
+    function hide() {
+        //map to all
+        for (j = 0; j < slices.length; j++) {
+            pieTooltips[j].removeAttribute('data-show');
+        }
+    }
+
+    function hovered(j) {
+
+        pieTooltips[j].setAttribute('data-show', '');
+        piePopperInstance[j].update();;
+    }
+
+    const showEvents = ['mouseenter', 'focus'];
+    const hideEvents = ['mouseleave', 'blur'];
+
+    showEvents.forEach(event => {
+        for (j = 0; j < slices.length; j++) {
+
+            slices[j].addEventListener(event, hovered.bind(null, j));
+            pieTooltips[j].addEventListener(event, hovered.bind(null, j));
+        }
+    });
+
+
+
+    hideEvents.forEach(event => {
+        //map to all?
+        for (j = 0; j < slices.length; j++) {
+            //    console.log("i",j)
+            slices[j].addEventListener(event, hide);
+            pieTooltips[j].addEventListener(event, hide);
+        }
+    });
+
+}
+
+
+
+function updatePieTooltips(pieData) {
+	console.log(pieData)
+total=0
+for(index in pieData){
+	total+=pieData[index].value
+}
+
+for(index in pieData){
+	//console.log(index)
+		category=pieData[index].category
+		value=pieData[index].value;
+		// try{console.log(value)}
+		// catch(error){console.log(index,error)}
+		tooltipHeader = '<div class="col-lg-12"><h4 style="color:#0DB14B">' +category + '</h4></div>' +
+		'<div class="col-lg-12">' + nFormatter(value,2)+" USD"+ '</div>' +
+		'<div class="col-lg-12">' + nFormatter(value/total*100,2)+"% of total budget"+ '</div>'
+
+		$('#jjtooltipPie' + category.replace(/ /g,'')).html('<div class="row">' + tooltipHeader + "</div>")
+	
+	
+	}
+
+}
+pieSlices={0:"Caribbean",1:"AIS",2:"Pacific",3:"Vertical Funds",4:"Donor Countries",5:"Programme Countries",6:"UN Pooled Funds",7:"UN Agencies",8:"European Union",9:"Other"}

@@ -3,7 +3,7 @@ let sdgColors = ["#E5243B", "#DDA63A", "#4C9F38", "#C5192D", "#FF3A21",
     "#BF8B2E", "#3F7E44", "#0A97D9", "#56C02B", "#00689D", "#19486A"
 ]
 let samoaColors = ["#A21942", "#3F7E44", "#FCC30B", "#19486A", "#0A97D9",
-    "#DDA63A", "#26BDE2", "#FD6925", "#BF8B2E", "#FD9D24", "#4C9F38",
+    "#DDA63A", "#26BDE2", "green", "blue", "#FD9D24", "#4C9F38",
     "#FF3A21", "#DD1367", "#0A97D9", "#00689D", "#00A99D", "#F4F5F8"
 ]
 let ssColors = ["#E3253C", "#0076B0", "#F26A2C", "#417F45", "#FAB715",
@@ -16,7 +16,7 @@ samoaPriorities = ["Sustainable, inclusive and equitable economic growth", "Clim
     "Disaster Risk Reduction", "Oceans and Seas", "Food Security and Nutrition", "Water and Sanitation", "Sustainable Transportation",
     "Sustainable Consumption and Production", "Chemical and Waste management", "Health and NCDs",
     "Gender Equality", "Social Development", "Biodiversity", "Invasive species", "Means of Implementation"]
-ss = ["Keeping people out of poverty", "Strengthen effective, inclusive and accountable governance", "Enhance national prevention and recovery capacities for resilient societies", "Promote nature-based solutions for a sustainable planet", "Close the energy gap", "Strenghten gender equality and the empowerment of women and girls"]
+ss = ["Keeping people out of poverty", "Strengthen effective, inclusive and accountable governance", "Enhance national prevention and recovery capacities for resilient societies", "Promote nature-based solutions for a sustainable planet", "Close the energy gap", "Strengthen gender equality and the empowerment of women and girls"]
 sdgs = ["No poverty", "Zero hunger", "Good health and well-being", "Quality education", "Gender equality", "Clean water and sanitation", "Affordable and clean energy", "Decent work and economic growth", "Industry, innovation and infrastructure", "Reduced inequalities", "Sustainable cities and communities", "Responsible consumption and production", "Climate action", "Life below water", "Life on Land", "Peace, justice, and strong institutions", "Partnerships for the goals"]
 samoaDescriptions = ["Sustainable, inclusive and equitable economic growth", "Climate Change", "Sustainable Energy",
     "Disaster Risk Reduction", "Oceans and Seas", "Food Security and Nutrition", "Water and Sanitation", "Sustainable Transportation",
@@ -67,9 +67,11 @@ function initBars() {
     filteredProjects = dat[2]
 
     initPieChart(svgFundingPie, colorFunding, dataMapFunding(filteredProjects, fundingCategories));
+    initPieChart(svgRegionPie, colorRegion, dataMapRegion(filteredProjects))
+    initPieTooltips()
     updatePieChart(svgFundingPie, colorFunding, dataMapFunding(filteredProjects, fundingCategories));
 
-    initPieChart(svgRegionPie, colorRegion, dataMapRegion(filteredProjects))
+
     updatePieChart(svgRegionPie, colorRegion, dataMapRegion(filteredProjects));
 
     var distinct = []
@@ -645,8 +647,11 @@ function initBars() {
 
     initSamoaTooltips()
     initProjectTooltips()
+  
     updateProjectTooltips(filteredProjects)
     updateBars()
+
+
 }
 
 function updatePortfolioBackground(region) {
@@ -914,18 +919,19 @@ function updateProjectTooltips(filteredProjects) {
             projectList = ""
 
             for (project in sdgFilteredProjects) {
+                if(sdgFilteredProjects[project].budget>1){
                 projectYearString = ""
                 if (selectedYear == "2012to2021") {
                     projectYearString = " (" + sdgFilteredProjects[project].year + ") "
                 }
-                projectList += '<div class="projectTooltipColumn col-lg-8">' + "<b>" + (parseInt(project) + 1).toString() + ") </b>" + sdgFilteredProjects[project].title + projectYearString
+                projectList += '<div class="projectTooltipColumn col-lg-8">' + "<b>" + (parseInt(project) + 1).toString() + ") </b>" + titleCase(sdgFilteredProjects[project].title) + projectYearString
                     + "</div>" + '<div class="projectTooltipColumn col-lg-2">' +
                     sdgFilteredProjects[project].country
                     + '</div><div class="projectTooltipColumn col-lg-2">' +
                     nFormatter(sdgFilteredProjects[project].budget, 1)
                     + "</div>"
             }
-
+        }
             tooltipHeader = '<div><h4 style="color:#0DB14B; padding-left:15px">' + "SDG " + (index + 1) + " - " + sdgs[index] + '</h4></div>' + '<div class="col-lg-8">' + 'Project Title' + '</div>' +
                 '<div class="col-lg-2"><h6>Country</h6></div><div class="col-lg-2"><h6>Budget</h6></div>'
             $('#jjtooltipProject' + (index).toString()).html('<div class="row">' + tooltipHeader + projectList + "</div>")
@@ -1090,6 +1096,15 @@ function initSamoaTooltips() {
 
 }
 
+
+function titleCase(str) {
+    str = str.toLowerCase().split(' ');
+    for (var i = 0; i < str.length; i++) {
+      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
+    }
+    return str.join(' ');
+  }
+
 function summaryExportRender(filteredData, fundingCategories) {
 
 
@@ -1216,7 +1231,7 @@ function summaryExportRender(filteredData, fundingCategories) {
             }
         }
         newEl = {}
-        newEl["category"] = label
+        newEl["category"] = label.replace(/,/g, '')
         newEl["budget"] = totalBudg
         newEl["projects"] = distinctProjects.length
         newEl["countries"] = distinctCountries.length
@@ -1238,7 +1253,8 @@ function summaryExportRender(filteredData, fundingCategories) {
             }
         }
         newEl = {}
-        newEl["category"] = "SDG " + (parseInt(sdg) + 1) + ": " + sdgs[sdg]
+        newEl["category"] = "SDG " + (parseInt(sdg) + 1) + ": " + sdgs[sdg].replace(/,/g, '')
+        console.log(sdgs[sdg].replace(',', ''))
         newEl["budget"] = totalBudg
         newEl["projects"] = distinctProjects.length
         newEl["countries"] = 1//join(';')
@@ -1284,7 +1300,7 @@ function summaryExportRender(filteredData, fundingCategories) {
             }
         }
         newEl = {}
-        newEl["category"] = "Signature Solution " + (parseInt(ssss) + 1) + ": " + ss[ssss]
+        newEl["category"] = "Signature Solution " + (parseInt(ssss) + 1) + ": " + ss[ssss].replace(/,/g, '')
         newEl["budget"] = totalBudg
         newEl["projects"] = distinctProjects.length
         newEl["countries"] = 1//join(';')

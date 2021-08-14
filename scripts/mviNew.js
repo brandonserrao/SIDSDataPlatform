@@ -2,19 +2,17 @@
 //Initializations
 //////////////
 
-
-
 presetDict = { "evi": ["agrInst", "expConc", "expInst", "popLECZ", "popDry", "remote", "victims", "agrGDP"] }
 
 mviIndicatorNames = {
     "expConc": "Export Concentration", "expInst": "Export Instability", "agrInst": "Agricultural Instability", "agrGDP": "Agriculture & Fishing (% of GDP)",
-    "victims": "Victims of Disasters", "popLECZ": "% Population in Coastal Zones", "popDry": "% Population in Drylands", "remote": "Remoteness",
+    "victims": "Victims of Disasters", "popLECZ": "% Population in Coastal Zones", "remote": "Remoteness",//"popDry": "% Population in Drylands", 
     "tourism": "Tourism Revenue (% of Exports)", "fdi": "FDI Inflows (% of GDP)", "remit": "Remittances (% of GDP)"
 }
 
 mviIndicatorsDict = {
     "expConc": "Exportconcentration", "expInst": "ExportInstability", "agrInst": "AgriculturalInstability", "agrGDP": "AgricultureandfishingasshareofGDP",
-    "victims": "Victimsofdisasters", "popLECZ": "Shareofpopulationinlowelevatedcoastalzones", "popDry": "%PopulationinDrylands", "remote": "Remoteness",
+    "victims": "Victimsofdisasters", "popLECZ": "Shareofpopulationinlowelevatedcoastalzones",  "remote": "Remoteness",//"popDry": "%PopulationinDrylands",
     "tourism": "Tourismrevenuesasshareofexports", "fdi": "FDIinflowsaspercentageofGDP", "remit": "RemittancesaspercentageofGDP"
 }
 
@@ -24,7 +22,7 @@ mviDimensions = {
     "Financial": ["tourism", "remit", "fdi"],
     "Economic": ["agrInst", "expConc", "expInst"],
 
-    "Geographic": ["popLECZ", "popDry", "remote"],
+    "Geographic": ["popLECZ", "remote"],//"popDry", 
     "Environmental": ["victims", "agrGDP"]
 
 }
@@ -46,7 +44,7 @@ mviCountryListLongitude = ["Belize", "Jamaica", "Haiti", "Dominican Republic", "
     "Timor Leste", "Palau", "Papua New Guinea", "Solomon Islands",
     "Micronesia", "Marshall Islands", "Vanuatu", "Nauru", "Kiribati", "Fiji", "Tuvalu", "Tonga", "Samoa"]
 
-var chosenCountryListMVI = mviCountryListLongitude
+var chosenCountryListMVI = mviCountryListSpider
 
 pacificList2 = ["Timor Leste", "Palau", "Papua New Guinea", "Solomon Islands",
     "Micronesia", "Marshall Islands", "Vanuatu", "Nauru", "Kiribati", "Fiji", "Tuvalu", "Tonga", "Samoa"]
@@ -56,219 +54,13 @@ caribbeanList2 = ["Belize", "Jamaica", "Haiti", "Dominican Republic", "Antigua a
     , "Barbados", "St. Vincent and the Grenadines", "Grenada", "Trinidad and Tobago", "Guyana", "Suriname"]
 
 
-
-
-
-///
-//////////////////////
-// mega functions :) :) refactor yay!
-/////////////////////////
-
-
-
-/// on page load
-
-
-
-
-///// every time a state is changed
-
-// run function with all selections available
-
-// load both mvi and country data
-
-//process mvi and country data
-// export:
-    // ranked/sorted lists of countries with data for countryData and mvi
-    // countryData and mvi data objects
-    // totalVals
-
-    
-/// compute new states for all objects
-
-//for each rect calculate rectTransform
-//for each mviRect calculate mviBarChart or mviColumnChart, color, and opacity
-//for each circle calculate circleTransform and color / opacity
-//for each label calculate labelTransform and opacity
-//for each viz calculate vizTransform and vizColor
-//for each title 1-3 calculate textTransform
-//for each regionTitle calculate regionTransform
-//for each line calculate lineTransform
-
-//transform x-axis
-//transform y-axis
-
-//update choroLegend
-
-//update choroInfoBox
-
-//update spider (if spider is selected)
-
-
-//make sure all shaders are aligned
-
-
-
-
-
-
-
-
-
-
-
-
-///////////////////////////
-///old updatecustommvi
-///////////////////////////////////
-
-
-function updateCustomMvi() {
-    console.log("jaja")
-    console.log(wdiFull)
-
-    selectedPage = $('.is-active').attr('id')
-    selectedViz = $('.selectedViz')[0].innerHTML
-
-    if (selectedPage == "mviTab") {
-        d3.selectAll(".countrySvg")	/* Map  counties to  data */
-            .attr("class", function (d) {
-                if (mviCountryListSpider.includes(countryJson[this.id].Country)) {
-                    return (regionColors(countryJson[this.id].Region, "Y") + " shadow countrySvg")
-                } else { return "nodata countrySvg" }
-            });
-
-
-            
-$("#infoLi").show()
-
-
-
-
-    }
-
-
-
-
-
+function getMVIData(){
 
     const checkboxes = document.querySelectorAll('input[name="mviIndicator"]:checked');
     selectedIndis = []
     checkboxes.forEach((el) => { selectedIndis.push(el.id) })
 
-    console.log(selectedIndis)
-    var margin = { top: 85, right: 45, bottom: 0, left: 0 },
-        width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
-        height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
-
-    var radarChartOptionsCustom = {
-        w: 420,
-        h: 420,
-        margin: margin,
-        maxValue: 10,
-        levels: 6,
-        spin: 0,
-        roundStrokes: false,
-        color: d3.scale.ordinal().range(["#0DB14B", "#f0db3a", "#CC333F", "#00A0B0", "#FFFFFF"])//,
-        //				legend: { title: 'Organization XYZ', translateX: 120, translateY: 140 },
-    };
-
-
-
-
-
-    mviTimeSeries = {}
-    ///this is modeled after the country profile pillars, so 'pillar' is used out of context here
-
-
-    mviValues = {}
-
-
-    for (index in mviCountryListLongitude) {
-        newCountryData = {}
-        country = mviCountryListLongitude[index]
-
-        val = 0
-        for (j = 3; j >= 0; j = j - 1) {
-            dimVal = 0
-            indiCount = 0
-            for (indi in mviDimensions[dimensionList[j]]) {
-                indi = mviDimensions[dimensionList[j]][indi]
-                if (selectedIndis.includes(indi)) {
-                    try {
-                        //countryName = allKeyData[country].Profile.Country
-                        newVal = wdiFull[mviIndicatorsDict[indi]].data[country]
-                        //console.log(typeof newVal)
-                        if (typeof newVal == 'number') {
-                            dimVal += newVal
-                            indiCount += 1
-                        }
-                    }
-                    catch (error) {//console.log(error,indi)
-                    }
-                }
-
-            }
-            if (indiCount > 0) {
-                val += dimVal / indiCount / 4
-
-            }
-
-        }
-        mviValues[country] = val
-
-    }
-
-    sortedMviData = sort_object(mviValues)
-    sortedCountryList = Object.keys(sortedMviData)
-    console.log(sortedMviData)
-
-    pillarData = []
-
-
-    selectedSortby = $('.selectedSortby')[0].innerHTML
-    selectedViz=$('.selectedViz')[0].innerHTML
-
-    if (selectedViz == "Spider") {
-        if (selectedSortby == "Rank") {
-            //this filter removes any empty elements
-            chosenCountryListMVI = sortedCountryList.filter(item => item) //mviCountryList for regional, fixed value
-        }
-        else if (selectedSortby == "Region") {
-            chosenCountryListMVI = mviCountryListSpider
-        }
-    }
-    else if (selectedViz == "Global View") {
-        chosenCountryListMVI = mviCountryListLongitude
-    }
-    else if (selectedViz == "Bar Chart") {
-        if (selectedSortby == "Rank") {
-            //this filter removes any empty elements
-
-
-
-            chosenCountryListMVI = sortedCountryList.filter(item => item) //mviCountryList for regional, fixed value
-        }
-        else if (selectedSortby == "Region") {
-            chosenCountryListMVI = sortedCountryList.filter(item => item) //mviCountryList for regional, fixed value
-
-
-            pacificListSort = sortedCountryList.filter(item => pacificList2.includes(item));
-            aisListSort = sortedCountryList.filter(item => aisList2.includes(item));
-            caribbeanListSort = sortedCountryList.filter(item => caribbeanList2.includes(item));
-            console.log(pacificListSort)
-            chosenCountryListMVI = caribbeanListSort.concat(["", ""], aisListSort, ["", ""], pacificListSort)
-            console.log(chosenCountryListMVI)
-        }
-
-        else {
-            chosenCountryListMVI = mviCountryListLongitude
-        }
-    }
-
-
-
-    console.log("jaja")
+    mviData=[]
     for (i = 0; i < dimensionList.length; i++) {
         //	console.log(countryList[i])
         //	console.log(allKeyData[countryList[i]])
@@ -297,13 +89,14 @@ $("#infoLi").show()
                                 indiCount += 1
                             }
                         }
-                        catch (error) {//console.log(error,indi)
+                        //errors
+                        catch (error) {
+                            //outputting errors
+                            //console.log(error,indi)
                         }
                     }
                     //)
-
                     //add all checked indicaotr standardized values in this dimension to value
-
 
                 }
                 if (indiCount > 0) {
@@ -318,34 +111,168 @@ $("#infoLi").show()
             mviAxes.push(newCountryData)
 
         }
-        console.log("jaja")
-        pillarData.push({ name: dimensionList[i], axes: mviAxes })
+        mviData.push({ name: dimensionList[i], axes: mviAxes })
     }
+return mviData
+}
 
+function getChosenCountryListMVI(){
+    selectedPage = $('.is-active').attr('id')
     selectedViz = $('.selectedViz')[0].innerHTML
 
+    selectedSortby = $('.selectedSortby')[0].innerHTML
+    if (selectedViz == "Spider") {
+        if (selectedSortby == "Rank") {
+            //this filter removes any empty elements
+            chosenCountryListMVI = sortedCountryList.filter(item => item) //mviCountryList for regional, fixed value
+        }
+        else if (selectedSortby == "Region") {
+            chosenCountryListMVI = mviCountryListSpider
+        }
+    }
+    else if (selectedViz == "Global View") {
+        chosenCountryListMVI = mviCountryListLongitude
+    }
+    else if (selectedViz == "Bar Chart") {
+        if (selectedSortby == "Rank") {
+            //this filter removes any empty elements
+
+
+
+            chosenCountryListMVI = sortedCountryList.filter(item => item) //mviCountryList for regional, fixed value
+        }
+        else if (selectedSortby == "Region") {
+            chosenCountryListMVI = sortedCountryList.filter(item => item) //mviCountryList for regional, fixed value
+
+
+            pacificListSort = sortedCountryList.filter(item => pacificList2.includes(item));
+            aisListSort = sortedCountryList.filter(item => aisList2.includes(item));
+            caribbeanListSort = sortedCountryList.filter(item => caribbeanList2.includes(item));
+   
+            chosenCountryListMVI = caribbeanListSort.concat(["", ""], aisListSort, ["", ""], pacificListSort)
+
+        }
+
+        else {
+            chosenCountryListMVI = mviCountryListLongitude
+        }
+    }
+  
+    return chosenCountryListMVI
+}
+
+function updateCustomMvi() {
+    console.log("jaja")
+    console.log(wdiFull)
+
+    selectedPage = $('.is-active').attr('id')
+    selectedViz = $('.selectedViz')[0].innerHTML
+    selectedSortby = $('.selectedSortby')[0].innerHTML
+
+
+    if (selectedPage == "mviTab") {
+        d3.selectAll(".countrySvg")	/* Map  counties to  data */
+            .attr("class", function (d) {
+                if (mviCountryListSpider.includes(countryJson[this.id].Country)) {
+                    return (regionColors(countryJson[this.id].Region, "Y") + " shadow countrySvg")
+                } else { return "nodata countrySvg" }
+            });
+
+            
+        
+            //updateChoroTooltips("MVI"); //..not working yet
+    }
+   
+    var margin = { top: 85, right: 45, bottom: 0, left: 0 },
+        width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
+        height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
+
+    var radarChartOptionsCustom = {
+        w: 500,
+        h: 420,
+        margin: margin,
+        maxValue: 10,
+        levels: 6,
+        spin: 0,
+        roundStrokes: false,
+        color: d3.scale.ordinal().range(["#0DB14B", "#f0db3a", "#CC333F", "#00A0B0", "#FFFFFF"])//,
+        //				legend: { title: 'Organization XYZ', translateX: 120, translateY: 140 },
+    };
+
+
+    mviValues = {}
+
+    const checkboxes = document.querySelectorAll('input[name="mviIndicator"]:checked');
+    selectedIndis = []
+    checkboxes.forEach((el) => { selectedIndis.push(el.id) })
+
+    console.log(selectedIndis)
+
+
+    for (index in mviCountryListLongitude) {
+        newCountryData = {}
+        country = mviCountryListLongitude[index]
+   
+        //this always gives errors
+        //console.log(country, wdiFull[mviIndicatorsDict["remote"]].data)
+
+        val = 0
+        for (j = 3; j >= 0; j = j - 1) {
+            dimVal = 0
+            indiCount = 0
+            for (indi in mviDimensions[dimensionList[j]]) {
+                indi = mviDimensions[dimensionList[j]][indi]
+                if (selectedIndis.includes(indi)) {
+                    try {
+                        //countryName = allKeyData[country].Profile.Country
+                        newVal = wdiFull[mviIndicatorsDict[indi]].data[country]
+                        //console.log(typeof newVal)
+                        if (typeof newVal == 'number') {
+                            dimVal += newVal
+                            indiCount += 1
+                        }
+                    }
+                    catch (error) {
+                        
+                        ///outputting errors
+                        //console.log(error,country,indi)
+                    }
+                }
+            }
+            if (indiCount > 0) {
+                val += dimVal / indiCount / 4
+            }
+        }
+        mviValues[country] = val
+    }
+
+    sortedMviData = sort_object(mviValues)
+    sortedCountryList = Object.keys(sortedMviData)
+    console.log(sortedMviData)
+
+  
+chosenCountryListMVI=getChosenCountryListMVI()
+
+mviData = getMVIData()
+
+// console.log(mviData)
+// console.log(chosenCountryListMVI)
 
 
     if (selectedViz == "Spider") {
-        svg_radar_5 = RadarChart("#customSpider", radarChartOptionsCustom, dimensionList, "customIndex", { "customIndex": pillarData });
+        svg_radar_5 = RadarChart("#customSpider", radarChartOptionsCustom, dimensionList, "customIndex", { "customIndex": mviData });
     }
-    try {
-        indicator = $('.indiActive')[0].id
-    }
-    catch (error) { indicator = "Region" }
 
-    console.log(chosenCountryListMVI)
-    updateChoropleth(indicator)
 
-    updateMviBarAxis(pillarData);
+    updateMviBarAxis(mviData);
     updateChoroLegend();
     updateMultiYAxis();
-    console.log(chosenCountryListMVI)
+    //console.log(chosenCountryListMVI)
 
 
     //update rectangles and circles
-    selectedPage = $('.is-active').attr('id')
-    console.log("jaja")
+
+  //  console.log("jaja")
     if (selectedViz == "Spider" || selectedViz == "Multi-indicator" || selectedViz == "Choropleth" || selectedPage == "countryDataTab") {
 
         try {
@@ -399,7 +326,7 @@ $("#infoLi").show()
             $(".choroRect" + i).each(function () {
                 var country = countryJson[this.parentNode.id].Country
                 var bBox = getBoundingBox(d3.select(this.parentNode).select("path"))
-                dat = mviColumnChart(country, selectedViz, pillarData, mviCountryListLongitude, i)
+                dat = mviColumnChart(country, selectedViz, mviData, mviCountryListLongitude, i)
                 rectTransformData[country] = dat
             });
 
@@ -419,30 +346,7 @@ $("#infoLi").show()
         if (selectedPage == "mviTab") {
 
 
-            d3.select(sidsMaps).selectAll(".choroText")
-                .transition()
-                .duration(1200) //make transition time relative to to/from viz
-                .attr("transform", function (d) {
-                    //    console.log(this.innerHTML)
-                    var country = this.innerHTML;
-                    if (chosenCountryListMVI.includes(country)) {
-                        var bBox = getBoundingBox(d3.select(this.parentNode).select("path"))
-                        textX = bBox[4]
-                        textY = bBox[2] - 11;
-                        textBBox = this.getBBox()
-                        //console.log(textBBox)
-
-                        MBC = mviBarChart(country, selectedViz, pillarData, chosenCountryListMVI, 1)["y"]
-                        // console.log(bBox,textBBox,TT,country)
-                        totalVals = 40
-                        totalHeight = 500
-                        rank = MBC / 12.45  //almost totalHeight/totalVals
-                        return "scale(1,1) translate(" + (-textX + 140 - textBBox.width / 2) + "," + (-textY + totalHeight / totalVals * (rank + .5)) + ")"
-                    } else {
-                        return "scale(0.001,0.001)"
-                    }
-
-                })
+        
 
 
 
@@ -450,7 +354,7 @@ $("#infoLi").show()
             $(".countryLabel").each(function () {
                 var country = countryJson[this.parentNode.id].Country
                 var bBox = getBoundingBox(d3.select(this.parentNode).select("path"))
-                dat = mviBarChart(country, selectedViz, pillarData, chosenCountryListMVI, 1)
+                dat = mviBarChart(country, selectedViz, mviData, chosenCountryListMVI, 1)
                 labelTransformData[country] = dat
 
             });
@@ -488,7 +392,7 @@ $("#infoLi").show()
             $(".choroRect" + i).each(function () {
                 var country = countryJson[this.parentNode.id].Country
                 var bBox = getBoundingBox(d3.select(this.parentNode).select("path"))
-                dat = mviBarChart(country, selectedViz, pillarData, chosenCountryListMVI, i)
+                dat = mviBarChart(country, selectedViz, mviData, chosenCountryListMVI, i)
                 rectTransformData[country] = dat
             });
 
@@ -509,6 +413,11 @@ $("#infoLi").show()
             'width': x.width() + 32,
             'left': x.position().left
         }, 400);
+        var x = $(".selectedSortby").parent()
+        $(".sortbyShader").stop().animate({
+            'width': x.width() + 32,
+            'left': x.position().left
+        }, 400);
 
     }
     else {
@@ -524,14 +433,11 @@ if(selectedViz!="Bar Chart"){
 
 }
 
-
-
-
 ///////
 // Mvi rectangles
 ///
 
-function appendMviRectangles() {
+function appendMviRectangles(country, selectedViz,) {
 
     d3.select('#allSids').selectAll("g")
         .append("rect")
@@ -573,13 +479,20 @@ function appendMviRectangles() {
 
 }
 
-function mviBarChart(country, selectedViz, pillarData, chosenCountryListMvi, dim) {
+function getMviValue(country, selectedViz){
+    console.log("jj")
+    MBC = mviBarChart(country, selectedViz, getMVIData(), getChosenCountryListMVI(), 1)//["width"]
+return MBC
+}
 
-    dat = pillarData[dim - 1]
+
+function mviBarChart(country, selectedViz, mviData, chosenCountryListMVI, dim) {
+
+    dat = mviData[dim - 1]
     dimensionName = dat.name
     try {
         val = dat["axes"].filter(function (el) { return el.axis == country })[0].value
-        maxVal = pillarData[0]["axes"].filter(function (el) { return el.axis == country })[0].value
+        maxVal = mviData[0]["axes"].filter(function (el) { return el.axis == country })[0].value
 
     }
     catch (error) {
@@ -588,9 +501,9 @@ function mviBarChart(country, selectedViz, pillarData, chosenCountryListMvi, dim
     }
 
 
-    rank = chosenCountryListMvi.indexOf(country)
+    rank = chosenCountryListMVI.indexOf(country)
 
-    totalVals = chosenCountryListMvi.length
+    totalVals = chosenCountryListMVI.length
     totalHeight = 500
     totalWidth = 440
     selectedPage = $('.is-active').attr('id')
@@ -607,8 +520,8 @@ function mviBarChart(country, selectedViz, pillarData, chosenCountryListMvi, dim
 
             margin = 4
             values = []
-            for (key in pillarData[0]["axes"]) {
-                values.push(pillarData[0]["axes"][key].value)
+            for (key in mviData[0]["axes"]) {
+                values.push(mviData[0]["axes"][key].value)
             }
             maxx = Math.max(...values)
             minn = 0//
@@ -621,7 +534,7 @@ function mviBarChart(country, selectedViz, pillarData, chosenCountryListMvi, dim
                 return { "x": 160, "y": totalHeight / totalVals * (rank) + topMargin, "width": 0, "height": totalHeight / totalVals - margin }//,"color":color};
             }
             else if (selectedPage == "mviTab") {
-                return { "x": (normMaxValue - normValue) * totalWidth + 160, "y": totalHeight / totalVals * (rank) + topMargin, "width": normValue * totalWidth, "height": totalHeight / totalVals - margin }//,"color":color};
+                return {"value":val, "x": (normMaxValue - normValue) * totalWidth + 160, "y": totalHeight / totalVals * (rank) + topMargin, "width": normValue * totalWidth, "height": totalHeight / totalVals - margin }//,"color":color};
             }
         }
         catch (error) {
@@ -633,9 +546,9 @@ function mviBarChart(country, selectedViz, pillarData, chosenCountryListMvi, dim
 
 }
 
-function mviColumnChart(country, selectedViz, pillarData, chosenCountryListMvi, dim) {
+function mviColumnChart(country, selectedViz, mviData, chosenCountryListMVI, dim) {
 
-    dat = pillarData[dim - 1]
+    dat = mviData[dim - 1]
     dimensionName = dat.name
     try {
         val = dat["axes"].filter(function (el) { return el.axis == country })[0].value
@@ -643,7 +556,7 @@ function mviColumnChart(country, selectedViz, pillarData, chosenCountryListMvi, 
     catch (error) {
         val = 0
     }
-    rank = chosenCountryListMvi.indexOf(country)
+    rank = chosenCountryListMVI.indexOf(country)
 
 
     totalHeight = 500
@@ -659,7 +572,7 @@ function mviColumnChart(country, selectedViz, pillarData, chosenCountryListMvi, 
         try {
 
             leftMargin = 60
-            totalVals = chosenCountryListMvi.length
+            totalVals = chosenCountryListMVI.length
             margin = 8
 
             maxx = 70
@@ -687,3 +600,40 @@ function mviColumnChart(country, selectedViz, pillarData, chosenCountryListMvi, 
 }
 
 
+
+
+
+$('#mviPresetSelect ul li').click(function () {
+    var x = $(this);
+
+    $('.mviPresetShader').stop().animate({
+        'width': x.width() + 32,
+        'left': x.position().left
+    }, 400);
+
+    $('.selectedMviPreset').removeClass('selectedMviPreset');
+    $(this).addClass('selectedMviPreset');
+    // console.log(this)
+
+    selectedMviPreset = this.id
+    console.log(selectedMviPreset)
+
+    const cbs = document.querySelectorAll('input[name="mviIndicator"]');
+
+    if (selectedMviPreset == "mviLi") {
+        cbs.forEach((cb) => {
+            cb.checked = true;
+        });
+    }
+    else if (selectedMviPreset == "eviLi") {
+        cbs.forEach((cb) => {
+            if (presetDict["evi"].includes(cb.id))
+                cb.checked = true;
+            else {
+                cb.checked = false;
+            }
+        });
+    }
+    updateVizEngine()
+
+})
