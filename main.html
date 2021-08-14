@@ -46,45 +46,47 @@
 
 <body>
 
-    <div id="headerPanel">
-        <video autoplay muted loop id="myVideo">
-            <source src="images/blue economy_1_3.mp4" type="video/mp4">
-        </video>
+   <div id="headerPanel">
+    <video autoplay muted loop id="myVideo">
+      <source src="images/blue economy_1_3.mp4" type="video/mp4">
+    </video>
+    
 
+    <div class="cover-container d-flex w-100 h-100 flex-column">
+      <div class="header-bar">
         <h3 class="masthead-brand">
-            <!--put branding here for upper left corner-->
-            <img id="undpLogo" src="icons/UNDP-Logo-White/UNDP-Logo-White-Small.png" height="180px" style="margin-left:20px;">
+          <!--put branding here for upper left corner-->
+          <a href="https://data.undp.org">
+            <img src="https://data.undp.org/wp-content/uploads/2020/12/UNDP-COVID19-Data-Futures-Platform-Logo.svg" class="attachment-full size-full" alt="" loading="lazy">								</a>
         </h3>
+      </div>
+      <header>
+      <!-- class="masthead mb-auto"> -->
 
-        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
 
-            <header class="masthead mb-auto">
+        <div class="inner" id="headerBar">
 
+          <nav class="nav nav-masthead justify-content-center" id="devTabs">
+            <a class="nav-link active" id="homeMode" href="#">Home</a>
+            <a class="nav-link" id="devMode" href="#">Dev Mode</a>
+            <!-- <a class="nav-link" href="#">Contact</a> -->
+          </nav>
+        </div>
+      </header>
 
-                <div class="inner" id="headerBar">
-
-                    <nav class="nav nav-masthead justify-content-center" id="devTabs">
-                        <a class="nav-link active" id="homeMode" href="#">Home</a>
-                        <a class="nav-link" id="devMode" href="#">Dev Mode</a>
-                        <!-- <a class="nav-link" href="#">Contact</a> -->
-                    </nav>
-                </div>
-            </header>
-
-            <main role="main" class="inner cover">
-                <h1 class="cover-heading">
-                    <!-- Rising up for Small Island Developing States -->
-                    RISING UP FOR <br>SMALL ISLAND DEVELOPING STATES
-                </h1>
-                <hr style="width:70%;text-align:center;margin: auto;color:white; border-style:solid;border-width:1;opacity:1;">
-                <h2 class="cover-heading">Data Visualization Platform</h2>
-                <p class="lead">UNDP’s integrated approach supports Small Island Developing States to accelerate transformative
-                    development based on three pillars: Climate Action, Blue Economy, and Digital Transformation. </p>
-                <!-- CLIMATE ACTION - BLUE ECONOMY - DIGITAL TRANSFORMATION -->
-                <!--   <p class="lead">
+      <main role="main" class="inner cover">
+        <h1 class="cover-heading">Data Visualization Platform</h1>
+        <h2 class="cover-heading">for the</h2>
+        <h1 class="cover-heading">SMALL ISLAND DEVELOPING STATES </h1>
+        <hr style="width:70%;text-align:center;margin: auto;color:white; border-style:solid;border-width:1;opacity:1;margin-bottom:20px;">
+        
+        <p class="lead">UNDP’s integrated approach supports Small Island Developing States to accelerate transformative
+          development based on three pillars: Climate Action, Blue Economy, and Digital Transformation. </p>
+        <!-- CLIMATE ACTION - BLUE ECONOMY - DIGITAL TRANSFORMATION -->
+        <!--   <p class="lead">
           <a href="#" class="btn btn-lg btn-secondary">Learn more</a>
         </p>-->
-            </main>
+      </main>
 
 
             <div>
@@ -1814,9 +1816,11 @@
 
     </div>
 
-    <footer class="footerImg">
-
-    </footer>
+ <footer class="footerImg">
+        <div>
+          <p>Powered by the UNDP Data Futures Platform</p>
+        </div>
+      </footer>
 
 
     <!-- <script>window.jQuery || document.write('<script src="../scripts"><\/script>')</script> -->
