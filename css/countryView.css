@@ -235,6 +235,7 @@ select#type option[value=Colibri] {
   top: 0;
   left: 0;
   z-index: 0;
+  pointer-events: none;
 }
 
 #financeBox {
@@ -244,9 +245,9 @@ select#type option[value=Colibri] {
 #financeInfo {
   font-size: 12px;
   padding: 18px;
-  margin-top: 20px;
+  margin-top: 15px;
   background-color: #eeebeb;
-  height: 240px;
+  height: 220px;
   text-align: left;
   line-height: 22px;
 }

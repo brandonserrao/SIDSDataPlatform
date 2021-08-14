@@ -339,14 +339,8 @@
   padding-top: 40px;
 }
 
-.shader {
-  background-color: #E9ECF6;
-  position: absolute;
-  height: 24px;
-  z-index: -1;
-  margin: 4px 6px;
-  padding: 0px 4px 3px 32px;
-  border-radius: 10px;
+.regionTitle {
+  cursor: pointer;
 }
 
 /*# sourceMappingURL=choropleth.css.map */

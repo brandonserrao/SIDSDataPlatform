@@ -9,12 +9,13 @@
 #fundingPie svg {
   overflow: visible;
   margin-top: 8px;
-  margin-left: 70px;
+  margin-left: 40px;
 }
 
 #regionPie svg {
   overflow: visible;
   margin-top: 8px;
+  margin-left: 40px;
 }
 
 #spacer {
@@ -129,15 +130,14 @@ polyline {
   padding: 6px 12px 4px;
 }
 
+#goalSelect ul li {
+  padding: 6px 12px 4px;
+}
+
 #yearSelect {
   height: 28px;
   font-size: 14px;
   width: 100%;
-}
-
-#fundingCategorySelect {
-  height: 32px;
-  margin-top: 20px;
 }
 
 .portfolioDropdown {
@@ -145,6 +145,11 @@ polyline {
   font-size: 12px;
   border-radius: 6px;
   border-style: none;
+}
+
+#fundingCategorySelect {
+  height: 32px;
+  margin-top: 20px;
 }
 
 #fundingSelect {
@@ -202,6 +207,7 @@ polyline {
   height: 65px;
   padding-left: 32px;
   padding-right: 16px;
+  width: 1110px;
 }
 
 .jjprojectTooltip {
