@@ -1,19 +1,23 @@
 /* GLOBAL STYLES
 -------------------------------------------------- 
 /* Padding below the footer and lighter body text */
+
 /*
 div {
     outline: 2px solid red;
   }*/
+
 @font-face {
   font-family: "Proxima Nova";
   src: url("../fonts/Proxima-Nova/Proxima Nova Reg.otf") format("opentype");
 }
+
 @font-face {
   font-family: "Proxima Nova";
   src: url("../fonts/Proxima-Nova/Proxima Nova Bold.otf") format("opentype");
   font-weight: bold;
 }
+
 body {
   background-color: #F4F5F8;
   color: #2c2c2c;
@@ -25,12 +29,14 @@ html {
 }
 
 /* include border and padding in element width and height */
+
 * {
   box-sizing: border-box;
 }
 
 /* RESPONSIVE CSS
 -------------------------------------------------- */
+
 @media only screen and (max-width: 767px) {
   .fundingSelect.selection.dropdown .menu {
     /*      max-height: 8.01428571rem; /* + 1.335714285 to 9.349999995rem */
@@ -39,28 +45,32 @@ html {
     /* Double size */
   }
 }
+
 @media only screen and (min-width: 768px) {
   .fundingSelect.selection.dropdown .menu {
     /*         max-height: 10.68571429rem; /* + 1.3357142863 to 12.0214285763rem */
     max-height: 12.0214285763rem;
   }
 }
+
 @media only screen and (min-width: 992px) {
   .fundingSelect.selection.dropdown .menu {
     max-height: 16.02857143rem;
     /* + 1.3357142858 to 17.3642857158rem */
   }
 }
+
 @media only screen and (min-width: 1920px) {
   .fundingSelect.selection.dropdown .menu {
     max-height: 21.37142857rem;
     /* + 1.3357142856 to 22.7071428556rem */
   }
 }
+
 /* Tooltip
 -------------------------------------------------- */
-.arrow,
-.arrow::before {
+
+.arrow, .arrow::before {
   position: absolute;
   width: 15px;
   height: 15px;
@@ -77,19 +87,19 @@ html {
   transform: rotate(45deg);
 }
 
-.tooltips[data-popper-placement^=top] > .arrow {
+.tooltips[data-popper-placement^=top]>.arrow {
   bottom: -6px;
 }
 
-.tooltips[data-popper-placement^=bottom] > .arrow {
+.tooltips[data-popper-placement^=bottom]>.arrow {
   top: -4px;
 }
 
-.tooltips[data-popper-placement^=left] > .arrow {
+.tooltips[data-popper-placement^=left]>.arrow {
   right: -5px;
 }
 
-.tooltips[data-popper-placement^=right] > .arrow {
+.tooltips[data-popper-placement^=right]>.arrow {
   left: -5px;
 }
 
@@ -107,7 +117,9 @@ html {
 }
 
 /*scrollbar stuff*/
+
 /* total width */
+
 .scrollbar::-webkit-scrollbar {
   width: 16px;
   background-color: #F4F5F8;
@@ -115,6 +127,7 @@ html {
 }
 
 /* scrollbar itself */
+
 .scrollbar::-webkit-scrollbar-thumb {
   background-color: #babac0;
   border-radius: 16px;
@@ -127,6 +140,7 @@ html {
 }
 
 /* set button(top and bottom of the scrollbar) */
+
 .scrollbar::-webkit-scrollbar-button {
   display: none;
 }
@@ -221,3 +235,20 @@ h2 {
 }
 
 /*# sourceMappingURL=style.css.map */
+
+.cover-video-section {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 780px) {
+  #headerPanel .cover-inner-custom h1, #headerPanel .cover-inner-custom h2 {
+    font-size: 28px;
+  }
+}
