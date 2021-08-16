@@ -1460,7 +1460,10 @@ function changeDataOnMap(selection) {
     }, 600)
 
 
-    map.moveLayer('allsids', firstSymbolId)
+    if(map.getLayer('allsids')) {
+        map.moveLayer('allsids', firstSymbolId)
+    }
+    
 }
 
 
