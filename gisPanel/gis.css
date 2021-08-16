@@ -392,6 +392,9 @@ input[type=checkbox] {
     padding: 1px 0;
     /* min-height: 32px; */
 }
+.selection-scroller .scroller-option.active{
+    background: none;
+}
 
 .tab-nav span {
     cursor: pointer;
@@ -704,7 +707,10 @@ input[type='radio']:checked~label .circle-radio {
 .tab.active {
     display: block;
 }
-
+.carousel-item-next, .carousel-item-prev, .carousel-item.active, 
+.button-selection.active{ 
+    background: none ;
+}
 .carousel-img {
     max-height: 66px;
 }
