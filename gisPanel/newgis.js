@@ -193,19 +193,34 @@ function getUniqueFeatures(array, comparatorProperty) {
 
 function randomStart(){
 
+    var nogos = [0, 2, 4, 12, 24, 48, 50, 52]
+    var rando;
 
-    var rando = Math.round(Math.random() * (names.length - 0) + 0)
+    function getRandomNumber(){
+        return Math.round(Math.random() * (names.length - 0) + 0)
+    }
+
+    do {
+        rando = getRandomNumber();
+
+    } while (nogos.includes(rando)) {
+
+        rando = getRandomNumber()
+
+    }
+
+    if(!nogos.includes(rando)) {
+        var boun = new mapboxgl.LngLatBounds([names[rando].bb[0], names[rando].bb[1]])
+        map.fitBounds(boun, {
+            linear: true,
+            padding: 100
+        })
+
+    }
+    //var rando = Math.round(Math.random() * (names.length - 0) + 0)
+    console.log(names[rando]);
     console.log(rando);
-    var boun = new mapboxgl.LngLatBounds([names[rando].bb[0], names[rando].bb[1]])
-    map.fitBounds(boun, {
-        linear: true,
-        padding: {
-            top: 10,
-            bottom: 25,
-            left: 15,
-            right: 5
-        }
-    })
+    
 
 }
 
@@ -1996,8 +2011,8 @@ $('select[name="dataset-selection"]').on('change', function () {
         legend.innerHTML = '';
         legendTitle.innerHTML = ''
         infoBoxTitle.innerHTML = lyr
-        infoBoxText.innerHTML = '';
-        infoBoxLink.innerHTML = '';
+        infoBoxText.innerHTML = 'Satellite Imagery from Mapbox, NASA MODIS, Landsat 5 & 7, and Maxar';
+        infoBoxLink.innerHTML = '<a href="https://www.mapbox.com/maps/satellite" target="_blank">Source</a>';
 
         
         //if (map.getStyle().name != 'Mapbox Satellite Streets') {
@@ -2008,6 +2023,16 @@ $('select[name="dataset-selection"]').on('change', function () {
             map.setStyle(thisStyle.uri)
             //addHexSource()
             //addLabels();
+            map.once('idle', function(){
+
+                map.removeLayer('admin-1-boundary')
+                map.removeLayer('road-label')
+                map.removeLayer('road-number-shield')
+                map.removeLayer('road-exit-shield')
+                map.removeLayer("admin-1-boundary-bg")
+                map.removeLayer('airport-label')
+    
+            })
             console.log('hi')
         //}
 
@@ -2247,7 +2272,7 @@ function addCables() {
         map.removeLayer('underwater')
     } else if (!map.getSource('underwater-source')) {
 
-        d3.json('./data/cable-geo.json').then(function (d) {
+        d3.json('gisPanel/cable-geo.json').then(function (d) {
 
             map.addSource('underwater-source', {
                 'type': 'geojson',
