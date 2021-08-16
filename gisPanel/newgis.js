@@ -162,10 +162,14 @@ map.on("load", function () {
     //$('.download').show()
     addButtons()
     addHexSource()
+    
     //addTileSources()
     //justAdmin()
 
 });
+
+//map loads with a random country - outside of map.load
+randomStart();
 
 
 //function taken from mapbox that extracts unique features, see comment below
@@ -185,6 +189,27 @@ function getUniqueFeatures(array, comparatorProperty) {
 
     return uniqueFeatures;
 }
+
+
+function randomStart(){
+
+
+    var rando = Math.round(Math.random() * (names.length - 0) + 0)
+    console.log(rando);
+    var boun = new mapboxgl.LngLatBounds([names[rando].bb[0], names[rando].bb[1]])
+    map.fitBounds(boun, {
+        linear: true,
+        padding: {
+            top: 10,
+            bottom: 25,
+            left: 15,
+            right: 5
+        }
+    })
+
+}
+
+
 
 
 function addLabels() {
@@ -330,6 +355,21 @@ $('#basemap-switch').on('change', function () {
         })
 
         map.setStyle(thisStyle.uri)
+
+
+        map.once('idle', function(){
+
+            map.removeLayer('admin-1-boundary')
+            map.removeLayer('road-label')
+            map.removeLayer('road-number-shield')
+            map.removeLayer('road-exit-shield')
+            map.removeLayer("admin-1-boundary-bg")
+            map.removeLayer('airport-label')
+
+        })
+
+
+
         console.log(map.getStyle().sources)
     } else if(selectedBase === 'Mapbox Dark') {
 

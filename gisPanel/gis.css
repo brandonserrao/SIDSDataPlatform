@@ -71,9 +71,9 @@ input[type=checkbox] {
 }
 
 .logos {
-    position: fixed;
-    top: 30px;
-    left: 285px;
+    position: relative;
+    top: 10px;
+    left: 10px;
     z-index: 1;
 }
 
@@ -320,7 +320,7 @@ input[type=checkbox] {
 
 .main-wrapper {
     margin-left: 14px;
-    margin-top: 22vh;
+    margin-top: 15vh;
     margin-right: 0px;
     position: relative;
     width: 381px;
@@ -871,7 +871,7 @@ input[type='radio']:checked~label .circle-radio {
     margin-left: 2px;
     border-radius: 10px;
     position: absolute;
-    top: -162px;
+    top: -142px;
 }
 
 .tooltip-top .head-img {
@@ -1123,6 +1123,12 @@ input[type='radio']:checked~label .circle-radio {
       margin-bottom: 0px;
   }
 
+  .modal-content > a {
+      text-decoration: none;
+      color: blue;
+
+  }
+
   .modal-content > p {
       margin-bottom: 0;
       text-align: center;
@@ -1195,7 +1201,7 @@ button:hover{
 
 
 #top-right-wrap {
-    z-index: 3;
+    z-index: 1;
     position: absolute;
     display: flex;
     flex-direction: column;
