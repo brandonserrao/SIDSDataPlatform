@@ -58,7 +58,8 @@ input[type=checkbox] {
 .row-flex {
     display: flex;
     flex-direction: row;
-    
+    margin-top: 3px; 
+    font-size: 11px;
 }
 
 .col-flex {
@@ -68,6 +69,7 @@ input[type=checkbox] {
 
 .space-evenly {
     justify-content: space-evenly;
+    
 }
 
 .logos {
@@ -923,7 +925,7 @@ input[type='radio']:checked~label .circle-radio {
 .population-per-km {
     max-width: 350px;
     margin-top: 12px;
-    background-color: #ffffff;
+    background-color: #dddddd;
     /*border-radius: 10px; */
     padding: 10px;
     margin-left: 30px;
@@ -1214,7 +1216,7 @@ button:hover{
     /*border-radius: 10px; */
     text-align: center;
     transition: 0.5s ease-in-out all;
-    
+    font-family: "Proxima Nova";
 }
 
 
@@ -1246,8 +1248,8 @@ button:hover{
     padding: 5px 50px 5px 10px;
     border: 1px solid #ccc;
     background: #DDDDDD;
-    border-radius: 10px;
-    width: 90%;
+    border-radius: 5px;
+    width: 92%;
     
   }
 
@@ -1282,7 +1284,7 @@ button:hover{
     border: 1px solid #ccc;
     border-top: none;
     background: #DDDDDD;
-    border-radius: 10px;
+    border-radius: 5px;
     
   }
   .dropdown-check-list ul.items li {
@@ -1323,4 +1325,10 @@ button:hover{
 {
   opacity:70%;
   color:#ffffff;
+}
+
+.mapboxgl-ctrl-geocoder--input
+{
+    font-family: "Proxima Nova";
+    font-size:15px;
 }
