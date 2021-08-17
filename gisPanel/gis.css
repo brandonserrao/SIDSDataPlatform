@@ -803,10 +803,10 @@ input[type='radio']:checked~label .circle-radio {
     color: #ffd312;
 }
 
-.samoa-grid {
+/* .samoa-grid {
     left: 12px;
     top: 76px;
-}
+} */
 
 .custom-selection-dropdown .select2-container--default .select2-selection--single {
     display: block;
