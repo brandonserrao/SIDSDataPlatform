@@ -327,9 +327,8 @@
             <div class="modal-content">
               <span class="close">&times;</span>
               <!--<p>Interested in downloading SIDS Admin regions or hexagons? Check our <a href=</p> -->
-              <h1>Downloads the Data Visualized on the Map -- Select the Attribute You'd Like Attached</h1>
-              <p>for all empty hexagons or admin regions, please <a
-                  href='https://github.com/SIDS-Dashboard/dataForDownload' target='_blank'>download from here</a></p>
+              <h4>Downloads the Data Visualized on the Map -- Select the Attribute You'd Like Attached</h4><br>
+              <p>for all empty hexagons or admin regions, please <a id='modal-link' href='https://github.com/SIDS-Dashboard/dataForDownload' target='_blank'>download from here</a></p>
               <!--<p><b>What Spatial Resolution Would you like to download:</b></p>
                             <ul  id='download-resolution'>
                                 <input autocomplete="off" id='hex1' name='res' type='checkbox'>
@@ -343,10 +342,10 @@
                                 <input autocomplete="off" id='admin2' name='res' type='checkbox'>
                                 <label for='id'>Admin Regions 2</label>
                             </ul>
-                        <p>-----------------------------------------------------------------</p> -->
+                        <p>-----------------------------------------------------------------</p> 
               <p><b>What Countries Would You Like to Include in Download:</b></p>
               <ul id="download-countries"></ul>
-              <p>-----------------------------------------------------------------</p>
+              <p>-----------------------------------------------------------------</p> -->
               <p><b>Check Attributes You Would Like to Include:</b></p>
               <ul id="download-attributes"></ul>
               <ul id="download-buttons">
@@ -885,8 +884,8 @@
               <div id="infoBoxLink" style="font-size: 12px; font-weight: 500; margin-top: 10px"></div>
             </div>
           </div>
-          <div class="pic app-body population-per-km col-flex">
-            <div class="row-flex space-evenly" style="margin-top: 4px; font-size: 14px" id="legendTitle">
+          <div class="pic app-body population-per-km col-flex" id = "histogram_frame">
+            <div class="row-flex space-evenly"  id="legendTitle">
               Select a Dataset and Layer to view data on the map.
             </div>
 
@@ -1727,7 +1726,7 @@
                 </div>
 
                 <p class="qnaAnswer">
-                  <a href="http://unohrlls.org/about-sids/" style="color:blue">Small Island Developing States (SIDS)</a>
+                  <a href="http://unohrlls.org/about-sids/" target="_blank" style="color:blue">Small Island Developing States (SIDS)</a>
                   are a distinct group of 38 UN Member States and 20 Non-UN Members/Associate Members of United Nations
                   regional commissions that face unique social, economic and environmental vulnerabilities. The three
                   geographical regions in which SIDS are located are: the Caribbean, the Pacific, and the Atlantic,
@@ -1754,7 +1753,7 @@
                 </div>
                 <p class="qnaAnswer">
 
-                  UNDP’s SIDS offer – <b>Rising Up for SIDS</b> – presents an integrated approach for tapping into areas
+                  UNDP’s SIDS offer – <a  target='_blank' style="color:blue" href='https://www.sparkblue.org/dashboard/small-island-developing-states'><b>Rising Up for SIDS</b></a> – presents an integrated approach for tapping into areas
                   with potential to accelerate green recovery and transform societies based on three interconnected
                   pillars: Climate Action, Blue Economy and Digital Transformation. The offer responds to the ambitions
                   and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway. It includes
@@ -1889,6 +1888,8 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script
       src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js'></script>
     <script src="gisPanel/sidsNames.js"></script>
     <!--<script src="gisPanel/newgis.js"></script>-->
 

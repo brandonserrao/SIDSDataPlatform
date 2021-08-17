@@ -58,7 +58,8 @@ input[type=checkbox] {
 .row-flex {
     display: flex;
     flex-direction: row;
-    
+    margin-top: 3px; 
+    font-size: 11px;
 }
 
 .col-flex {
@@ -68,12 +69,13 @@ input[type=checkbox] {
 
 .space-evenly {
     justify-content: space-evenly;
+    
 }
 
 .logos {
-    position: fixed;
-    top: 30px;
-    left: 285px;
+    position: relative;
+    top: 10px;
+    left: 10px;
     z-index: 1;
 }
 
@@ -320,7 +322,7 @@ input[type=checkbox] {
 
 .main-wrapper {
     margin-left: 14px;
-    margin-top: 22vh;
+    margin-top: 15vh;
     margin-right: 0px;
     position: relative;
     width: 381px;
@@ -871,7 +873,7 @@ input[type='radio']:checked~label .circle-radio {
     margin-left: 2px;
     border-radius: 10px;
     position: absolute;
-    top: -162px;
+    top: -142px;
 }
 
 .tooltip-top .head-img {
@@ -923,14 +925,14 @@ input[type='radio']:checked~label .circle-radio {
 .population-per-km {
     max-width: 350px;
     margin-top: 12px;
-    background-color: #ffffff;
+    background-color: #dddddd;
     /*border-radius: 10px; */
     padding: 10px;
     margin-left: 30px;
     /*sebastian added */
     position: relative;
     z-index: 1;
-    height: 100px;
+    height: 210px;
 }
 
 .population-per-km-text {
@@ -941,8 +943,8 @@ input[type='radio']:checked~label .circle-radio {
 }
 
 .population-per-km-img {
-    width: 25px;
-    height: 21px;
+    width: 17px;
+    height: 15px;
     background: url('./assets/polygon.png');
     background-repeat: no-repeat;
     background-size: 101% 101%;
@@ -1123,6 +1125,12 @@ input[type='radio']:checked~label .circle-radio {
       margin-bottom: 0px;
   }
 
+  .modal-content > a {
+      text-decoration: none;
+      color: blue;
+
+  }
+
   .modal-content > p {
       margin-bottom: 0;
       text-align: center;
@@ -1195,7 +1203,7 @@ button:hover{
 
 
 #top-right-wrap {
-    z-index: 3;
+    z-index: 1;
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -1208,7 +1216,7 @@ button:hover{
     /*border-radius: 10px; */
     text-align: center;
     transition: 0.5s ease-in-out all;
-    
+    font-family: "Proxima Nova";
 }
 
 
@@ -1240,8 +1248,8 @@ button:hover{
     padding: 5px 50px 5px 10px;
     border: 1px solid #ccc;
     background: #DDDDDD;
-    border-radius: 10px;
-    width: 90%;
+    border-radius: 5px;
+    width: 92%;
     
   }
 
@@ -1276,7 +1284,7 @@ button:hover{
     border: 1px solid #ccc;
     border-top: none;
     background: #DDDDDD;
-    border-radius: 10px;
+    border-radius: 5px;
     
   }
   .dropdown-check-list ul.items li {
@@ -1308,3 +1316,19 @@ button:hover{
     cursor: pointer;
 }
 
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib 
+{
+  background-color: transparent;      
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib a:link
+{
+  opacity:70%;
+  color:#ffffff;
+}
+
+.mapboxgl-ctrl-geocoder--input
+{
+    font-family: "Proxima Nova";
+    font-size:15px;
+}
