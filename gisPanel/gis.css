@@ -1314,3 +1314,13 @@ button:hover{
     cursor: pointer;
 }
 
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib 
+{
+  background-color: transparent;      
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib a:link
+{
+  opacity:70%;
+  color:#ffffff;
+}
