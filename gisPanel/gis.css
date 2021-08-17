@@ -932,7 +932,7 @@ input[type='radio']:checked~label .circle-radio {
     /*sebastian added */
     position: relative;
     z-index: 1;
-    height: 100px;
+    height: 210px;
 }
 
 .population-per-km-text {
@@ -943,8 +943,8 @@ input[type='radio']:checked~label .circle-radio {
 }
 
 .population-per-km-img {
-    width: 25px;
-    height: 21px;
+    width: 17px;
+    height: 15px;
     background: url('./assets/polygon.png');
     background-repeat: no-repeat;
     background-size: 101% 101%;

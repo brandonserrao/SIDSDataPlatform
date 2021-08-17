@@ -270,9 +270,7 @@ function recolorBasedOnWhatsOnPage() {
     //createMask(features);
 
     //console.log(currentGeojsonLayers.hexSize);
-    if(features.length > 0) {
-
-      
+    if(features.length > 0) {      
 
         var uniFeatures;
         if (currentGeojsonLayers.hexSize === 'admin1') {
@@ -289,7 +287,7 @@ function recolorBasedOnWhatsOnPage() {
         //console.log(selecteData);
         var breaks = chroma.limits(selecteData, 'q', 4);
         
-        console.log(breaks);
+        console.log("BREAK5",breaks);
         var breaks_new = [];
         var precision = 1;
         do {
@@ -317,6 +315,7 @@ function recolorBasedOnWhatsOnPage() {
           breaks[4], currentGeojsonLayers.color[4],
           ]
         )
+        console.log(currentGeojsonLayers);
 
         //map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0.7)
 
@@ -330,7 +329,7 @@ function recolorBasedOnWhatsOnPage() {
             addNoDataLegend();
         } else {
             map.setFilter(currentGeojsonLayers.hexSize, ['>=', currentGeojsonLayers.dataLayer, 0])
-            addLegend(currentGeojsonLayers.color, breaks, precision, currentGeojsonLayers.dataLayer)
+            addLegend(currentGeojsonLayers.color, breaks, precision, currentGeojsonLayers.dataLayer,selecteData)
             setTimeout(() => {
                 map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0.8)
             }, 400);
@@ -1250,9 +1249,19 @@ function addOcean(layer) {
         }
     }, firstSymbolId)
 
+    setTimeout(() => {
+        var features = map.queryRenderedFeatures({
+            layers: ['ocean']
+        })
 
-    addLegend(currentGeojsonLayers.color, currentGeojsonLayers.breaks, 2, layer)
-    //addTheOnClick()
+        if (features) {
+            var uniFeatures;
+            uniFeatures = getUniqueFeatures(features, 'depth');
+            var selecteData = uniFeatures.map(x => x.properties['depth']);          
+            addLegend(currentGeojsonLayers.color, currentGeojsonLayers.breaks, 2, layer,selecteData); 
+        }
+
+    }, 600)
 
 }
 
@@ -1269,13 +1278,13 @@ function changeDataOnMap(selection) {
     //console.log(map.getStyle().layers)
     //console.log(selection);
     currentGeojsonLayers.dataLayer = selection;
-    console.log(currentGeojsonLayers)
+    //console.log(currentGeojsonLayers)
 
     if(!map.getSource('hex5')) {
-        console.log('no source')
-        addHexSource()
+        //console.log('no source')
+        addHexSource();
     } else {
-        console.log('source!')
+        //console.log('source!')
     }
 
     if (!map.getLayer(currentGeojsonLayers.hexSize)) {
@@ -1286,7 +1295,7 @@ function changeDataOnMap(selection) {
 
         //console.log(firstSymbolId);
 
-        console.log(current)
+        //console.log(current)
 
         map.addLayer({
             'id': currentGeojsonLayers.hexSize,
@@ -1315,7 +1324,7 @@ function changeDataOnMap(selection) {
             layers: [currentGeojsonLayers.hexSize]
         })
 
-       // console.log(features);
+        //console.log(features);
         //createMask(features)
 
         if (features) {
@@ -1340,8 +1349,7 @@ function changeDataOnMap(selection) {
 
             //var colorz = chroma.scale(['lightyellow', 'navy']).domain([min, max], 5, 'quantiles');
             var breaks = chroma.limits(selecteData, 'q', 4);
-            
-            //console.log(breaks);
+            //console.log("BREAK",breaks)
             var breaks_new = [];
             var precision = 1;
             do {
@@ -1352,8 +1360,7 @@ function changeDataOnMap(selection) {
                 //console.log(breaks_new);
             }    
             while (checkForDuplicates(breaks_new)&&(precision<10));
-            breaks = breaks_new;              
-            
+            breaks = breaks_new;                        
 
 
             var colorRamp = chroma.scale(['#fafa6e', '#2A4858']).mode('lch').colors(5) // yellow to dark-blue
@@ -1413,26 +1420,28 @@ function changeDataOnMap(selection) {
                breaks[4], colorRamp[4],
                ]
              
-             ) */
+             ) */               
+
+            //console.log("SELECTION",selecton);
 
             map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-color',
-        ['case', ['boolean', ['feature-state', 'hover'], false],
-          'yellow',
-        [
-          'interpolate',
-          ['linear'],
-          ['get', selection],
-          breaks[0], colorRamp[0],
-          breaks[1], colorRamp[1],
-          breaks[2], colorRamp[2],
-          breaks[3], colorRamp[3],
-          breaks[4], colorRamp[4],
-          ]
-        ]
+                ['case', ['boolean', ['feature-state', 'hover'], false],
+                'yellow',
+                [
+                'interpolate',
+                ['linear'],
+                ['get', selection],
+                breaks[0], colorRamp[0],
+                breaks[1], colorRamp[1],
+                breaks[2], colorRamp[2],
+                breaks[3], colorRamp[3],
+                breaks[4], colorRamp[4],
+                ]
+                ]
             )
 
 
-
+            
             //map.setFilter(currentGeojsonLayers.hexSize,['>=',selection, 0])
             if (isNaN(breaks[3]) || breaks[1] == 0) {
                 //setTimeout(() => { map.setFilter(currentGeojsonLayers.hexSize, null) }, 500);
@@ -1444,7 +1453,11 @@ function changeDataOnMap(selection) {
                 addNoDataLegend();
             } else {
                 map.setFilter(currentGeojsonLayers.hexSize, ['>=', selection, 0])
-                addLegend(colorRamp, breaks, precision, selection)
+                
+                //console.log(selecteData)
+                //console.log(max)
+
+                addLegend(colorRamp, breaks, precision, selection, selecteData)
                 setTimeout(() => {
                     map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0.8)
                 }, 100);
@@ -1460,10 +1473,7 @@ function changeDataOnMap(selection) {
     }, 600)
 
 
-    if(map.getLayer('allsids')) {
-        map.moveLayer('allsids', firstSymbolId)
-    }
-    
+    map.moveLayer('allsids', firstSymbolId)
 }
 
 
@@ -1485,9 +1495,15 @@ function addNoDataLegend() {
     legend.innerHTML = '';
     legendTitle.innerHTML = ''
 
+    var element = document.getElementById("histogram");
+    if(typeof(element) != 'undefined' && element != null)
+    {
+        $('#histogram').remove(); 
+    }    
+
 }
 
-function addLegend(colors, breaks, precision, current) {
+function addLegend(colors, breaks, precision, current, dataset) {
 
     //console.log(allLayers)
 
@@ -1510,7 +1526,8 @@ function addLegend(colors, breaks, precision, current) {
     legend.innerHTML = '';
     legendTitle.innerHTML = ''
     legendTitle.innerHTML = '<span>' + legData.units + '</span>';
-
+    
+    
     for (var x in colors) {
 
         var containerDiv = document.createElement('div')
@@ -1531,6 +1548,182 @@ function addLegend(colors, breaks, precision, current) {
         legend.appendChild(containerDiv);
 
     }
+    
+    //console.log("colors",colors)
+    //console.log("breaks",breaks)
+    //console.log("precision",precision)
+    //console.log("current",current)
+    //console.log("dataset",dataset)    
+
+    // histogram
+    var element = document.getElementById("histogram");
+    if(typeof(element) != 'undefined' && element != null)
+    {
+        $('#histogram').remove(); 
+    }     
+    $('#histogram_frame').append('<canvas id="histogram" width="320" height="130"><canvas>')
+    var canvas = document.getElementById('histogram')    
+
+    // break
+    var nGroup=200
+    var breaks_histogram = chroma.limits(dataset, 'e', nGroup);
+    //console.log("breaks_histogram",breaks_histogram);
+
+    // old color
+    /*
+    var histogram_color = Array(nGroup).fill("");
+    var color_index=0;
+    for (var i = 0; i < nGroup; i++)   
+    {        
+        if (breaks_histogram[i]>breaks[color_index+1])
+            color_index+=1;    
+        histogram_color[i]=colors[color_index];
+    }
+    */
+
+    // new color
+    var break_index=0;
+    var histogram_break_count = Array(4).fill(0);  
+    for (var i = 0; i < nGroup; i++)   
+    {
+        if (breaks_histogram[i]>breaks[break_index+1])
+            break_index+=1;
+        histogram_break_count[break_index]+=1;
+    }    
+    var colorRampNew=[];
+    for (var i = 0; i < 4; i++)
+    {           
+        colorRampPart = chroma.scale([colors[i], colors[i+1]]).mode('lch').colors(histogram_break_count[i]);
+        colorRampNew = colorRampNew.concat(colorRampPart);
+        //console.log(colorRampNew);
+    }   
+   
+
+    // precision
+    var breaks_precision = []
+    for (i = 0; i < breaks_histogram.length; i++) {        
+        breaks_precision.push(nFormatter(breaks_histogram[i], precision))
+    }
+    //console.log("breaks_precision:",breaks_precision)
+
+    var histogram_data = Array(nGroup).fill(0);    
+    for (var i = 0; i < dataset.length; i++) {
+        for (var j = 0; j < nGroup-1; j++)
+        {
+            if ((dataset[i]>=breaks_histogram[j])&&(dataset[i]<breaks_histogram[j+1]))
+            {
+                histogram_data[j]+=1                
+            }            
+        }
+        if (dataset[i]>=breaks_histogram[nGroup-1])
+        {
+            histogram_data[nGroup-1]+=1
+        }
+    }
+    //console.log("histogram_data",histogram_data)
+
+    var colorRampN = chroma.scale([colors[0], colors[4]]).mode('lch').colors(nGroup) // yellow to dark-blue
+            
+    var data = {
+            labels: breaks_precision.slice(0, -1),
+            datasets: [{
+                data: histogram_data,
+                backgroundColor: colorRampNew,
+            }]
+        };
+
+    var maxY=Math.pow(10,Math.ceil(Math.log10(Math.max(...histogram_data))));
+    var minY=Math.pow(10,Math.ceil(Math.log10(Math.min(...histogram_data))));
+    
+    //console.log(maxY,minY);
+    //console.log(Math.min(...histogram_data));
+    var option = {
+        responsive: true,
+        tooltips: {
+            enabled: true
+        },
+        legend: {
+                display: false
+        },
+        annotation: {
+            annotations: [
+            {
+                type: "line",
+                mode: "vertical",
+                scaleID: "x-axis-0",
+                value: "70%",
+                borderColor: "black",
+                label: {
+                content: "Your Score",
+                enabled: true,
+                position: "center"
+                }
+            }]},
+        scales: {
+            borderWidth:0,
+        yAxes:[{
+                display:true,
+                type: "logarithmic",
+
+                ticks: {
+                    //scaleStepWidth: 10,
+                    maxTicksLimit: 4, 
+                    //autoSkip: true,
+                    //stepSize:10,                                     
+                    max: maxY,
+                    //min: 1,
+                    callback: function (value, index, values) 
+                    {                        
+                            if (value === 100000000) return "100M";
+                            if (value === 10000000) return "10M";
+                            if (value === 1000000) return "1M";
+                            if (value === 100000) return "100K";
+                            if (value === 10000) return "10K";
+                            if (value === 1000) return "1K";
+                            if (value === 100) return "100";
+                            if (value === 10) return "10";
+                            if (value === 1) return "1";
+                            return null;
+                   
+                }
+            },
+            afterBuildTicks: function (chartObj) { //Build ticks labelling as per your need
+                chartObj.ticks = [];
+                var ticksScale=maxY;
+                while ((ticksScale>minY)&&(ticksScale>=1))
+                {
+                    //console.log(ticksScale);
+                    chartObj.ticks.push(ticksScale);
+                    ticksScale/=10;
+                }
+                
+            }
+
+        }],
+        xAxes:[{            
+            barPercentage: 1.0,
+            categoryPercentage: 1.0,
+            gridLines: 
+            {
+                display:true
+            },
+            scaleLabel: 
+            {
+                display: false,
+                labelString: legData.units
+            },
+            ticks: {
+                maxTicksLimit: 10
+
+            }
+        }]
+    }
+    };
+
+    var myHistogram = Chart.Bar(canvas,{
+        data:data,
+    options:option
+    });
 }
 
 
@@ -2017,7 +2210,12 @@ $('select[name="dataset-selection"]').on('change', function () {
         infoBoxText.innerHTML = 'Satellite Imagery from Mapbox, NASA MODIS, Landsat 5 & 7, and Maxar';
         infoBoxLink.innerHTML = '<a href="https://www.mapbox.com/maps/satellite" target="_blank">Source</a>';
 
-        
+        var element = document.getElementById("histogram");
+        if(typeof(element) != 'undefined' && element != null)
+        {
+            $('#histogram').remove(); 
+        }    
+
         //if (map.getStyle().name != 'Mapbox Satellite Streets') {
             
             var thisStyle = _.find(styles, function (o) {
