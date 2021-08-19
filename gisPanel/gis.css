@@ -322,7 +322,7 @@ input[type=checkbox] {
 
 .main-wrapper {
     margin-left: 14px;
-    margin-top: 5vh;
+    margin-top: 9vh;
     margin-right: 0px;
     position: relative;
     width: 381px;
@@ -332,13 +332,13 @@ input[type=checkbox] {
 
 .app-body {
     max-width: 360px;
-    margin: 10px 0;
+    margin: 5px 0;
     background-color: rgba(221, 221, 221, 0.7);
     padding: 10px 21px;
     /*border-radius: 10px; */
     transition: 0.5s ease-in-out all;
     opacity: 1;
-    height: 200px;
+    height: 190px;
     
 }
 
@@ -778,7 +778,9 @@ input[type='radio']:checked~label .circle-radio {
     max-width: 360px;
     padding: 10px;
     border-radius: 10px;
-    background-color: #ebebeb9e;
+   /* background-color: #ebebeb9e; */
+   background-color:rgba(221, 221, 221, 0.9)
+   
 }
 
 .tooltip-blue-eco h3 {
@@ -867,13 +869,14 @@ input[type='radio']:checked~label .circle-radio {
 
 .tooltip-top {
     display: none;
-    max-width: 360px;
+    /*max-width: 360px; */
     padding: 10px 0;
     background-color: white;
-    margin-left: 2px;
+    margin-left: 1px;
     border-radius: 10px;
     position: absolute;
-    top: -142px;
+    top: -135px;
+    z-index: 2;
 }
 
 .tooltip-top .head-img {
@@ -920,19 +923,20 @@ input[type='radio']:checked~label .circle-radio {
     /*sebastian added */
     position: relative;
     z-index: 3;
+    padding: 2px;
 }
 
 .population-per-km {
     max-width: 350px;
-    margin-top: 12px;
+    /*margin-top: 12px; */
     background-color: #dddddd;
     /*border-radius: 10px; */
-    padding: 10px;
+    padding: 2px;
     margin-left: 30px;
     /*sebastian added */
     position: relative;
     z-index: 1;
-    height: 210px;
+    height: 199px;
 }
 
 .population-per-km-text {
