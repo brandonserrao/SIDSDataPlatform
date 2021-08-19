@@ -1561,7 +1561,7 @@ function addLegend(colors, breaks, precision, current, dataset) {
     {
         $('#histogram').remove(); 
     }     
-    $('#histogram_frame').append('<canvas id="histogram" width="320" height="130"><canvas>')
+    $('#histogram_frame').append('<canvas id="histogram" width="320" height="115"><canvas>')
     var canvas = document.getElementById('histogram')    
 
     // break
