@@ -35,8 +35,8 @@ const map = new mapboxgl.Map({
     container: "map", // container ID
     //style: 'mapbox://styles/mapbox/light-v10?optimize=true', //?optimize=true
     style: 'mapbox://styles/mapbox/satellite-streets-v11',
-    center: [-61.2, 10.4], // starting position [lng, lat]
-    zoom: 5,
+    center: [-71.5, 19.0], // starting position [lng, lat]
+    zoom: 7,
     //preserveDrawingBuffer: true,
     maxZoom: 14,
     //minZoom: 
@@ -169,7 +169,7 @@ map.on("load", function () {
 });
 
 //map loads with a random country - outside of map.load
-randomStart();
+//randomStart();
 
 
 //function taken from mapbox that extracts unique features, see comment below
