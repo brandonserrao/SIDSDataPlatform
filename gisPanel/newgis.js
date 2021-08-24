@@ -2862,16 +2862,19 @@ $('#screenshot').click(function(){
 
 //download button functions
 $('#datadownload').click(function () {
-
+    map.setFilter(currentGeojsonLayers.hexSize, null)
     console.log(currentGeojsonLayers.hexSize)
     //openDownloadPage()
     
+
+setTimeout(() => {
 
 
     if(hexes.includes(currentGeojsonLayers.hexSize)) {
 
 
         var features = map.queryRenderedFeatures({
+            
             layers: [currentGeojsonLayers.hexSize]
         })
 
@@ -3022,7 +3025,7 @@ $('#datadownload').click(function () {
 
 
 
-}
+} },400)
 
  
 });
@@ -3037,6 +3040,8 @@ function openDownloadPage(hexsize, gdata) {
     var allAttributesChecked = [];
     var allResolutionsChecked = [];
     $('.modal').toggle();
+    $('body').css('overflow', 'hidden')
+
     //$('.loader-gis').hide()
 
 
@@ -3114,7 +3119,9 @@ function exportShp(hexsize,obj, removeOnes) {
         }
     }
     shpwrite.download(fc, options);
+    map.setFilter(currentGeojsonLayers.hexSize, ['>=', currentGeojsonLayers.dataLayer, 0])
     $('.modal').toggle();
+    $('body').css('overflow', '')
     map.removeLayer('screenshot')
     map.removeSource('screen');
 
@@ -3171,6 +3178,8 @@ function convertThis(fc, removeOnes) {
 
     var datastring = '';
     $('.modal').toggle();
+    map.setFilter(currentGeojsonLayers.hexSize, ['>=', currentGeojsonLayers.dataLayer, 0])
+    $('body').css('overflow', '')
     map.removeLayer('screenshot')
     map.removeSource('screen');
     
@@ -3179,6 +3188,7 @@ function convertThis(fc, removeOnes) {
 $('.close').click(function () {
     map.setFilter(currentGeojsonLayers.hexSize, ['>=', currentGeojsonLayers.dataLayer, 0])
     $('.modal').toggle();
+    $('body').css('overflow', '')
    // map.setZoom(oldZoom);
     //map.setCenter(oldCenter)
     map.removeLayer('screenshot')
