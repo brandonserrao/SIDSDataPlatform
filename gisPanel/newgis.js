@@ -157,6 +157,8 @@ map.on("load", function () {
             marker: false
         })
     )
+
+
     //map.addControl(Draw, 'bottom-right');
     //$('.loader-gis').remove()
     //$('.download').show()
@@ -167,6 +169,7 @@ map.on("load", function () {
     //justAdmin()
 
 });
+
 
 //map loads with a random country - outside of map.load
 //randomStart();
@@ -3033,16 +3036,19 @@ function openDownloadPage(hexsize, gdata) {
     var allCountriesChecked = [];
     var allAttributesChecked = [];
     var allResolutionsChecked = [];
-    var removeOnes = _.difference(allTheFieldIds, allAttributesChecked);
     $('.modal').toggle();
     //$('.loader-gis').hide()
 
 
     $('#shp').click(function () {
+        var removeOnes = _.difference(allTheFieldIds, allAttributesChecked);
         exportShp(hexsize, gdata, removeOnes);
+        
     })
     $('#gjn').click(function () {
+        var removeOnes = _.difference(allTheFieldIds, allAttributesChecked);
         exportGeojson(hexsize, gdata, removeOnes);
+        
        
     })
 
@@ -3058,6 +3064,7 @@ function openDownloadPage(hexsize, gdata) {
     $('input:checkbox').change(function () {
       
             var thisid = $(this)[0].id
+            console.log(thisid);
             allAttributesChecked.push(thisid);
 
             
@@ -3108,6 +3115,8 @@ function exportShp(hexsize,obj, removeOnes) {
     }
     shpwrite.download(fc, options);
     $('.modal').toggle();
+    map.removeLayer('screenshot')
+    map.removeSource('screen');
 
 }
 
@@ -3127,16 +3136,12 @@ function exportGeojson(hexsize, gdata, removeOnes) {
 
     //var fc = turf.featureCollection(gdata)
 
-    convertThis(fc);
-
-    //var webdata = encodeURIComponent(JSON.stringify(fc))
-    
-    //window.open('http://geojson.io/#data=data:application/json,' + webdata);
+    convertThis(fc, removeOnes);
     
 
-function convertThis(fc) {
+function convertThis(fc, removeOnes) {
 
-    //console.log(fc)
+    console.log(removeOnes)
 
     //var fc = turf.featureCollection(feats)
     for (var x in fc.features) {
@@ -3147,27 +3152,14 @@ function convertThis(fc) {
         }
 
     }
-    var webdata = encodeURIComponent(JSON.stringify(fc))
+   
     
-    window.open('http://geojson.io/#data=data:application/json,' + webdata);
-
-
-    /*function mapArray(ar) {
-
-        return _.map(ar.features, object =>
-            _.omit(object, ['_vectorTileFeature', 'layer', 'source', 'sourceLayer', 'state'])
-        );
-
-    }
-    var resultz = mapArray(feats)
-    console.log(resultz);
-
-    resultz.forEach(function (x) {
-        x.geometry = x._geometry
-        delete x._geometry
-    }) */
-
-
+    var datastring = "data:text/json;charset=utf-8, " + encodeURIComponent(JSON.stringify(fc))
+    var link = document.createElement('a');
+    link.download = 'download.geojson';
+    link.href = datastring
+    link.click();
+    link.delete; 
 
     
 
@@ -3175,38 +3167,7 @@ function convertThis(fc) {
 
     
 
-    //console.log(resultz)
-
-
-
-
-
-
-   /* var fc = turf.featureCollection(resultz)
-
-
-    //console.log(fc)
-
-    for (var x in fc.features) {
-
-        for (var y in removeOnes) {
-
-            delete fc.features[x].properties[removeOnes[y]]
-        }
-
-    }
-
-    //console.log(fc);
-
-    var datastring = '';
-    $('.modal').toggle();
-
-    var datastring = "data:text/json;charset=utf-8, " + encodeURIComponent(JSON.stringify(fc))
-    var link = document.createElement('a');
-    link.download = 'download.geojson';
-    link.href = datastring
-    link.click();
-    link.delete; */
+  
 
     var datastring = '';
     $('.modal').toggle();
