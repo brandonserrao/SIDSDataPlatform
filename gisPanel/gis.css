@@ -372,7 +372,7 @@ input[type=checkbox] {
 
 .custom-selection-dropdown .form-select {
     font-size: 12px;
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 4px 20px;
     background-image: none;
 }
@@ -923,7 +923,7 @@ input[type='radio']:checked~label .circle-radio {
     /*sebastian added */
     position: relative;
     z-index: 3;
-    padding: 2px;
+    padding: 10px;
 }
 
 .population-per-km {
@@ -931,7 +931,7 @@ input[type='radio']:checked~label .circle-radio {
     /*margin-top: 12px; */
     background-color: #dddddd;
     /*border-radius: 10px; */
-    padding: 2px;
+    padding: 10px;
     margin-left: 30px;
     /*sebastian added */
     position: relative;
@@ -1207,6 +1207,7 @@ button:hover{
 
 
 #top-right-wrap {
+    font-family: "Proxima Nova";
     z-index: 1;
     position: absolute;
     display: flex;
@@ -1220,7 +1221,6 @@ button:hover{
     /*border-radius: 10px; */
     text-align: center;
     transition: 0.5s ease-in-out all;
-    font-family: "Proxima Nova";
 }
 
 
@@ -1320,3 +1320,24 @@ button:hover{
     cursor: pointer;
 }
 
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib 
+{
+  background-color: transparent;      
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib a:link
+{
+  opacity:70%;
+  color:#ffffff;
+}
+
+.mapboxgl-ctrl-geocoder--input
+{
+    font-family: "Proxima Nova";
+    font-size:14px;
+}
+
+#infoBoxLink a{
+
+    color:#808080;
+}
