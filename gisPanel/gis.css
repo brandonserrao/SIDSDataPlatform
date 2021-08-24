@@ -79,6 +79,10 @@ input[type=checkbox] {
     z-index: 1;
 }
 
+body.modal-open {
+    overflow: hidden !important;
+ }
+
 .UNDP-logo {
     width: 31px;
     height: 65px;
