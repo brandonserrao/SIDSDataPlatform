@@ -35,7 +35,7 @@ $("#color-switch").on("change", function () {
         //breaks = [-4841, -3805, -2608, -1090, 1322];
         currentGeojsonLayers.color = colorSeq['ocean']
     } else {
-        currentGeojsonLayers.color = colorRamp
+        currentGeojsonLayers.color = colorSeq["yellow-blue"];
     }
   }
 
