@@ -295,6 +295,19 @@
               </div>
 
               <div class="country-select-menu" id="country-select-id">
+                <select autocomplete="off" id="color-switch">
+                  <option id='color' value='none'>Change Color Scheme</option>
+                  <option id='color' value='Original'>Original Color Scheme</option>
+                  <option id='color' style='color: white;' value='invert'>Invert Colors</option>
+                  <option id='color' style='color: white; background-color: red;' value="red">Reds</option>
+                  <option id='color' style='color: white; background-color: purple;' value='purple'>Purples</option>
+                  <option id='color' style='color: white; background-color: blue;' value='blue'>Blues</option>
+                  <option id='color' value='colorblind-safe'>Color blind safe option</option>
+                </select>
+      
+              </div>
+
+              <div class="country-select-menu" id="country-select-id">
                 <div class='download' id='datadownload'>Download Data</div>
               </div>
 
@@ -1877,6 +1890,9 @@
     <script src="gisPanel/addSources.js"></script>
     <script src='gisPanel/addButtons.js'></script>
     <script src="gisPanel/shpwrite.js"></script>
+    <script src='gisPanel/color.js'></script>
+    <script src="gisPanel/colorSwitch.js"></script>
+    <script src="gisPanel/onClickControl.js"></script>
 
 
 
