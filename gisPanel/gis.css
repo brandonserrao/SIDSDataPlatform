@@ -198,6 +198,15 @@ body.modal-open {
     cursor: pointer;
 }
 
+.my-custom-control {
+    display:block;
+    background-color: rgba(221, 221, 221, 0.9);
+    height: 0px;
+    width: 0px;
+    padding: 5px;
+
+}
+
 
 
 #add-overlay {

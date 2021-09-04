@@ -3,7 +3,7 @@ var firstSymbolId;
 var oldZoom;
 var oldCenter;
 const userLayers = ['hex5', 'hex5clipped', 'hex10', 'admin1', 'admin2', 'hex1', 'ocean'];
-var hexes = ['hex5', 'hex10', 'hex1']
+var hexes = ['hex5', 'hex10', 'hex1', 'hex5clipped']
 var admins = ['admin1', 'admin2']
 var basemapLabels = [];
 var myHistogram;
@@ -299,7 +299,7 @@ function recolorBasedOnWhatsOnPage() {
         //console.log(selecteData);
         var breaks = chroma.limits(selecteData, 'q', 4);
         
-        console.log("BREAK5",breaks);
+        //console.log("BREAK5",breaks);
         var breaks_new = [];
         precision = 1;
         do {
@@ -314,7 +314,7 @@ function recolorBasedOnWhatsOnPage() {
         
         
         currentGeojsonLayers.breaks = breaks;
-        console.log(breaks)
+        //console.log(breaks)
         map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-color',
         [
           'interpolate',
@@ -327,7 +327,7 @@ function recolorBasedOnWhatsOnPage() {
           breaks[4], currentGeojsonLayers.color[4],
           ]
         )
-        console.log(currentGeojsonLayers);
+        //console.log(currentGeojsonLayers);
 
         //map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0.7)
 
@@ -473,137 +473,8 @@ $('#basemap-switch').on('change', function () {
         }
             //console.log(map.getStyle().layers);
         })
-        //addHexSource();
-
-        //console.log(map.getStyle().sources)
-        //map.moveLayer(currentGeojsonLayers.hexSize, 'allsids')
-
-    
 
 })
-
-/* baseMapSwitcher.addEventListener('click', (event) => {
-
-    const isOption = event.target.nodeName === "OPTION";
-    if (!isOption) {
-      return;
-    }
-      console.log(event);
-    //console.log(event.target.value)
-    //console.log(styles)
-    var thisStyle = _.find(styles, function(o){return o.title === event.target.value})
-    map.setStyle(thisStyle.uri)
-    //map.removeLayer('admin-1-boundary')
-    
-    
-    //console.log(map.getStyle().sources)
-
-    map.once('idle', function(e) {
-
-        var layers = map.getStyle().layers;
-    // Find the index of the first symbol layer in the map style
-            for (var i = 0; i < layers.length; i++) {
-            if (layers[i].type === 'symbol') {
-            firstSymbolId = layers[i].id;
-            break;
-            }
-            }
-        if(thisStyle.title === 'Satellite Imagery') {
-          var last = layers.length -1;
-          console.log(layers)
-          console.log(last);
-          console.log(layers[last]);
-          firstSymbolId = layers[last].id;
-        }
-
-        if (map.getLayer('admin-1-boundary')) {
-          map.removeLayer('admin-1-boundary')
-        }
-
-
-        console.log(firstSymbolId)
-
-        for (var x in sourceData) {
-            //console.log(sourceData[x].name)
-    
-            if(sourceData[x].name === 'hex5' || sourceData[x].name === 'hex1') {
-
-                map.addSource(sourceData[x].name, {
-                    'type': 'vector',
-                    'promoteId': 'hexid',
-                    'tiles': [
-                      //otherhex
-                      sourceData[x].data
-                    ],
-                    'minzoom': 6,
-                    'maxzoom': 10
-                  })
-                console.log(sourceData[x].name + ';;')
-    
-            } else if(sourceData[x].name === 'hex10') {
-              map.addSource('hex10', {
-                'type': 'vector',
-                //type: "geojson",
-                //data: geobuf.decode(new Pbf(allData[0])),
-                url: sourceData[x].data,
-                promoteId: 'hexid'
-              }) 
-              
-            } else {
-                map.addSource(sourceData[x].name, {
-                    type: 'geojson',
-                    data: geobuf.decode(new Pbf(sourceData[x].data)),
-                  })
-            }
-          }
-
-
-          if(currentGeojsonLayers.hexSize === 'hex5') {
-
-            map.addLayer({
-              'id': currentGeojsonLayers.hexSize,
-              'type': 'fill', 
-              'source': currentGeojsonLayers.hexSize,
-              'source-layer': 'hex5_3857',
-              'paint': {
-                'fill-color': 'blue',
-                'fill-opacity': 0,
-              }
-              
-              }, firstSymbolId);
-
-          } else {
-            map.addLayer({
-              'id': currentGeojsonLayers.hexSize,
-              'type': 'fill', 
-              'source': currentGeojsonLayers.hexSize,
-              'paint': {
-                    'fill-color': 'blue',
-                    'fill-opacity': 0,
-                  
-                  }
-              }, firstSymbolId);
-
-          }
-        map.setFilter(currentGeojsonLayers.hexSize,['>=',currentGeojsonLayers.dataLayer, 0])
-
-        if(thisStyle.title === 'Satellite Imagery') {
-          map.moveLayer(currentGeojsonLayers.hexSize)
-        }
-
-        map.once('idle', function(e) {
-         
-          recolorBasedOnWhatsOnPage();
-          console.log('change bins');
-          //map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0.7)
-        
-        })
- 
-    })
-
-    console.log(currentGeojsonLayers);
-
-  }) */
 
 
 const button3dWrapper = document.getElementById('icon3d')
@@ -786,40 +657,6 @@ map.on('zoom', function (e) {
 
     }
 
-    /* if(map.getZoom() <= 4) {
-
-        if(!map.getLayer('allsids')) {
-            map.addLayer({
-                'id': 'allsids',
-                 'type': 'line',
-                 'source': 'allsids',
-                 'source-layer': 'allSids',
-                 'layout': {
-                     'visibility': 'visible'
-                 },
-                 'paint': {
-                     'line-color': 'orange',
-                     'line-width': 2
-         
-                 }
-             }, firstSymbolId);
-
-        }
-
-       
-
-    }
-
-    if(map.getZoom() > 4) {
-
-        if(map.getLayer('allsids')) {
-            map.removeLayer('allsids')
-        }
-
-
-        
-    } */
-
 
 })
 
@@ -831,6 +668,16 @@ map.on('click', function(e) {
         map.removeSource('clickedone')
     }
 
+    if (map.getSource('highlightS')) {
+        map.removeLayer('highlight')
+        map.removeSource('highlightS')
+    }
+
+    if (map.getSource('joined')) {
+        map.removeLayer('joined')
+        map.removeSource('joined')
+    }
+
     var clickDiv = document.getElementsByClassName('my-custom-control')[0]
 
     /*clickDiv.style.height = '0px';
@@ -840,267 +687,43 @@ map.on('click', function(e) {
 
 })
 
-map.on('click', currentGeojsonLayers.hexSize, function (e) {
+map.on('click', 'hex5', function (e) {
 
-    var clickDiv = document.getElementsByClassName('my-custom-control')[0]
-    clickDiv.style.display = 'block'
-    clickDiv.style.height = '200px';
-    clickDiv.style.width = '200px';
-
-    clickDiv.innerHTML = '<h4><b>Value: </b><br>' + 
-                            e.features[0].properties[currentGeojsonLayers.dataLayer].toLocaleString() + ' ' + 
-                            document.getElementById("legendTitle").textContent + '</h4>';
-
-
-    var legData = _.find(allLayers, ['field_name', currentGeojsonLayers.dataLayer])
-    
-
-
-    //console.log(legData);
-
-    if (map.getSource('highlightS')) {
-        map.removeLayer('highlight')
-        map.removeSource('highlightS')
-    }
-
-    if (map.getSource('clickedone')) {
-        map.removeLayer('clickedone')
-        map.removeSource('clickedone')
-    }
-
-    var currId = e.features[0].id
-
-    var feats = map.queryRenderedFeatures({
-        layers: [currentGeojsonLayers.hexSize],
-        filter: ['==', 'hexid', currId]
-    })
-
-
-    //var testAdmin = map.querySourceFeatures()
-
-
-    var fc = turf.featureCollection(feats);
-    var dis = turf.dissolve(fc);
-
-
-    map.addSource('clickedone', {
-        'type': 'geojson',
-        'data': dis
-
-    })
-
-    map.addLayer({
-        'id': 'clickedone',
-        'source': 'clickedone',
-        'type': 'line',
-        'paint': {
-            'line-color': 'purple',
-            'line-width': 3
-        }
-    })
-
+        onDataClick(e);
 
 })
 
-function addAdminClick() {
+map.on('click', 'hex10', function (e) {
 
-    map.on('click', currentGeojsonLayers.hexSize, function (e) {
+    onDataClick(e);
 
-        console.log(e.features[0].properties.GID_1);
-        //console.log(e.features[0].geometry);
+})
 
-        /*var feats = map.queryRenderedFeatures({
-          layers: ['admin1'],
-          filter: ['==', 'GID_1', e.features[0].id]
-          
-        }) */
+map.on('click', 'hex1', function (e) {
 
-        var rendered = map.queryRenderedFeatures({
-            layers: ['admin1']
-        })
+    onDataClick(e);
 
-        var feats = map.querySourceFeatures('admin1', {
-            sourceLayer: ['admin1'],
-            filter: ['==', 'GID_1', e.features[0].id]
+})
 
-        })
+map.on('click', 'hex5clipped', function (e) {
 
-        //console.log(feats);
-        var countries = []
-        rendered.map(function (x) {
-            countries.push(x.properties.NAME_0)
-        })
+    onDataClick(e);
 
-        //console.log(_.uniq(countries));
+})
 
+map.on('click', 'admin1', function (e) {
+
+    addAdminClick(e)
+
+})
+
+map.on('click', 'admin2', function (e) {
+
+    addAdminClick(e)
+
+})
 
 
-
-        if (map.getSource('highlightS')) {
-            map.removeLayer('highlight')
-            map.removeSource('highlightS')
-        }
-
-        if (map.getSource('joined')) {
-            map.removeLayer('joined')
-            map.removeSource('joined')
-        }
-
-        map.addSource('highlightS', {
-            type: 'geojson',
-            data: {
-                'type': 'FeatureCollection',
-                'features': []
-            }
-        })
-
-        map.addLayer({
-            'id': 'highlight',
-            'source': 'highlightS',
-            'type': 'line',
-            'paint': {
-                'line-color': 'orange',
-                'line-width': 3
-            }
-        })
-
-        console.log(feats);
-        if (feats.length > 1) {
-
-            var newOne = []
-
-            feats.forEach(function(f){
-                var geom = f.geometry
-                var props = f.properties
-                var id = f.id;
-
-                if(geom.type === 'MultiPolygon') {
-                    console.log(f);
-                    for (var i=0; i < geom.coordinates.length; i++) {
-                        var poly = {
-                            'type': 'Feature',
-                            'geometry': {
-                                'type': 'Polygon',
-                                'coordinates': geom.coordinates[i]
-                            },
-                            'id': id,
-                            'properties': props
-                        }
-                        newOne.push(poly);
-                    }
-                } else {
-                    newOne.push(f)
-                }
-
-                
-            })
-
-
-            //console.log(turf.polygon(newOne));
-
-
-           /* for (var x in feats) {
-               console.log(feats[x]);
-                if (feats[x].geometry.type === 'MultiPolygon') {
-                    ////console.log('multi:')
-                    //console.log(feats[x]);
-                    for(var z in feats[x].geometry.type)
-                    //feats[x].geometry.type = 'Polygon';
-                    //feats[x].geometry.coordinates = feats[x]._geometry.coordinates[0]
-                }
-            } */
-            //var fc = turf.featureCollection(feats)
-            var fc = turf.featureCollection(newOne);
-            console.log(fc);
-            var joined = turf.dissolve(fc);
-            //var joined = turf.union(...newOne);
-            //console.log(joined);
-            //map.getSource('highlightS').setData(joined)
-            var allGeos = []
-
-            map.addSource('joined', {
-                type: 'geojson',
-                data: {
-                    'type': 'FeatureCollection',
-                    'features': []
-                }
-            })
-
-
-            map.addLayer({
-                'id': 'joined',
-                'source': 'joined',
-                'type': 'line',
-                'paint': {
-                    'line-color': 'purple',
-                    'line-width': 3
-                }
-            })
-
-            map.getSource('joined').setData(joined)
-
-            /*for (var x in feats) {
-
-        allGeos.push(feats[x].geometry);
-        console.log(x);
-        console.log(feats[x].geometry)
-
-        map.addSource(x, {
-          type: 'geojson',
-          data: {
-            'type': 'FeatureCollection',
-            'features': []
-          }
-        })
-
-        
-    
-        map.addLayer({
-          'id': x,
-          'source': x,
-          'type': 'line',
-          'paint': {
-            'line-color': 'orange',
-            'line-width': 3
-          }
-        })
-
-        map.getSource(x).setData(feats[x].geometry)
-
-
-
-      } */
-
-        } else {
-            map.getSource('highlightS').setData(feats[0])
-        }
-
-
-
-
-
-
-        //console.log(e);
-
-
-        //map.getSource('highlightS').setData(joinedall)
-
-        /* var popup = new mapboxgl.Popup({
-           closeButton: true,
-           closeOnClick: true
-           });
-         //console.log(document.getElementById("infoBoxTitle").textContent)
-
-         //console.log(currentGeojsonLayers.dataLayer);
-         //console.log(e.features[0].properties)
-
-         //var coords = e.features[0].geometry.coordinates.slice();
-         //console.log(e.features[0].geometry)
-         var text = '<h4><b>Country: </b>' + e.features[0].properties.NAME_0 + '</h4><h4><b>Region: </b>' + e.features[0].properties.NAME_1 + ' ' + e.features[0].properties.TYPE_1  + '</h4><b>' + document.getElementById("infoBoxTitle").textContent + '</b>: ' + e.features[0].properties[currentGeojsonLayers.dataLayer].toLocaleString() + ' ' + document.getElementById("legendTitle").textContent
-         popup.setLngLat(e.lngLat).setHTML(text).addTo(map); */
-    })
-
-}
 
 
 function checkForDuplicates(array) {
@@ -1117,6 +740,7 @@ function checkForDuplicates(array) {
 }
 
 function changeHexagonSize(sel) {
+    console.log(currentGeojsonLayers.hexSize)
 
     //console.log(map.getStyle())
     if (map.getLayer('ocean')) {
@@ -1186,11 +810,11 @@ function changeHexagonSize(sel) {
 
 
 
-    if (sel === 'admin1') {
+    /*if (sel === 'admin1') {
         addAdminClick()
     } else {
         
-    }
+    } */
 
 }
 
@@ -1318,6 +942,8 @@ function addOcean(layer) {
 
 
 function changeDataOnMap(selection) {
+
+    console.log(currentGeojsonLayers.hexSize)
 
     if (map.getLayer('ocean')) {
         $('.hexsize').toggle()
@@ -2283,65 +1909,7 @@ $('select[name="dataset-selection"]').on('change', function () {
                     break;
                 }
             }
-        }
-        //currentGeojsonLayers.dataLayer = null;
-        //currentGeojsonLayers.hexSize = null;
-        //console.log(layers);
-        //console.log(firstSymbolId)
-
-
-        //var thisStyle = _.find(styles, function(o){return o.title === 'Satellite With Labels'})
-        //map.setStyle(thisStyle.uri)
-
-       /* if (map.getStyle().name != 'Satellite With Labels') {
-            var thisStyle = _.find(styles, function (o) {
-                return o.title === 'Satellite With Labels'
-            })
-            map.setStyle(thisStyle.uri)
-            addHexSources()
-            console.log('hi')
-        }
-
-        //console.log(basemapLabels)
-        if (lyr === 'Satellite Imagery') {
-            
-
-            // var thisStyle = _.find(styles, function(o){return o.title === 'Light'})
-            //map.setStyle(thisStyle.uri)
-            console.log('yo');
-
-            addLabels();
-
-        } else if (map.getStyle().layers.length > 2) {
-            console.log(map.getStyle().layers);
-
-            //console.log(map.getStyle().layers)
-
-        } else {
-
-            addLabels()
-
-        }
-
-
-        //var thisStyle = _.find(styles, function(o){return o.title === lyr})
-        //map.setStyle(thisStyle.uri);
-        var layers = map.getStyle().layers;
-        //console.log(layers);
-        if (layers.length <= 2) {
-            firstSymbolId = null;
-        } else {
-            for (var i = 0; i < layers.length; i++) {
-                if (layers[i].type === 'symbol') {
-                    firstSymbolId = layers[i].id;
-                    break;
-                }
-            }
-        }
-
-
-
-            */
+        } 
 
     } else if (this.selectedOptions[0].innerHTML === 'GDP per Capita' || this.selectedOptions[0].innerHTML === 'Population Density') {
         //map.setPaintProperty(currentGeojsonLayers.hexSize,'fill-opacity', 0.0)
