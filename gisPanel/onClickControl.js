@@ -36,7 +36,7 @@ class ToggleControl {
     clickDiv.style.height = '200px';
     clickDiv.style.width = '200px';
 
-    clickDiv.innerHTML = '<h4><b>Value: </b><br>' + 
+    clickDiv.innerHTML = '<h4><b>Value: </b>' + 
                             clicked.features[0].properties[currentGeojsonLayers.dataLayer].toLocaleString() + ' ' + 
                             document.getElementById("legendTitle").textContent + '</h4>';
 

@@ -897,8 +897,8 @@ function addOcean(layer) {
 
     currentGeojsonLayers.breaks = [-4841, -3805, -2608, -1090, 0];
     currentGeojsonLayers.color = ['#08519c', '#3182bd', '#6baed6', '#bdd7e7', '#eff3ff']
-    //currentGeojsonLayers.dataLayer = layer;
-    //currentGeojsonLayers.hexSize = 'ocean';
+    currentGeojsonLayers.dataLayer = layer;
+    currentGeojsonLayers.hexSize = 'ocean';
     map.addLayer({
         'id': 'ocean',
         'type': 'fill',

@@ -52,6 +52,8 @@ $("#color-switch").on("change", function () {
     currentGeojsonLayers.color = colorSeq['colorBlindGreen'];
   }
 
+  console.log(currentGeojsonLayers.breaks)
+
   map.setPaintProperty(currentGeojsonLayers.hexSize, "fill-color", [
     "interpolate",
     ["linear"],
