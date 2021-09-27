@@ -20,6 +20,36 @@
     
 }
 
+.mapbox-ctrl-minimap-toggle-display {
+    background-image: url('toggle.svg') !important;
+    background-size: cover;
+    position: absolute;
+  }
+
+
+#draw-sidebar {
+    display: none;
+    top: 0;
+    position: fixed;
+    width: 25%;
+    background-color: whitesmoke;
+    z-index: 40;
+    height: 100vh;
+    transition: 0.3s;
+}
+
+#sidebar-text {
+    padding-top: 10px;
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+}
+
+#removeUpload {
+    display: none;
+}
+
 
 input[type=checkbox] {
    width: 12px;
@@ -73,7 +103,7 @@ input[type=checkbox] {
 }
 
 .logos {
-    position: relative;
+    position: absolute;
     top: 10px;
     left: 10px;
     z-index: 1;
@@ -120,7 +150,7 @@ body.modal-open {
 
 
 
-#addLabels, #datadownload {
+#addLabels, #datadownload, #removeUpload {
 
 
     padding: 8px 8px 8px 8px;
@@ -199,7 +229,7 @@ body.modal-open {
 }
 
 .my-custom-control {
-    display:block;
+    display:none;
     background-color: rgba(221, 221, 221, 0.9);
     height: 0px;
     width: 0px;
@@ -335,7 +365,7 @@ body.modal-open {
 
 .main-wrapper {
     margin-left: 14px;
-    margin-top: 9vh;
+    margin-top: 13vh;
     margin-right: 0px;
     position: relative;
     width: 381px;
@@ -820,6 +850,8 @@ input[type='radio']:checked~label .circle-radio {
     color: #ffd312;
 }
 
+
+
 /* .samoa-grid {
     left: 12px;
     top: 76px;
@@ -1099,9 +1131,14 @@ input[type='radio']:checked~label .circle-radio {
        margin-top: 5px;
    }
 
+   .upload-pop {
+       width: 200px;
+   }
+   
+
    .mapbox-popup-content-wrapper {
-       padding: 1%;
-       width: 300px;
+       padding: 5%;
+       /*width: 300px; */
    }
 
  h4 {

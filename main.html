@@ -17,9 +17,10 @@
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.2.13/dist/semantic.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
-  <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
-  <link rel="stylesheet"
-    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+  <link href='https://api.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.css' rel='stylesheet' />
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.3.0/mapbox-gl-draw.css' type='text/css' />
+
 
 
   <!-- Bootstrap core CSS -->
@@ -40,6 +41,7 @@
   <link href="css/mvi.css" rel="stylesheet">
   <link href="css/qna.css" rel="stylesheet">
   <link href="gisPanel/gis.css" rel="stylesheet">
+  <link href='gisPanel/minimapNew.css' rel='stylesheet'>
 
 </head>
 
@@ -227,12 +229,32 @@
 
         <div class="container panel mdl-tabs__panel hidden" id="gisPanel">
 
-          <div class="logos row-flex align-items-center">
+         <!-- <div class="logos row-flex align-items-center">
             <div class="UNDP-logo"></div>
             <div class="rising-up-for-sids"></div>
+          </div> -->
+
+          <div id='draw-sidebar'>
+            <button class='closebutton' onclick='closeSide()'>x</button>
+            <div id='sidebar-text'>
+              <div id='sideTitle'></div>
+              <div id='sideMax'></div>
+              <div id='sideMin'></div>
+              <div id='sideMean'></div>
+      
+            </div>
+          </div>
+
+          <div id='upload-stuff'>
+            
           </div>
 
           <div class='pic' id="map">
+
+            <div class="logos row-flex align-items-center">
+              <div class="UNDP-logo"></div>
+              <div class="rising-up-for-sids"></div>
+            </div>
 
             <div class="loader-gis">
               <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="170" height="170"
@@ -262,14 +284,18 @@
               <div id="list1" class="dropdown-check-list" tabindex="100">
                 <span class="anchor">Select Overlay</span>
                 <ul id="items" class="items">
-                  <li><input name='overlay' id='allsids-input' value="allsids" type="checkbox" checked /> SIDS
+                  <li><input autocomplete="off" name='overlay' id='allsids-input' value="allsids" type="checkbox" checked /> SIDS
                     Boundaries </li>
-                  <li><input name='overlay' id='admin1-input' value="admin1-overlay" type="checkbox" /> Admin Regions 1
-                  </li>
-                  <li><input name='overlay' id='admin2-input' value="admin2-overlay" type="checkbox" /> Admin Regions 2
-                  </li>
-                  <li><input name='overlay' id='underwater' value="underwater-overlay" type='checkbox' /> Underwater
-                    Cables </li>
+                  <li><input autocomplete="off" name='overlay' id='admin1-input' value="admin1-overlay" type="checkbox" /> Admin Regions 1</li>
+                  <li><input autocomplete="off" name='overlay' id='admin2-input' value="admin2-overlay" type="checkbox" /> Admin Regions 2</li>
+                  <li><input autocomplete="off" name='overlay' id='underwater' value="underwater-overlay" type='checkbox' /> Underwater Cables </li>
+                  <!--<li><input autocomplete="off" name='overlay' id='volcanoes' value="volcano-list" type='checkbox' /> Volcanoes </li>
+                  <li><input autocomplete="off" name='overlay' id='ports' value="world_port_index" type='checkbox' /> Ports </li>
+                  <li><input autocomplete="off" name='overlay' id='hc' value="healthsites" type='checkbox' /> Health Centers </li>
+                  <li><input autocomplete="off" name='overlay' id='powerplants' value="glopal_power_plant" type='checkbox' /> Power Plants </li>
+                  <li><input autocomplete="off" name='overlay' id='airports' value="airports-extended" type='checkbox' /> Airports </li> -->
+
+
 
                 </ul>
               </div>
@@ -303,12 +329,20 @@
                   <option id='color' style='color: white; background-color: purple;' value='purple'>Purples</option>
                   <option id='color' style='color: white; background-color: blue;' value='blue'>Blues</option>
                   <option id='color' value='colorblind-safe'>Color blind safe option</option>
+                  <option id='color' value='choose' onclick=>Choose Colors</option>
                 </select>
       
               </div>
 
               <div class="country-select-menu" id="country-select-id">
+                <input id='upload' value='Upload your own csv or geojson' type='file' name='datafile'>
+              </div>
+
+              <div class="country-select-menu" id="country-select-id">
                 <div class='download' id='datadownload'>Download Data</div>
+              </div>
+              <div class="country-select-menu" id="country-select-id">
+                <div class='removeUpload' id='removeUpload'>Remove Uploaded Layer</div>
               </div>
 
               <!--<div class="country-select-menu" id="country-select-id">
@@ -1843,10 +1877,12 @@
     <script src="https://storage.googleapis.com/code.getmdl.io/1.1.0/material.min.js"></script>
     <!--GIS PANEL STUFF-->
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js'></script><!--2.3.1-->
     <script src="https://unpkg.com/pbf@3.0.5/dist/pbf.js"></script>
     <script src="https://unpkg.com/geobuf@3.0.2/dist/geobuf.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.2/chroma.min.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.3.0/mapbox-gl-draw.js'></script>
+
 
     <!--Tooltips-->
     <!--<script src="scripts/tooltips/tooltipPNT.js"></script>-->
@@ -1863,7 +1899,7 @@
 
     <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
     <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
-
+   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.4.6/jscolor.min.js"></script> -->
     <!-- <script src="scripts/wheelzoom.js"></script>
   <script src="scripts/dragBack.js"></script> -->
 
@@ -1884,6 +1920,7 @@
    
     
     <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js'></script>
+    <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
     <script src="gisPanel/sidsNames.js"></script>
     <!--<script src="gisPanel/newgis.js"></script>-->
 
@@ -1893,6 +1930,13 @@
     <script src='gisPanel/color.js'></script>
     <script src="gisPanel/colorSwitch.js"></script>
     <script src="gisPanel/onClickControl.js"></script>
+    <script src='gisPanel/dataUpload.js'></script>
+    <script type="module">
+      import mapboxMinimap from 'https://cdn.skypack.dev/mapbox.minimap';
+    </script>
+    <!--<script src='gisPanel/newgis.js'></script>-->
+    
+    <script src='gisPanel/drawFunc.js'></script>
 
 
 
