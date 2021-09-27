@@ -49,14 +49,14 @@ const map = new mapboxgl.Map({
 var yearList = [];
 var currentTimeLayer;
 
- /* var Draw = new MapboxDraw({
+  var Draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {
     polygon: true,
     trash: true
     },
     //defaultMode: 'draw_polygon'
-  }); */
+  });
 
   
 
@@ -178,7 +178,7 @@ map.on("load", function () {
 
     const toggleControl = new ToggleControl()
     map.addControl(toggleControl,'bottom-right')
-    //map.addControl(Draw, 'bottom-right');
+   // map.addControl(Draw, 'bottom-right');
     //$('.loader-gis').remove()
     //$('.download').show()
     addButtons()
@@ -1980,7 +1980,6 @@ $('select[name="dataset-selection"]').on('change', function () {
         $('.download').show()
         $('#color-switch').show()
         $('#icon3d').show()
-        map.addControl(Draw, 'bottom-right');
         map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0.0)
 
         var layers = [];
