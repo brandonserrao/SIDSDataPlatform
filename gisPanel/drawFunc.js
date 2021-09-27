@@ -14,12 +14,16 @@ function drawListeners() {
 
         //e.preventDefault()
         //e.stopPropogation()
+        const allDraws = Draw.getAll();
 
-        console.log('create draw');
+        console.log(allDraws.features.length)
+
+
+        //console.log('create draw');
         console.log(Draw.getAll())
         var userPolygon = e.features[0];
         console.log(userPolygon)
-        console.log('create')
+        //console.log('create')
         var bbox = turf.bbox(userPolygon);
         //console.log(bbox);
         
