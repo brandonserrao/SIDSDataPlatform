@@ -15,7 +15,7 @@ class ToggleControl {
       const el = window.document.createElement('div')
       el.className = className;
       el.setAttribute('id', 'clickInfo');
-      //el.textContent = 'toggleControl';
+      el.textContent = 'toggleControl';
       el.addEventListener('click',(e)=>{
         e.style.display = 'none'
         console.log(e);
@@ -33,7 +33,7 @@ class ToggleControl {
 
     var clickDiv = document.getElementsByClassName('my-custom-control')[0]
     clickDiv.style.display = 'block'
-    clickDiv.style.height = '200px';
+    clickDiv.style.height = '100px';
     clickDiv.style.width = '200px';
 
     clickDiv.innerHTML = '<h4><b>Value: </b>' + 
@@ -98,7 +98,7 @@ class ToggleControl {
 
     var clickDiv = document.getElementsByClassName('my-custom-control')[0]
     clickDiv.style.display = 'block'
-    clickDiv.style.height = '200px';
+    clickDiv.style.height = '100px';
     clickDiv.style.width = '200px';
 
 

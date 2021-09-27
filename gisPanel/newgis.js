@@ -49,7 +49,7 @@ const map = new mapboxgl.Map({
 var yearList = [];
 var currentTimeLayer;
 
-  /*var Draw = new MapboxDraw({
+ /* var Draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {
     polygon: true,
@@ -115,7 +115,22 @@ var currentGeojsonLayers = {
 };
 var legendControl;
 
+function closeSide() {
+    $('#draw-sidebar').hide();
+}
+
+var minimap;
+
 map.on("load", function () {
+
+    minimap = new mapboxgl.Minimap({
+        center: map.getCenter(),
+        zoom: 6,
+        togglePosition: 'topleft',
+        style: "mapbox://styles/mapbox/light-v10"
+      });
+
+      map.addControl(minimap, 'bottom-right');
 
     var layers = map.getStyle().layers;
     //console.log(layers);
@@ -168,9 +183,26 @@ map.on("load", function () {
     //$('.download').show()
     addButtons()
     addHexSource()
+    drawListeners()
+
     
     //addTileSources()
     //justAdmin()
+
+   // console.log(mapboxMinimap)
+
+    
+
+   /* function doope() {
+        console.log('he')
+    }
+
+    map.addControl(new mapboxgl.Minimap(), {
+        zoom: map.getZoom() - 5,
+        center: map.getCenter(),
+       zoomAdjust: doope(),
+    }, 'bottom-left');*/
+
 
 });
 
@@ -222,6 +254,10 @@ function randomStart(){
     }
 
     if(!nogos.includes(rando)) {
+        
+        console.log(names[rando]);
+        console.log(rando);
+
         var boun = new mapboxgl.LngLatBounds([names[rando].bb[0], names[rando].bb[1]])
         map.fitBounds(boun, {
             linear: true,
@@ -230,8 +266,7 @@ function randomStart(){
 
     }
     //var rando = Math.round(Math.random() * (names.length - 0) + 0)
-    console.log(names[rando]);
-    console.log(rando);
+    
     
 
 }
@@ -1854,7 +1889,7 @@ $('select[name="dataset-selection"]').on('change', function () {
         $('.opacityslider').hide()
         $('.download').hide()
         $('#color-switch').hide()
-        //map.removeControl(Draw);
+        map.removeControl(Draw);
         console.log('basemap')
         //console.log(map.getStyle().sources)
         //console.log(styles)
@@ -1945,7 +1980,7 @@ $('select[name="dataset-selection"]').on('change', function () {
         $('.download').show()
         $('#color-switch').show()
         $('#icon3d').show()
-        //map.addControl(Draw, 'bottom-right');
+        map.addControl(Draw, 'bottom-right');
         map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0.0)
 
         var layers = [];
@@ -2005,17 +2040,96 @@ $('select[name="hexbin-change"]').on('change', function () {
 
 }) */
 
+function addPointLayer(layer) {
+
+    if( ! this.checked) {
+        map.removeLayer('points')
+    }
+
+    var pointColors = {
+        'airports-extended': 'blue',
+        'healthsites': 'red',
+        'volcano-list': 'orange',
+        'glopal_power_plant': 'green',
+        'world_port_index': 'yellow'
+    }
+
+    //map.setFilter('points', null)
+    //console.log(layer);
+
+    var filteredOne = layer.val();
+   // console.log(filteredOne);
+
+    if (map.getLayer('points')) {
+        map.removeLayer('points')
+    }  else if (!map.getSource('points-source')) {
+        
+        d3.json('gisPanel/pvaph.geojson').then(function(d) {
+
+            map.addSource('points-source', {
+                'type': 'geojson',
+                'data': d
+            })
+
+            map.addLayer({
+                'id': 'points',
+                'type': 'circle',
+                'source': 'points-source',
+                'filter': ['==', 'layer', filteredOne],
+                'layout': {
+                    'visibility': 'visible'
+                },
+
+                'paint': {
+                    'circle-color': pointColors[filteredOne],
+                    'circle-radius': 5
+                }
+            }, firstSymbolId);
+        })
+
+       
+       
+
+    } else {
+
+        map.addLayer({
+            'id': 'points',
+            'type': 'circle',
+            'source': 'points-source',
+            'filter': ['==', 'layer', filteredOne],
+            'layout': {
+                'visibility': 'visible'
+            },
+
+            'paint': {
+                'circle-color':  pointColors[filteredOne],
+                'circle-radius': 5
+            }
+        }, firstSymbolId);
+
+    }
+
+}
+
 
 //$("input:checkbox").change(function () {
 $("input[name=overlay]").change(function () {
 
+
+    var points = ['airports-extended', 'healthsites', 'volcano-list', 'glopal_power_plant', 'world_port_index']
+
     var clicked = $(this).val();
-    console.log(clicked);
-    if (clicked === 'underwater-overlay') {
+    //console.log(clicked);
+    if(points.includes(clicked)) {
+        console.log(clicked)
+        addPointLayer($(this))
+    }
+    else if (clicked === 'underwater-overlay') {
         addCables()
 
     } else if (!this.checked) {
         map.removeLayer(clicked)
+        
     } else {
 
         var slayer;
@@ -2035,6 +2149,13 @@ $("input[name=overlay]").change(function () {
             source = 'allsids'
             slayer = 'allSids'
             color = 'orange'
+        } else {
+            //source = 'pvaph'
+
+            //layer == 'airports=extended', 'healthsites', 'volcano-list', 'glopal_power_plant', ''
+            console.log($(this).val());
+            //console.log($(this).id())
+            console.log($(this))
         }
 
         map.addLayer({
