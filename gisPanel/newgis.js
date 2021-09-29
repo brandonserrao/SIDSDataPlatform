@@ -184,6 +184,7 @@ map.on("load", function () {
     addButtons()
     addHexSource()
     drawListeners()
+    
 
     
     //addTileSources()
@@ -2039,75 +2040,60 @@ $('select[name="hexbin-change"]').on('change', function () {
 
 }) */
 
-function addPointLayer(layer) {
+$('#voro').on('click', function(){
 
-    if( ! this.checked) {
-        map.removeLayer('points')
-    }
 
-    var pointColors = {
-        'airports-extended': 'blue',
-        'healthsites': 'red',
-        'volcano-list': 'orange',
-        'glopal_power_plant': 'green',
-        'world_port_index': 'yellow'
-    }
+    //console.log(map.getLayer('airports-extended'))
+    var f = map.queryRenderedFeatures({
+        layers: ['airports-extended']
+    })
 
-    //map.setFilter('points', null)
-    //console.log(layer);
+    var countryii = map.queryRenderedFeatures({
+        layers: ['allsids']
+    });
 
-    var filteredOne = layer.val();
-   // console.log(filteredOne);
+    var fc = turf.featureCollection(countryii);
+    var fc1 = turf.featureCollection(f);
+    
 
-    if (map.getLayer('points')) {
-        map.removeLayer('points')
-    }  else if (!map.getSource('points-source')) {
-        
-        d3.json('gisPanel/pvaph.geojson').then(function(d) {
+    map.addSource('bbox1', {
+        type: 'geojson',
+        data: {
+            'type': 'FeatureCollection',
+            'features': countryii
+        }
+    })
 
-            map.addSource('points-source', {
-                'type': 'geojson',
-                'data': d
-            })
-
-            map.addLayer({
-                'id': 'points',
-                'type': 'circle',
-                'source': 'points-source',
-                'filter': ['==', 'layer', filteredOne],
-                'layout': {
-                    'visibility': 'visible'
-                },
-
-                'paint': {
-                    'circle-color': pointColors[filteredOne],
-                    'circle-radius': 5
-                }
-            }, firstSymbolId);
+    map.addLayer({
+        'id': 'bbox1',
+        'source': 'bbox1',
+        'type': 'line',
+        'paint': {
+            'line-color': '#66ff00',
+            'line-width': 3
+        }
         })
 
-       
-       
 
-    } else {
+    turf.
 
-        map.addLayer({
-            'id': 'points',
-            'type': 'circle',
-            'source': 'points-source',
-            'filter': ['==', 'layer', filteredOne],
-            'layout': {
-                'visibility': 'visible'
-            },
 
-            'paint': {
-                'circle-color':  pointColors[filteredOne],
-                'circle-radius': 5
-            }
-        }, firstSymbolId);
 
-    }
+    console.log(countryii);
 
+
+
+
+
+
+})
+
+var pointColors = {
+    'airports-extended': 'blue',
+    'healthsites': 'red',
+    'volcano_list': 'orange',
+    'glopal_power_plant': 'green',
+    'world_port_index': 'yellow'
 }
 
 
@@ -2115,19 +2101,46 @@ function addPointLayer(layer) {
 $("input[name=overlay]").change(function () {
 
 
-    var points = ['airports-extended', 'healthsites', 'volcano-list', 'glopal_power_plant', 'world_port_index']
+    var points = ['airports-extended', 'healthsites', 'volcano_list', 'glopal_power_plant', 'world_port_index']
 
     var clicked = $(this).val();
     //console.log(clicked);
     if(points.includes(clicked)) {
+
+        if(map.getLayer(clicked)) {
+            map.removeLayer(clicked)
+        } else {
+
+
+            map.addLayer({
+                'id': clicked,
+                'type': 'circle',
+                'source': 'points-source',
+                'filter': ['==', 'layer', clicked],
+                'layout': {
+                    'visibility': 'visible'
+                },
+                'paint': {
+                    'circle-color': pointColors[clicked],
+                    'circle-radius': 7,
+                    'circle-opacity': 0.7
+                }
+            })
+
+        }
         console.log(clicked)
-        addPointLayer($(this))
+
+        //map.setFilter('points', ['==', 'layer', clicked])
+        //addPointLayer($(this))
+
     }
     else if (clicked === 'underwater-overlay') {
         addCables()
 
     } else if (!this.checked) {
+       
         map.removeLayer(clicked)
+        console.log('uncheck: ' + clicked);
         
     } else {
 
@@ -2954,3 +2967,4 @@ $('#close-side').click(function () {
     }
 
 })
+

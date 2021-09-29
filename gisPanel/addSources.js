@@ -11,6 +11,43 @@ function addHexSource() {
     
      
 
+    d3.json('gisPanel/pvaph.geojson').then(function(d) {
+
+      
+
+      map.addSource('points-source', {
+          'type': 'geojson',
+          'data': d
+      })
+
+      /*map.addLayer({
+        'id': 'points',
+        'type': 'circle',
+        'source': 'points-source',
+        //'filter': ['==', 'layer', filteredOne],
+        'layout': {
+            'visibility': 'visible'
+        },
+
+        'paint': {
+            'circle-color': [
+              'match',
+              ['get', 'layer'],
+              'airports-extended', 'blue',
+              'healthsites', 'red',
+              'volcano_list', 'orange',
+              'glopal_power_plant', 'green',
+              'world_port_index', 'yellow',
+              '#ccc'
+            ],
+            'circle-radius': 5
+        }
+    }, firstSymbolId); */
+
+    });
+
+
+
       map.addSource('hex5clipped', {
         'type': 'vector',
         'tiles': [

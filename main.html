@@ -289,11 +289,11 @@
                   <li><input autocomplete="off" name='overlay' id='admin1-input' value="admin1-overlay" type="checkbox" /> Admin Regions 1</li>
                   <li><input autocomplete="off" name='overlay' id='admin2-input' value="admin2-overlay" type="checkbox" /> Admin Regions 2</li>
                   <li><input autocomplete="off" name='overlay' id='underwater' value="underwater-overlay" type='checkbox' /> Underwater Cables </li>
-                  <!--<li><input autocomplete="off" name='overlay' id='volcanoes' value="volcano-list" type='checkbox' /> Volcanoes </li>
-                  <li><input autocomplete="off" name='overlay' id='ports' value="world_port_index" type='checkbox' /> Ports </li>
-                  <li><input autocomplete="off" name='overlay' id='hc' value="healthsites" type='checkbox' /> Health Centers </li>
-                  <li><input autocomplete="off" name='overlay' id='powerplants' value="glopal_power_plant" type='checkbox' /> Power Plants </li>
-                  <li><input autocomplete="off" name='overlay' id='airports' value="airports-extended" type='checkbox' /> Airports </li> -->
+                  <li style='color: orange;'><input autocomplete="off" name='overlay'  id='volcanoes' value="volcano_list" type='checkbox' /> Volcanoes </li>
+                  <li style='color: yellow;'><input autocomplete="off" name='overlay' id='ports' value="world_port_index" type='checkbox' /> Ports </li>
+                  <li style='color: red;'><input autocomplete="off" name='overlay' id='hc' value="healthsites" type='checkbox' /> Health Centers </li>
+                  <li style='color: green;'><input autocomplete="off" name='overlay' id='powerplants' value="glopal_power_plant" type='checkbox' /> Power Plants </li>
+                  <li style='color: blue;'><input autocomplete="off" name='overlay' id='airports' value="airports-extended" type='checkbox' /> Airports </li>
 
 
 
@@ -344,6 +344,9 @@
               <div class="country-select-menu" id="country-select-id">
                 <div class='removeUpload' id='removeUpload'>Remove Uploaded Layer</div>
               </div>
+              <!--<div class="country-select-menu" id="country-select-id">
+                <div class='voro' id='voro'>Voronoi</div>
+              </div>-->
 
               <!--<div class="country-select-menu" id="country-select-id">
                             <div class='screenshot' id='screenshot'>Screenshot</div>
@@ -1948,6 +1951,9 @@
         script.src = "gisPanel/newgis.js";
         script.id = 'gisScript'
         document.getElementsByTagName("head")[0].appendChild(script);
+
+        $('body').addClass('stop-scrolling')
+
         return false;
       })
     </script>
