@@ -2096,6 +2096,15 @@ var pointColors = {
     'world_port_index': 'yellow'
 }
 
+var pointDesc = {
+    'airports-extended': 'Airport_Na',
+    'healthsites': 'name',
+    'volcano_list': 'Volcano_Na',
+    'glopal_power_plant': 'name',
+    'world_port_index': 'PORT_NAME'
+
+}
+
 
 //$("input:checkbox").change(function () {
 $("input[name=overlay]").change(function () {
@@ -2129,6 +2138,19 @@ $("input[name=overlay]").change(function () {
 
         }
         console.log(clicked)
+
+        map.on('click', clicked, (e) => {
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const description = e.features[0].properties[pointDesc[clicked]];
+
+            new mapboxgl.Popup({
+                className: 'popupCustom'
+            })
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map);
+
+        })
 
         //map.setFilter('points', ['==', 'layer', clicked])
         //addPointLayer($(this))
