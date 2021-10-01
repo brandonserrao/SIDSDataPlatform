@@ -3,10 +3,16 @@
 #opacity-slider {
     background-color: #DDDDDD;
 }
+
 #volume {
     color: #DDDDDD;
+}
+
+.popupCustom {
+    width: 500px;
     
 }
+
 #map {
     position: fixed;
     top: 0;
