@@ -17,6 +17,8 @@ var precision;
 //finish 
 
 
+
+//object for all styles for basemap switch -- could be moved out
 const styles = [
     {
         'title': "Satellite With Labels",
@@ -39,7 +41,7 @@ const styles = [
 //addButtons();
 
 
-/*Initialize Map */
+/*Initialize Map KEEP HERE IN THIS FILE*/
 
 //get UNDP mapbox account
 mapboxgl.accessToken = "pk.eyJ1Ijoic2ViYXN0aWFuLWNoIiwiYSI6ImNpejkxdzZ5YzAxa2gyd21udGpmaGU0dTgifQ.IrEd_tvrl6MuypVNUGU5SQ";
@@ -56,13 +58,14 @@ const map = new mapboxgl.Map({
     //pitch: 55
 });
 
+//global variables for the time click through KEEP HERE for now
 var yearList = [];
 var currentTimeLayer;
 
   
 
   
-
+//all source data info KEEP HERE
   var sourceData = {
       hex5Source: {
         name: 'hex5',
@@ -110,6 +113,9 @@ var currentTimeLayer;
 
 }
 
+
+//current layer state manager KEEP HERE
+
 var currentGeojsonLayers = {
     color: null,
     breaks: null,
@@ -118,10 +124,15 @@ var currentGeojsonLayers = {
 };
 var legendControl;
 
+
+//this is for the draw feature - can probably move
 function closeSide() {
     $('#draw-sidebar').hide();
 }
 
+
+
+//initializes draw -- KEEP HERE for now
 const Draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {
@@ -131,11 +142,18 @@ const Draw = new MapboxDraw({
     //defaultMode: 'draw_polygon'
   });
 
+//global variable for minimap
 var minimap;
 
+
+//IMPORTANT STARTING FUNCTION KEEP HERE
+//on map load - bascially initialize everything
 map.on("load", function () {
 
+    //add scale bar
     map.addControl(new mapboxgl.ScaleControl(), 'bottom-right');
+    
+    //initialize and add minimap
     minimap = new mapboxgl.Minimap({
         center: map.getCenter(),
         zoom: 6,
@@ -146,11 +164,14 @@ map.on("load", function () {
 
       map.addControl(minimap, 'bottom-right');
 
+      //minimize it to start
       minimap.toggle();
 
     var layers = map.getStyle().layers;
+
     //console.log(layers);
     // Find the index of the first symbol layer in the map style
+    // we put all hex/admin layers below the words
     for (var i = 0; i < layers.length; i++) {
         if (layers[i].type === 'symbol') {
             firstSymbolId = layers[i].id;
@@ -161,7 +182,6 @@ map.on("load", function () {
 
     //random layers from mapbox basemaps -- basically mapbox basemaps aren't just one basemap, but a collection of usually 50+ different layers.
     //if you're interested, console.log(map.getStyle().layers) to see them all or google around
-
     map.removeLayer('admin-1-boundary')
     map.removeLayer('road-label')
     map.removeLayer('road-number-shield')
@@ -194,12 +214,9 @@ map.on("load", function () {
 
     })
 
-    
-
-
-
     //geocoder.addTo('.search-icon')//add the search to the icon in the top right
     document.getElementById('drawControls').appendChild(Draw.onAdd(map))
+
     //the on click popup part - just adding it, but it is only filled in when something is selected, see onClickControl.js
     const toggleControl = new ToggleControl()
     map.addControl(toggleControl,'bottom-right')
@@ -238,6 +255,7 @@ function getUniqueFeatures(array, comparatorProperty) {
 
 
 //randomly loads a country to start with from sidsNames.js
+//this has some issues I think, can be done better
 function randomStart(){
 
     var nogos = [0, 1, 2, 4, 12, 16, 24, 25, 26, 27, 28, 29, 31,32, 41, 43, 45, 47, 48, 50, 52] // countries that it shouldn't start with - can be adjusted obvi
@@ -311,6 +329,8 @@ function addLabels(object) {
 
 }
 
+
+//IMPORTANT KEEP HERE
 function recolorBasedOnWhatsOnPage() {
 
     if(!map.getLayer(currentGeojsonLayers.hexSize)) {
@@ -440,6 +460,10 @@ function zoomToCountry(selection) {
 
 }
 
+
+//listener -- could add all of the map.on() functions to a different file
+//some listeners are in functions, keep those there for now
+
 map.on('dragend', function (e) {
     console.log(map.getZoom())
     console.log('dragend');
@@ -565,6 +589,9 @@ function checkForDuplicates(array) {
   return false
 }
 
+
+//IMPORTANT KEEP HERE
+//manages the change when you chang the resolution
 function changeHexagonSize(sel) {
 
     console.log(sel)
@@ -1514,8 +1541,6 @@ end Moin's tooltip section
 
 ///// DATASET SELECTION PART --- IMPORTANT! should stay in newgis.js
 ///// CAN ALSO DEFO BE REFACTORED
-
-
 $('select[name="dataset-selection"]').on('change', function () {
     //console.log(': ' + $(this).val());
     //console.log(map.getStyle().layers)
@@ -1668,11 +1693,14 @@ $('select[name="dataset-selection"]').on('change', function () {
     //changeDataOnMap(this.selectedOptions[0].id);
 });
 
+
+//OLD HEXAGON CHANGE PART - NOT USED BUT SCARED TO DELETE
+/*
 $('select[name="hexbin-change"]').on('change', function () {
 
     console.log(this.selectedOptions[0].value);
     changeHexagonSize(this.selectedOptions[0].value)
-})
+}) */
 
 
 
@@ -1797,7 +1825,8 @@ $('#voro').on('click', function(){
 
 
 })
-
+//objects for boundary layers
+//sets colors for points
 var pointColors = {
     'airports-extended': 'blue',
     'healthsites': 'red',
@@ -1806,6 +1835,7 @@ var pointColors = {
     'world_port_index': 'yellow'
 }
 
+//this is the id the popup uses to show the name
 var pointDesc = {
     'airports-extended': 'Airport_Na',
     'healthsites': 'name', //conflicting with power plants in geojson, need to change name
@@ -1943,7 +1973,7 @@ function addBoundaryLayer(object) {
 
 }
 
-
+//add underwater cables
 function addCables() {
 
     if (map.getLayer('underwater')) {
