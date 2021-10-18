@@ -2290,7 +2290,9 @@ function check_all_values() {
 
 check_all_values()
 
-//});
+
+
+//formats numbers -- function written by Ben
 function nFormatter(num, digits) {
     var si = [
         {
@@ -2319,41 +2321,4 @@ function nFormatter(num, digits) {
     }
     return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 }
-
-
-
-
-/*var checkList = document.getElementById('list1');
-var items = document.getElementById('items');
-checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
-    if (items.classList.contains('visible')) {
-        items.classList.remove('visible');
-        items.style.display = "none";
-    } else {
-        items.classList.add('visible');
-        items.style.display = "block";
-    }
-
-
-}
-
-items.onblur = function (evt) {
-    items.classList.remove('visible');
-}
-
-$('#close-side').click(function () {
-    $(this).toggleClass('collapsed');
-    console.log('hi')
-
-    if (!$('#top-right-wrap').hasClass('moved')) {
-        $('#top-right-wrap').css('right', '-250px')
-        $('#top-right-wrap').addClass('moved')
-
-    } else {
-        $('#top-right-wrap').css('right', '10px')
-        $('#top-right-wrap').removeClass('moved')
-
-    }
-
-}) */
 
