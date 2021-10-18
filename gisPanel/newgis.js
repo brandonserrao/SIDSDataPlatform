@@ -9,6 +9,14 @@ var basemapLabels = [];
 var myHistogram;
 var precision;
 
+
+//separate out master vs other
+//delete non used code
+//comment every function!!
+//finish docs as well
+//finish 
+
+
 const styles = [
     {
         'title': "Satellite With Labels",
@@ -32,6 +40,8 @@ const styles = [
 
 
 /*Initialize Map */
+
+//get UNDP mapbox account
 mapboxgl.accessToken = "pk.eyJ1Ijoic2ViYXN0aWFuLWNoIiwiYSI6ImNpejkxdzZ5YzAxa2gyd21udGpmaGU0dTgifQ.IrEd_tvrl6MuypVNUGU5SQ";
 
 const map = new mapboxgl.Map({
@@ -49,14 +59,7 @@ const map = new mapboxgl.Map({
 var yearList = [];
 var currentTimeLayer;
 
-  var Draw = new MapboxDraw({
-    displayControlsDefault: false,
-    controls: {
-    polygon: true,
-    trash: true
-    },
-    //defaultMode: 'draw_polygon'
-  });
+  
 
   
 
@@ -119,18 +122,31 @@ function closeSide() {
     $('#draw-sidebar').hide();
 }
 
+const Draw = new MapboxDraw({
+    displayControlsDefault: false,
+    controls: {
+    polygon: true,
+    trash: true
+    },
+    //defaultMode: 'draw_polygon'
+  });
+
 var minimap;
 
 map.on("load", function () {
 
+    map.addControl(new mapboxgl.ScaleControl(), 'bottom-right');
     minimap = new mapboxgl.Minimap({
         center: map.getCenter(),
         zoom: 6,
         togglePosition: 'topleft',
-        style: "mapbox://styles/mapbox/light-v10"
+        style: "mapbox://styles/mapbox/light-v10",
+        //minimized: true
       });
 
       map.addControl(minimap, 'bottom-right');
+
+      minimap.toggle();
 
     var layers = map.getStyle().layers;
     //console.log(layers);
@@ -143,7 +159,8 @@ map.on("load", function () {
     }
 
 
-    
+    //random layers from mapbox basemaps -- basically mapbox basemaps aren't just one basemap, but a collection of usually 50+ different layers.
+    //if you're interested, console.log(map.getStyle().layers) to see them all or google around
 
     map.removeLayer('admin-1-boundary')
     map.removeLayer('road-label')
@@ -151,9 +168,11 @@ map.on("load", function () {
     map.removeLayer('road-exit-shield')
     map.removeLayer("admin-1-boundary-bg")
     map.removeLayer('airport-label')
+
     var layers = map.getStyle().layers;
     //console.log(layers);
 
+    //this loop adds all symbol and line layers to an object that it used to add or remove the labels
     for (var x in layers) {
 
         if (layers[x].type === 'symbol' || layers[x].type === 'line') {
@@ -161,49 +180,35 @@ map.on("load", function () {
         }
     }
 
-    //console.log(layers);
 
-    map.addControl(new mapboxgl.ScaleControl(), 'bottom-right');
-    map.addControl(
-        new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl,
-            placeholder: 'Search for City or Country',
-            //flyTo: false,
-            types: 'country, place',
-            clearOnBlur: true,
-            marker: false
-        })
-    )
+    //the search for a country part
+    const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl,
+        placeholder: 'Search for City or Country',
+        //flyTo: false,
+        types: 'country, place',
+        clearOnBlur: true,
+        marker: false,
+        collapsed: true,
 
+    })
+
+    
+
+
+
+    //geocoder.addTo('.search-icon')//add the search to the icon in the top right
+    document.getElementById('drawControls').appendChild(Draw.onAdd(map))
+    //the on click popup part - just adding it, but it is only filled in when something is selected, see onClickControl.js
     const toggleControl = new ToggleControl()
     map.addControl(toggleControl,'bottom-right')
-   // map.addControl(Draw, 'bottom-right');
-    //$('.loader-gis').remove()
-    //$('.download').show()
+   
+
+    //adds the sources, populates drop downs, adds draw function listeners
     addButtons()
     addHexSource()
     drawListeners()
-    
-
-    
-    //addTileSources()
-    //justAdmin()
-
-   // console.log(mapboxMinimap)
-
-    
-
-   /* function doope() {
-        console.log('he')
-    }
-
-    map.addControl(new mapboxgl.Minimap(), {
-        zoom: map.getZoom() - 5,
-        center: map.getCenter(),
-       zoomAdjust: doope(),
-    }, 'bottom-left');*/
-
 
 });
 
@@ -231,9 +236,11 @@ function getUniqueFeatures(array, comparatorProperty) {
 }
 
 
+
+//randomly loads a country to start with from sidsNames.js
 function randomStart(){
 
-    var nogos = [0, 1, 2, 4, 12, 16, 24, 25, 26, 27, 28, 29, 31,32, 41, 43, 45, 47, 48, 50, 52]
+    var nogos = [0, 1, 2, 4, 12, 16, 24, 25, 26, 27, 28, 29, 31,32, 41, 43, 45, 47, 48, 50, 52] // countries that it shouldn't start with - can be adjusted obvi
     var rando;
 
     function getRandomNumber(){
@@ -266,20 +273,20 @@ function randomStart(){
         })
 
     }
-    //var rando = Math.round(Math.random() * (names.length - 0) + 0)
     
-    
-
 }
 
 
 
+//can make own file -- adds/remove labels
+function addLabels(object) {
 
-function addLabels() {
+    var sel = Object.values(object)[0]
+    console.log(sel)
+    console.log(basemapLabels)
 
-
-    console.log($('#addLabels')[0].innerText)
-    if ($('#addLabels')[0].innerText === 'Add Labels') {
+   // console.log($('#addLabels')[0].innerText)
+    if (sel === 'On') {
         basemapLabels.forEach(function (x) {
             //console.log(x);
             map.addLayer(x);
@@ -292,13 +299,13 @@ function addLabels() {
             
         })
         //$('#addLabels').toggle();
-        $('#addLabels')[0].innerText = 'Remove Labels'
+        //$('#addLabels')[0].innerText = 'Remove Labels'
     } else {
         basemapLabels.forEach(function (x) {
             map.removeLayer(x.id);
         })
 
-        $('#addLabels')[0].innerText = 'Add Labels'
+        //$('#addLabels')[0].innerText = 'Add Labels'
     }
 
 
@@ -363,11 +370,14 @@ function recolorBasedOnWhatsOnPage() {
           breaks[4], currentGeojsonLayers.color[4],
           ]
         )
-        //console.log(currentGeojsonLayers);
+        
 
-        //map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0.7)
 
-        //addLegend(currentGeojsonLayers.color, breaks, currentGeojsonLayers.dataLayer)
+
+        //if the map can't make breaks, say there's no data
+        //else, show data
+        //DEF COULD BE IMRPOVED
+
         if (isNaN(breaks[3]) || breaks[1] == 0) {
 
             map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0.0)
@@ -387,227 +397,20 @@ function recolorBasedOnWhatsOnPage() {
 
 }
 
-//const baseMapSwitcher = document.getElementById('basemap-switch');
-
-$('#basemap-switch').on('change', function () {
-
-    var selectedBase = $(this)[0].value;
-    //var sel = $(this).innerText;
-    var currentBase = map.getStyle().name;
-
-    console.log(selectedBase);
-    //console.log(currentBase);
-    
-    if (selectedBase === 'Mapbox Light') {
-        console.log(basemapLabels);
-        //basemapLabels = [];
-        var thisStyle = _.find(styles, function (o) {
-            return o.title === 'Light'
-        })
-
-        map.setStyle(thisStyle.uri)
-        console.log(map.getStyle().sources)
-
-    } else if(selectedBase === 'Mapbox Satellite Streets') {
-
-        console.log(basemapLabels);
-        
-        var thisStyle = _.find(styles, function (o) {
-            return o.title === 'Satellite With Labels'
-        })
-
-        map.setStyle(thisStyle.uri)
 
 
-        map.once('idle', function(){
+//can be made into own script
+function zoomToCountry(selection) {
 
-            map.removeLayer('admin-1-boundary')
-            map.removeLayer('road-label')
-            map.removeLayer('road-number-shield')
-            map.removeLayer('road-exit-shield')
-            map.removeLayer("admin-1-boundary-bg")
-            map.removeLayer('airport-label')
-
-        })
-
-
-
-        console.log(map.getStyle().sources)
-    } else if(selectedBase === 'Mapbox Dark') {
-
-        console.log(basemapLabels);
-        
-        var thisStyle = _.find(styles, function (o) {
-            return o.title === 'Mapbox Dark'
-        })
-
-        map.setStyle(thisStyle.uri)
-        console.log(map.getStyle().sources)
-    }
-        
-        /*} else if (selectedBase === 'Satellite With Labels') {
-          var thisStyle = _.find(styles, function(o){return o.title === 'Light'})
-          map.setStyle(thisStyle.uri)
-        } */
-
-        map.once('idle', function () {
-            basemapLabels = [];
-            var layers = map.getStyle().layers;
-
-            for (var i = 0; i < layers.length; i++) {
-                if (layers[i].type === 'symbol') {
-                    firstSymbolId = layers[i].id;
-                    break;
-                }
-            }
-            for (var x in layers) {
-
-                if (layers[x].type === 'symbol'|| layers[x].type === 'line') {
-                    basemapLabels.push(layers[x]);
-                }
-            }
-
-            addHexSource();
-            //console.log(map.getStyle().layers);
-            var current = _.find(sourceData, function (o) {
-                return o.name === currentGeojsonLayers.hexSize
-            })
-
-            console.log(current)
-            if(current.name === 'ocean') {
-                console.log('ocean')
-            } else {
-
-            
-            map.addLayer({
-
-                'id': currentGeojsonLayers.hexSize,
-                'type': 'fill',
-                'source': currentGeojsonLayers.hexSize,
-                'source-layer': current.layer,
-                'layout': {
-                    'visibility': 'visible'
-                },
-                'paint': {
-                    'fill-opacity': 0.8,
-                    'fill-color': [
-              'interpolate',
-              ['linear'],
-              ['get', currentGeojsonLayers.dataLayer],
-              currentGeojsonLayers.breaks[0], currentGeojsonLayers.color[0],
-              currentGeojsonLayers.breaks[1], currentGeojsonLayers.color[1],
-              currentGeojsonLayers.breaks[2], currentGeojsonLayers.color[2],
-              currentGeojsonLayers.breaks[3], currentGeojsonLayers.color[3],
-              currentGeojsonLayers.breaks[4], currentGeojsonLayers.color[4],
-              ]
-                }
-            }, firstSymbolId)
-
-            map.setFilter(currentGeojsonLayers.hexSize, ['>=', currentGeojsonLayers.dataLayer, 0])
-            map.moveLayer('allsids', firstSymbolId)
-
-        }
-            //console.log(map.getStyle().layers);
-        })
-
-})
-
-
-const button3dWrapper = document.getElementById('icon3d')
-
-button3dWrapper.addEventListener('click', (event) => {
-
-    var id3d = currentGeojsonLayers.hexSize + '-3d'
-
-    if (map.getLayer(id3d)) {
-        //console.log('yooo')
-        map.removeLayer(id3d);
-        //map.setBearing(70)
-        map.easeTo({
-            center: map.getCenter(),
-            pitch: 0,
-
-        })
-    } else {
-
-
-        //rotateCamera(0)
-
-        console.log(currentGeojsonLayers);
-        var current = _.find(sourceData, function (o) {
-            return o.name === currentGeojsonLayers.hexSize
-        })
-
-        map.addLayer({
-            'id': id3d,
-            'type': 'fill-extrusion',
-            'source': currentGeojsonLayers.hexSize,
-            //'source-layer': 'hex5_3857',
-            'source-layer': current.layer,
-            'layout': {
-                'visibility': 'visible'
-            },
-
-            'paint': {
-                'fill-extrusion-color': [
-            'interpolate',
-            ['linear'],
-            ['get', currentGeojsonLayers.dataLayer],
-            currentGeojsonLayers.breaks[0], currentGeojsonLayers.color[0],
-            currentGeojsonLayers.breaks[1], currentGeojsonLayers.color[1],
-            currentGeojsonLayers.breaks[2], currentGeojsonLayers.color[2],
-            currentGeojsonLayers.breaks[3], currentGeojsonLayers.color[3],
-            currentGeojsonLayers.breaks[4], currentGeojsonLayers.color[4],
-            ],
-                'fill-extrusion-height': [
-              'interpolate',
-              ['linear'],
-              ['get', currentGeojsonLayers.dataLayer],
-              currentGeojsonLayers.breaks[0], 0,
-              currentGeojsonLayers.breaks[1], 500,
-              currentGeojsonLayers.breaks[2], 5000,
-              currentGeojsonLayers.breaks[3], 11000,
-              currentGeojsonLayers.breaks[4], 50000,
-              ],
-
-                //'fill-opacity': 0.8,
-
-            }
-        }, firstSymbolId);
-
-        map.setFilter(id3d, ['>=', currentGeojsonLayers.dataLayer, 0])
-        map.easeTo({
-            center: map.getCenter(),
-            pitch: 55
-
-        })
-    }
-})
-
-
-$("#country-select").change(function (event) {
-
-    //console.log(this.children(":selected"));
-    //var val = $(this).val();
-    var val = $('#country-select option:selected').attr('id');
-
-    console.log($(this).val());
+    console.log(selection)
     console.log(map.getZoom())
-    //console.log(val.substr(0, val.indexOf('&')));
-    //console.log(event.target);
-    /*const isOption = event.target.nodeName === "OPTION";
-    if (!isOption) {
-      return;
-    } */
-
-    //console.log(event.target.id);
+    
+    var val = $('#country option:selected').attr('id');
+    console.log(val);
 
     map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0)
-    //var currbb = _.find(names, ['GID_0', event.target.id ])
+    
     var currbb = _.find(names, ['GID_0', val])
-    //console.log(currbb);
-
-    //sourceData.allSidsSource.lastName = currbb.NAME_0;
 
     var v2 = new mapboxgl.LngLatBounds([currbb.bb[0], currbb.bb[1]])
     map.fitBounds(v2, {
@@ -633,16 +436,15 @@ $("#country-select").change(function (event) {
         }
 
         console.log('country select');
-        //map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', 0.7)
-
     })
-})
 
+}
 
 map.on('dragend', function (e) {
     console.log(map.getZoom())
     console.log('dragend');
-    console.log(map.getBounds());
+    //console.log(map.getBounds());
+
 
 
     if (!(map.getLayer('ocean') || map.getLayer('hex1') || map.getZoom() > 9)) {
@@ -650,35 +452,14 @@ map.on('dragend', function (e) {
         recolorBasedOnWhatsOnPage();
     }
 
-
-
-
-
-    /*map.once('idle', function() {
-      console.log('moveend');
-      recolorBasedOnWhatsOnPage();
-    }) */
-
 })
 
-map.on('zoomend', function (e) {
-
-    console.log(map.getZoom());
-    //recolorBasedOnWhatsOnPage();
-
-
-
-})
+map.on("zoomend", function (e) {
+  console.log(map.getZoom());
+  //recolorBasedOnWhatsOnPage();  if you want the map to recolor on the end of zoom
+});
 
 map.on('zoom', function (e) {
-
-
-   /* var outline = map.queryRenderedFeatures({
-        layers: ['allsids']
-    })
-
-    console.log(outline); */
-
 
     if (map.getZoom() < 5) {
 
@@ -697,6 +478,12 @@ map.on('zoom', function (e) {
 })
 
 map.on('click', function(e) {
+
+
+    if(map.getLayer('iso')) {
+        map.removeLayer('iso')
+        map.removeSource('iso')
+    }
 
     
     if (map.getSource('clickedone')) {
@@ -762,6 +549,9 @@ map.on('click', 'admin2', function (e) {
 
 
 
+
+//taken from this example: https://docs.mapbox.com/mapbox-gl-js/example/filter-features-within-map-view/
+
 function checkForDuplicates(array) {
   let valuesAlreadySeen = []
 
@@ -776,6 +566,8 @@ function checkForDuplicates(array) {
 }
 
 function changeHexagonSize(sel) {
+
+    console.log(sel)
     console.log(currentGeojsonLayers.hexSize)
 
     //console.log(map.getStyle())
@@ -801,6 +593,8 @@ function changeHexagonSize(sel) {
     var current = _.find(sourceData, function (o) {
         return o.name === currentGeojsonLayers.hexSize
     })
+
+
     console.log(current);
     map.addLayer({
         'id': sel,
@@ -844,14 +638,6 @@ function changeHexagonSize(sel) {
 
     })
 
-
-
-    /*if (sel === 'admin1') {
-        addAdminClick()
-    } else {
-        
-    } */
-
 }
 
 
@@ -873,9 +659,6 @@ function remove3d() {
 
 }
 
-/*map.on('moveend', function(){
-  console.log(map.getZoom())
-})*/
 
 function addToLayersDrop(layers) {
 
@@ -891,9 +674,6 @@ function addToLayersDrop(layers) {
     for (var i = length - 1; i >= 0; i--) {
         layersHolder.options[i] = null;
     }
-    /*var firstBtn = document.createElement('option')
-    firstBtn.innerHTML = 'Select Layer';
-    layersHolder.appendChild(firstBtn); */
 
     for (var x in layers) {
         //console.log(layers[x])
@@ -913,7 +693,7 @@ function addToLayersDrop(layers) {
         changeDataOnMap(layers[0].field_name)
     }
 
-    //$('#' + layers[0].field_name).prop('selected', true);
+
 }
 
 function addOcean(layer) {
@@ -979,18 +759,44 @@ function addOcean(layer) {
 
 function changeDataOnMap(selection) {
 
+    console.log(selection)
     console.log(currentGeojsonLayers.hexSize)
 
     if (map.getLayer('ocean')) {
-        $('.hexsize').toggle()
+        //$('.hexsize').toggle()
+
+        if(!selection.includes('fl') ) {
+
+        
         map.removeLayer('ocean');
+
+        currentGeojsonLayers.hexSize = 'hex5'
+
+        map.addLayer({
+            'id': 'hex5',
+            'type': 'fill',
+            'source': 'hex5',
+            'source-layer': 'hex5',
+            'layout': {
+                'visibility': 'visible'
+            },
+            'paint': {
+                'fill-color': 'blue',
+                'fill-opacity': 0.0,
+
+            }
+        });
+
+    }
+
+
     }
     remove3d()
 
     //console.log(map.getStyle().layers)
     //console.log(selection);
     currentGeojsonLayers.dataLayer = selection;
-    //console.log(currentGeojsonLayers)
+    console.log(currentGeojsonLayers.dataLayer)
 
     if(!map.getSource('hex5')) {
         //console.log('no source')
@@ -1004,10 +810,6 @@ function changeDataOnMap(selection) {
         var current = _.find(sourceData, function (o) {
             return o.name === currentGeojsonLayers.hexSize
         })
-
-        //console.log(firstSymbolId);
-
-        //console.log(current)
 
         map.addLayer({
             'id': currentGeojsonLayers.hexSize,
@@ -1035,9 +837,6 @@ function changeDataOnMap(selection) {
         var features = map.queryRenderedFeatures({
             layers: [currentGeojsonLayers.hexSize]
         })
-
-        //console.log(features);
-        //createMask(features)
 
         if (features) {
 
@@ -1101,24 +900,6 @@ function changeDataOnMap(selection) {
             currentGeojsonLayers.breaks = breaks;
             currentGeojsonLayers.color = colorRamp;
 
-            //console.log(currentGeojsonLayers)
-
-            /* map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-color',
-             [
-               'interpolate',
-               ['linear'],
-               ['get', selection],
-               breaks[0], colorRamp[0],
-               breaks[1], colorRamp[1],
-               breaks[2], colorRamp[2],
-               breaks[3], colorRamp[3],
-               breaks[4], colorRamp[4],
-               ]
-             
-             ) */               
-
-            //console.log("SELECTION",selecton);
-
             map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-color',
                 ['case', ['boolean', ['feature-state', 'hover'], false],
                 'yellow',
@@ -1158,14 +939,10 @@ function changeDataOnMap(selection) {
                 }, 100);
             }
 
-            //setTimeout(() => {  map.setPaintProperty(currentGeojsonLayers.hexSize,'fill-opacity', 0.8) }, 700);
-            //map.setPaintProperty(currentGeojsonLayers.hexSize,'fill-opacity', 0.8)
-
-
         }
-        //}
+        
 
-    }, 600)
+    }, 1000)
 
 
     map.moveLayer('allsids', firstSymbolId)
@@ -1335,7 +1112,7 @@ function addLegend(colors, breaks, precision, current, dataset) {
     var option = {
         responsive: true,
         tooltips: {
-            enabled: true
+            enabled: false
         },
         legend: {
                 display: false
@@ -1440,153 +1217,7 @@ var selection_scroller_options = {
     }
 };
 
-const sdgColorsSeb = ["#E5243B", "#DDA63A", "#4C9F38", "#C5192D", "#FF3A21",
-    "#26BDE2", "#FCC30B", "#A21942", "#FD6925", "#DD1367", "#FD9D24",
-    "#BF8B2E", "#3F7E44", "#0A97D9", "#56C02B", "#00689D", "#19486A"
-]
-const samoaColorsSeb = ["#A21942", "#3F7E44", "#FCC30B", "#19486A", "#0A97D9",
-    "#DDA63A", "#26BDE2", "green", "blue", "#FD9D24", "#4C9F38",
-    "#FF3A21", "#DD1367", "#0A97D9", "#00689D", "#00A99D", "#F4F5F8"
-]
 
-// Predefined data for side tooltip 
-var sdg = [
-	{
-        "title": "Goal 1 - No Poverty",
-        "content": "To end poverty in all its forms, everywhere, through a powerful commitment to leave no one behind and to reach those fathest behind first."
-      },
-      {
-        "title": "Goal 2 - Zero Hunger",
-        "content": "To end hunger, achieve food security and improve nutrition and promote sustainable agriculture."
-      },
-      {
-        "title": "Goal 3 - Good Health and Well-Being",
-        "content": "To ensure healthy lives and promote well-being for all at all ages."
-      },
-      {
-        "title": "Goal 4 - Quality Education",
-        "content": "To ensure inclusive and equitable quality education and promote lifelong learning opportunities for all."
-      },
-      {
-        "title": "Goal 5 - Gender Equality",
-        "content": "To achieve gender equality and empower all women and girls."
-      },
-      {
-        "title": "Goal 6 - Clean Water and Sanitation",
-        "content": "To ensure availability and sustainable management of water and sanitation for all."
-      },
-      {
-        "title": "Goal 7 - Affordable and Clean Energy",
-        "content": "To ensure access to affordable, reliable, sustainable and modern energy for all."
-      },
-      {
-        "title": "Goal 8 - Decent Work and Economic Growth",
-        "content": "To foster sustained, inclusive and sustainable economic growth, full and productive employment and decent work for all."
-      },
-      {
-        "title": "Goal 9 - Industry, Innovation, and Infrastructure",
-        "content": "To build resilient infrastructure, promote inclusive and sustainable industrialization, and foster innovation"
-      },
-      {
-        "title": "Goal 10 - Reduced Inequality",
-        "content": "To reduce income inequality within and among countries."
-      },
-      {
-        "title": "Goal 11 - Sustainable cities and communities",
-        "content": "To make cities and human settlements inclusive, safe, resilient, and sustainable."
-      },
-      {
-        "title": "Goal 12 - Responsible consumption and production",
-        "content": "To ensure sustainable consumption and production patterns"
-      },
-      {
-        "title": "Goal 13 - Climate Action",
-        "content": "To take urgent action to combat climate change and its impacts by regulating emissions and promoting developments in renewable energy"
-      },
-      {
-        "title": "Goal 14 - Life Below Water",
-        "content": "To conserve and sustainably use the oceans, seas and marine resources for sustainable development."
-      },
-      {
-        "title": "Goal 15 - Life on Land",
-        "content": "To protect, restore and promote sustainable use of terrestrial ecosystems, sustainably manage forests, combat desertification, and halt and reverse land degradation and halt biodiversity loss"
-      },
-      {
-        "title": "Goal 16 - Peace, justice and strong institutions",
-        "content": "To promote peaceful and inclusive societies for sustainable development, provide access to justice for all and build effective, accountable and inclusive institutions at all levels."
-      },
-      {
-        "title": "Goal 17 - Partnership for the goals",
-        "content": "To strengthen the means of implementation and revitalize the global partnership for sustainable development."
-      }
-]; 
-
-var arrsamoa = [
-	{
-        "title": "1. Sustained and sustainable, inclusive and equitable economic growth with decent work for all",
-        "content": "To support SIDS to achieve sustained, inclusive and equitable growth with full and productive employment, social protection and the creation of decent work for all."
-      },
-      {
-        "title": "2. Climate Change",
-        "content": "To help SIDS with climate adaptation, including persistent drought and extreme weather events, sea-level rise, coastal erosion and ocean acidification."
-      },
-      {
-        "title": "3. Sustainable Energy",
-        "content": "To address challenges in accessing sustainable energy in the SIDS including enhanced accessibility to modern energy services, energy efficiency and use of economically viable and environmentally sound technology"
-      },
-      {
-        "title": "4. Disaster risk reduction",
-        "content": "To address the critical need to build resilience, strengthen monitoring and prevention, reduce vulnerability, raise awareness and increase preparedness to respond to and recover from disasters in SIDS"
-      },
-      {
-        "title": "5. Oceans and seas",
-        "content": "To support healthy, productive and resilient oceans and coasts are critical for, inter alia, poverty eradication, access to sufficient, safe and nutritious food, livelihoods, economic development, essential ecosystem services, and identity and culture in SIDS."
-      },
-      {
-        "title": "6. Food security and nutrition",
-        "content": "To support the right to have access to safe, sufficient and nutritious food, the eradication of hunger and the provision of livelihoods while conserving, protecting and ensuring the sustainable use of land, soil, forests, water, plants and animals, biodiversity and ecosystems."
-      },
-      {
-        "title": "7. Water and sanitation",
-        "content": "To support the efforts of small island developing States to develop capacities for the effective, inclusive and sustainable implementation of the integrated management of water resources and related ecosystems"
-      },
-      {
-        "title": "8. Sustainable transportation",
-        "content": "To support SIDS to gain access to environmentally sound, safe, affordable, sustainable and well-maintained transportation"
-      },
-      {
-        "title": "9. Sustainable consumption and production",
-        "content": "To support SIDS on sustainable consumption and production patterns to advance sustainable consumption and production, with an emphasis on MSMEs, sustainable tourism, waste management, food and nutrition, lifestyles, and rural supply chains."
-      },
-      {
-        "title": "10. Management of chemicals and waste, including hazardous waste",
-        "content": "To support SIDS in sound management of chemicals throughout their life cycle and of waste is crucial for the protection of human health and the environment"
-      },
-      {
-        "title": "11. Health and non-communicable diseases",
-        "content": "To support prevention, treatment, care, and education in health as well as support the national actions of SIDS in addressing communicable and non-communicable diseases."
-      },
-      {
-        "title": "12. Gender Equality and women’s empowerment",
-        "content": "To support gender equality and women’s empowerment and the full realization of human rights for women and girls have a transformative and multiplier effect on sustainable development and is a driver of economic growth in SIDS."
-      },
-      {
-        "title": "13. Social Development",
-        "content": "To support efforts to enhance social protection and inclusion, to improve well-being and to guarantee opportunities for the most vulnerable and disadvantaged to have equal access to education, health, food, water and sanitation, and productive resources."
-      },
-      {
-        "title": "14. Biodiversity",
-        "content": "To suport the conservation and sustainable use of biodiversity, as well as their access to and the fair and equitable sharing of benefits arising from the utilization of genetic resources, with the vision of living in harmony with nature"
-      },
-      {
-        "title": "15. Invasive alien species",
-        "content": "To help multisectoral collaboration in SIDS to address invasive alien species in order to protect biodiversity and livelihoods, preserve and maintain ocean resources and ecosystem resiliency, and enhance food security and adapt to climate change"
-      },
-      {
-        "title": "16. Means of implementation, including partnerships",
-        "content": "To support SIDS in enhanced global partnership for development, adequate provision and mobilization of all means of implementation and continued international support to achieve internationally agreed goals."
-      }
-];
 
 $('#layer-id').hide()
 $('.year-timeline-wrapper').hide()
@@ -1601,8 +1232,15 @@ $('.bottom-left').on('click', function () {
 // /** Select2 for drop downs */
 //$('.form-select').select2();
 
+
+
+
+
+
 /**
  * Tooltip for sdgs .carousel-item,
+ * 
+ * this section is moin's I didn't touch it too much - it's the sdg and samoa pathway filter stuff
  */
 $(".sdgimg .carousel-item, .sdgs .icon-grid-item , .sdg-tool").mouseover(function () {
     $("#gridsdgs").removeClass("d-none");
@@ -1866,10 +1504,23 @@ $('.button-option-select-1').on('click', function (e) {
     e.preventDefault();
 });
 
-// 
+
+/*
+
+end Moin's tooltip section
+
+
+*/
+
+///// DATASET SELECTION PART --- IMPORTANT! should stay in newgis.js
+///// CAN ALSO DEFO BE REFACTORED
+
+
 $('select[name="dataset-selection"]').on('change', function () {
-    //console.log('Dataset: ' + $(this).val());
+    //console.log(': ' + $(this).val());
     //console.log(map.getStyle().layers)
+
+    console.log(this.selectedOptions[0].innerHTML)
 
     var legendTitle = document.getElementById('legendTitle')
     var legend = document.getElementById('updateLegend')
@@ -1950,13 +1601,12 @@ $('select[name="dataset-selection"]').on('change', function () {
     } else if (this.selectedOptions[0].innerHTML === 'GDP per Capita' || this.selectedOptions[0].innerHTML === 'Population Density') {
         //map.setPaintProperty(currentGeojsonLayers.hexSize,'fill-opacity', 0.0)
         console.log(this.selectedOptions[0].innerHTML)
-        $('.year-timeline-wrapper').show()
+        $('.year-timeline-wrapper').show() //show the timeslider
         $('#layer-id').hide()
-        $('.opacityslider').show()
-        $('.download').show()
-        $('#color-switch').show()
-        $('#icon3d').show()
-        //map.addControl(Draw, 'bottom-right');
+        //$('.opacityslider').show()
+        //$('.download').show()
+        //$('#color-switch').show()
+        //$('#icon3d').show()
 
         if (this.selectedOptions[0].innerHTML === 'Population Density') {
             //$('#icon3d').show()
@@ -1975,6 +1625,8 @@ $('select[name="dataset-selection"]').on('change', function () {
 
     } else if (this.selectedOptions[0].innerHTML === 'Food Insecurity' || this.selectedOptions[0].innerHTML === 'Water Use' || this.selectedOptions[0].innerHTML === 'Development Potential Index' || this.selectedOptions[0].innerHTML === 'Ocean Data') {
         //$('#icon3d').hide()
+
+
         $('.year-timeline-wrapper').hide()
         $('.year-timeline').empty();
         $('.opacityslider').show()
@@ -2024,66 +1676,136 @@ $('select[name="hexbin-change"]').on('change', function () {
 
 
 
-/*$('select[name="overlay-select"]').on('change', function() {
 
-
-
-/*$('#updateLegend').click(function(e){
-
-  var bg = $(e.target).css('background-color');
-  console.log(bg)
-  var r = parseInt(bg.match(/\d+/g)[0]);
-  var g = parseInt(bg.match(/\d+/g)[1]);
-  var b = parseInt(bg.match(/\d+/g)[2]);
-
-  console.log(r + ' ' + g + ' ' + b + ' ')
-
-}) */
+//adds the voronoi layer, currently uses the chart button.
+//to switch, just add the id 'voro' to any button
+//currently has some issues around 180 meridian
 
 $('#voro').on('click', function(){
 
+   
+    
+    //removes voro and bbox layer if they're already on
+    if(map.getLayer('vz')){
+        map.removeLayer('vz')
+        map.removeSource('vz')
+        map.removeLayer('bbox13')
+        map.removeSource('bbox13')
+    } else {
+
+    
 
     //console.log(map.getLayer('airports-extended'))
-    var f = map.queryRenderedFeatures({
+    /*var f = map.queryRenderedFeatures({
         layers: ['airports-extended']
-    })
+    }) */
 
+
+    //gets sids layer that's visible
     var countryii = map.queryRenderedFeatures({
         layers: ['allsids']
     });
 
-    var fc = turf.featureCollection(countryii);
-    var fc1 = turf.featureCollection(f);
-    
+    var newOne1 = []
+    var propers = {}
 
-    map.addSource('bbox1', {
-        type: 'geojson',
-        data: {
-            'type': 'FeatureCollection',
-            'features': countryii
+
+    //converts tiles to outline
+
+    countryii.forEach(function(f){
+        var geom = f.geometry
+        var props = f.properties
+        var id = f.id;
+        propers[id] = props
+
+        if(geom.type === 'MultiPolygon') {
+            console.log(f);
+            for (var i=0; i < geom.coordinates.length; i++) {
+                var poly = {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': geom.coordinates[i]
+                    },
+                    'id': id,
+                    'properties': props
+                }
+                newOne1.push(poly);
+            }
+        } else {
+            newOne1.push(f)
         }
+
+        
+    })
+
+
+
+    var fc = turf.featureCollection(countryii);
+    var thebbox = turf.bbox(fc);
+    console.log(thebbox)
+
+
+    //creates 25 random points within bbox
+
+    var randoPoints = turf.randomPoint(25, {
+        bbox: thebbox})
+    console.log(randoPoints)
+
+    //creates voronoi's off those points
+    var voronoiz = turf.voronoi(randoPoints, { 
+        bbox: thebbox    
+    });
+    console.log(voronoiz)
+
+
+    //random colors for voronois if you want
+    for (var x in voronoiz.features) {
+       voronoiz.features[x].properties.color = '#' + (Math.random().toString(16) + "000000").substring(2, 8);
+    }
+
+
+    var thebboxActual = turf.bboxPolygon(thebbox);
+    
+    map.addSource('bbox13', {
+        type: 'geojson',
+        data: thebboxActual
     })
 
     map.addLayer({
-        'id': 'bbox1',
-        'source': 'bbox1',
+        'id': 'bbox13',
+        'source': 'bbox13',
         'type': 'line',
         'paint': {
-            'line-color': '#66ff00',
+            'line-color': 'red',
             'line-width': 3
         }
         })
 
+    map.addSource('vz', {
+         type: 'geojson',
+         data: voronoiz
+    })
+    
+    map.addLayer({
+         'id': 'vz',
+         'source': 'vz',
+         'type': 'line',
+         'paint': {
+          //   'line-color': ['get', 'color'], if you want random colors
+            'line-color': 'orange',
+             'line-width': 3
+          }
+     })
 
-    turf.
+
+     map.fitBounds(thebbox,{
+         padding: 50
+     });
 
 
-
-    console.log(countryii);
-
-
-
-
+    }
+    
 
 
 })
@@ -2098,7 +1820,7 @@ var pointColors = {
 
 var pointDesc = {
     'airports-extended': 'Airport_Na',
-    'healthsites': 'name',
+    'healthsites': 'name', //conflicting with power plants in geojson, need to change name
     'volcano_list': 'Volcano_Na',
     'glopal_power_plant': 'name',
     'world_port_index': 'PORT_NAME'
@@ -2106,14 +1828,23 @@ var pointDesc = {
 }
 
 
-//$("input:checkbox").change(function () {
-$("input[name=overlay]").change(function () {
+//adds the overlays (in the top right menu, it the top most right button)
+//should be it's own file
 
+function addBoundaryLayer(object) {
 
     var points = ['airports-extended', 'healthsites', 'volcano_list', 'glopal_power_plant', 'world_port_index']
 
-    var clicked = $(this).val();
-    //console.log(clicked);
+
+    var k = Object.keys(object); //what layer is being added
+    var v = Object.values(object)[0]; //true or false if clicked
+
+    var clicked = k[0]
+
+    console.log(v)
+    console.log(clicked)
+
+
     if(points.includes(clicked)) {
 
         if(map.getLayer(clicked)) {
@@ -2143,6 +1874,9 @@ $("input[name=overlay]").change(function () {
             const coordinates = e.features[0].geometry.coordinates.slice();
             const description = e.features[0].properties[pointDesc[clicked]];
 
+            //console.log(coordinates);
+            getIso(coordinates)
+
             new mapboxgl.Popup({
                 className: 'popupCustom'
             })
@@ -2152,6 +1886,8 @@ $("input[name=overlay]").change(function () {
 
         })
 
+        
+
         //map.setFilter('points', ['==', 'layer', clicked])
         //addPointLayer($(this))
 
@@ -2159,7 +1895,7 @@ $("input[name=overlay]").change(function () {
     else if (clicked === 'underwater-overlay') {
         addCables()
 
-    } else if (!this.checked) {
+    } else if (!v) {
        
         map.removeLayer(clicked)
         console.log('uncheck: ' + clicked);
@@ -2220,10 +1956,9 @@ $("input[name=overlay]").change(function () {
         })
 
     }
-    //alert($(this).val());
 
 
-});
+}
 
 
 function addCables() {
@@ -2497,16 +2232,6 @@ $('.tab-nav').on('click', function () {
 });
 
 
-$('#volume').on("change mousemove", function () {
-    console.log($(this).val());
-    map.setPaintProperty(currentGeojsonLayers.hexSize, 'fill-opacity', ($(this).val() * 0.1))
-    if (map.getLayer('ocean')) {
-        //console.log('hi');
-        map.setPaintProperty('ocean', 'fill-opacity', ($(this).val() * 0.1))
-
-    }
-})
-
 /**
  *  Top Toolip 
  */
@@ -2595,368 +2320,10 @@ function nFormatter(num, digits) {
     return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 }
 
-//screenshot button functions
-$('#screenshot').click(function(){
-    
-   
 
-    $('#top-right-wrap').toggle();
-    html2canvas($('#map'), {
-        onrendered: function(canvas) {
-            console.log(canvas);
-          var img = canvas.toDataURL();
-          window.open(img)
-        }
-      });
 
-      
-      setTimeout(() => {$('#top-right-wrap').toggle()}, 1000)
-      //$('.population-density-box')
-      //$('.population-per-km')
 
-})
-
-
-//download button functions
-$('#datadownload').click(function () {
-    map.setFilter(currentGeojsonLayers.hexSize, null)
-    console.log(currentGeojsonLayers.hexSize)
-    //openDownloadPage()
-    
-
-setTimeout(() => {
-
-
-    if(hexes.includes(currentGeojsonLayers.hexSize)) {
-
-
-        var features = map.queryRenderedFeatures({
-            
-            layers: [currentGeojsonLayers.hexSize]
-        })
-
-        if (features) {
-
-            var uniFeatures;
-            uniFeatures = getUniqueFeatures(features, 'hexid');
-            
-
-            //console.log(features)
-            //console.log(uniFeatures);
-
-
-            map.addSource('screen', {
-            type: 'geojson',
-            data: {
-                'type': 'FeatureCollection',
-                
-                'features': uniFeatures
-            }
-            }) 
-
-
-            map.addLayer({
-            'id': 'screenshot',
-            'source': 'screen',
-            'type': 'line',
-            'paint': {
-                'line-color': '#66ff00',
-                'line-width': 3
-            }
-            })
-
-
-
-            var gdata = uniFeatures//map.getSource('screen')._data;
-
-
-
-            //exportGeojson(gdata);
-            openDownloadPage(currentGeojsonLayers.hexSize, gdata);
-
-
-    }
-
-
-} else if(admins.includes(currentGeojsonLayers.hexSize)) {
-
-
-
-    console.log('hi')
-    var features = map.queryRenderedFeatures({
-        layers: ['allsids']
-    })
-
-    console.log(features)
-    var currentC = features.map(x => x.properties.NAME_0)
-
-    console.log(currentC);
-
-    var features1 = map.queryRenderedFeatures({
-        layers: [currentGeojsonLayers.hexSize]
-    })
-    
-    
-    newOne = []
-
-    var propers = {}
-
-    features1.forEach(function(f){
-        var geom = f.geometry
-        var props = f.properties
-        var id = f.id;
-        propers[id] = props
-
-        if(geom.type === 'MultiPolygon') {
-            console.log(f);
-            for (var i=0; i < geom.coordinates.length; i++) {
-                var poly = {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Polygon',
-                        'coordinates': geom.coordinates[i]
-                    },
-                    'id': id,
-                    'properties': props
-                }
-                newOne.push(poly);
-            }
-        } else {
-            newOne.push(f)
-        }
-
-        
-    })
-
-    var fc = turf.featureCollection(newOne)
-    console.log(fc);
-
-    var propName = 'GID_2'
-
-    if(currentGeojsonLayers.hexSize === 'admin1') {
-        propName = 'GID_1'
-    }
-   
-    var diss = turf.dissolve(fc, {propertyName: propName})
-    
-    
-    
-
-    for (var x in diss.features) {
-        if(currentGeojsonLayers.hexSize === 'admin2') {
-            var curr = diss.features[x].properties.GID_2;
-        } else {
-            var curr = diss.features[x].properties.GID_1;
-        }
-       
-
-        console.log(curr)
-
-        diss.features[x].properties = propers[curr]
-    }
-
-    console.log(diss)
-    openDownloadPage(currentGeojsonLayers.hexSize, diss);
-
-
-    map.addSource('screen', {
-        type: 'geojson',
-        data: {
-            'type': 'FeatureCollection',
-            
-            'features': []
-        }
-        }) 
-
-        map.addLayer({
-        'id': 'screenshot',
-        'source': 'screen',
-        'type': 'line',
-        'paint': {
-            'line-color': '#66ff00',
-            'line-width': 3
-        }
-        })
-
-        map.getSource('screen').setData(diss)
-
-
-
-} },400)
-
- 
-});
-
-function openDownloadPage(hexsize, gdata) {
-    //console.log(gdata);
-
-    var allTheFieldIds = allLayers.map(x => x.field_name);
-    var allCountries = names.map(x => x.NAME_0)
-    //console.log(allTheFieldIds);
-    var allCountriesChecked = [];
-    var allAttributesChecked = [];
-    var allResolutionsChecked = [];
-    $('.modal').toggle();
-    $('body').css('overflow', 'hidden')
-
-    //$('.loader-gis').hide()
-
-
-    $('#shp').click(function () {
-        var removeOnes = _.difference(allTheFieldIds, allAttributesChecked);
-        exportShp(hexsize, gdata, removeOnes);
-        
-    })
-    $('#gjn').click(function () {
-        var removeOnes = _.difference(allTheFieldIds, allAttributesChecked);
-        exportGeojson(hexsize, gdata, removeOnes);
-        
-       
-    })
-
-   /* $(':checkbox[name=res]').on('click', function(){
-
-        var checkedBoxlength=$(':checkbox[name=res]:checked').length;
-            if(checkedBoxlength>1){
-                alert('Only 1 Resolution at a time');
-                return false;
-            }
-    }) */
-
-    $('input:checkbox').change(function () {
-      
-            var thisid = $(this)[0].id
-            console.log(thisid);
-            allAttributesChecked.push(thisid);
-
-            
-
-            
-         /*   if ($(this).is(":checked")) {
-
-                if(allCountries.includes(thisid)) {
-                    allCountriesChecked.push(thisid)
-                } else if(userLayers.includes(thisid)) {
-                    allResolutionsChecked.push(thisid)
-                } else {
-                    allAttributesChecked.push(thisid);
-                }
-            } */
-    })
-
-
-
-}
-
-function exportShp(hexsize,obj, removeOnes) {
-
-    var fc = obj;
-
-
-    if(hexes.includes(hexsize)) {
-        fc = turf.featureCollection(obj)
-    }
-
-    //console.log(obj);
-
-    var fc = turf.featureCollection(obj)
-
-    for (var x in fc.features) {
-        for (var y in removeOnes) {
-            delete fc.features[x].properties[removeOnes[y]]
-        }
-    }
-
-    console.log(fc)
-
-    const options = {
-        folder: 'SIDSshapefile',
-        types: {
-            polygon: currentGeojsonLayers.hexSize.toString()
-        }
-    }
-    shpwrite.download(fc, options);
-    map.setFilter(currentGeojsonLayers.hexSize, ['>=', currentGeojsonLayers.dataLayer, 0])
-    $('.modal').toggle();
-    $('body').css('overflow', '')
-    map.removeLayer('screenshot')
-    map.removeSource('screen');
-
-}
-
-function exportGeojson(hexsize, gdata, removeOnes) {
-
-  
-    var fc = gdata;
-
-
-    if(hexes.includes(hexsize)) {
-        fc = turf.featureCollection(gdata)
-    }
-      
-    
-        
-       
-
-    //var fc = turf.featureCollection(gdata)
-
-    convertThis(fc, removeOnes);
-    
-
-function convertThis(fc, removeOnes) {
-
-    console.log(removeOnes)
-
-    //var fc = turf.featureCollection(feats)
-    for (var x in fc.features) {
-
-        for (var y in removeOnes) {
-
-            delete fc.features[x].properties[removeOnes[y]]
-        }
-
-    }
-   
-    
-    var datastring = "data:text/json;charset=utf-8, " + encodeURIComponent(JSON.stringify(fc))
-    var link = document.createElement('a');
-    link.download = 'download.geojson';
-    link.href = datastring
-    link.click();
-    link.delete; 
-
-    
-
-}
-
-    
-
-  
-
-    var datastring = '';
-    $('.modal').toggle();
-    map.setFilter(currentGeojsonLayers.hexSize, ['>=', currentGeojsonLayers.dataLayer, 0])
-    $('body').css('overflow', '')
-    map.removeLayer('screenshot')
-    map.removeSource('screen');
-    
-}
-
-$('.close').click(function () {
-    map.setFilter(currentGeojsonLayers.hexSize, ['>=', currentGeojsonLayers.dataLayer, 0])
-    $('.modal').toggle();
-    $('body').css('overflow', '')
-   // map.setZoom(oldZoom);
-    //map.setCenter(oldCenter)
-    map.removeLayer('screenshot')
-    map.removeSource('screen');
-    
-
-}) 
-
-
-
-var checkList = document.getElementById('list1');
+/*var checkList = document.getElementById('list1');
 var items = document.getElementById('items');
 checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
     if (items.classList.contains('visible')) {
@@ -2988,5 +2355,5 @@ $('#close-side').click(function () {
 
     }
 
-})
+}) */
 
