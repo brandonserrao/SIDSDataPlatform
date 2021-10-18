@@ -1,9 +1,14 @@
-$("#color-switch").on("change", function () {
+//$("#color-switch").on("change", function () {
 
 
+function switchColorScheme(obj) {
+
+  var v = Object.values(obj)
 //console.log(colorSeq)
 
-  var selectedOption = $(this)[0].value;
+  //var selectedOption = $(this)[0].value;
+
+  var selectedOption = v[0];
   console.log(selectedOption)
   var currentColor = currentGeojsonLayers.color;
   console.log(currentGeojsonLayers.dataLayer)
@@ -116,4 +121,4 @@ $("#color-switch").on("change", function () {
   //console.log(currentColor)
 
   // console.log(gdpColor);
-});
+};

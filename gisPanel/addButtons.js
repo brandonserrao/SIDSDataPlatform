@@ -1,6 +1,10 @@
+//adds csv data for dataset/layer drop down
+//also sets up large object of all metadata for legends
+
 function addButtons() {
 
-    var sidsHolder = document.getElementById('country-select');
+    //var sidsHolder = document.getElementById('country-select');
+    var sidsHolder = document.getElementById('country');
 
     names.map(function (x) {
         var btn = document.createElement("option");
@@ -9,26 +13,6 @@ function addButtons() {
         btn.setAttribute('id', x.GID_0)
         sidsHolder.appendChild(btn)
 
-
-       /* if(!(x.NAME_0 === "Pacific Region" || x.NAME_0 === 'Carribean Region' || x.NAME_0 === 'Atlantic, Indian, and South China Sea' )) { 
-
-        
-            var checkcountries = document.getElementById('download-countries');
-            var newI = document.createElement('input');
-            newI.type = 'checkbox'
-            newI.setAttribute('id', x.NAME_0)
-
-            var label = document.createElement('label')
-            label.htmlFor = "id"
-            label.appendChild(document.createTextNode('\u00A0' + x.NAME_0));
-
-
-            checkcountries.appendChild(newI)
-            checkcountries.appendChild(label)
-            var br = document.createElement('br')
-            checkcountries.appendChild(br)
-
-        } */
     })
 
 
@@ -60,35 +44,12 @@ function addButtons() {
                 'link': x.Source_Link
             })
 
-            var checkbox = document.getElementById('download-attributes')
-            var newI = document.createElement('input');
-            newI.type = 'checkbox'
-            newI.setAttribute('id', x.Field_Name)
-
-            var label = document.createElement('label')
-            label.htmlFor = "id"
-            label.appendChild(document.createTextNode('\u00A0' + x.Description + ' ' + x.Temporal));
-
-
-            checkbox.appendChild(newI)
-            checkbox.appendChild(label)
-            var br = document.createElement('br')
-            checkbox.appendChild(br)
-
-
+           
 
         })
 
         var dataHolder = document.getElementById('dataDrop')
-        var addBasemaps = ['Satellite Imagery']
-
-        for (var x in addBasemaps) {
-            var btn2 = document.createElement("option");
-            btn2.innerHTML = addBasemaps[x];
-            btn2.classList.add('basemap')
-            //btn2.setAttribute('id', addBasemaps[x])
-            dataHolder.appendChild(btn2)
-        }
+      
 
         var uniqueNames = allLayers.map(x => x.title)
 

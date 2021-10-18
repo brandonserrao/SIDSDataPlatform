@@ -1,3 +1,8 @@
+//function to deal with data upload
+//currently accepts csv and geojson/json
+//can be improved -- basically repeats the code adding the layer for csv and geojson
+
+
 function handleFileSelect(evt) {
     console.log(evt.target.files[0])
     evt.stopPropagation();
@@ -44,19 +49,8 @@ function handleFileSelect(evt) {
 
 
 
-
-function handleDragOver(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
-    evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-}
-
-// Setup the dnd listeners.
-var dropZone = document.getElementById('map');
-dropZone.addEventListener('dragover', handleDragOver, false);
-dropZone.addEventListener('drop', handleFileSelect, false);
-
-document.getElementById('upload').addEventListener('change', handleFileSelect, false)
+//document.getElementById('upload').addEventListener('change', handleFileSelect, false)
+document.getElementById('myfile').addEventListener('change', handleFileSelect, false)
 
 
 function addUploadToMap(res, ext) {
@@ -68,20 +62,9 @@ function addUploadToMap(res, ext) {
         map.removeLayer('upload')
         map.removeLayer('uploadline')
         map.removeSource('upload')
-        $('#removeUpload').hide()
-       // $('#draw-sidebar').hide();
+       
 
     }
-
-   /* var clickDiv = document.getElementsByClassName('my-custom-control')[0]
-    clickDiv.style.display = 'block'
-    clickDiv.style.height = '200px';
-    clickDiv.style.width = '200px';
-    clickDiv.innerHTML = '<h3>'+ res.name +'</h3>' */
-
-    //show button to remove
-    //$('#removeUpload').show()
-    //$('#draw-sidebar').show();
 
 
 
@@ -98,6 +81,9 @@ function addUploadToMap(res, ext) {
             'data': res
         })
 
+
+        //little tricky here - adds two layers but one is invisible
+        //the invisible fill layer is used for the click feature, otherwise you'd have to click on the line
         map.addLayer({
             'id': 'upload',
             'type': 'fill',
@@ -127,9 +113,11 @@ function addUploadToMap(res, ext) {
         }
 
 
+        //get bounds of uploaded data
         var uploadBbox = turf.bbox(res)
-    // console.log(uploadBbox);
 
+
+        //zoom to uploaded data
         map.fitBounds(uploadBbox, {
             linear: true,
             padding: {
@@ -140,18 +128,9 @@ function addUploadToMap(res, ext) {
             }
                 
         })
-        $('#removeUpload').show()
-
-        //console.log(map.getStyle().layers)
-      /*  const newButton = document.createElement('BUTTON')
-        newButton.innerHTML('change to outline')
-
-        newButton.on('click', function(e) {
-            console.log('howdy')
-        })*/
-        //clickDiv.appen
+        
        
-
+    //if you click on the uploaded feature, display a popup of all fields
         map.on('click', 'upload', (e) => {
 
             console.log(e.lngLat)
@@ -199,7 +178,7 @@ function addUploadToMap(res, ext) {
             
             } else {
 
-            $('#removeUpload').show()
+           
             console.log(data)
 
             map.addSource('upload', {
@@ -234,6 +213,8 @@ function addUploadToMap(res, ext) {
 
         });
 
+
+        //if you click on the uploaded feature, display a popup of all fields
         map.on('click', 'upload', (e) => {
 
             console.log(e.lngLat)
@@ -262,36 +243,15 @@ function addUploadToMap(res, ext) {
 
         })
 
-      
-
-
-
-
-
-
 
 
     } else {
 
-        //?????????
+        //if the uploaded data isn't a csv or json
 
         alert('oops we need a csv or geojson')
     }
 
 }
 
-
-
-
-$('#removeUpload').on('click', function() {
-
-
-    map.removeLayer('upload')
-    map.removeLayer('uploadline')
-    map.removeSource('upload')
-    $('#removeUpload').hide()
-    //$('#draw-sidebar').hide();
-
-
-})
 

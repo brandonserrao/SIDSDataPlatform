@@ -20,29 +20,7 @@ function addHexSource() {
           'data': d
       })
 
-      /*map.addLayer({
-        'id': 'points',
-        'type': 'circle',
-        'source': 'points-source',
-        //'filter': ['==', 'layer', filteredOne],
-        'layout': {
-            'visibility': 'visible'
-        },
-
-        'paint': {
-            'circle-color': [
-              'match',
-              ['get', 'layer'],
-              'airports-extended', 'blue',
-              'healthsites', 'red',
-              'volcano_list', 'orange',
-              'glopal_power_plant', 'green',
-              'world_port_index', 'yellow',
-              '#ccc'
-            ],
-            'circle-radius': 5
-        }
-    }, firstSymbolId); */
+  
 
     });
 
