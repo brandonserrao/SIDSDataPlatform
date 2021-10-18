@@ -1683,8 +1683,6 @@ $('select[name="hexbin-change"]').on('change', function () {
 
 $('#voro').on('click', function(){
 
-   
-    
     //removes voro and bbox layer if they're already on
     if(map.getLayer('vz')){
         map.removeLayer('vz')
@@ -1692,14 +1690,6 @@ $('#voro').on('click', function(){
         map.removeLayer('bbox13')
         map.removeSource('bbox13')
     } else {
-
-    
-
-    //console.log(map.getLayer('airports-extended'))
-    /*var f = map.queryRenderedFeatures({
-        layers: ['airports-extended']
-    }) */
-
 
     //gets sids layer that's visible
     var countryii = map.queryRenderedFeatures({
@@ -1738,8 +1728,6 @@ $('#voro').on('click', function(){
 
         
     })
-
-
 
     var fc = turf.featureCollection(countryii);
     var thebbox = turf.bbox(fc);
@@ -1886,11 +1874,6 @@ function addBoundaryLayer(object) {
 
         })
 
-        
-
-        //map.setFilter('points', ['==', 'layer', clicked])
-        //addPointLayer($(this))
-
     }
     else if (clicked === 'underwater-overlay') {
         addCables()
@@ -2025,7 +2008,7 @@ function addCables() {
 }
 
 
-
+//if a layer is selected
 $('select[name="layer-selection"]').on('change', function () {
     console.log('Layer: ' + $(this).val());
     //console.log('hi');
@@ -2033,6 +2016,7 @@ $('select[name="layer-selection"]').on('change', function () {
 });
 
 var isReachedToEnd = false;
+
 
 /**
  * Dynamic year list creation 
@@ -2160,12 +2144,6 @@ function updateTime(layers) {
 // }
 
 // Year selection 
-/*	var isReachedToEnd = false;
-	$('body').on('change click', 'input[name="year-selected"]', function () {
-		isReachedToEnd = false;
-		var yearValue = $('[name="year-selected"]:checked').val();
-		console.log(yearValue);
-	}); */
 
 // play / pause
 var playPauseInterval;
