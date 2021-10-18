@@ -78,6 +78,11 @@ function handleGisMenuChange(object){
     switchColorScheme(object)
   }
 
+  if(k[0] === 'bivariate-mode') {
+
+    //createBivar(object)
+  }
+
 
 }
 
