@@ -33,6 +33,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .header {
+  min-height: 100vh;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -43,7 +44,7 @@ export default {
   z-index: 2;
   background: rgba(250, 250, 250, 0.89);
   padding: 15px 10px;
-  margin-bottom: 2em;
+  margin-bottom: 4em;
 }
 .header_video {
   width: 100%;

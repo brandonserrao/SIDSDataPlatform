@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store'
+
 
 Vue.use(VueRouter)
 
@@ -25,7 +27,12 @@ const routes = [
   {
     path: '/country-profiles',
     name: 'Country Profiles',
-    component: () => import(/* webpackChunkName: "about" */ '../views/CountryProfiles.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/CountryProfiles.vue'),
+    beforeEnter: async (to, from, next) => {
+      await store.dispatch('getMetaData');
+      await store.dispatch('getAllKeyData');
+     next()
+    }
   },
   {
     path: '/geospatial-data',
