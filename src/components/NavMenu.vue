@@ -1,15 +1,17 @@
 <template>
-  <div class="mdl-tabs__tab-bar">
-      <router-link
-      v-slot="{ href, navigate, isActive }"
-      class="mdl-tabs__tab h5 mdl-js-ripple-effect"
-      v-for="route in routes" :key="route.path"
-      :to="route.path"
-      custom
+  <v-list dense>
+      <v-list-item
+        v-for="route in routes"
+        :key="route.path"
+        :to="route.path"
       >
-        <a :class="[isActive && 'is-active']" :href="href" @click="navigate">{{ route.name }}</a>
-    </router-link>
-  </div>
+        <v-list-item-content>
+          <v-list-item-title
+            v-text="route.name">
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+  </v-list>
 </template>
 
 <script>

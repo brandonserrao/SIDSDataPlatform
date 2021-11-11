@@ -1,18 +1,16 @@
 <template>
-  <div>
+  <v-container data-app class="v-application v-application--is-ltr" id="app" fluid>
     <root-header/>
-    <div id="content">
-      <div class="mdl-grid mdl-grid--no-spacing">
-        <div class="mdl-cell mdl-cell--2-col">
-          <nav-menu/>
-        </div>
-        <div>
-          <router-view class="root-router"/>
-        </div>
-      </div>
-    </div>
+    <v-row no-gutters id="content">
+      <v-col cols="2">
+        <nav-menu/>
+      </v-col>
+      <v-col cols="10">
+        <router-view class="root-router"/>
+      </v-col>
+    </v-row>
     <root-footer/>
-  </div>
+  </v-container>
 </template>
 <script>
 import RootHeader from '@/components/RootHeader.vue'
@@ -30,7 +28,13 @@ export default {
 </script>
 <style>
 @import './assets/styles/RootStyles.css';
+#app{
+  padding: 0;
+}
 #content{
   min-height: 100vh
+}
+.root-router {
+  padding: 10px;
 }
 </style>
