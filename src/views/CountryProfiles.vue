@@ -221,88 +221,48 @@ export default {
           }
       }
 
+      function generateTextDataCVS(pillarName) {
+        for (let indicator in this.allKeyData[this.activeCountry][pillarName]) {
+          let newIndi = {}
+          newIndi.axis = indicator.replace(/,/g, '')
+          newIndi.source = this.keyMetadata[newIndi.axis].sourceName ?
+          this.keyMetadata[newIndi.axis].sourceName.replace(/,/g, '') :
+          '';
+          this.graphCountriesProfiles.map(countryId => {
+            newIndi[countryId] = this.allKeyData[countryId][pillarName][indicator]
+          })
+          countryExport.push(newIndi)
+        }
+      }
+
+      function generateAxisDataCVS(pillarName) {
+        for (let indicator in this.allKeyData[this.activeCountry][pillarName]) {
+          let newIndi = {}
+          let el = this.allKeyData[this.activeCountry][pillarName][indicator]
+          newIndi.axis = el.axis.replace(/,/g, '')
+          newIndi.source = this.keyMetadata[newIndi.axis].sourceName ?
+          this.keyMetadata[newIndi.axis].sourceName.replace(/,/g, '') :
+          '';
+          this.graphCountriesProfiles.map(countryId => {
+            newIndi[countryId] = this.allKeyData[countryId][pillarName][indicator]
+          })
+          countryExport.push(newIndi)
+        }
+      }
+
       let countryExport = []
+      const pillars = ["MVI2", "ClimateRank", "BlueRank", "DigitalRank", "Blue", "Climate", "Digital"];
+      generateTextDataCVS('Profile');
+      pillars.map(generateAxisDataCVS);
+      generateTextDataCVS('Finance');
 
-      for (let indicator in this.allKeyData[this.activeCountry]["Profile"]) {
-        let newIndi = {}
-        newIndi["axis"] = indicator.replace(/,/g, '')
-        try {
-          //  console.log(metadata[0][el.axis]["sourceName"])
-          newIndi["source"] = this.keyMetadata[newIndi.axis]["sourceName"].replace(/,/g, '')
-        }
-        catch (error) {
-          //  console.log("no source for "+el.axis)
-          newIndi["source"] = ""
-        }
-        for (let countryName in this.graphCountriesProfiles) {
-          let country = this.graphCountriesProfiles[countryName]
-          let el = this.allKeyData[country]["Profile"][indicator]
-          newIndi[country] = el
-        }
-        countryExport.push(newIndi)
-      }
-
-    const pillars = ["MVI2", "ClimateRank", "BlueRank", "DigitalRank", "Blue", "Climate", "Digital"];
-
-    for (let pillar in pillars) {
-      for (let indicator in this.allKeyData[this.activeCountry][pillars[pillar]]) {
-        let newIndi = {}
-        let el = this.allKeyData[this.activeCountry][pillars[pillar]][indicator]
-        newIndi["axis"] = el.axis.replace(/,/g, '')
-        try {
-          //    console.log(metadata[0][el.axis]["sourceName"])
-          newIndi["source"] = this.keyMetadata[el.axis]["sourceName"].replace(/,/g, '')
-        }
-        catch (error) {
-          console.log("no source for " + el.axis)
-          newIndi["source"] = ""
-        }
-
-        for (let country in this.graphCountriesProfiles) {
-          country = this.countries[country]
-          el = this.allKeyData[country.id][pillars[pillar]][indicator]
-          newIndi[country] = el.value
-        }
-        countryExport.push(newIndi)
-      }
-    }
-
-    //could be refactored, same code as "profile" above
-    //for(category in ["Finance"]){
-    for (let indicator in this.allKeyData[this.activeCountry]["Finance"]) {
-      let newIndi = {}
-      newIndi["axis"] = indicator.replace(/,/g, '')
-      try {
-        //  console.log(metadata[0][el.axis]["sourceName"])
-        newIndi["source"] = this.keyMetadata[newIndi.axis]["sourceName"].replace(/,/g, '')
-      }
-      catch (error) {
-        //  console.log("no source for "+el.axis)
-        newIndi["source"] = ""
-      }
-      for (let country in this.graphCountriesProfiles) {
-        country = this.countries[country]
-        let el = this.allKeyData[country.id]["Finance"][indicator]
-        newIndi[country.id] = el
-      }
-      countryExport.push(newIndi)
-    }
-
-
-
-    //console.log(countryExport)
-    //console.log(allKeyData[countryCode])
-
-    let headers = {}
-    headers["axis"] = "Indicator"
-    headers["source"] = "Source"
-    for (let country in this.graphCountriesProfiles) {
-      headers[this.countries[country].id] = this.allKeyData[this.countries[country].id].Profile.Country
-    }
-    //console.log(allKeyData)
-    exportCSVFile(headers, countryExport, "sids_profile_data", "")
-
-
+      let headers = {}
+      headers.axis = "Indicator"
+      headers.source = "Source"
+      this.graphCountriesProfiles.map(countryId => {
+        headers[countryId] = this.allKeyData[countryId].Profile.Country
+      })
+      exportCSVFile(headers, countryExport, "sids_profile_data", "")
     }
   },
   created() {
