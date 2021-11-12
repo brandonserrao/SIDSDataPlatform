@@ -225,7 +225,8 @@ export default {
         for (let indicator in this.allKeyData[this.activeCountry][pillarName]) {
           let newIndi = {}
           newIndi.axis = indicator.replace(/,/g, '')
-          newIndi.source = this.keyMetadata[newIndi.axis].sourceName ?
+          console.log(this.keyMetadata, newIndi.axis)
+          newIndi.source = this.keyMetadata[newIndi.axis] && this.keyMetadata[newIndi.axis].sourceName ?
           this.keyMetadata[newIndi.axis].sourceName.replace(/,/g, '') :
           '';
           this.graphCountriesProfiles.map(countryId => {
@@ -240,11 +241,11 @@ export default {
           let newIndi = {}
           let el = this.allKeyData[this.activeCountry][pillarName][indicator]
           newIndi.axis = el.axis.replace(/,/g, '')
-          newIndi.source = this.keyMetadata[newIndi.axis].sourceName ?
+          newIndi.source = this.keyMetadata[newIndi.axis] && this.keyMetadata[newIndi.axis].sourceName ?
           this.keyMetadata[newIndi.axis].sourceName.replace(/,/g, '') :
           '';
           this.graphCountriesProfiles.map(countryId => {
-            newIndi[countryId] = this.allKeyData[countryId][pillarName][indicator]
+            newIndi[countryId] = this.allKeyData[countryId][pillarName][indicator].value
           })
           countryExport.push(newIndi)
         }
@@ -252,9 +253,11 @@ export default {
 
       let countryExport = []
       const pillars = ["MVI2", "ClimateRank", "BlueRank", "DigitalRank", "Blue", "Climate", "Digital"];
-      generateTextDataCVS('Profile');
-      pillars.map(generateAxisDataCVS);
-      generateTextDataCVS('Finance');
+      generateTextDataCVS.call(this, 'Profile');
+      pillars.map(pillar => {
+        generateAxisDataCVS.call(this, pillar)
+      });
+      generateTextDataCVS.call(this, 'Finance');
 
       let headers = {}
       headers.axis = "Indicator"
