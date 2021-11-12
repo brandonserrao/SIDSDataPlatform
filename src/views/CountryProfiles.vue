@@ -45,13 +45,36 @@
   </v-row>
     <v-row dense justify="center">
       <v-col cols="4">
-        <profiles-spider-chart :graphOptions="graphOptions.Climate" :pillarName="'Climate'" :activeCountries="graphCountriesProfiles"/>
+        <profiles-spider-chart
+          headerText="Climate Action"
+          :graphOptions="graphOptions.Climate"
+          pillarName="Climate"
+          :activeCountries="graphCountriesProfiles"/>
       </v-col>
       <v-col cols="4">
-        <profiles-spider-chart :graphOptions="graphOptions.Blue" :pillarName="'Blue'" :activeCountries="graphCountriesProfiles"/>
+        <profiles-spider-chart
+          headerText="Blue Economy"
+          :graphOptions="graphOptions.Blue"
+          pillarName="Blue"
+          :activeCountries="graphCountriesProfiles"/>
       </v-col>
       <v-col cols="4">
-        <profiles-spider-chart :graphOptions="graphOptions.Digital" :pillarName="'Digital'" :activeCountries="graphCountriesProfiles"/>
+        <profiles-spider-chart
+          headerText="Digital Transformation"
+          :graphOptions="graphOptions.Digital"
+          pillarName="Digital"
+          :activeCountries="graphCountriesProfiles"/>
+      </v-col>
+      <v-col cols="4">
+        <profiles-spider-chart
+          headerText="Multidimensional Vulnerability"
+          :graphOptions="graphOptions.MVI2"
+          pillarName="MVI2"
+          :activeCountries="graphCountriesProfiles"/>
+      </v-col>
+      <v-col cols="6">
+        <profiles-finance
+          :countryId="activeCountry"/>
       </v-col>
     </v-row>
   </div>
@@ -60,6 +83,7 @@
 <script>
 import CountryInfoBar from '@/components/CountryInfoBar.vue'
 import ProfilesSpiderChart from '@/components/ProfilesSpiderChart.vue'
+import ProfilesFinance from '@/components/ProfilesFinance.vue'
 import * as d3 from 'd3';
 import { mapState } from 'vuex';
 
@@ -67,7 +91,8 @@ export default {
   name: 'CountryProfiles',
   components: {
     CountryInfoBar,
-    ProfilesSpiderChart
+    ProfilesSpiderChart,
+    ProfilesFinance
   },
   data: () => ({
     activeCountry:null,
@@ -82,7 +107,8 @@ export default {
         levels: 5,
         spin: 0,
         roundStrokes: false,
-        color: d3.scaleOrdinal().range(["#0DB14B", "#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"])
+        color: d3.scaleOrdinal().range(["#0DB14B", "#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"]),
+        textColor: "#0DB14B"
       },
       Blue: {
         w: 200,
@@ -93,6 +119,7 @@ export default {
         roundStrokes: false,
         color: d3.scaleOrdinal().range(["#0BC6FF", "#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"]),
         legend: { title: 'Legend', translateX: 0, translateY: 0 },
+        textColor: "#0BC6FF"
       },
       Digital: {
         w: 200,
@@ -101,7 +128,21 @@ export default {
         levels: 5,
         spin: 0,
         roundStrokes: false,
-        color: d3.scaleOrdinal().range(["#F58220", "#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"])
+        color: d3.scaleOrdinal().range(["#F58220", "#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"]),
+        textColor: "#F58220"
+      },
+      MVI2: {
+        w: 320,
+        h: 200,
+        margin: { top: 70, right: 45, bottom: 100, left: 45 },
+        maxValue: 80,
+        levels: 4,
+        spin: 0,
+        textFormat: 1.2,
+        opacityArea: 0.2,
+        roundStrokes: false,
+        color: d3.scaleOrdinal().range(["#8f0045 ", "#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"]),
+        textColor: "#9e0909"
       }
     },
   }),
