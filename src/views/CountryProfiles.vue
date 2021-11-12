@@ -77,6 +77,17 @@
           :countryId="activeCountry"/>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="1">
+        <v-btn
+          class="ma-2"
+          @click="exportCSV"
+          color="primary"
+        >
+          Export to CSV
+        </v-btn>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -151,7 +162,7 @@ export default {
       return this.countries.find(country => country.id === this.activeCountry);
     },
     graphCountriesProfiles() {
-      return this.compareCuntries.concat([this.activeCountry]);
+      return Array.from(new Set(this.compareCuntries.concat([this.activeCountry])));
     },
     filteredCountries() {
       if(this.region === this.regions[0]) {
@@ -161,7 +172,138 @@ export default {
     },
     ...mapState({
       countries: state => state.countryList,
+      keyMetadata: state => state.keyMetadata,
+      allKeyData: state => state.allKeyData,
     })
+  },
+  methods:{
+    exportCSV() {
+      // TODO: move export to mixins
+      function convertToCSV(objArray,note) {
+          var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+          var str=""
+          if(note!=""){
+          str += '#'+note+'\r\n';}
+          for (var i = 0; i < array.length; i++) {
+              var line = '';
+              for (var index in array[i]) {
+                  if (line != '') line += ','
+                  line += array[i][index];
+              }
+              str += line + '\r\n';
+          }
+          return str;
+      }
+
+      function exportCSVFile(headers, items, fileTitle,note) {
+          if (headers) {
+              items.unshift(headers);
+          }
+          // Convert Object to JSON
+          var jsonObject = JSON.stringify(items);
+          var csv = convertToCSV(jsonObject,note);
+          var exportedFilenmae = fileTitle + '.csv' || 'export.csv';
+          var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+          if (navigator.msSaveBlob) { // IE 10+
+              navigator.msSaveBlob(blob, exportedFilenmae);
+          } else {
+              var link = document.createElement("a");
+              if (link.download !== undefined) { // feature detection
+                  // Browsers that support HTML5 download attribute
+                  var url = URL.createObjectURL(blob);
+                  link.setAttribute("href", url);
+                  link.setAttribute("download", exportedFilenmae);
+                  link.style.visibility = 'hidden';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+              }
+          }
+      }
+
+      let countryExport = []
+
+      for (let indicator in this.allKeyData[this.activeCountry]["Profile"]) {
+        let newIndi = {}
+        newIndi["axis"] = indicator.replace(/,/g, '')
+        try {
+          //  console.log(metadata[0][el.axis]["sourceName"])
+          newIndi["source"] = this.keyMetadata[newIndi.axis]["sourceName"].replace(/,/g, '')
+        }
+        catch (error) {
+          //  console.log("no source for "+el.axis)
+          newIndi["source"] = ""
+        }
+        for (let countryName in this.graphCountriesProfiles) {
+          let country = this.graphCountriesProfiles[countryName]
+          let el = this.allKeyData[country]["Profile"][indicator]
+          newIndi[country] = el
+        }
+        countryExport.push(newIndi)
+      }
+
+    const pillars = ["MVI2", "ClimateRank", "BlueRank", "DigitalRank", "Blue", "Climate", "Digital"];
+
+    for (let pillar in pillars) {
+      for (let indicator in this.allKeyData[this.activeCountry][pillars[pillar]]) {
+        let newIndi = {}
+        let el = this.allKeyData[this.activeCountry][pillars[pillar]][indicator]
+        newIndi["axis"] = el.axis.replace(/,/g, '')
+        try {
+          //    console.log(metadata[0][el.axis]["sourceName"])
+          newIndi["source"] = this.keyMetadata[el.axis]["sourceName"].replace(/,/g, '')
+        }
+        catch (error) {
+          console.log("no source for " + el.axis)
+          newIndi["source"] = ""
+        }
+
+        for (let country in this.graphCountriesProfiles) {
+          country = this.countries[country]
+          el = this.allKeyData[country.id][pillars[pillar]][indicator]
+          newIndi[country] = el.value
+        }
+        countryExport.push(newIndi)
+      }
+    }
+
+    //could be refactored, same code as "profile" above
+    //for(category in ["Finance"]){
+    for (let indicator in this.allKeyData[this.activeCountry]["Finance"]) {
+      let newIndi = {}
+      newIndi["axis"] = indicator.replace(/,/g, '')
+      try {
+        //  console.log(metadata[0][el.axis]["sourceName"])
+        newIndi["source"] = this.keyMetadata[newIndi.axis]["sourceName"].replace(/,/g, '')
+      }
+      catch (error) {
+        //  console.log("no source for "+el.axis)
+        newIndi["source"] = ""
+      }
+      for (let country in this.graphCountriesProfiles) {
+        country = this.countries[country]
+        let el = this.allKeyData[country.id]["Finance"][indicator]
+        newIndi[country.id] = el
+      }
+      countryExport.push(newIndi)
+    }
+
+
+
+    //console.log(countryExport)
+    //console.log(allKeyData[countryCode])
+
+    let headers = {}
+    headers["axis"] = "Indicator"
+    headers["source"] = "Source"
+    for (let country in this.graphCountriesProfiles) {
+      headers[this.countries[country].id] = this.allKeyData[this.countries[country].id].Profile.Country
+    }
+    //console.log(allKeyData)
+    exportCSVFile(headers, countryExport, "sids_profile_data", "")
+
+
+    }
   },
   created() {
     this.activeCountry = this.countries[0].id;
