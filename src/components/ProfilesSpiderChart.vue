@@ -1,5 +1,11 @@
 <template>
-  <div :id="`graph${pillarName}`">
+  <div class="graph-container">
+      <h4 class="text-center"
+        :style="{color: graphOptions.textColor}">
+        {{headerText}}
+      </h4>
+    <div :id="`graph${pillarName}`">
+    </div>
   </div>
 </template>
 
@@ -20,6 +26,10 @@ export default {
     graphOptions: {
       type: Object,
       default: ()=>({})
+    },
+    headerText: {
+      type: String,
+      default: ''
     }
   },
   data: ()=>({
@@ -58,7 +68,10 @@ export default {
       })
     },
     graphRanks() {
-      const rankName = `${this.pillarName}Rank`;
+      let rankName = `${this.pillarName}Rank`;
+      if(this.pillarName === 'MVI2') {
+        rankName = 'MVI2'
+      }
       return this.activeCountries.map(country => {
         return {
           name:country,
@@ -72,6 +85,9 @@ export default {
     maxAxisValue() {
       return this.graphRanks.reduce((maxCountriesValue, country)=>{
         const currentCountryMax = country.axes.reduce((maxAxesValue, axe)=>{
+          if(isNaN(parseInt(axe.value))) {
+            return maxAxesValue
+          }
           return maxAxesValue > axe.value ? maxAxesValue : axe.value;
         }, this.fullGraphOptions.maxValue);
         return maxCountriesValue > currentCountryMax ? maxCountriesValue : currentCountryMax;
@@ -80,7 +96,7 @@ export default {
   },
   methods:{
     drawGraph(){
-
+      let rootThis = this;
       const wrap = (text, width) => {
         text.each(function () {
           var text = d3.select(this),
@@ -372,15 +388,14 @@ export default {
                   .transition()
                   .style('display', 'block')
                   .text(function () {
-                    console.log(d)
-                    return this.allKeyData[d.name]["Profile"].Country
+                    return rootThis.allKeyData[d.name]["Profile"].Country
                   });
               })
               .on('mouseout', () => {
                 //Bring back all blobs
                 parent.selectAll(".radarArea")
                   .transition().duration(200)
-                  .style("fill-opacity", this.fullGraphOptions.opacityArea);
+                  .style("fill-opacity", rootThis.fullGraphOptions.opacityArea);
                 tooltip2.transition()
                   .style('display', 'none').text('');
               });
@@ -400,9 +415,9 @@ export default {
                 .enter()
                 .append("circle")
                 .attr("class", "radarCircle")
-                .attr("r", this.fullGraphOptions.dotRadius)
-                .attr("cx", (d, i) => rScale(d.value) * Math.cos(angleSlice * i - HALF_PI - this.fullGraphOptions.spin))
-                .attr("cy", (d, i) => rScale(d.value) * Math.sin(angleSlice * i - HALF_PI - this.fullGraphOptions.spin))
+                .attr("r", rootThis.fullGraphOptions.dotRadius)
+                .attr("cx", (d, i) => rScale(d.value) * Math.cos(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
+                .attr("cy", (d, i) => rScale(d.value) * Math.sin(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
                 .style("fill", "#ffffff")//(d) => this.fullGraphOptions.color(d.id))
                 .style("fill-opacity", 0.8)
                 .style("pointer-events","none");
@@ -418,7 +433,7 @@ export default {
 
               //Wrapper for the invisible circles on top
               const blobCircleWrapper = g.selectAll(".radarCircleWrapper")
-                .data(this.graphRanks)
+                .data(rootThis.graphRanks)
                 .enter().append("g")
                 .attr("class", "radarCircleWrapper");
 
@@ -427,38 +442,39 @@ export default {
                   .data(d => d.axes)
                   .enter().append("circle")
                   .attr("class", "radarInvisibleCircle")
-                  .attr("r", this.fullGraphOptions.dotRadius * 1.5)
-                  .attr("cx", (d, i) => rScale(d.value) * Math.cos(angleSlice * i - HALF_PI - this.fullGraphOptions.spin))
-                  .attr("cy", (d, i) => rScale(d.value) * Math.sin(angleSlice * i - HALF_PI - this.fullGraphOptions.spin))
+                  .attr("r", rootThis.fullGraphOptions.dotRadius * 1.5)
+                  .attr("cx", (d, i) => rScale(d.value) * Math.cos(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
+                  .attr("cy", (d, i) => rScale(d.value) * Math.sin(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
                   .style("fill", "none")
                   .style("pointer-events", "all")
                   .on("mouseover", function (d) {
-                    tooltip
-                      .attr('x', this.cx.baseVal.value)
-                      .attr('y', this.cy.baseVal.value - 10)
-                    if (this.pillarName == "MVI") {
-                      tooltip.transition()
-                        .style('display', 'block')
-                        .text(this.nFormatter(d.value,2));
-                    }else if (this.pillarName=="customIndex") {
-                      tooltip.transition()
-                        .style('display', 'block')
-                        .text(this.nFormatter(d.value,2)+", "+d.axis);
-                    } else {
-                      tooltip.transition()
-                        .style('display', 'block')
-                        .text(function () {
-                          let value = this.graphData[0].axes.filter(obj => { return obj.axis === d.axis })[0].value
-                          if (isNaN(value)) {
-                            console.log(value)
-                            return ""
-                          }
-                          else {
-                            return this.nFormatter(value,2) + ", " + this.rankFormat(d.value.toString()) + this.fullGraphOptions.unit;
-                          }
-                        })
+                    if(rootThis.pillarName !== 'MVI2'){
+                      tooltip
+                        .attr('x', this.cx.baseVal.value)
+                        .attr('y', this.cy.baseVal.value - 10)
+                      if (this.pillarName == "MVI") {
+                        tooltip.transition()
+                          .style('display', 'block')
+                          .text(rootThis.nFormatter(d.value,2));
+                      }else if (this.pillarName=="customIndex") {
+                        tooltip.transition()
+                          .style('display', 'block')
+                          .text(this.nFormatter(d.value,2)+", "+d.axis);
+                      } else {
+                        tooltip.transition()
+                          .style('display', 'block')
+                          .text(function () {
+                            let value = rootThis.graphData[0].axes.filter(obj => { return obj.axis === d.axis })[0].value
+                            if (isNaN(value)) {
+                              console.log(value)
+                              return ""
+                            }
+                            else {
+                              return rootThis.nFormatter(value,2) + ", " + rootThis.rankFormat(d.value.toString()) + rootThis.fullGraphOptions.unit;
+                            }
+                          })
+                      }
                     }
-
                   })
                   .on("mouseout", function () {
                     tooltip.transition()
@@ -473,7 +489,6 @@ export default {
                     .attr("height", 40)
 
                   if (this.fullGraphOptions.legend !== false && typeof this.fullGraphOptions.legend === "object") {
-                    //console.log("legended")
                     let legendZone = svgLegend;//.append('g');
                     let names = this.graphRanks.map(el => el.name);
                     let legend = legendZone.append("g")
@@ -503,7 +518,6 @@ export default {
                       .attr("fill", "#737373")
                       .text(d => this.allKeyData[d]["Profile"].Country);
                   }
-                  console.log("end")
                   return svg;
         }
       }
@@ -549,4 +563,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .graph-container{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
 </style>
