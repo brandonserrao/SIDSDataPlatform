@@ -8,6 +8,8 @@ export default new Vuex.Store({
   state: {
     keyMetadata: null,
     allKeyData: null,
+    fundingCategories: null,
+    SIDSData: null,
     countryList: null
   },
   mutations: {
@@ -17,10 +19,14 @@ export default new Vuex.Store({
     setKeyData(state, data) {
       state.allKeyData = data;
     },
+    setFundingCategories(state, data) {
+      state.fundingCategories = data;
+    },
+    setSIDSData(state, data) {
+      state.SIDSData = data;
+    },
     setCountryList(state, data) {
       state.countryList = data;
-
-      console.log(state.countryList)
     }
   },
   actions: {
@@ -37,6 +43,24 @@ export default new Vuex.Store({
         console.log(allKeyData)
         commit("setKeyData", allKeyData);
         dispatch('generateCountryList', allKeyData)
+      }
+    },
+    async setFundingCategories({ state, commit }) {
+      if(!state.fundingCategories){
+        const fundingCategories = await service.loadFundingCategories();
+
+        const filteredData = fundingCategories.filter(category => {
+          return state.SIDSData.some(source => {
+            return source.donors && source.donors.includes(category.name)
+          })
+        })
+        commit("setFundingCategories", filteredData);
+      }
+    },
+    async setSIDSData({ state, commit }) {
+      if(!state.SIDSData){
+        const SIDSData = await service.loadSIDSData();
+        commit("setSIDSData", SIDSData);
       }
     },
     generateCountryList({ commit }, data) {

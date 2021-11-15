@@ -12,7 +12,13 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Portfolio.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Portfolio.vue'),
+    beforeEnter: async (to, from, next) => {
+      await store.dispatch('getAllKeyData');
+      await store.dispatch('setSIDSData');
+      await store.dispatch('setFundingCategories');
+      next()
+    }
   },
   {
     path: '/development-indicators',
@@ -31,7 +37,7 @@ const routes = [
     beforeEnter: async (to, from, next) => {
       await store.dispatch('getMetaData');
       await store.dispatch('getAllKeyData');
-     next()
+      next()
     }
   },
   {
