@@ -4,6 +4,16 @@
         :style="{color: graphOptions.textColor}">
         {{headerText}}
       </h4>
+      <div class="d-none" v-for="(axis, index) in graphRanks[0].axes" :id="`${pillarName}${index}`" :key="index">
+        <profiles-spider-chart-tooltip
+          :header="axis.axis"
+          :rank="axis.value"
+          :value="graphData[0].axes[index].value"
+          :source="keyMetadata[axis.axis].source"
+          :definition="keyMetadata[axis.axis].longDefinition"
+          :link="keyMetadata[axis.axis].sourceLink"
+        />
+      </div>
     <div :id="`graph${pillarName}`">
     </div>
   </div>
@@ -12,8 +22,14 @@
 <script>
 import * as d3 from 'd3';
 import { mapState } from 'vuex';
+import tippy from 'tippy.js';
+import ProfilesSpiderChartTooltip from '@/components/ProfilesSpiderChartTooltip';
+
 export default {
   name: 'ProfilesSpiderChart',
+  components:{
+    ProfilesSpiderChartTooltip
+  },
   props: {
     activeCountries: {
       type: Array,
@@ -60,6 +76,7 @@ export default {
       keyMetadata: state => state.keyMetadata
     }),
     graphData() {
+      console.log(this.keyMetadata, 'mData')
       return this.activeCountries.map(country => {
         return {
           name:country,
@@ -230,6 +247,19 @@ export default {
           .text(d => d)
           .call(wrap, this.fullGraphOptions.wrapWidth)
           .style("pointer-events","auto")
+          .attr("id", (d, i) => `${this.pillarName}axis${i}`)
+          this.graphRanks[0].axes.map((axis, i) => {
+            tippy(`#${this.pillarName}axis${i}`, {
+              content() {
+                const template = document.getElementById(`${rootThis.pillarName}${i}`);
+                return template.innerHTML;
+              },
+              theme: 'light',
+              interactive: true,
+              allowHTML: true,
+              appendTo: () => document.body
+            });
+          })
           // .on('mouseover', function (d) {
           //   let sourceLink;
           //   try { sourceLink = this.keyMetadata[0][d].sourceLink }
@@ -277,19 +307,88 @@ export default {
           // .on('click', function (d) {
           //   window.open(this.keyMetadata[0][d].sourceLink, '_blank');
           // });
+      }
+      const radarLine = d3.radialLine()
+        .curve(d3.curveLinearClosed)
+        .radius(d => rScale(d.value))
+        .angle((d, i) => i * angleSlice);
 
-          const radarLine = d3.radialLine()
-            .curve(d3.curveLinearClosed)
-            .radius(d => rScale(d.value))
-            .angle((d, i) => i * angleSlice);
+      let blobWrapper = g.selectAll(".radarWrapper")
+        .data(this.graphRanks)
+        .enter().append("g")
+        .attr("class", "radarWrapper");
 
-          let blobWrapper = g.selectAll(".radarWrapper")
-            .data(this.graphRanks)
-            .enter().append("g")
-            .attr("class", "radarWrapper");
+      const tooltip2 = g.append("text")
+        //.attr("class", "tooltip")
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr("class", "spiderTooltip")
+        .style("font-size", "14px")
+        .style("font-weight", "bold")
+        .style('display', 'none')
+        .attr("text-anchor", "middle")
+        .attr("z-index", 100)
+        .attr("dy", "0.35em");
 
-          const tooltip2 = g.append("text")
-            //.attr("class", "tooltip")
+      blobWrapper
+        .append("path")
+        .attr("class", "radarArea")
+        .attr("d", d => radarLine(d.axes))
+        .style("fill", (d, i) => this.fullGraphOptions.color(i))
+        .style("fill-opacity", this.fullGraphOptions.opacityArea)
+        .style("pointer-events","auto")
+        .on('mouseover', function (d) {
+          //Dim all blobs
+          parent.selectAll(".radarArea")
+            .transition().duration(200)
+            .style("fill-opacity", 0.1);
+          //Bring back the hovered over blob
+          d3.select(this)
+            .transition().duration(200)
+            .style("fill-opacity", 0.7);
+
+          //tooltip with name of country
+          tooltip2
+            .attr('x', 0)
+            .attr('y', 0)
+            .transition()
+            .style('display', 'block')
+            .text(function () {
+              return rootThis.allKeyData[d.name]["Profile"].Country
+            });
+        })
+        .on('mouseout', () => {
+            //Bring back all blobs
+            parent.selectAll(".radarArea")
+              .transition().duration(200)
+              .style("fill-opacity", rootThis.fullGraphOptions.opacityArea);
+            tooltip2.transition()
+              .style('display', 'none').text('');
+          });
+      //Create the outlines
+      blobWrapper.append("path")
+            .attr("class", "radarStroke")
+            .attr("d", function (d) { return radarLine(d.axes); })
+            .style("stroke-width", this.fullGraphOptions.strokeWidth + "px")
+            .style("stroke", (d, i) => this.fullGraphOptions.color(i))
+            .style("fill", "none")
+            .style("filter", "url(#glow)")
+            .style("pointer-events","none");
+
+      //Append the circles
+      blobWrapper.selectAll(".radarCircle")
+            .data(d => d.axes)
+            .enter()
+            .append("circle")
+            .attr("class", "radarCircle")
+            .attr("r", rootThis.fullGraphOptions.dotRadius)
+            .attr("cx", (d, i) => rScale(d.value) * Math.cos(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
+            .attr("cy", (d, i) => rScale(d.value) * Math.sin(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
+            .style("fill", "#ffffff")//(d) => this.fullGraphOptions.color(d.id))
+            .style("fill-opacity", 0.8)
+            .style("pointer-events","none");
+
+      const tooltip = g.append("text")
             .attr('x', 0)
             .attr('y', 0)
             .attr("class", "spiderTooltip")
@@ -297,230 +396,95 @@ export default {
             .style("font-weight", "bold")
             .style('display', 'none')
             .attr("text-anchor", "middle")
-            .attr("z-index", 100)
-            .attr("dy", "0.35em");
+            .attr("dy", "0.35em")
 
-          if (this.pillarName == "customIndex") {
-            blobWrapper
-              .append("path")
-              .attr("class", "radarArea")
-              .attr("d", d => radarLine(d.axes))
-              .style("fill", (d, i) => this.fullGraphOptions.color(i))
-              .style("fill-opacity", this.fullGraphOptions.opacityArea)
-              .style("pointer-events","auto")
-              .on('mouseover', function (d) {
-                //Dim all blobs
-                parent.selectAll(".radarArea")
-                  .transition().duration(200)
-                  .style("fill-opacity", 0.1);
-                if (d.name == "Environmental") {
-                  //Bring back the hovered over blob
-                  d3.select(this)
-                    .transition().duration(100)
-                    .style("fill-opacity", 0.7);
-                }
-                else if (d.name == "Geographic") {
-                  parent.selectAll(".radarArea").filter(function (d) {
-                    console.log(d)
-                    return d.name == "Geographic" || d.name == "Environmental"
-                  })
-                    .transition().duration(200)
-                    .style("fill-opacity", 0.7);
-                  //Bring back the hovered over blob
-                }
-                else if (d.name == "Economic") {
-                  parent.selectAll(".radarArea").filter(function (d) {
-                    //console.log(d)
-                    return d.name == "Geographic" || d.name == "Environmental" || d.name == "Economic"
-                  })
-                    .transition().duration(200)
-                    .style("fill-opacity", 0.7);
-                  //Bring back the hovered over blob
-                }
-                else if (d.name == "Financial") {
-                  parent.selectAll(".radarArea")
-                    .transition().duration(200)
-                    .style("fill-opacity", 0.7);
-                  //Bring back the hovered over blob
-                }
-                //tooltip with name of country
-                tooltip2
-                  .attr('x', 0)
-                  .attr('y', 0)
-                  .transition()
-                  .style('display', 'block')
-                  .text(function () {
-                    //console.log(d)
-                    return d.name
-                  });//["Profile"].Country
-              })
-              .on('mouseout', () => {
-                //Bring back all blobs
-                parent.selectAll(".radarArea")
-                  .transition().duration(200)
-                  .style("fill-opacity", this.fullGraphOptions.opacityArea);
-                tooltip2.transition()
-                  .style('display', 'none').text('');
-              });
-          }
-          else {
-            blobWrapper
-              .append("path")
-              .attr("class", "radarArea")
-              .attr("d", d => radarLine(d.axes))
-              .style("fill", (d, i) => this.fullGraphOptions.color(i))
-              .style("fill-opacity", this.fullGraphOptions.opacityArea)
-              .style("pointer-events","auto")
-              .on('mouseover', function (d) {
-                //Dim all blobs
-                parent.selectAll(".radarArea")
-                  .transition().duration(200)
-                  .style("fill-opacity", 0.1);
-                //Bring back the hovered over blob
-                d3.select(this)
-                  .transition().duration(200)
-                  .style("fill-opacity", 0.7);
+      //Wrapper for the invisible circles on top
+      const blobCircleWrapper = g.selectAll(".radarCircleWrapper")
+        .data(rootThis.graphRanks)
+        .enter().append("g")
+        .attr("class", "radarCircleWrapper");
 
-                //tooltip with name of country
-                tooltip2
-                  .attr('x', 0)
-                  .attr('y', 0)
-                  .transition()
-                  .style('display', 'block')
-                  .text(function () {
-                    return rootThis.allKeyData[d.name]["Profile"].Country
-                  });
-              })
-              .on('mouseout', () => {
-                //Bring back all blobs
-                parent.selectAll(".radarArea")
-                  .transition().duration(200)
-                  .style("fill-opacity", rootThis.fullGraphOptions.opacityArea);
-                tooltip2.transition()
-                  .style('display', 'none').text('');
-              });
-              //Create the outlines
-              blobWrapper.append("path")
-                .attr("class", "radarStroke")
-                .attr("d", function (d) { return radarLine(d.axes); })
-                .style("stroke-width", this.fullGraphOptions.strokeWidth + "px")
-                .style("stroke", (d, i) => this.fullGraphOptions.color(i))
-                .style("fill", "none")
-                .style("filter", "url(#glow)")
-                .style("pointer-events","none");
-
-              //Append the circles
-              blobWrapper.selectAll(".radarCircle")
-                .data(d => d.axes)
-                .enter()
-                .append("circle")
-                .attr("class", "radarCircle")
-                .attr("r", rootThis.fullGraphOptions.dotRadius)
-                .attr("cx", (d, i) => rScale(d.value) * Math.cos(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
-                .attr("cy", (d, i) => rScale(d.value) * Math.sin(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
-                .style("fill", "#ffffff")//(d) => this.fullGraphOptions.color(d.id))
-                .style("fill-opacity", 0.8)
-                .style("pointer-events","none");
-              const tooltip = g.append("text")
-                .attr('x', 0)
-                .attr('y', 0)
-                .attr("class", "spiderTooltip")
-                .style("font-size", "14px")
-                .style("font-weight", "bold")
-                .style('display', 'none')
-                .attr("text-anchor", "middle")
-                .attr("dy", "0.35em")
-
-              //Wrapper for the invisible circles on top
-              const blobCircleWrapper = g.selectAll(".radarCircleWrapper")
-                .data(rootThis.graphRanks)
-                .enter().append("g")
-                .attr("class", "radarCircleWrapper");
-
-                //Append a set of invisible circles on top for the mouseover pop-up
-                blobCircleWrapper.selectAll(".radarInvisibleCircle")
-                  .data(d => d.axes)
-                  .enter().append("circle")
-                  .attr("class", "radarInvisibleCircle")
-                  .attr("r", rootThis.fullGraphOptions.dotRadius * 1.5)
-                  .attr("cx", (d, i) => rScale(d.value) * Math.cos(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
-                  .attr("cy", (d, i) => rScale(d.value) * Math.sin(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
-                  .style("fill", "none")
-                  .style("pointer-events", "all")
-                  .on("mouseover", function (d) {
-                    if(rootThis.pillarName !== 'MVI2'){
-                      tooltip
-                        .attr('x', this.cx.baseVal.value)
-                        .attr('y', this.cy.baseVal.value - 10)
-                      if (this.pillarName == "MVI") {
-                        tooltip.transition()
-                          .style('display', 'block')
-                          .text(rootThis.nFormatter(d.value,2));
-                      }else if (this.pillarName=="customIndex") {
-                        tooltip.transition()
-                          .style('display', 'block')
-                          .text(this.nFormatter(d.value,2)+", "+d.axis);
-                      } else {
-                        tooltip.transition()
-                          .style('display', 'block')
-                          .text(function () {
-                            let value = rootThis.graphData[0].axes.filter(obj => { return obj.axis === d.axis })[0].value
-                            if (isNaN(value)) {
-                              console.log(value)
-                              return ""
-                            }
-                            else {
-                              return rootThis.nFormatter(value,2) + ", " + rootThis.rankFormat(d.value.toString()) + rootThis.fullGraphOptions.unit;
-                            }
-                          })
+      //Append a set of invisible circles on top for the mouseover pop-up
+      blobCircleWrapper.selectAll(".radarInvisibleCircle")
+        .data(d => d.axes)
+        .enter().append("circle")
+        .attr("class", "radarInvisibleCircle")
+        .attr("r", rootThis.fullGraphOptions.dotRadius * 1.5)
+        .attr("cx", (d, i) => rScale(d.value) * Math.cos(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
+        .attr("cy", (d, i) => rScale(d.value) * Math.sin(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin))
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .on("mouseover", function (d) {
+              if(rootThis.pillarName !== 'MVI2'){
+                tooltip
+                  .attr('x', this.cx.baseVal.value)
+                  .attr('y', this.cy.baseVal.value - 10)
+                if (this.pillarName == "MVI") {
+                  tooltip.transition()
+                    .style('display', 'block')
+                    .text(rootThis.nFormatter(d.value,2));
+                } else if (this.pillarName=="customIndex") {
+                  tooltip.transition()
+                    .style('display', 'block')
+                    .text(this.nFormatter(d.value,2)+", "+d.axis);
+                } else {
+                  tooltip.transition()
+                    .style('display', 'block')
+                    .text(function () {
+                      let value = rootThis.graphData[0].axes.filter(obj => { return obj.axis === d.axis })[0].value
+                      if (isNaN(value)) {
+                        return ""
                       }
-                    }
-                  })
-                  .on("mouseout", function () {
-                    tooltip.transition()
-                      .style('display', 'none').text('');
-                  });
-
-                  d3.select("#spiderLegend").select("svg").remove();
-
-                  //Initiate the radar chart SVG
-                  let svgLegend = d3.select("#spiderLegend").append("svg")
-                    .attr("width", "100%")
-                    .attr("height", 40)
-
-                  if (this.fullGraphOptions.legend !== false && typeof this.fullGraphOptions.legend === "object") {
-                    let legendZone = svgLegend;//.append('g');
-                    let names = this.graphRanks.map(el => el.name);
-                    let legend = legendZone.append("g")
-                      //.attr("class", "legend")
-                      .attr("height", 40)
-                      .attr("width", "100%")
-                      .attr('transform', `translate(${this.fullGraphOptions.legend.translateX},${this.fullGraphOptions.legend.translateY})`)
-                      .style("background-color", "red");
-                    // Create rectangles markers
-                    legend.selectAll('rect')
-                      .data(names)
-                      .enter()
-                      .append("rect")
-                      .attr("x", 20)
-                      .attr("y", 5)
-                      .attr("width", 10)
-                      .attr("height", 10)
-                      .style("fill", (d, i) => this.fullGraphOptions.color(i));
-                    // Create labels
-                    legend.selectAll('text')
-                      .data(names)
-                      .enter()
-                      .append("text")
-                      .attr("x", this.fullGraphOptions.w - 52)
-                      .attr("y", (d, i) => i * 20 + 9)
-                      .attr("font-size", "9px")
-                      .attr("fill", "#737373")
-                      .text(d => this.allKeyData[d]["Profile"].Country);
+                      else {
+                        return rootThis.nFormatter(value,2) + ", " + rootThis.rankFormat(d.value.toString()) + rootThis.fullGraphOptions.unit;
+                      }
+                    })
                   }
-                  return svg;
-        }
-      }
+                }
+              })
+              .on("mouseout", function () {
+                tooltip.transition()
+                  .style('display', 'none').text('');
+              });
+
+              d3.select("#spiderLegend").select("svg").remove();
+
+              //Initiate the radar chart SVG
+              let svgLegend = d3.select("#spiderLegend").append("svg")
+                .attr("width", "100%")
+                .attr("height", 40)
+
+              if (this.fullGraphOptions.legend !== false && typeof this.fullGraphOptions.legend === "object") {
+                let legendZone = svgLegend;//.append('g');
+                let names = this.graphRanks.map(el => el.name);
+                let legend = legendZone.append("g")
+                  //.attr("class", "legend")
+                  .attr("height", 40)
+                  .attr("width", "100%")
+                  .attr('transform', `translate(${this.fullGraphOptions.legend.translateX},${this.fullGraphOptions.legend.translateY})`)
+                  .style("background-color", "red");
+                // Create rectangles markers
+                legend.selectAll('rect')
+                  .data(names)
+                  .enter()
+                  .append("rect")
+                  .attr("x", 20)
+                  .attr("y", 5)
+                  .attr("width", 10)
+                  .attr("height", 10)
+                  .style("fill", (d, i) => this.fullGraphOptions.color(i));
+                // Create labels
+                legend.selectAll('text')
+                  .data(names)
+                  .enter()
+                  .append("text")
+                  .attr("x", this.fullGraphOptions.w - 52)
+                  .attr("y", (d, i) => i * 20 + 9)
+                  .attr("font-size", "9px")
+                  .attr("fill", "#737373")
+                  .text(d => this.allKeyData[d]["Profile"].Country);
+              }
+              return svg;
     },
 
     // TODO: move these to mixins
@@ -552,7 +516,7 @@ export default {
   },
   watch: {
     activeCountries() {
-      this.drawGraph();
+      this.$nextTick(this.drawGraph);
     }
   },
   mounted() {

@@ -34,7 +34,7 @@
     <v-col cols="6">
       <v-select
         v-model="compareCuntries"
-        :items="countries"
+        :items="filteredCountries"
         item-text="Country"
         item-value="id"
         label="Overlay countries to compare indicator rank among SIDS"
