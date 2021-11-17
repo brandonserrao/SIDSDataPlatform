@@ -24,12 +24,14 @@ import * as d3 from 'd3';
 import { mapState } from 'vuex';
 import tippy from 'tippy.js';
 import ProfilesSpiderChartTooltip from '@/components/ProfilesSpiderChartTooltip';
+import format from '@/mixins/format.mixin'
 
 export default {
   name: 'ProfilesSpiderChart',
   components:{
     ProfilesSpiderChartTooltip
   },
+  mixins:[format],
   props: {
     activeCountries: {
       type: Array,
@@ -260,53 +262,6 @@ export default {
               appendTo: () => document.body
             });
           })
-          // .on('mouseover', function (d) {
-          //   let sourceLink;
-          //   try { sourceLink = this.keyMetadata[0][d].sourceLink }
-          //   catch (error) { sourceLink = "Link" }
-          //   let pillarData, indicatorValue, sourceName, longDefinition;
-          //   try {
-          //     pillarData = this.graphRanks[0][`${this.pillarName}Rank`]
-          //     for (let el in pillarData) {
-          //       if (pillarData[el].axis == d) {
-          //         indicatorValue = pillarData[el].value
-          //       }
-          //     }
-          //   }
-          //   catch (error) { indicatorValue = "No Data" }
-          //
-          //   try {
-          //     sourceName = this.keyMetadata[0][d].sourceName;
-          //   }
-          //   catch (error) { sourceName = "Source" }
-          //
-          //   try {
-          //     longDefinition = this.keyMetadata[0][d].longDefinition
-          //   }
-          //   catch (error) {
-          //     longDefinition = d
-          //   }
-          //
-          //   let value = parseFloat(this.graphData[0].axes.filter(obj => { return obj.axis === d })[0].value);
-          //   value = value>0.001 ? value=value.toFixed(3) : value=value.toString();
-          //   // TODO: store colors somwhere
-          //   let pillarColors = { "Blue": "#0BC6FF", "Climate": "#0DB14B", "Digital": "#F58220" }
-          //   let pillarColor = pillarColors[this.pillarName]
-          //   document.getElementById('tooltipIndicatorContent').innerHTML = '<h4 style="color:' + pillarColor + '">' + d +
-          //     '</h4><h6 style="display:inline">Definition: ' + '</h6><p>' + longDefinition + '</p><h6 style="margin-top:4px;">' + "Source: " + sourceName + '</h6><a href="' + sourceLink +
-          //     '"><h6 style="color:black">' + "Rank: " + this.rankFormat(indicatorValue.toString()) + '</h6></a>' +
-          //     '<h6 style="color:blue">' + "Value: " + value  + '</h6></a>';
-          //
-          //   tooltip3.setAttribute('data-show', '');
-          //   keyIndicatorPopperInstance[d].update();
-          //
-          // })
-          // .on('mouseout', function () {
-          //   tooltip3.removeAttribute('data-show');
-          // })
-          // .on('click', function (d) {
-          //   window.open(this.keyMetadata[0][d].sourceLink, '_blank');
-          // });
       }
       const radarLine = d3.radialLine()
         .curve(d3.curveLinearClosed)
@@ -486,33 +441,6 @@ export default {
               }
               return svg;
     },
-
-    // TODO: move these to mixins
-    rankFormat(num) {
-      if (num < 20 && num > 10) {
-        return num.toString() + "th"
-      }
-      else if (num.slice(-1) == 1) { return num.toString() + "st" }
-      else if (num.slice(-1) == 2) { return num.toString() + "nd" }
-      else if (num.slice(-1) == 3) { return num.toString() + "rd" }
-      else { return num.toString() + "th" }
-    },
-    nFormatter(num, digits) {
-      let si = [
-        { value: 1, symbol: "" },
-        { value: 1E3, symbol: "k" },
-        { value: 1E6, symbol: "M" },
-        { value: 1E9, symbol: "B" }
-      ];
-      let rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-      let i;
-      for (i = si.length - 1; i > 0; i--) {
-        if (num >= si[i].value) {
-          break;
-        }
-      }
-      return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
-    }
   },
   watch: {
     activeCountries() {

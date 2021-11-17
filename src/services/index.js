@@ -1,5 +1,5 @@
 import axios from 'axios';
-import * as Papa from 'papaparse';
+import * as d3 from 'd3';
 
 
 const API_URL = 'https://raw.githubusercontent.com/Ben-Keller/smallislands/main/data';
@@ -30,6 +30,6 @@ async function loadFundingCategories () {
 }
 async function loadSIDSData () {
   const resp = await axios.get(`${API_URL}/sids_db.csv`)
-  return Papa.parse(resp.data, {header:true}).data
+  return d3.csvParse(resp.data)
 
 }

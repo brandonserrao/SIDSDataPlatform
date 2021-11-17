@@ -10,6 +10,7 @@ export default new Vuex.Store({
     allKeyData: null,
     fundingCategories: null,
     SIDSData: null,
+    SIDSDataWithDonors: null,
     countryList: null
   },
   mutations: {
@@ -24,6 +25,9 @@ export default new Vuex.Store({
     },
     setSIDSData(state, data) {
       state.SIDSData = data;
+    },
+    setSIDSDataWithDonors(state, data) {
+      state.SIDSDataWithDonors = data;
     },
     setCountryList(state, data) {
       state.countryList = data;
@@ -45,21 +49,23 @@ export default new Vuex.Store({
         dispatch('generateCountryList', allKeyData)
       }
     },
-    async setFundingCategories({ state, commit }) {
+    async setFundingCategories({ state, commit, dispatch }) {
       if(!state.fundingCategories){
         const fundingCategories = await service.loadFundingCategories();
-
         const filteredData = fundingCategories.filter(category => {
           return state.SIDSData.some(source => {
             return source.donors && source.donors.includes(category.name)
           })
         })
+        console.log(filteredData)
         commit("setFundingCategories", filteredData);
+        dispatch('setFullDonorsInfo');
       }
     },
     async setSIDSData({ state, commit }) {
       if(!state.SIDSData){
         const SIDSData = await service.loadSIDSData();
+        console.log(SIDSData)
         commit("setSIDSData", SIDSData);
       }
     },
@@ -73,6 +79,29 @@ export default new Vuex.Store({
         countryList.push(profile);
       }
       commit("setCountryList", countryList);
+    },
+    setFullDonorsInfo({ state, commit }) {
+      let projectsWithDonorInfo = state.SIDSData.map(project => {
+        let donorInfo
+        if(project.donors) {
+          donorInfo = project.donors.split(';').map(donorName => {
+            let donor = state.fundingCategories.find((category) => {
+              return category.name === donorName;
+            });
+            if(typeof donor === 'undefined') {
+              return {
+                name: donorName
+              }
+            }
+            return donor
+          });
+        } else {
+          donorInfo = []
+        }
+        project.donors = donorInfo;
+        return project
+      })
+      commit('setSIDSDataWithDonors', projectsWithDonorInfo)
     }
   }
 });
