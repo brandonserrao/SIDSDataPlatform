@@ -3,7 +3,7 @@
     <v-row>
       <portfolio-map></portfolio-map>
     </v-row>
-    <router-view></router-view>
+    <router-view class="mb-3"></router-view>
     <v-row justify="center">
       <v-btn-toggle>
         <v-btn to="/portfolio/samoa">
@@ -226,17 +226,6 @@ export default {
       }
       else if(this.fundingCategory === 'Donor Countries') {
         return donor.category === 'Government' && this.sidsList.every(country =>  country != donor.subCategory);
-      }
-      else {
-        return donor.category === this.fundingCategory;
-      }
-    },
-    checkProjectsCategory(project, donor) {
-      if(this.fundingCategory === 'Programme Countries') {
-        return donor.category === 'Government' && project.country === donor.subCategory;
-      }
-      else if(this.fundingCategory === 'Donor Countries') {
-        return project.country  != donor.subCategory;
       }
       else {
         return donor.category === this.fundingCategory;
