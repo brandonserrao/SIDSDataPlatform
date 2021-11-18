@@ -13,5 +13,18 @@ export default {
       }
       return this.SIDSDataWithDonors
     },
+  },
+  methods: {
+    checkProjectsCategory(project, donor) {
+      if(this.fundingCategory === 'Programme Countries') {
+        return donor.category === 'Government' && project.country === donor.subCategory;
+      }
+      else if(this.fundingCategory === 'Donor Countries') {
+        return project.country  != donor.subCategory;
+      }
+      else {
+        return donor.category === this.fundingCategory;
+      }
+    }
   }
 }

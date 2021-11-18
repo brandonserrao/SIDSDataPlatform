@@ -17,7 +17,6 @@
         </v-btn>
       </v-btn-toggle>
     </v-row>
-    {{year}}
     <v-row>
       <v-col cols="5">
         <portfolio-pie-chart
@@ -216,10 +215,10 @@ export default {
       this.$router.push({query: Object.assign({}, this.$route.query, {year})})
     },
     setCategory(category) {
-      this.$router.push({query: Object.assign({}, this.$route.query, {category : encodeURIComponent(category)})})
+      this.$router.push({query: Object.assign({}, this.$route.query, {fundingCategory : encodeURIComponent(category)})})
     },
     setSource(source) {
-      this.$router.push({query: Object.assign({}, this.$route.query, {source : encodeURIComponent(source)})})
+      this.$router.push({query: Object.assign({}, this.$route.query, {fundingSource : encodeURIComponent(source)})})
     },
     checkDonorsCategory(donor) {
       if(this.fundingCategory === 'Programme Countries') {

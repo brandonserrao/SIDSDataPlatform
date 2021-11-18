@@ -10,11 +10,10 @@ const routes = [
     path: '/portfolio',
     name: 'UNDP SIDS Portfolio',
     props: (route) => ({
-      year: route.query.year || 'all',
-      fundingCategory: decodeURIComponent(route.query.fundingCategory) || 'all',
-      fundingSource: decodeURIComponent(route.query.fundingSource) || 'all'
+      year: route.query.year || '2021',
+      fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
+      fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
     }),
-
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -34,7 +33,12 @@ const routes = [
       {
         path: 'sdgs',
         name: 'SDGS',
-        component: () => import(/* webpackChunkName: "about" */ '../views/SDGS.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/SDGS.vue'),
+        props: (route) => ({
+          year: route.query.year || 'all',
+          fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
+          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
+        }),
       },
       {
         path: 'signature-solutions',
