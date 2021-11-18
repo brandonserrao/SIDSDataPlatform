@@ -48,7 +48,12 @@ const routes = [
       {
         path: 'signature-solutions',
         name: 'SignatureSolutions',
-        component: () => import(/* webpackChunkName: "about" */ '../views/SignatureSolutions.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/SignatureSolutions.vue'),
+        props: (route) => ({
+          year: route.query.year || 'all',
+          fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
+          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
+        }),
       },
       {
         path: '*',

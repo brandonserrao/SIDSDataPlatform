@@ -19,7 +19,7 @@ import sidsdata from '@/mixins/SIDSData.mixin'
 import format from '@/mixins/format.mixin'
 import * as d3 from 'd3';
 export default {
-  name: 'SDGS',
+  name: 'SAMOA',
   data() {
     return {
       svgContainer: null,
