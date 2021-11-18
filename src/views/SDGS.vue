@@ -13,7 +13,6 @@
 </template>
 <script>
 
-import { mapState } from 'vuex';
 import sidsdata from '@/mixins/SIDSData.mixin'
 import format from '@/mixins/format.mixin'
 import * as d3 from 'd3';
@@ -40,9 +39,6 @@ export default {
   props:['year', 'fundingCategory', 'fundingSource'],
   mixins:[sidsdata, format],
   computed: {
-    ...mapState({
-      SIDSDataWithDonors: state => state.SIDSDataWithDonors,
-    }),
     barsHeight(){ return this.svgHeight - this.barsMargin.top - this.barsMargin.bottom },
     barsWidth(){ return this.svgWidth - this.barsMargin.left - this.barsMargin.right },
     projectNamesObject () {
@@ -56,15 +52,6 @@ export default {
         namedObject[sdgName] = this.budgetCount[index];
         return namedObject
       }, {})
-    },
-    filteredProjects() {
-      let filteredProjects = this.filteredYearDataSIDS;
-      if(this.fundingCategory !== 'All') {
-        filteredProjects = filteredProjects.filter((project) => project.donors.some(donor => {
-          return this.checkProjectsCategory(project, donor)
-        }))
-      }
-      return filteredProjects
     },
     barsData() {
       let sdgsData = this.sdgs.map(sdg => {
@@ -187,7 +174,9 @@ export default {
 
        bars.append("text")
           .text(function (d) {
+            if (rootThis.projectNamesObject[d] > 0) {
               return rootThis.projectNamesObject[d].toString().concat(" Projects");
+            }
           })
           .attr("x", function (d) {
               return (x(d) + x.bandwidth() / 8) + 8;
@@ -200,7 +189,9 @@ export default {
 
         bars2.append("text")
           .text(function (d) {
+            if (rootThis.budgetNamesObject[d] > 0) {
               return rootThis.nFormatter(rootThis.budgetNamesObject[d]).concat(" USD");
+            }
           })
           .attr("x", function (d) {
               return (x2(d) + x2.bandwidth() / 8 + x2.bandwidth() / 2.3) + 8;
@@ -282,7 +273,9 @@ export default {
                 return rootThis.getBarLabelsY(d, i, "proj");
             })
             .text(function (d) {
-              return rootThis.projectNamesObject[d].toString().concat(" Projects");
+              if (rootThis.projectNamesObject[d] > 0) {
+                return rootThis.projectNamesObject[d].toString().concat(" Projects");
+              }
             })
 
         d3.selectAll('.barsLabels2')
@@ -292,7 +285,9 @@ export default {
                 return rootThis.getBarLabelsY(d, i, "budg");
             })
             .text(function (d) {
-              return rootThis.nFormatter(rootThis.budgetNamesObject[d]).concat(" USD");
+              if (rootThis.budgetNamesObject[d] > 0) {
+                return rootThis.nFormatter(rootThis.budgetNamesObject[d]).concat(" USD");
+              }
             })
 
     },

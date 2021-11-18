@@ -13,6 +13,15 @@ export default {
       }
       return this.SIDSDataWithDonors
     },
+    filteredProjects() {
+      let filteredProjects = this.filteredYearDataSIDS;
+      if(this.fundingCategory !== 'All') {
+        filteredProjects = filteredProjects.filter((project) => project.donors.some(donor => {
+          return this.checkProjectsCategory(project, donor)
+        }))
+      }
+      return filteredProjects
+    },
   },
   methods: {
     checkProjectsCategory(project, donor) {

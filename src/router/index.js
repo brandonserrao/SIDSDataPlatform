@@ -28,7 +28,12 @@ const routes = [
       {
         path: 'samoa',
         name: 'SAMOA',
-        component: () => import(/* webpackChunkName: "about" */ '../views/SAMOA.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/SAMOA.vue'),
+        props: (route) => ({
+          year: route.query.year || 'all',
+          fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
+          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
+        }),
       },
       {
         path: 'sdgs',
