@@ -9,6 +9,12 @@ const routes = [
   {
     path: '/portfolio',
     name: 'UNDP SIDS Portfolio',
+    props: (route) => ({
+      year: route.query.year || 'all',
+      fundingCategory: decodeURIComponent(route.query.fundingCategory) || 'all',
+      fundingSource: decodeURIComponent(route.query.fundingSource) || 'all'
+    }),
+
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -18,7 +24,32 @@ const routes = [
       await store.dispatch('setSIDSData');
       await store.dispatch('setFundingCategories');
       next()
-    }
+    },
+    children: [
+      {
+        path: 'samoa',
+        name: 'SAMOA',
+        component: () => import(/* webpackChunkName: "about" */ '../views/SAMOA.vue')
+      },
+      {
+        path: 'sdgs',
+        name: 'SDGS',
+        component: () => import(/* webpackChunkName: "about" */ '../views/SDGS.vue')
+      },
+      {
+        path: 'signature-solutions',
+        name: 'SignatureSolutions',
+        component: () => import(/* webpackChunkName: "about" */ '../views/SignatureSolutions.vue')
+      },
+      {
+        path: '*',
+        redirect: 'sdgs'
+      },
+      {
+        path: '',
+        redirect: 'sdgs'
+      }
+    ]
   },
   {
     path: '/development-indicators',
@@ -52,8 +83,7 @@ const routes = [
   },
   {
     path: '*',
-    name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    redirect: '/about'
   }
 
 ]

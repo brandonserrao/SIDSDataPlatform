@@ -1,27 +1,23 @@
 <template>
   <div class="">
     <v-row>
-
       <portfolio-map></portfolio-map>
-      <portfolio-bar></portfolio-bar>
     </v-row>
+    <router-view></router-view>
     <v-row justify="center">
-      <v-btn-toggle
-          v-model="goalType"
-          mandatory
-        >
-        <v-btn value="SAMOA Pathway">
+      <v-btn-toggle>
+        <v-btn to="/portfolio/samoa">
           SAMOA Pathway
         </v-btn>
-        <v-btn value="Sustainable Development Goals">
+        <v-btn to="/portfolio/sdgs">
           Sustainable Development Goals
         </v-btn>
-        <v-btn value="Signature Solutions">
+        <v-btn to="/portfolio/signature-solutions">
           Signature Solutions
         </v-btn>
       </v-btn-toggle>
     </v-row>
-    {{filteredYearDataSIDS.length}}
+    {{year}}
     <v-row>
       <v-col cols="5">
         <portfolio-pie-chart
@@ -39,19 +35,22 @@
       </v-col>
       <v-col cols="2">
         <v-select
-          v-model="year"
+          :value="year"
+          @change="setYear"
           :items="years"
           label="Years"
           outlined
         ></v-select>
         <v-select
-          v-model="fundingCategory"
+          :value="fundingCategory"
+          @change="setCategory"
           :items="fundingCategoriesTypes"
           label="Funding categories"
           outlined
         ></v-select>
         <v-select
-          v-model="fundingSource"
+          :value="fundingSource"
+          @change="setSource"
           :items="fundingCategoriesFiltered"
           label="Funding sources"
           item-text="name"
@@ -67,24 +66,21 @@
 import * as d3 from 'd3';
 // @ is an alias to /src
 import PortfolioMap from '@/components/PortfolioMap';
-import PortfolioBar from '@/components/PortfolioBar';
 import PortfolioPieChart from '@/components/PortfolioPieChart';
 import { mapState } from 'vuex';
+import sidsdata from '@/mixins/SIDSData.mixin'
+
 
 export default {
   name: 'Portfolio',
   components: {
     PortfolioMap,
-    PortfolioBar,
     PortfolioPieChart
   },
+  props:['year', 'fundingCategory', 'fundingSource'],
+  mixins:[sidsdata],
   data:()=>({
-    fundingSource:{
-      subCategory:'All Funding Sources'
-    },
     goalType:'Sustainable Development Goals',
-    fundingCategory:'All',
-    year:'2021',
     fundingCategoriesTypes:['All',"European Union", "Donor Countries", "Programme Countries", "UN Agencies", "UN Pooled Funds", "Vertical Funds", "Other"],
     years:[
       {
@@ -160,7 +156,7 @@ export default {
       }
       sources.unshift({
         name:'All Funding Sources',
-        subCategory:'All Funding Sources'
+        subCategory:'all'
       })
       return sources;
     },
@@ -215,6 +211,16 @@ export default {
     }
   },
   methods: {
+    setYear(year) {
+
+      this.$router.push({query: Object.assign({}, this.$route.query, {year})})
+    },
+    setCategory(category) {
+      this.$router.push({query: Object.assign({}, this.$route.query, {category : encodeURIComponent(category)})})
+    },
+    setSource(source) {
+      this.$router.push({query: Object.assign({}, this.$route.query, {source : encodeURIComponent(source)})})
+    },
     checkDonorsCategory(donor) {
       if(this.fundingCategory === 'Programme Countries') {
         return donor.category === 'Government' && this.sidsList.some(country =>  country === donor.subCategory);

@@ -149,6 +149,9 @@ export default {
             var d2 = interpolate(t);
             var pos = rootThis.outerArc.centroid(d2);
             pos[0] = rootThis.radius * 0.95 * (rootThis.midAngle(d2) < Math.PI ? 1 : -1);
+            if (d.data.value / sumall < 0.0236) {
+              return []
+            }
             return [rootThis.arc.centroid(d2), rootThis.outerArc.centroid(d2), pos];
           };
         });
