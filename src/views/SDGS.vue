@@ -36,7 +36,7 @@ export default {
       prevHeight: 0
     }
   },
-  props:['year', 'fundingCategory', 'fundingSource'],
+  props:['year', 'fundingCategory', 'fundingSource', 'region'],
   mixins:[sidsdata, format],
   computed: {
     barsHeight(){ return this.svgHeight - this.barsMargin.top - this.barsMargin.bottom },

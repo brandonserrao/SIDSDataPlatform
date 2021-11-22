@@ -80,7 +80,9 @@ export default {
             return rootThis.arc(interpolate(t));
           };
         })
-
+        slice.on('click', function (d) {
+          rootThis.setFilter(rootThis.chartName, d.data.category)
+        })
       slice.exit()
         .remove();
 
@@ -158,6 +160,9 @@ export default {
 
       polyline.exit()
         .remove();
+      },
+      setFilter(type, value) {
+        this.$emit('changeFilter',{type, value})
       }
     },
     mounted() {

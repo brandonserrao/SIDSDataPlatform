@@ -20,6 +20,16 @@ export default {
           return this.checkProjectsCategory(project, donor)
         }))
       }
+      if(this.region !== 'All') {
+        filteredProjects = filteredProjects.filter((project) => {
+          return project.region === this.region
+        });
+      }
+      if(this.fundingSource !== 'All Funding Sources') {
+        filteredProjects = filteredProjects.filter((project) => {
+          return project.donors.some(donor => donor.name === this.fundingSource)
+        });
+      }
       return filteredProjects
     },
   },

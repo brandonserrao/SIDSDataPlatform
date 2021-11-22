@@ -22,7 +22,7 @@ import * as d3 from 'd3';
 
 export default {
   name: 'SDGS',
-  props:['year', 'fundingCategory', 'fundingSource'],
+  props:['year', 'fundingCategory', 'fundingSource', 'region'],
   mixins:[sidsdata, format],
   data() {
     return {

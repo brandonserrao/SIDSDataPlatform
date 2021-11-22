@@ -225,7 +225,6 @@ export default {
         for (let indicator in this.allKeyData[this.activeCountry][pillarName]) {
           let newIndi = {}
           newIndi.axis = indicator.replace(/,/g, '')
-          console.log(this.keyMetadata, newIndi.axis)
           newIndi.source = this.keyMetadata[newIndi.axis] && this.keyMetadata[newIndi.axis].sourceName ?
           this.keyMetadata[newIndi.axis].sourceName.replace(/,/g, '') :
           '';
