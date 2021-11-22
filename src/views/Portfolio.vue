@@ -9,7 +9,7 @@
     </v-row>
     <router-view class="mb-3 mt-negative"></router-view>
     <v-row justify="center">
-      <v-btn-toggle v-model="activePage">
+      <v-btn-toggle :value="activePage">
         <v-btn @click="transitionTo('/portfolio/samoa')">
           SAMOA Pathway
         </v-btn>
