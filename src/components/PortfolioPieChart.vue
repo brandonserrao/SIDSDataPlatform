@@ -1,15 +1,25 @@
 <template>
-  <div class="pie-chart" :id="chartName">
+  <div class="">
+    <div class="pie-chart" :id="chartName">
+    </div>
+    <div class="d-none" v-for="(axis, index) in data" :id="chartName +'tooltip'+ index" :key="index">
+      <portfolio-pieChart-tooltip :header="axis.category" :budget="axis.value" :finance="nFormatter(axis.value)" :percetage="data"/>
+    </div>
   </div>
 </template>
 
 <script>
+import PortfolioPieChartTooltip from '@/components/PortfolioPieChartTooltip';
 import * as d3 from 'd3';
 import format from '@/mixins/format.mixin'
+import tippy from 'tippy.js';
 
 export default {
   name: 'PortfolioMap',
   mixins:[format],
+  components:{
+    PortfolioPieChartTooltip
+  },
   props:{
     chartName: {
       type: String,
@@ -35,6 +45,7 @@ export default {
   },
   methods: {
     initChart() {
+      console.log(this.data)
       this.pie = d3.select(`#${this.chartName}`).append("svg").append("g");
       this.pie.append("g")
         .attr("class", "slices").attr("transform", `translate(200, 75)`);
@@ -83,6 +94,18 @@ export default {
         slice.on('click', function (d) {
           rootThis.setFilter(rootThis.chartName, d.data.category)
         })
+      slice.each((data, index, list) => {
+        tippy(list[index], {
+          content() {
+            const template = document.getElementById(`${rootThis.chartName}tooltip${index}`);
+            return template.innerHTML;
+          },
+          theme: 'light',
+          interactive: true,
+          allowHTML: true,
+          appendTo: () => document.body
+        });
+      })
       slice.exit()
         .remove();
 
