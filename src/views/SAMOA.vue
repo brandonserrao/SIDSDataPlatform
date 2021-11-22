@@ -41,7 +41,7 @@ export default {
       prevHeight: 0
     }
   },
-  props:['year', 'fundingCategory', 'fundingSource'],
+  props:['year', 'fundingCategory', 'fundingSource', 'region'],
   mixins:[sidsdata, format],
   computed: {
     barsHeight(){ return this.svgHeight - this.barsMargin.top - this.barsMargin.bottom },
@@ -105,7 +105,6 @@ export default {
       let x = d3.scaleBand().rangeRound([0, this.barsWidth]);//.padding(0.1),
 
       x.domain(this.samoaPriorities);
-      console.log(this.projectCount, this.budgetCount)
       this.y1.domain([0, d3.max(this.projectCount, function (d) { return d; })]);
 
       let x2 = d3.scaleBand().rangeRound([0, this.barsWidth]);//.padding(0.1),

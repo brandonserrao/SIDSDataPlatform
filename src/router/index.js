@@ -10,6 +10,7 @@ const routes = [
     path: '/portfolio',
     name: 'UNDP SIDS Portfolio',
     props: (route) => ({
+      region: route.query.region || 'All',
       year: route.query.year || '2021',
       fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
       fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
@@ -30,6 +31,7 @@ const routes = [
         name: 'SAMOA',
         component: () => import(/* webpackChunkName: "about" */ '../views/SAMOA.vue'),
         props: (route) => ({
+          region: route.query.region || 'All',
           year: route.query.year || 'all',
           fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
           fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
@@ -40,6 +42,7 @@ const routes = [
         name: 'SDGS',
         component: () => import(/* webpackChunkName: "about" */ '../views/SDGS.vue'),
         props: (route) => ({
+          region: route.query.region || 'All',
           year: route.query.year || 'all',
           fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
           fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
@@ -50,6 +53,7 @@ const routes = [
         name: 'SignatureSolutions',
         component: () => import(/* webpackChunkName: "about" */ '../views/SignatureSolutions.vue'),
         props: (route) => ({
+          region: route.query.region || 'All',
           year: route.query.year || 'all',
           fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
           fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')

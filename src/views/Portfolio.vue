@@ -1,18 +1,22 @@
 <template>
   <div class="">
     <v-row>
-      <portfolio-map></portfolio-map>
+      <portfolio-map
+        :region="region"
+        @updateRegion="updateRegion"
+        :projects="filteredProjects"
+      ></portfolio-map>
     </v-row>
-    <router-view class="mb-3"></router-view>
+    <router-view class="mb-3 mt-negative"></router-view>
     <v-row justify="center">
       <v-btn-toggle>
-        <v-btn to="/portfolio/samoa">
+        <v-btn @click="transitionTo('/portfolio/samoa')">
           SAMOA Pathway
         </v-btn>
-        <v-btn to="/portfolio/sdgs">
+        <v-btn @click="transitionTo('/portfolio/sdgs')">
           Sustainable Development Goals
         </v-btn>
-        <v-btn to="/portfolio/signature-solutions">
+        <v-btn @click="transitionTo('/portfolio/signature-solutions')">
           Signature Solutions
         </v-btn>
       </v-btn-toggle>
@@ -20,6 +24,7 @@
     <v-row>
       <v-col cols="5">
         <portfolio-pie-chart
+          @changeFilter="changeFilter"
           :data="regionFunding"
           chartName="region"
           :colorScheme="regionColors"
@@ -27,6 +32,7 @@
       </v-col>
       <v-col cols="5">
         <portfolio-pie-chart
+          @changeFilter="changeFilter"
           :data="sourcesFunding"
           chartName="sources"
           :colorScheme="sourcesColor"
@@ -76,7 +82,7 @@ export default {
     PortfolioMap,
     PortfolioPieChart
   },
-  props:['year', 'fundingCategory', 'fundingSource'],
+  props:['year', 'fundingCategory', 'fundingSource', 'region'],
   mixins:[sidsdata],
   data:()=>({
     goalType:'Sustainable Development Goals',
@@ -137,16 +143,14 @@ export default {
       fundingCategories: state => state.fundingCategories,
       SIDSDataWithDonors: state => state.SIDSDataWithDonors,
     }),
-    filteredYearDataSIDS() {
-      if(this.year !== 'all') {
-        return this.SIDSDataWithDonors.filter(project => {
-            return project.year === this.year
-        })
-      }
-      return this.SIDSDataWithDonors
-    },
     fundingCategoriesFiltered() {
-      const projectsString = JSON.stringify(this.filteredYearDataSIDS);
+      let projects = this.filteredYearDataSIDS;
+      if(this.region !== 'All') {
+        projects = projects.filter((project) => {
+          return project.region === this.region
+        });
+      }
+      const projectsString = JSON.stringify(projects);
       let sources = this.fundingCategories.filter(category => {
         return projectsString.includes(category.name)
       })
@@ -163,7 +167,7 @@ export default {
        let funding = this.regions.map(region => {
         return {
           category: region,
-          value: this.filteredYearDataSIDS.reduce((budget, project) => {
+          value: this.filteredProjects.reduce((budget, project) => {
               if(project.region === region &&
                 (this.fundingCategory === 'All' ||
                 project.donors.some((donor) =>this.checkProjectsCategory(project, donor))
@@ -181,7 +185,7 @@ export default {
       let labels = this.sourcesColor.domain().map(label => {
         return {
           category: label,
-          value: this.filteredYearDataSIDS.reduce((budget, project) => {
+          value: this.filteredProjects.reduce((budget, project) => {
             let financing = project.donors.reduce((finance, donor, index, donors )=> {
               if(this.fundingCategory === 'All' || donors.some((donor) => this.checkProjectsCategory(project, donor))) {
                 if (label == "Programme Countries") {
@@ -215,7 +219,10 @@ export default {
       this.$router.push({query: Object.assign({}, this.$route.query, {year})})
     },
     setCategory(category) {
-      this.$router.push({query: Object.assign({}, this.$route.query, {fundingCategory : encodeURIComponent(category)})})
+      this.$router.push({query: Object.assign({}, this.$route.query, {
+        fundingCategory : encodeURIComponent(category),
+        fundingSource : encodeURIComponent('All Funding Sources')
+      })})
     },
     setSource(source) {
       this.$router.push({query: Object.assign({}, this.$route.query, {fundingSource : encodeURIComponent(source)})})
@@ -230,7 +237,27 @@ export default {
       else {
         return donor.category === this.fundingCategory;
       }
+    },
+    updateRegion(region) {
+      this.region = region;
+    },
+    changeFilter({type, value}) {
+      if(type === 'region') {
+        this.region = value;
+        this.$router.push({query: Object.assign({}, this.$route.query, {region : encodeURIComponent(value)})})
+      } else {
+        this.$router.push({query: Object.assign({}, this.$route.query, {
+          fundingCategory : encodeURIComponent(value)})})
+      }
+    },
+    transitionTo(to) {
+      this.$router.push({path:to, query: this.$route.query})
     }
   }
 }
 </script>
+<style media="screen">
+  .mt-negative{
+    margin-top: -185px !important;
+  }
+</style>
