@@ -9,6 +9,9 @@
         <img :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${parseGoalNumber(index)}.png`">
       </div>
     </v-row>
+    <div class="d-none" v-for="(goal, index) in sdgs" :id="'SDGtooltip'+ index" :key="index">
+      <portfolio-tooltip :header="goal" :data="getSDGSTooltipData(goal)"/>
+    </div>
   </div>
 </template>
 <script>
@@ -16,10 +19,14 @@
 import sidsdata from '@/mixins/SIDSData.mixin'
 import format from '@/mixins/format.mixin'
 import * as d3 from 'd3';
-
+import PortfolioTooltip from '@/components/PortfolioSDGSTooltip'
+import tippy from 'tippy.js';
 
 export default {
   name: 'SDGS',
+  components:{
+    PortfolioTooltip
+  },
   data() {
     return {
       svgContainer: null,
@@ -132,6 +139,31 @@ export default {
           .attr("height", function (d) { return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]); })
           .attr("fill", function (d, i) { return rootThis.colors[i] })
           .style("opacity", 0.5);
+
+
+      let hoverbars = this.svgContainer.selectAll('.hoverbar')
+              .data(this.sdgs)
+              .enter()
+              .append("g");
+      hoverbars.append('rect')
+          .attr('class', 'hoverbar')
+          .attr("x", function (d) { return x(d) - 6; })
+          .attr("y", function (d) { return rootThis.y1(rootThis.projectNamesObject[d]) - 30; })
+          .attr("width", x.bandwidth())
+          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]) + 30; })
+          .attr("opacity", 0)
+          .each((data, index, list) => {
+            tippy(list[index], {
+              content() {
+                const template = document.getElementById(`SDGtooltip${index}`);
+                return template.innerHTML;
+              },
+              theme: 'light',
+              interactive: true,
+              allowHTML: true,
+              appendTo: () => document.body
+            });
+          })
 
       let sticks = this.svgContainer.selectAll('.stick')
           .data(this.sdgs)
@@ -330,6 +362,11 @@ export default {
       this.prevHeight = budgVal + offset
       if (type == "budg") { return 100 - budgVal - offset }
       else if (type == "proj") { return 100 - projVal - offset }
+    },
+    getSDGSTooltipData(sdg) {
+      return this.filteredProjects.filter((project) => {
+        return project.sdg && project.sdg.includes(sdg)
+      });
     }
   },
   mounted() {
