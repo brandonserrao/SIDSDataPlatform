@@ -5,11 +5,12 @@
 
         <v-data-table
           :headers="headers"
-          :items="data"
+          :items="dataWithIDs"
           height="200"
           fixed-header
           hide-default-footer
           :items-per-page="9999"
+          item-key="subId"
         >
         <template v-slot:item.budget="{ item }">
           <span>{{ nFormatter( item.budget)}}</span>
@@ -43,6 +44,12 @@ export default {
     }
   },
   computed: {
+    dataWithIDs() {
+      return this.data.map((item, index) => {
+         item.subId = this.header+index;
+         return item
+      })
+    }
   }
 }
 </script>
