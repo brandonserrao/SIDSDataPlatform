@@ -9,7 +9,7 @@
     </v-row>
     <router-view class="mb-3 mt-negative"></router-view>
     <v-row justify="center">
-      <v-btn-toggle>
+      <v-btn-toggle v-model="activePage">
         <v-btn @click="transitionTo('/portfolio/samoa')">
           SAMOA Pathway
         </v-btn>
@@ -211,6 +211,15 @@ export default {
         }
       });
       return labels
+    },
+    activePage() {
+      if(this.$route.path.includes('SAMOA')) {
+        return 0
+      } else if (this.$route.path.includes('sdgs')) {
+        return 1
+      } else {
+        return 2
+      }
     }
   },
   methods: {
