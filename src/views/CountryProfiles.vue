@@ -6,7 +6,8 @@
       </v-col>
       <v-col cols="3">
         <v-select
-          v-model="activeCountry"
+          :value="country"
+          @change="setCountry"
           :items="filteredCountries"
           label="Country"
           item-text="Country"
@@ -33,11 +34,12 @@
   <v-row dense justify="center">
     <v-col cols="6">
       <v-select
-        v-model="compareCuntries"
+        :value="compare"
         :items="filteredCountries"
         item-text="Country"
         item-value="id"
         label="Overlay countries to compare indicator rank among SIDS"
+        @change="setCompareCountries"
         outlined
         multiple
       ></v-select>
@@ -74,7 +76,7 @@
       </v-col>
       <v-col cols="6">
         <profiles-finance
-          :countryId="activeCountry"/>
+          :countryId="country"/>
       </v-col>
     </v-row>
     <v-row>
@@ -100,6 +102,7 @@ import { mapState } from 'vuex';
 
 export default {
   name: 'CountryProfiles',
+  props:['compare', 'country'],
   components: {
     CountryInfoBar,
     ProfilesSpiderChart,
@@ -107,7 +110,6 @@ export default {
   },
   data: () => ({
     activeCountry:null,
-    compareCuntries:[],
     region:'All SIDS',
     regions:["All SIDS", "Caribbean", "AIS", "Pacific"],
     graphOptions:{
@@ -159,10 +161,10 @@ export default {
   }),
   computed:{
     activeCountryProfile() {
-      return this.countries.find(country => country.id === this.activeCountry);
+      return this.countries.find(country => country.id === this.country);
     },
     graphCountriesProfiles() {
-      return Array.from(new Set(this.compareCuntries.concat([this.activeCountry])));
+      return Array.from(new Set(this.compare.concat([this.country])));
     },
     filteredCountries() {
       if(this.region === this.regions[0]) {
@@ -222,7 +224,7 @@ export default {
       }
 
       function generateTextDataCVS(pillarName) {
-        for (let indicator in this.allKeyData[this.activeCountry][pillarName]) {
+        for (let indicator in this.allKeyData[this.country][pillarName]) {
           let newIndi = {}
           newIndi.axis = indicator.replace(/,/g, '')
           newIndi.source = this.keyMetadata[newIndi.axis] && this.keyMetadata[newIndi.axis].sourceName ?
@@ -236,9 +238,9 @@ export default {
       }
 
       function generateAxisDataCVS(pillarName) {
-        for (let indicator in this.allKeyData[this.activeCountry][pillarName]) {
+        for (let indicator in this.allKeyData[this.country][pillarName]) {
           let newIndi = {}
-          let el = this.allKeyData[this.activeCountry][pillarName][indicator]
+          let el = this.allKeyData[this.country][pillarName][indicator]
           newIndi.axis = el.axis.replace(/,/g, '')
           newIndi.source = this.keyMetadata[newIndi.axis] && this.keyMetadata[newIndi.axis].sourceName ?
           this.keyMetadata[newIndi.axis].sourceName.replace(/,/g, '') :
@@ -265,10 +267,25 @@ export default {
         headers[countryId] = this.allKeyData[countryId].Profile.Country
       })
       exportCSVFile(headers, countryExport, "sids_profile_data", "")
+    },
+    setCountry(country) {
+      this.$router.push({
+        params:{country},
+        query: this.$route.query
+      })
+    },
+    setCompareCountries(value) {
+      this.$router.push({
+        query: {
+          compare: value.toString()
+        }
+      })
     }
   },
   created() {
-    this.activeCountry = this.countries[0].id;
+    if(this.country === '') {
+      this.setCountry(this.countries[0].id);
+    }
   }
 }
 </script>
