@@ -91,14 +91,18 @@ const routes = [
     }),
   },
   {
-    path: '/country-profiles',
+    path: '/country-profiles/:country?',
     name: 'Country Profiles',
     component: () => import(/* webpackChunkName: "about" */ '../views/CountryProfiles.vue'),
     beforeEnter: async (to, from, next) => {
       await store.dispatch('sids/getMetaData');
       await store.dispatch('sids/getAllKeyData');
       next()
-    }
+    },
+    props: (route) => ({
+      country: route.params.country || '',
+      compare: route.query.compare && route.query.compare.split(',') || []
+    }),
   },
   {
     path: '/geospatial-data',
