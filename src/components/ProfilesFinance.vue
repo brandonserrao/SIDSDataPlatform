@@ -67,7 +67,7 @@ export default {
   },
   computed:{
     ...mapState({
-      allKeyData: state => state.allKeyData
+      allKeyData: state => state.sids.allKeyData
     }),
     financeData() {
       return this.allKeyData[this.countryId].Finance

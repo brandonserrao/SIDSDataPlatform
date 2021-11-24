@@ -171,9 +171,9 @@ export default {
       return this.countries.filter(country => country['Region'] === this.region );
     },
     ...mapState({
-      countries: state => state.countryList,
-      keyMetadata: state => state.keyMetadata,
-      allKeyData: state => state.allKeyData,
+      countries: state => state.sids.countryList,
+      keyMetadata: state => state.sids.keyMetadata,
+      allKeyData: state => state.sids.allKeyData,
     })
   },
   methods:{
