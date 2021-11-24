@@ -26,7 +26,7 @@
                   inactive
                   v-bind="attrs"
                   v-on="on"
-                  @click="setActiveIndicator(indicator)"
+                  @click="setActiveIndicatorFromFullList(indicator)"
                 >
                   <v-list-item-title class="inicator-item_header mt-2">
                     {{indicator.Indicator}}
@@ -96,7 +96,7 @@
           hide-details="auto"
           append-icon="mdi-close"
       ></v-text-field>
-      <v-list v-if="dataset" dense class="list-indicates list-scrollabe">
+      <v-list v-if="dataset" dense :class="{'list-short' : activeIndicator}" class="list-indicators list-scrollabe">
         <v-list-item-group>
           <template v-for="(indicator, i) in activeIndicatorsWithMeta">
             <v-tooltip
@@ -388,6 +388,14 @@ export default {
       if(this.searchString === '') {
         this.activeSearch = false;
       }
+    },
+    setActiveIndicatorFromFullList(indicator) {
+      this.searchString = '';
+      this.activeSearch = false;
+      this.toggleDataset(indicator.Dataset);
+      this.activeCategory = indicator.Category;
+      this.activeSubCategory = indicator.Subcategory;
+      this.setActiveIndicator(indicator);
     }
   }
 }
@@ -397,6 +405,12 @@ export default {
 .list-scrollabe {
   max-height: calc(100vh - 110px);
   overflow-y: scroll;
+}
+.list-indicators {
+  max-height: calc(100vh - 260px);
+}
+.list-short {
+  max-height: calc(100vh - 410px);
 }
 .list-scrollabe_item {
   height: 66px;
