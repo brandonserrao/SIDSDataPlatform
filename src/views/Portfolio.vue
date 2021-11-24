@@ -139,9 +139,9 @@ export default {
   }),
   computed:{
     ...mapState({
-      countries: state => state.countryList,
-      fundingCategories: state => state.fundingCategories,
-      SIDSDataWithDonors: state => state.SIDSDataWithDonors,
+      countries: state => state.sids.countryList,
+      fundingCategories: state => state.sids.fundingCategories,
+      SIDSDataWithDonors: state => state.sids.SIDSDataWithDonors,
     }),
     fundingCategoriesFiltered() {
       let projects = this.filteredYearDataSIDS;

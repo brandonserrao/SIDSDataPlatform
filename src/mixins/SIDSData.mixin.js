@@ -3,7 +3,7 @@ import { mapState } from 'vuex';
 export default {
   computed: {
     ...mapState({
-      SIDSDataWithDonors: state => state.SIDSDataWithDonors,
+      SIDSDataWithDonors: state => state.sids.SIDSDataWithDonors,
     }),
     filteredYearDataSIDS() {
       if(this.year !== 'all') {

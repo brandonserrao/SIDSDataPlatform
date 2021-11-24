@@ -20,9 +20,9 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Portfolio.vue'),
     beforeEnter: async (to, from, next) => {
-      await store.dispatch('getAllKeyData');
-      await store.dispatch('setSIDSData');
-      await store.dispatch('setFundingCategories');
+      await store.dispatch('sids/getAllKeyData');
+      await store.dispatch('sids/setSIDSData');
+      await store.dispatch('sids/setFundingCategories');
       next()
     },
     children: [
@@ -72,20 +72,31 @@ const routes = [
   {
     path: '/development-indicators',
     name: 'Development Indicators',
-    component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
+    props: () => ({
+      view: 'indicators',
+    }),
+    beforeEnter: async (to, from, next) => {
+      await store.dispatch('indicators/getCategories');
+      await store.dispatch('indicators/getMeta');
+      next()
+    },
   },
   {
     path: '/vulnerability',
     name: 'Vulnerability',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Vulnerability.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
+    props: () => ({
+      view: 'vulnerability',
+    }),
   },
   {
     path: '/country-profiles',
     name: 'Country Profiles',
     component: () => import(/* webpackChunkName: "about" */ '../views/CountryProfiles.vue'),
     beforeEnter: async (to, from, next) => {
-      await store.dispatch('getMetaData');
-      await store.dispatch('getAllKeyData');
+      await store.dispatch('sids/getMetaData');
+      await store.dispatch('sids/getAllKeyData');
       next()
     }
   },

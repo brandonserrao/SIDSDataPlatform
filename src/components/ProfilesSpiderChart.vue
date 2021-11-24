@@ -74,8 +74,8 @@ export default {
   }),
   computed:{
     ...mapState({
-      allKeyData: state => state.allKeyData,
-      keyMetadata: state => state.keyMetadata
+      allKeyData: state => state.sids.allKeyData,
+      keyMetadata: state => state.sids.keyMetadata
     }),
     graphData() {
       console.log(this.keyMetadata, 'mData')
