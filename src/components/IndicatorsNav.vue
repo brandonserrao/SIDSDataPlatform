@@ -11,13 +11,17 @@
         append-icon="mdi-close"
         prepend-icon="mdi-magnify"
       ></v-text-field>
-      <v-list v-if="activeSearch" dense class="list-datasets list-scrollabe">
-        <v-list-item-group>
-          <template v-for="(indicator, i) in allIndicators">
+      <v-virtual-scroll
+        v-if="activeSearch"
+        :items="allIndicators"
+        height="400"
+        itemHeight="69"
+      >
+          <template v-slot:default="{ item }">
             <v-tooltip
               right
               max-width="250"
-              :key="i"
+              :key="item.Indicator"
               content-class="indicator-tooltip"
              >
               <template v-slot:activator="{ on, attrs }">
@@ -26,31 +30,30 @@
                   inactive
                   v-bind="attrs"
                   v-on="on"
-                  @click="setActiveIndicatorFromFullList(indicator)"
+                  @click="setActiveIndicatorFromFullList(item)"
                 >
                   <v-list-item-title class="inicator-item_header mt-2">
-                    {{indicator.Indicator}}
+                    {{item.Indicator}}
                   </v-list-item-title>
                   <v-list-item-content class="inicator-item_description">
-                    {{indicator.Definition}}
+                    {{item.Definition}}
                   </v-list-item-content>
                 </v-list-item>
-                <v-divider v-if="dataset && i!== activeIndicatorsWithMeta.length - 1" :key="'divider' + i"></v-divider>
+                <v-divider></v-divider>
               </template>
               <v-card class="tooltip-card">
-                <v-card-title class="mb-1 active-indicator_header">{{indicator.Indicator}}</v-card-title>
+                <v-card-title class="mb-1 active-indicator_header">{{item.Indicator}}</v-card-title>
                 <v-card-text>
-                  <div class="mb-1">{{indicator.Dimension}}</div>
-                  {{indicator.Definition}}
+                  <div class="mb-1">{{item.Dimension}}</div>
+                  {{item.Definition}}
                   <v-divider class="mb-1 mt-1"></v-divider>
-                  <b>Source:</b>{{indicator.Source}} <br/>
-                  <a :href="indicator.Link" target="_blank">Link</a>
+                  <b>Source:</b>{{item.Source}} <br/>
+                  <a :href="item.Link" target="_blank">Link</a>
                 </v-card-text>
               </v-card>
             </v-tooltip>
           </template>
-        </v-list-item-group>
-      </v-list>
+    </v-virtual-scroll>
       <v-list v-if="!activeSearch" dense class="list-datasets list-scrollabe">
         <v-list-item-group>
           <template v-for="(item, i) in datasets">
