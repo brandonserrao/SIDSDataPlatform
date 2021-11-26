@@ -50,7 +50,7 @@ const routes = [
         }),
       },
       {
-        path: '/signature-solutions',
+        path: 'signature-solutions',
         name: 'SignatureSolutions',
         component: () => import(/* webpackChunkName: "about" */ '../views/SignatureSolutions.vue'),
         props: (route) => ({
