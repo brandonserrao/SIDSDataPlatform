@@ -10,13 +10,13 @@
     <router-view class="mb-3 mt-negative"></router-view>
     <v-row justify="center">
       <v-btn-toggle :value="activePage">
-        <v-btn @click="transitionTo('/portfolio/samoa')">
+        <v-btn value="samoa" @click="transitionTo('samoa')">
           SAMOA Pathway
         </v-btn>
-        <v-btn @click="transitionTo('/portfolio/sdgs')">
+        <v-btn value="sdgs" @click="transitionTo('sdgs')">
           Sustainable Development Goals
         </v-btn>
-        <v-btn @click="transitionTo('/portfolio/signature-solutions')">
+        <v-btn value="signature-solutions" @click="transitionTo('signature-solutions')">
           Signature Solutions
         </v-btn>
       </v-btn-toggle>
@@ -86,6 +86,7 @@ export default {
   mixins:[sidsdata],
   data:()=>({
     goalType:'Sustainable Development Goals',
+    activePage:'sdgs',
     fundingCategoriesTypes:['All',"European Union", "Donor Countries", "Programme Countries", "UN Agencies", "UN Pooled Funds", "Vertical Funds", "Other"],
     years:[
       {
@@ -212,15 +213,6 @@ export default {
       });
       return labels
     },
-    activePage() {
-      if(this.$route.path.includes('SAMOA')) {
-        return 0
-      } else if (this.$route.path.includes('sdgs')) {
-        return 1
-      } else {
-        return 2
-      }
-    }
   },
   methods: {
     setYear(year) {
@@ -260,7 +252,8 @@ export default {
       }
     },
     transitionTo(to) {
-      this.$router.push({path:to, query: this.$route.query})
+      this.activePage = to;
+      this.$router.push({path:`/portfolio/${to}`, query: this.$route.query})
     }
   }
 }
