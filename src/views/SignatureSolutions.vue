@@ -150,7 +150,6 @@ export default {
           })
           .attr("height", function (d, i) {
               let val = rootThis.y1(rootThis.projectNamesObject[d]) - rootThis.getBarLabelsY(d, i, "proj") - 2
-              console.log(d, val)
               if (rootThis.projectNamesObject[d] > 0) { return val }
               else { return 0 }
           })
