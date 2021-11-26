@@ -8,6 +8,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/portfolio',
+    link: '/portfolio',
     name: 'UNDP SIDS Portfolio',
     props: (route) => ({
       region: route.query.region || 'All',
@@ -49,7 +50,7 @@ const routes = [
         }),
       },
       {
-        path: 'signature-solutions',
+        path: '/signature-solutions',
         name: 'SignatureSolutions',
         component: () => import(/* webpackChunkName: "about" */ '../views/SignatureSolutions.vue'),
         props: (route) => ({
@@ -71,6 +72,7 @@ const routes = [
   },
   {
     path: '/development-indicators',
+    link: '/development-indicators',
     name: 'Development Indicators',
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
     props: () => ({
@@ -84,6 +86,7 @@ const routes = [
   },
   {
     path: '/vulnerability',
+    link: '/vulnerability',
     name: 'Vulnerability',
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
     props: () => ({
@@ -92,6 +95,7 @@ const routes = [
   },
   {
     path: '/country-profiles/:country?',
+    link: '/country-profiles',
     name: 'Country Profiles',
     component: () => import(/* webpackChunkName: "about" */ '../views/CountryProfiles.vue'),
     beforeEnter: async (to, from, next) => {
@@ -109,11 +113,13 @@ const routes = [
   },
   {
     path: '/geospatial-data',
+    link: '/geospatial-data',
     name: 'Geospatial Data',
     component: () => import(/* webpackChunkName: "about" */ '../views/GeospatialData.vue')
   },
   {
     path: '/about',
+    link: '/about',
     name: 'About',
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },

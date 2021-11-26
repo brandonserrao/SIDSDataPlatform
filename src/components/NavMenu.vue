@@ -2,8 +2,8 @@
   <v-list dense>
       <v-list-item
         v-for="route in routes"
-        :key="route.path"
-        :to="route.path"
+        :key="route.link"
+        :to="route.link"
       >
         <v-list-item-content>
           <v-list-item-title
