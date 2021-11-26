@@ -14,7 +14,7 @@
       <v-virtual-scroll
         v-if="activeSearch"
         :items="allIndicators"
-        height="400"
+        height="600"
         itemHeight="69"
       >
           <template v-slot:default="{ item }">
