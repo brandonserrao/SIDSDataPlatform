@@ -35,10 +35,10 @@ async function loadSIDSData () {
   return d3.csvParse(resp.data)
 }
 async function loadIndicatorsCategories () {
-  const resp = await axios.get(`/static/indicatorCategories.json`)
+  const resp = await axios.get(`/SIDSDataPlatform/static/indicatorCategories.json`)
   return resp.data
 }
 async function loadIndicatorsMeta () {
-  const resp = await axios.get(`/static/indicatorMeta.json`)
+  const resp = await axios.get(`/SIDSDataPlatform/static/indicatorMeta.json`)
   return resp.data
 }
