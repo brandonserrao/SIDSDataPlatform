@@ -78,7 +78,6 @@ export default {
       keyMetadata: state => state.sids.keyMetadata
     }),
     graphData() {
-      console.log(this.keyMetadata, 'mData')
       return this.activeCountries.map(country => {
         return {
           name:country,

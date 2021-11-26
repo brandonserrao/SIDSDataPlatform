@@ -45,7 +45,6 @@ export default {
   },
   methods: {
     initChart() {
-      console.log(this.data)
       this.pie = d3.select(`#${this.chartName}`).append("svg").append("g");
       this.pie.append("g")
         .attr("class", "slices").attr("transform", `translate(200, 75)`);
