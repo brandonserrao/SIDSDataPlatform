@@ -1,5 +1,5 @@
 <template>
-  <v-list dense>
+  <v-list class="main-menu" dense>
       <v-list-item
         v-for="route in routes"
         :key="route.link"
@@ -29,6 +29,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.main-menu {
+  height: 100%;
+}
 .mdl-tabs__tab-bar {
   flex-direction: column;
   height: 100%;

@@ -7,7 +7,11 @@
       </v-row>
       <v-row class="mt-0 bars-container" justify="center">
         <div class="samoa-goal" v-for="(goal, index) in samoaPriorities" :key="goal">
-          <img :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${index+1}samoaIcons.png`">
+          <img
+          :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${index+1}samoaIcons.png`"
+          height="56"
+          width="56"
+          >
         </div>
       </v-row>
     </div>
@@ -34,7 +38,7 @@ export default {
       ],
       sdgToSamoa: { 1: [1], 2: [6], 3: [11], 4: [12, 13], 5: [13], 6: [7], 7: [3], 8: [1], 9: [1, 8], 10: [12, 13], 11: [1, 4, 8, 10], 12: [9, 10], 13: [2, 4], 14: [5, 10, 14], 15: [10, 15], 16: [1, 13], 17: [16] },
       barsMargin: { top: 60, right: 20, bottom: 0, left: 20 },
-      svgWidth: 1080,
+      svgWidth: 1032,
       svgHeight: 160,
       y1: null,
       y2: null,
@@ -355,7 +359,8 @@ export default {
 </script>
 <style media="screen">
   .samoa-goal {
-    width: 65px;
+    width: 62px;
+    height: 62px;
     padding: 3px;
   }
   .samoa-goal img {

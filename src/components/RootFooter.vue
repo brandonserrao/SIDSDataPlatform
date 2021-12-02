@@ -1,6 +1,6 @@
 <template>
-  <div class="hello">
-    
+  <div class="footer-root">
+    <p class="footer-root_text">Powered by the UNDP Data Futures Platform</p>
   </div>
 </template>
 
@@ -15,18 +15,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.footer-root {
+  width: 100%;
+  background: #e0e1e9;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: inset 0px 90px 28px -50px #5f5c8721;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.footer-root_text {
+  margin: 0;
+  color: #868686;
 }
 </style>

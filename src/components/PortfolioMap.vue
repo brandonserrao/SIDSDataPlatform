@@ -171,6 +171,7 @@ export default {
 
 <style scoped>
 .map {
+  cursor: pointer;
   flex-direction: column;
   min-height: 500px;
   background-size: 95%;

@@ -37,21 +37,22 @@ export default {
   data() {
     return {
       pie: null,
+      tooltips:[],
       arc: null,
       outerArc: null,
       makePie: null,
-      radius: 50
+      radius: 64
     }
   },
   methods: {
     initChart() {
       this.pie = d3.select(`#${this.chartName}`).append("svg").append("g");
       this.pie.append("g")
-        .attr("class", "slices").attr("transform", `translate(200, 75)`);
+        .attr("class", "slices").attr("transform", `translate(220, 125)`);
       this.pie.append("g")
-        .attr("class", "labels").attr("transform", `translate(200, 75)`);
+        .attr("class", "labels").attr("transform", `translate(220, 125)`);
       this.pie.append("g")
-        .attr("class", "lines").attr("transform", `translate(200, 75)`);
+        .attr("class", "lines").attr("transform", `translate(220, 125)`);
 
       this.arc = d3.arc()
         .outerRadius(this.radius * 0.8)
@@ -93,21 +94,25 @@ export default {
         slice.on('click', function (d) {
           rootThis.setFilter(rootThis.chartName, d.data.category)
         })
+      rootThis.tooltips.map((t)=>t.destroy())
+      let newTooltips = [];
       slice.each((data, index, list) => {
-        tippy(list[index], {
-          content() {
-            const template = document.getElementById(`${rootThis.chartName}tooltip${index}`);
-            return template.innerHTML;
-          },
-          theme: 'light',
-          interactive: true,
-          allowHTML: true,
-          appendTo: () => document.body
-        });
+        newTooltips.push(
+          tippy(list[index], {
+            content() {
+              const template = document.getElementById(`${rootThis.chartName}tooltip${index}`);
+              return template.innerHTML;
+            },
+            theme: 'light',
+            interactive: true,
+            allowHTML: true,
+            appendTo: () => document.body
+          })
+        )
       })
       slice.exit()
         .remove();
-
+      rootThis.tooltips = newTooltips;
       /* ------- TEXT LABELS -------*/
 
       let text = this.pie.select(".labels").selectAll("text")
@@ -202,9 +207,6 @@ export default {
 </script>
 
 <style>
-.pie-chart {
-  height: 500px;
-}
 .pie-chart svg {
   width: 100%;
   min-height: 200px;
@@ -214,5 +216,14 @@ export default {
   stroke: black;
   stroke-width: 2 px;
   fill: none;
+}
+.slices:hover .slice {
+    opacity: 0.5;
+}
+.slice {
+  cursor: pointer;
+}
+.slices:hover .slice:hover {
+    opacity: 1;
 }
 </style>
