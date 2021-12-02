@@ -1,4 +1,5 @@
 <template>
+  <v-row justify="center">
   <div class="">
     <v-row class="mb-0 svg-row" justify="center">
       <div id="svg-container">
@@ -6,13 +7,18 @@
     </v-row>
     <v-row class="mt-0 bars-container" justify="center">
       <div class="sdg-goal" v-for="(goal, index) in sdgs" :key="goal">
-        <img :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${parseGoalNumber(index)}.png`">
+        <img
+          :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${parseGoalNumber(index)}.png`"
+          height="56"
+          width="56"
+          >
       </div>
     </v-row>
     <div class="d-none" v-for="(goal, index) in sdgs" :id="'SDGtooltip'+ index" :key="index">
       <portfolio-tooltip :header="goal" :data="getSDGSTooltipData(goal)"/>
     </div>
   </div>
+</v-row>
 </template>
 <script>
 
@@ -29,6 +35,7 @@ export default {
   },
   data() {
     return {
+      svg:null,
       svgContainer: null,
       sdgs: ["No poverty", "Zero hunger", "Good health and well-being", "Quality education", "Gender equality", "Clean water and sanitation", "Affordable and clean energy", "Decent work and economic growth", "Industry, innovation and infrastructure", "Reduced inequalities", "Sustainable cities and communities", "Responsible consumption and production", "Climate action", "Life below water", "Life on Land", "Peace, justice, and strong institutions", "Partnerships for the goals"],
       colors: ["#E5243B", "#DDA63A", "#4C9F38", "#C5192D", "#FF3A21",
@@ -36,7 +43,7 @@ export default {
         "#BF8B2E", "#3F7E44", "#0A97D9", "#56C02B", "#00689D", "#19486A"
       ],
       barsMargin: { top: 60, right: 10, bottom: 0, left: 10 },
-      svgWidth: 1125,
+      svgWidth: 1074,
       svgHeight: 160,
       y1: null,
       y2: null,
@@ -86,11 +93,11 @@ export default {
   },
   methods: {
     initBars() {
-      let svg = d3.select("#svg-container").append("svg");
-      svg.attr('height', this.svgHeight)
+      this.svg = d3.select("#svg-container").append("svg");
+      this.svg.attr('height', this.svgHeight)
           .attr('width', this.svgWidth);
 
-      this.svgContainer = svg.append("g")
+      this.svgContainer = this.svg.append("g")
           .attr("transform", "translate(" + this.barsMargin.left + "," + this.barsMargin.top + ")");
       this.y1 = d3.scaleLinear().rangeRound([this.barsHeight, 0])
       this.y2 = d3.scaleLinear().rangeRound([this.barsHeight, 0])
@@ -369,6 +376,7 @@ export default {
     }
   },
   mounted() {
+    // this.svgWidth = this.$el.offsetWidth;
     this.initBars();
     this.$nextTick(this.drawBars);
   },
@@ -380,12 +388,21 @@ export default {
 }
 </script>
 <style media="screen">
+  .bars-container{
+    display: flex;
+    flex: 1 0 auto;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    margin: 0px;
+
+  }
   .sdg-goal {
-    width: 65px;
+    height: 62px;
+    max-width: 62px;
     padding: 3px;
   }
   .sdg-goal img {
-    max-width: 100%;
+    width: 100%;
   }
   .svg-row {
     max-height: 160px;

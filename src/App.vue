@@ -32,9 +32,12 @@ export default {
   padding: 0;
 }
 #content{
-  min-height: 100vh
+  min-height: calc(100vh - 100px);
 }
 .root-router {
-  padding: 10px;
+  padding: 0;
+}
+:focus {
+  outline: none;
 }
 </style>

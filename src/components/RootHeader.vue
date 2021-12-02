@@ -4,10 +4,12 @@
     <source src="@/assets/blue economy_1_3.mp4" type="video/mp4">
   </video>
     <div class="header-bar">
-      <img
-        class="header-bar_logo"
-        src="https://data.undp.org/wp-content/uploads/2020/12/UNDP-COVID19-Data-Futures-Platform-Logo.svg"
-        alt="UNDP COVID19 Data Futures Platform Logo">
+      <a href="https://data.undp.org/" target="_blank">
+        <img
+          class="header-bar_logo"
+          src="@/assets/logo.png"
+          alt="UNDP COVID19 Data Futures Platform Logo">
+      </a>
     </div>
     <main role="main" class="header-text">
         <h1 class="header-text_header header-text_header-big">Data Visualization Platform</h1>
@@ -40,18 +42,22 @@ export default {
   padding-bottom: 2em;
 }
 .header-bar {
-  position: relative;
-  z-index: 2;
-  background: rgba(250, 250, 250, 0.89);
+  width: 100%;
   padding: 15px 10px;
-  margin-bottom: 4em;
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.header-bar_logo {
+  width: 190px;
 }
 .header_video {
-  width: 100%;
+  position: absolute;
   bottom: 0;
   right: 0;
-  object-fit: fill;
-  position: absolute
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 .header-text {
   position: relative;
@@ -59,7 +65,8 @@ export default {
   text-align: center;
   color: white;
   filter: drop-shadow(1px 1px 0px black);
-  margin-bottom: 2em;
+  margin-bottom: auto;
+  margin-top: auto;
 }
 .header-text_header {
   font-weight: 650;
@@ -106,5 +113,7 @@ export default {
   margin: auto;
   position: relative;
   z-index: 3;
+  margin-top: 0px;
+  margin-bottom: 50px;
 }
 </style>

@@ -3,7 +3,7 @@
     <v-row>
       <portfolio-map
         :region="region"
-        @updateRegion="updateRegion"
+        @updateRegion="changeFilter({type:'region'}, value)"
         :projects="filteredProjects"
       ></portfolio-map>
     </v-row>
@@ -240,15 +240,29 @@ export default {
       }
     },
     updateRegion(region) {
-      this.region = region;
+      this.changeFilter({
+        type: 'region',
+        value: region
+      })
     },
     changeFilter({type, value}) {
       if(type === 'region') {
-        this.region = value;
-        this.$router.push({query: Object.assign({}, this.$route.query, {region : encodeURIComponent(value)})})
+        let regionToSet
+        if(this.region === value) {
+          regionToSet = 'All'
+        } else {
+          regionToSet = value
+        }
+        this.$router.push({query: Object.assign({}, this.$route.query, {region : encodeURIComponent(regionToSet)})})
       } else {
+        let categoryToSet
+        if(this.fundingCategory === value) {
+          categoryToSet = 'All'
+        } else {
+          categoryToSet = value
+        }
         this.$router.push({query: Object.assign({}, this.$route.query, {
-          fundingCategory : encodeURIComponent(value)})})
+          fundingCategory : encodeURIComponent(categoryToSet)})})
       }
     },
     transitionTo(to) {
