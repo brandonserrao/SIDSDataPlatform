@@ -1,13 +1,6 @@
 <template>
-  <div class="">
-    <v-select
-      :items="names"
-      item-text="NAME_0"
-      item-value="bb"
-      label="Slelct country"
-      @change="selectCountry"
-      solo
-    ></v-select>
+  <div class="map-container">
+    <map-dataset-controller class="data-controller"/>
     <div id="map">
 
     </div>
@@ -17,7 +10,8 @@
 <script>
 
 import names from '@/gis/static/names';
-import GIS from '@/gis'
+import GIS from '@/gis';
+import MapDatasetController from '@/components/MapDatasetController';
 // @ is an alias to /src
 
 export default {
@@ -29,6 +23,7 @@ export default {
     }
   },
   components: {
+    MapDatasetController
   },
   methods: {
     selectCountry(selection) {
@@ -44,5 +39,16 @@ export default {
   #map{
     height: 100vh;
     width: 100%;
+  }
+  .map-container {
+    position: relative;
+    padding: 0 !important
+  }
+  .data-controller {
+    position: absolute;
+    left: 2em;
+    top:2em;
+    width: 400px;
+    z-index: 999;
   }
 </style>

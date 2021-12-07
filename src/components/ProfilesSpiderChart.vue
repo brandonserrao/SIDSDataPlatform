@@ -220,6 +220,7 @@ export default {
       }
 
       //Create the straight lines radiating outward from the center
+      console.log(allAxis)
       let axis = axisGrid.selectAll(".axis")
         .data(allAxis)
         .enter()
@@ -387,7 +388,7 @@ export default {
                     .text(function () {
                       let value = rootThis.graphData[0].axes.filter(obj => { return obj.axis === d.axis })[0].value
                       if (isNaN(value)) {
-                        return ""
+                        return value   + ", " + rootThis.rankFormat(d.value.toString()) + rootThis.fullGraphOptions.unit
                       }
                       else {
                         return rootThis.nFormatter(value,2) + ", " + rootThis.rankFormat(d.value.toString()) + rootThis.fullGraphOptions.unit;

@@ -1,6 +1,6 @@
 <template>
-  <div class="">
-    <v-row dense justify="center">
+  <div class="mt-5">
+    <v-row justify="center">
       <v-col offset="3" cols="3">
         <h2 class="country-profile-header">Country profile</h2>
       </v-col>
@@ -24,14 +24,14 @@
         ></v-select>
       </v-col>
     </v-row>
-  <v-row dense justify="center">
+  <v-row class="mb-5" justify="center">
     <v-col cols="12">
       <country-info-bar
         :country="activeCountryProfile"
       />
     </v-col>
   </v-row>
-  <v-row dense justify="center">
+  <v-row justify="center">
     <v-col cols="6">
       <v-select
         :value="compare"
@@ -45,7 +45,7 @@
       ></v-select>
     </v-col>
   </v-row>
-    <v-row dense justify="center">
+    <v-row justify="center">
       <v-col cols="4">
         <profiles-spider-chart
           headerText="Climate Action"
