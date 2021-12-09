@@ -1,0 +1,26 @@
+@font-face {
+  font-family: "Proxima Nova";
+  src: url("../fonts/Proxima-Nova/Proxima Nova Reg.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Proxima Nova";
+  src: url("../fonts/Proxima-Nova/Proxima Nova Bold.otf") format("opentype");
+  font-weight: bold;
+}
+
+body {
+  background-color: #F4F5F8;
+  color: #2c2c2c;
+  font-family: "Proxima Nova" !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* include border and padding in element width and height */
+
+* {
+  box-sizing: border-box;
+}
