@@ -1,6 +1,6 @@
 <template>
   <div class="map d-flex" :class="regionClass" :style="backgroundData">
-    <h2 class="prtfolio-header mt-4 mb-2">UNDP Portfolio in Small Island Developing States</h2>
+    <h2 class="prtfolio-header mt-10 mb-2">UNDP Portfolio in Small Island Developing States</h2>
     <v-row justify="center">
       <v-chip
         class="ma-2"
@@ -173,10 +173,10 @@ export default {
 .map {
   cursor: pointer;
   flex-direction: column;
-  min-height: 500px;
+  min-height: 80vh;
   background-size: 95%;
   width: 100%;
-  background-position: 50% -60px;
+  background-position: 50% -10px;
   transition: 700ms;
 }
 .map-AIS {

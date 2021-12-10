@@ -2,7 +2,7 @@
   <v-card class="overflow">
     <v-row dense>
       <v-col cols="4">
-      <v-subheader>{{country.Country}}</v-subheader>
+      <v-subheader class="info-bar_header">{{country.Country}}</v-subheader>
         <v-list dense class="indicators-list"
         >
           <v-list-item
@@ -53,13 +53,14 @@
         </v-list>
       </v-col>
       <v-col class="p-0 d-flex align-center" cols="3">
-        <v-img contain
-          max-height="250"
+        <img
+          class="info-bar_map"
           :src="country.map"
-        ></v-img>
+        />
       </v-col>
       <v-col class="p-0 d-flex align-center" cols="5">
         <v-img
+          cover
           max-height="250"
           :src="country.photo"
         ></v-img>
@@ -104,5 +105,14 @@ export default {
   margin-right: 8px !important;
   text-overflow: none;
   overflow:visible;
+}
+.info-bar_header {
+  font-size: 18px;
+  font-weight: bold;
+}
+.info-bar_map {
+  max-height: 230px;
+  max-width: 94%;
+  margin: auto;
 }
 </style>

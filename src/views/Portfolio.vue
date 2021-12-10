@@ -3,43 +3,50 @@
     <v-row>
       <portfolio-map
         :region="region"
-        @updateRegion="changeFilter({type:'region'}, value)"
+        @updateRegion="changeFilter({type:'region'})"
         :projects="filteredProjects"
       ></portfolio-map>
     </v-row>
     <router-view class="mb-3 mt-negative"></router-view>
     <v-row justify="center">
-      <v-btn-toggle :value="activePage">
-        <v-btn value="samoa" @click="transitionTo('samoa')">
-          SAMOA Pathway
-        </v-btn>
-        <v-btn value="sdgs" @click="transitionTo('sdgs')">
-          Sustainable Development Goals
-        </v-btn>
-        <v-btn value="signature-solutions" @click="transitionTo('signature-solutions')">
-          Signature Solutions
-        </v-btn>
-      </v-btn-toggle>
-    </v-row>
-    <v-row>
-      <v-col cols="5">
-        <portfolio-pie-chart
-          @changeFilter="changeFilter"
-          :data="regionFunding"
-          chartName="region"
-          :colorScheme="regionColors"
-        ></portfolio-pie-chart>
-      </v-col>
-      <v-col cols="5">
-        <portfolio-pie-chart
-          @changeFilter="changeFilter"
-          :data="sourcesFunding"
-          chartName="sources"
-          :colorScheme="sourcesColor"
-        ></portfolio-pie-chart>
+      <v-col cols="10">
+        <v-row justify="center">
+          <v-col cols="7">
+            <v-btn-toggle dense :value="activePage">
+              <v-btn value="samoa" @click="transitionTo('samoa')">
+                SAMOA Pathway
+              </v-btn>
+              <v-btn value="sdgs" @click="transitionTo('sdgs')">
+                Sustainable Development Goals
+              </v-btn>
+              <v-btn value="signature-solutions" @click="transitionTo('signature-solutions')">
+                Signature Solutions
+              </v-btn>
+            </v-btn-toggle>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col cols="6">
+            <portfolio-pie-chart
+              @changeFilter="changeFilter"
+              :data="regionFunding"
+              chartName="region"
+              :colorScheme="regionColors"
+            ></portfolio-pie-chart>
+          </v-col>
+          <v-col cols="6">
+            <portfolio-pie-chart
+              @changeFilter="changeFilter"
+              :data="sourcesFunding"
+              chartName="sources"
+              :colorScheme="sourcesColor"
+            ></portfolio-pie-chart>
+          </v-col>
+        </v-row>
       </v-col>
       <v-col cols="2">
         <v-select
+          dense
           :value="year"
           @change="setYear"
           :items="years"
@@ -47,6 +54,7 @@
           outlined
         ></v-select>
         <v-select
+          dense
           :value="fundingCategory"
           @change="setCategory"
           :items="fundingCategoriesTypes"
@@ -54,6 +62,7 @@
           outlined
         ></v-select>
         <v-select
+          dense
           :value="fundingSource"
           @change="setSource"
           :items="fundingCategoriesFiltered"
@@ -62,6 +71,14 @@
           item-value="name"
           outlined
         ></v-select>
+        <portfolio-export
+          :region="region"
+          :year="year"
+          :funding="fundingCategory"
+          :projects="filteredProjects"
+          :data="fundingCategoriesFiltered"
+          :categories="fundingCategoriesTypes"
+        />
       </v-col>
     </v-row>
   </div>
@@ -71,6 +88,7 @@
 import * as d3 from 'd3';
 // @ is an alias to /src
 import PortfolioMap from '@/components/PortfolioMap';
+import PortfolioExport from '@/components/PortfolioExport';
 import PortfolioPieChart from '@/components/PortfolioPieChart';
 import { mapState } from 'vuex';
 import sidsdata from '@/mixins/SIDSData.mixin'
@@ -80,7 +98,8 @@ export default {
   name: 'Portfolio',
   components: {
     PortfolioMap,
-    PortfolioPieChart
+    PortfolioPieChart,
+    PortfolioExport
   },
   props:['year', 'fundingCategory', 'fundingSource', 'region'],
   mixins:[sidsdata],
@@ -274,6 +293,6 @@ export default {
 </script>
 <style media="screen">
   .mt-negative{
-    margin-top: -185px !important;
+    margin-top: -205px !important;
   }
 </style>

@@ -48,11 +48,11 @@ export default {
     initChart() {
       this.pie = d3.select(`#${this.chartName}`).append("svg").append("g");
       this.pie.append("g")
-        .attr("class", "slices").attr("transform", `translate(220, 125)`);
+        .attr("class", "slices").attr("transform", `translate(220, 75)`);
       this.pie.append("g")
-        .attr("class", "labels").attr("transform", `translate(220, 125)`);
+        .attr("class", "labels").attr("transform", `translate(220, 75)`);
       this.pie.append("g")
-        .attr("class", "lines").attr("transform", `translate(220, 125)`);
+        .attr("class", "lines").attr("transform", `translate(220, 75)`);
 
       this.arc = d3.arc()
         .outerRadius(this.radius * 0.8)
@@ -209,7 +209,7 @@ export default {
 <style>
 .pie-chart svg {
   width: 100%;
-  min-height: 200px;
+  min-height: 150px;
 }
 .pie-chart polyline {
   opacity: 0.3;
