@@ -1,11 +1,12 @@
 <template>
-  <div class="">
-    <v-row dense justify="center">
+  <div class="mt-5">
+    <v-row justify="center">
       <v-col offset="3" cols="3">
         <h2 class="country-profile-header">Country profile</h2>
       </v-col>
       <v-col cols="3">
         <v-select
+          class="country-select"
           :value="country"
           @change="setCountry"
           :items="filteredCountries"
@@ -13,10 +14,12 @@
           item-text="Country"
           item-value="id"
           outlined
+          hide-details
         ></v-select>
       </v-col>
       <v-col class="ml-auto" cols="2">
         <v-select
+          dense
           v-model="region"
           :items="regions"
           label="Region"
@@ -24,14 +27,14 @@
         ></v-select>
       </v-col>
     </v-row>
-  <v-row dense justify="center">
+  <v-row justify="center">
     <v-col cols="12">
       <country-info-bar
         :country="activeCountryProfile"
       />
     </v-col>
   </v-row>
-  <v-row dense justify="center">
+  <v-row justify="center">
     <v-col cols="6">
       <v-select
         :value="compare"
@@ -42,10 +45,12 @@
         @change="setCompareCountries"
         outlined
         multiple
+        dense
+        hide-details
       ></v-select>
     </v-col>
   </v-row>
-    <v-row dense justify="center">
+    <v-row justify="center">
       <v-col cols="4">
         <profiles-spider-chart
           headerText="Climate Action"
@@ -79,8 +84,8 @@
           :countryId="country"/>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="1">
+    <v-row justify="center">
+      <v-col cols="2">
         <v-btn
           class="ma-2"
           @click="exportCSV"
@@ -198,11 +203,9 @@ export default {
       }
 
       function exportCSVFile(headers, items, fileTitle,note) {
-          if (headers) {
-              items.unshift(headers);
-          }
+          const fileData = [headers].concat(items);
           // Convert Object to JSON
-          var jsonObject = JSON.stringify(items);
+          var jsonObject = JSON.stringify(fileData);
           var csv = convertToCSV(jsonObject,note);
           var exportedFilenmae = fileTitle + '.csv' || 'export.csv';
           var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -294,5 +297,8 @@ export default {
     text-align: right;
     padding-top: 10px;
     margin-right: 10px;
+  }
+  .country-select {
+    font-weight: bold;
   }
 </style>

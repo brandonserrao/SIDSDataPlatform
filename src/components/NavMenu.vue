@@ -31,6 +31,8 @@ export default {
 <style scoped>
 .main-menu {
   height: 100%;
+  padding-top: 25vh;
+  text-transform: uppercase;
 }
 .mdl-tabs__tab-bar {
   flex-direction: column;

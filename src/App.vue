@@ -35,7 +35,7 @@ export default {
   min-height: calc(100vh - 100px);
 }
 .root-router {
-  padding: 0;
+  padding: 0 2em 4em;
 }
 :focus {
   outline: none;

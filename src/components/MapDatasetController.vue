@@ -1,0 +1,314 @@
+<template>
+  <div class="">
+    <v-card class="mb-4">
+      <v-row>
+        <v-col cols="6">
+          <v-list dense>
+            <v-list-item-group v-model="activeGoalType" mandatory>
+              <v-list-item
+                v-for="(item, i) in goalTypes"
+                :key="i"
+                :value="item.value"
+                @change="resetGoalModel"
+              >
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.name"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-col>
+        <v-col cols="6">
+          <v-list v-if="activeGoalType === 'pillars'" dense>
+            <v-list-item-group v-model="activePillar" mandatory>
+              <v-list-item v-for="(item, i) in pillars" :key="i" :value="i + 1">
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.name"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+          <v-slide-group
+            v-else
+            class="goals-slider"
+            @click:next="goalUpdateNext($event)"
+            @click:prev="goalUpdatePrev($event)"
+            show-arrows
+            ref="slider"
+          >
+            <v-slide-item
+              v-for="(n, index) in activeGoalTypes"
+              :key="n"
+              :value="index + 1"
+            >
+              <v-menu open-on-hover bottom>
+                <template v-slot:activator="{ on }">
+                  <img
+                    v-on="on"
+                    :src="getGoalImage(index)"
+                    height="56"
+                    width="56"
+                  />
+                </template>
+                <div class="goals-tooltip-content">
+                  <img
+                    v-for="(n, index) in activeGoalTypes"
+                    @click="selectGoal(index + 1)"
+                    :key="n"
+                    :src="getGoalImage(index)"
+                    class="tooltip-image"
+                    height="56"
+                    width="56"
+                  />
+                </div>
+              </v-menu>
+            </v-slide-item>
+          </v-slide-group>
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col>
+          <v-select
+            class="map-input"
+            dense
+            v-model="activeDatasetName"
+            :items="filteredDatasets"
+            item-text="name"
+            item-value="name"
+            label="Dataset"
+            outlined
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-row v-if="activeDataset && activeDataset.type === 'layers'" dense>
+        <v-col>
+          <v-select
+            dense
+            class="map-input"
+            v-model="activeLayerName"
+            item-text="Description"
+            item-value="Description"
+            :items="activeDataset.layers"
+            label="Layer"
+            outlined
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-row
+        v-else-if="activeDataset && activeDataset.type === 'temporal'"
+        dense
+      >
+        <v-col>
+          <v-slider
+            class="map-input"
+            v-model="activeLayerName"
+            :tick-labels="ticksLabels"
+            :max="activeDataset.layers.length - 1"
+            step="1"
+            ticks="always"
+            tick-size="4"
+          ></v-slider>
+        </v-col>
+      </v-row>
+    </v-card>
+    <v-card v-if="activeLayer">
+      <v-card-subtitle>
+        <b>{{activeLayer.Description}}
+        {{activeDataset.type === 'temporal' ? activeLayer.Temporal : ''}}</b>
+      </v-card-subtitle>
+      <v-card-text>
+        {{activeLayer.Desc_long}}<br/>
+          <b>Reference</b> {{activeLayer.Source_Name}} <br/>
+          <a :href="activeLayer.Source_Link" target="_blank"> {{activeLayer.Source_Link}} </a>
+      </v-card-text>
+    </v-card>
+  </div>
+</template>
+
+<script>
+import datasets from "@/gis/static/layers";
+
+export default {
+  name: "MapDatasetController",
+  data() {
+    return {
+      activeGoal: 1,
+      activeDatasetName: null,
+      activeLayerName: null,
+      datasets,
+      activeGoalType: "sdgs",
+      goalTypes: [
+        {
+          name: "SIDS offer Pillars",
+          value: "pillars",
+        },
+        {
+          name: "SDGs",
+          value: "sdgs",
+        },
+        {
+          name: "SAMOA Pathway",
+          value: "samoaPriorities",
+        },
+      ],
+      activePillar: 1,
+      pillars: [
+        {
+          name: "Blue Economy",
+          value: "blue",
+        },
+        {
+          name: "Climate Action",
+          value: "climate",
+        },
+        {
+          name: "Digital transformation",
+          value: "digital",
+        },
+      ],
+      sdgs: [
+        "No poverty",
+        "Zero hunger",
+        "Good health and well-being",
+        "Quality education",
+        "Gender equality",
+        "Clean water and sanitation",
+        "Affordable and clean energy",
+        "Decent work and economic growth",
+        "Industry, innovation and infrastructure",
+        "Reduced inequalities",
+        "Sustainable cities and communities",
+        "Responsible consumption and production",
+        "Climate action",
+        "Life below water",
+        "Life on Land",
+        "Peace, justice, and strong institutions",
+        "Partnerships for the goals",
+      ],
+      samoaPriorities: [
+        "Sustainable, inclusive and equitable economic growth",
+        "Climate Change",
+        "Sustainable Energy",
+        "Disaster Risk Reduction",
+        "Oceans and Seas",
+        "Food Security and Nutrition",
+        "Water and Sanitation",
+        "Sustainable Transportation",
+        "Sustainable Consumption and Production",
+        "Chemical and Waste management",
+        "Health and NCDs",
+        "Gender Equality",
+        "Social Development",
+        "Biodiversity",
+        "Invasive species",
+        "Means of Implementation",
+      ],
+      layers: [],
+    };
+  },
+  computed: {
+    filteredDatasets() {
+      return this.datasets.reduce((array, dataset) => {
+        let filtered = Object.assign({}, dataset);
+        if (this.activeGoalType === "pillars") {
+          filtered.layers = filtered.layers.filter((layer) =>
+            layer.pillars.includes(this.activePillar)
+          );
+        } else if (this.activeGoalType === "sdgs") {
+          filtered.layers = filtered.layers.filter((layer) =>
+            layer.SDG.includes(this.activeGoal)
+          );
+        } else if (this.activeGoalType === "samoaPriorities") {
+          filtered.layers = filtered.layers.filter((layer) =>
+            layer.samoa_pathway.includes(this.activeGoal)
+          );
+        }
+        if (filtered.layers.length > 0) {
+          array.push(filtered);
+        }
+        return array;
+      }, []);
+    },
+    activeGoalTypes() {
+      return this[this.activeGoalType];
+    },
+    ticksLabels() {
+      return this.activeDataset.layers.map((layer) => layer.Temporal);
+    },
+    activeDataset() {
+      return this.filteredDatasets.find(
+        (dataset) => dataset.name === this.activeDatasetName
+      );
+    },
+    activeLayer() {
+      if (!this.activeDataset) return null;
+      if (this.activeDataset.type === "temporal") {
+        return this.activeDataset.layers[this.activeLayerName];
+      } else if (this.activeDataset.type === "layers") {
+        return this.activeDataset.layers.find(
+          (layer) => layer.Description === this.activeLayerName
+        );
+      } else {
+        return this.activeDataset.layers[0];
+      }
+    },
+  },
+  methods: {
+    getGoalImage(index) {
+      if (this.activeGoalType === "sdgs") {
+        let goalNmber = (index + 1).toString();
+        if (goalNmber.length < 2) {
+          goalNmber = "0" + goalNmber;
+        }
+        return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNmber}.png`;
+      } else if (this.activeGoalType === "samoaPriorities") {
+        return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${
+          index + 1
+        }samoaIcons.png`;
+      }
+    },
+    goalUpdateNext() {
+      this.activeGoal = this.activeGoal + 1;
+    },
+    goalUpdatePrev() {
+      this.activeGoal = this.activeGoal - 1;
+    },
+    resetGoalModel() {
+      this.activeGoal = 1;
+
+      //Requred to reset slider when switching between samoa and sdgs
+      this.$refs.slider && this.$refs.slider.items[0].toggle();
+      this.$refs.slider && this.$refs.slider.scrollIntoView();
+    },
+    selectGoal(goalNumber) {
+      this.activeGoal = goalNumber;
+      // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
+      this.$refs.slider.scrollOffset = 56 * (goalNumber - 1);
+    },
+  },
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+.goals-slider {
+  padding: 8px 0;
+  width: 106px;
+  margin: auto;
+}
+.goals-slider .v-slide-group__next,
+.goals-slider .v-slide-group__prev {
+  min-width: 25px;
+}
+.goals-tooltip-content {
+  display: flex;
+  max-width: 336px;
+  flex-wrap: wrap;
+}
+.tooltip-image {
+  cursor: pointer;
+}
+.map-input {
+  padding: 0 1em !important;
+}
+</style>
