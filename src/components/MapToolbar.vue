@@ -1,6 +1,7 @@
 <!--BRANDON: MY RE-IMPLEMENTATION OF THE OLD RIGHTHAND SIDEBAR TO NEW VUE VERSION-->
 <template>
   <div class="sidebarWrapper">
+    <br />
     <div class="close-menu display-none"></div>
     <div class="menu-box col-flex space-evenly">
       <div class="row-flex full-width">
