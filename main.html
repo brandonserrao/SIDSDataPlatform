@@ -6,7 +6,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <link rel="icon" type="image/png" href="undp_favicon.208074ca.ico" />
-  <title>SIDS Data Platform</title>
+  <title>(!OLD)SIDS Data Platform</title>
 
   <!-- Custom styles for this template -->
 
@@ -40,8 +40,12 @@
   <link href="css/choropleth.css" rel="stylesheet">
   <link href="css/mvi.css" rel="stylesheet">
   <link href="css/qna.css" rel="stylesheet">
+
   <link href="gisPanel/gis.css" rel="stylesheet">
-  <link href='gisPanel/minimapNew.css' rel='stylesheet'>
+  <link href='gisPanel/minimapNew.css' rel='stylesheet'> 
+  <!-- using the same css instead from the css directory causes the sidebar and minimap to be invisible/drawn under the maptiles -->
+  <!-- <link href="gisPanel/css/gis.css" rel="stylesheet">
+  <link href='gisPanel/css/minimapNew.css' rel='stylesheet'>  -->
 
 </head>
 
@@ -229,25 +233,29 @@
 
         <div class="container panel mdl-tabs__panel hidden" id="gisPanel">
 
-          <div id='draw-sidebar'>
+          <!-- DRAW SIDEBAR OBSOLETE/UNUSED AND EMPTY -->
+ <!--          <div id='draw-sidebar'>
             <button class='closebutton' onclick='closeSide()'>x</button>
             <div id='sidebar-text'>
-              <div id='sideTitle'></div>
-              <div id='sideMax'></div>
-              <div id='sideMin'></div>
-              <div id='sideMean'></div>
+              <div id='sideTitle'>TITLE-DRAWSIDEBAR</div>
+              <div id='sideMax'>SIDEMAX</div>
+              <div id='sideMin'>SIDEMIN</div>
+              <div id='sideMean'>SIDEMEAN</div>
             </div>
-          </div>
+          </div> -->
 
           <div id='upload-stuff'></div>
 
+          <!-- MAP CONTAINER -->
           <div class='pic' id="map">
 
+            <!-- LOGOS TOPRIGHT -->
             <div class="logos row-flex align-items-center">
               <div class="UNDP-logo"></div>
               <div class="rising-up-for-sids"></div>
             </div>
 
+            <!-- SPINNER LOADER -->
             <div class="loader-gis">
               <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="170" height="170"
                 viewbox="0 0 200 173.20508075688772">
@@ -256,113 +264,13 @@
                 </path>
               </svg>
             </div>
-            <!--<div id='top-right-wrap'>
-            
-              <div class="collapse-btn" id='close-side'>
-                <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
-                  <path fill="none" stroke="#eee" stroke-linecap="round" stroke-linejoin="round" stroke-width="48"
-                    d="M328 112L184 256l144 144" />
-                </svg>
-              </div>
-
-              <div class="country-select-menu country" id='country-select-id'>
-                <select id='country-select'>
-                  <option value="Select Country or Region">Select Country or Region</option>
-
-                </select>
-
-              </div>
-
-              <div id="list1" class="dropdown-check-list" tabindex="100">
-                <span class="anchor">Select Overlay</span>
-                <ul id="items" class="items">
-                  <li><input autocomplete="off" name='overlay' id='allsids-input' value="allsids" type="checkbox" checked /> SIDS
-                    Boundaries </li>
-                  <li><input autocomplete="off" name='overlay' id='admin1-input' value="admin1-overlay" type="checkbox" /> Admin Regions 1</li>
-                  <li><input autocomplete="off" name='overlay' id='admin2-input' value="admin2-overlay" type="checkbox" /> Admin Regions 2</li>
-                  <li><input autocomplete="off" name='overlay' id='underwater' value="underwater-overlay" type='checkbox' /> Underwater Cables </li>
-                  <li style='color: orange;'><input autocomplete="off" name='overlay'  id='volcanoes' value="volcano_list" type='checkbox' /> Volcanoes </li>
-                  <li style='color: yellow;'><input autocomplete="off" name='overlay' id='ports' value="world_port_index" type='checkbox' /> Ports </li>
-                  <li style='color: red;'><input autocomplete="off" name='overlay' id='hc' value="healthsites" type='checkbox' /> Health Centers </li>
-                  <li style='color: green;'><input autocomplete="off" name='overlay' id='powerplants' value="glopal_power_plant" type='checkbox' /> Power Plants </li>
-                  <li style='color: blue;'><input autocomplete="off" name='overlay' id='airports' value="airports-extended" type='checkbox' /> Airports </li>
-
-
-
-                </ul>
-              </div>
-
-              <div class="country-select-menu hexsize">
-                <select autocomplete="off" class='hexbin-change' name="hexbin-change" id="plot-select">
-                  <option value='hex1'>1km hexbins</option>
-                  <option selected value="hex5">5km hexbins</option>
-                  <option value="hex5clipped">5km hex Clipped</option>
-                  <option value="hex10">10km hexbin</option>
-                  <option value="admin1">Admin 1 Regions</option>
-                  <option value="admin2">Admin 2 Regions</option>
-                </select>
-              </div>
-
-              <div class="country-select-menu" id="country-select-id">
-                <select autocomplete="off" id="basemap-switch">
-                  <option value="Mapbox Satellite Streets">Satellite With Labels</option>
-                  <option value='Mapbox Light'>Light Basemap</option>
-                  <option value='Mapbox Dark'>Dark Basemap</option>
-                </select>
-
-              </div>
-
-              <div class="country-select-menu" id="country-select-id">
-                <select autocomplete="off" id="color-switch">
-                  <option id='color' value='none'>Change Color Scheme</option>
-                  <option id='color' value='Original'>Original Color Scheme</option>
-                  <option id='color' style='color: white;' value='invert'>Invert Colors</option>
-                  <option id='color' style='color: white; background-color: red;' value="red">Reds</option>
-                  <option id='color' style='color: white; background-color: purple;' value='purple'>Purples</option>
-                  <option id='color' style='color: white; background-color: blue;' value='blue'>Blues</option>
-                  <option id='color' value='colorblind-safe'>Color blind safe option</option>
-                  <option id='color' value='choose' onclick=>Choose Colors</option>
-                </select>
-      
-              </div>
-
-              <div class="country-select-menu" id="country-select-id">
-                <input id='upload' value='Upload your own csv or geojson' type='file' name='datafile'>
-              </div>
-
-              <div class="country-select-menu" id="country-select-id">
-                <div class='download' id='datadownload'>Download Data</div>
-              </div>
-              <div class="country-select-menu" id="country-select-id">
-                <div class='removeUpload' id='removeUpload'>Remove Uploaded Layer</div>
-              </div>
-
-              <div class="country-select-menu" id="country-select-id">
-                <div id="addLabels" class="addLabels" onclick="addLabels()">Remove Labels</div>
-                <div id="icon3d" class="icon2"></div>
-              </div>
-              <div class="country-select-menu" id="country-select-id">
-                <div class='opacityslider'>
-                  <div id='opacityslider'>
-                    <input type="range" id="volume" value="8" name="volume" min="0" max="10">
-                  </div>
-                  <label id='volume' for="volume">Opacity</label>
-                </div>
-              </div>
-
-
-            </div> -->
-
-            <!--new sidebar!-->
+            <!--RIGHTSIDEBAR SIDEBAR-->
             <div class="close-menu display-none"></div>
             <div class="menu-box col-flex space-evely">
               <div class='top-right-header'><b>View</b></div>
               <div class="row-flex full-width">
                 <div class="col-flex space-evenly">
 
-
-                  
-        
                   <!-- Country Select Menu -->
                   <div class="menu row-flex">
                     <div class="icon country-icon" onClick = toggleMenu(0)></div>
@@ -393,7 +301,7 @@
         
                       <div class="col-flex" style="position:relative;">
         
-                        <div class="row-flex space-between selected-resolution resolution align-items-center" onClick="toggleResolutionMenu()">
+                        <div class="row-flex space-between selected-resolution resolution align-items-center" onClick="toggleSidebarMenu('resolution')">
                           <div>5km hexbins</div>
                           <div class="resolution-menu-icon" style="margin-right:30px;"></div>
                         </div>
@@ -592,7 +500,9 @@
                 </div>
         
               </div>
+              <!-- END - SIDEBAR TOPHALF -->
         
+              <!-- SIDEBAR BOTTOMHALF -->
               <div class="partition-line"></div>
               <!--<div class='top-right-header'><b>Analysis</b></div>-->
               <div class="row-flex">
@@ -902,20 +812,17 @@
                 </div>
         
               </div>
+              <!-- END - RIGHTSIDEBAR BOTTOMHALF -->
         
             </div>
-
-
-
-
-
-
-            <!--end new sidebar!-->
-
-
+            <!--END - RIGHTSIDEBAR-->
+            <!-- mapbox injects more elements here -->
 
           </div>
           <!---- MAP END -->
+
+          <!-- ??? UNUSED/OBSOLETED DOWNLOAD FACILITATION ???-->
+          <!-- ??MODAL CONTENT -->
           <div id="myModal" class="modal">
             <!-- Modal content -->
             <div class="modal-content">
@@ -954,12 +861,10 @@
                         <input type="text" id="fname" name="fname"><br><br>
                       </div> -->
 
-
-
-
-
           <!--Top right Column End -->
+          <!-- END - ??MODAL CONTENT -->
 
+          <!-- LEFTSIDEBAR  -->
           <div class="container main-wrapper">
 
             <div class="collapse-btn bottom-left">
@@ -1471,7 +1376,8 @@
 
 
         </div>
-        <!--end gisPanel -->
+        <!-- END - LEFTSIDEBAR -->
+        <!--END GISPANEL -->
 
 
 
@@ -2469,34 +2375,61 @@
     
     <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js'></script>
     <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
-    <script src="gisPanel/sidsNames.js"></script>
-    <!--<script src="gisPanel/newgis.js"></script>-->
     
     
-    <script src='gisPanel/newsidebar.js'></script>
-    <script src='gisPanel/sdgSamoaFilters.js'></script>
-    <script src="gisPanel/addSources.js"></script>
-    <script src='gisPanel/addButtons.js'></script>
-    <script src="gisPanel/shpwrite.js"></script>
-    <script src='gisPanel/color.js'></script>
-    <script src="gisPanel/colorSwitch.js"></script>
-    <script src="gisPanel/onClickControl.js"></script>
-    <script src='gisPanel/dataUpload.js'></script>
-    <script src='gisPanel/basemapSwitch.js'></script>
-    <script src='gisPanel/isochroneCreation.js'></script>
-    <script src='gisPanel/changeOpacity.js'></script>
-    <script src='gisPanel/datadownload.js'></script>
-    <script src='gisPanel/add3d.js'></script>
-    <script src='gisPanel/bivariate.js'></script>
+    <!-- GISPANEL RELATED -->
+    <script src="gisPanel/variables/sidsNames.js"></script>
+    <script src='gisPanel/functions/rightSidebar.js'></script>
+    <script src='gisPanel/variables/sdgSamoaFilters.js'></script>
+    <script src="gisPanel/functions/addSources.js"></script>
+    <!-- addButtons replaced by populateDropdowns -->
+    <script src="gisPanel/libs/shpwrite.js"></script>
+    <script src='gisPanel/variables/color.js'></script>
+    <script src="gisPanel/functions/switchColorScheme.js"></script>
+    <script src="gisPanel/functions/onClickControl.js"></script>
+    <script src="gisPanel/functions/onDataClick.js"></script>
+    <script src="gisPanel/functions/onAdminClick.js"></script>
+    <script src='gisPanel/functions/dataUpload.js'></script>
+    <script src='gisPanel/functions/basemapSwitch.js'></script>
+    <script src='gisPanel/functions/isochroneCreation.js'></script>
+    <script src='gisPanel/functions/changeOpacity.js'></script>
+    <script src='gisPanel/functions/dataDownload.js'></script>
+    <script src='gisPanel/functions/add3d.js'></script>
+    <script src='gisPanel/functions/createBivariate.js'></script>
     <script type="module">
       import mapboxMinimap from 'https://cdn.skypack.dev/mapbox.minimap';
     </script>
     <!--<script src='gisPanel/newgis.js'></script>-->
     
-    <script src='gisPanel/drawFunc.js'></script>
+    <script src='gisPanel/functions/drawFunc.js'></script>
+
+    <script src='gisPanel/functions/functions.js'></script>
+    <script src='gisPanel/functions/loadMapControls.js'></script>
+    <script src='gisPanel/functions/populateDropdowns.js'></script>
+    <script src='gisPanel/functions/mapListeners.js'></script>
+    <script src='gisPanel/functions/leftSidebar.js'></script>
+    <script src='gisPanel/functions/addBoundaryLayer.js'></script>
+    <script src='gisPanel/functions/addToLayersDropdown.js'></script>
+    <script src='gisPanel/functions/addCables.js'></script>
+    <script src='gisPanel/functions/addOcean.js'></script>
+    <script src='gisPanel/functions/getFirstSymbolId.js'></script>
+    <script src='gisPanel/functions/fillBasemapLabels.js'></script>
+    <script src='gisPanel/functions/focusRandomCountry.js'></script>
+    <script src='gisPanel/functions/zoomToCountry.js'></script>
+    <script src='gisPanel/functions/legendFunctions.js'></script>
+    <script src='gisPanel/functions/change.js'></script>
+    <script src='gisPanel/functions/recolor.js'></script>
+    <script src='gisPanel/helpers/getUniqueFeatures.js'></script>
+    <script src='gisPanel/helpers/checkForDuplicates.js'></script>
+    <script src='gisPanel/functions/voronoi.js'></script>
+    <script src='gisPanel/helpers/nFormatter.js'></script>
+    <script src='gisPanel/helpers/spinner.js'></script>
+    <script src='gisPanel/variables/constants.js'></script>
+    <script src='gisPanel/variables/globals.js'></script>
+    <script src='gisPanel/variables/options.js'></script>
 
 
-
+    
     <script>
       $('#gisTab').one('click', function () {
 
