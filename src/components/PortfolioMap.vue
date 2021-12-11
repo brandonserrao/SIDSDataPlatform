@@ -1,31 +1,31 @@
 <template>
   <div class="map d-flex" :class="regionClass" :style="backgroundData">
     <h2 class="prtfolio-header mt-10 mb-2">UNDP Portfolio in Small Island Developing States</h2>
-    <v-row justify="center">
-      <v-chip
+    <v-row justify="end">
+      <v-card
         class="ma-2"
-        color="primary"
       >
-        {{projectsNumber}} SIDS with UNDP Projects
-      </v-chip>
-      <v-chip
+        <v-card-title class="custom-chip_header">{{projectsNumber}}</v-card-title>
+        <v-card-text class="custom-chip_text">SIDS with UNDP Projects</v-card-text>
+      </v-card>
+      <v-card
         class="ma-2"
-        color="primary"
       >
-        {{memberStates}} UN Member States
-      </v-chip>
-      <v-chip
+        <v-card-title class="custom-chip_header">{{memberStates}}</v-card-title>
+        <v-card-text class="custom-chip_text">UN Member States</v-card-text>
+      </v-card>
+      <v-card
         class="ma-2"
-        color="primary"
       >
-        {{UNDPprojectsNumber}} UNDP Projects
-      </v-chip>
-      <v-chip
+        <v-card-title class="custom-chip_header">{{UNDPprojectsNumber}}</v-card-title>
+        <v-card-text class="custom-chip_text">UNDP Projects</v-card-text>
+      </v-card>
+      <v-card
         class="ma-2"
-        color="primary"
       >
-        {{projectsFundning}} Total Project Funding
-      </v-chip>
+        <v-card-title class="custom-chip_header">{{projectsFundning}}</v-card-title>
+        <v-card-text class="custom-chip_text">Total Project Funding</v-card-text>
+      </v-card>
     </v-row>
 
 
@@ -199,5 +199,17 @@ export default {
 }
 .prtfolio-header {
   text-align: center;
+}
+.custom-chip_header {
+  justify-content: center;
+  padding: 0.1em;
+}
+.custom-chip_text {
+  justify-content: center;
+  padding: 0.4em;
+  max-width: 120px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1;
 }
 </style>

@@ -1,5 +1,5 @@
 const filepaths = {
-  cablesFilePath: "@/gis/data/cable-geo.json",
-  pointdataFilePath: "@/gis/data/pvaph.geojson",
+  cablesFilePath: "/static/cable-geo.json",
+  pointdataFilePath: "/static/cable-geo.json",
 };
 export default filepaths;

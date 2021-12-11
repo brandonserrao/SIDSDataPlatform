@@ -5,27 +5,91 @@
         <v-col cols="6">
           <v-list dense>
             <v-list-item-group v-model="activeGoalType" mandatory>
-              <v-list-item
+              <v-tooltip
+                top
                 v-for="(item, i) in goalTypes"
                 :key="i"
-                :value="item.value"
-                @change="resetGoalModel"
+                eager
+                max-width="400"
+                nudge-right="106"
+                :nudge-top="20 + (40*i)"
+                content-class="indicator-tooltip"
+                allow-overflow
               >
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.name"></v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+               <template v-slot:activator="{ on, attrs }">
+                <v-list-item
+                  v-bind="attrs"
+                  v-on="on"
+                  :value="item.value"
+                  @change="resetGoalModel"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title v-text="item.name"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              <v-card class="tooltip-card">
+                <v-card-title>
+                  <v-img
+                    class="tooltip-card_img"
+                    max-width="160"
+                    :src="item.headerImg"
+                  ></v-img>
+                </v-card-title>
+                <v-card-text>
+                  {{item.description}}
+                </v-card-text>
+              </v-card>
+              </v-tooltip>
             </v-list-item-group>
           </v-list>
         </v-col>
         <v-col cols="6">
           <v-list v-if="activeGoalType === 'pillars'" dense>
             <v-list-item-group v-model="activePillar" mandatory>
-              <v-list-item v-for="(item, i) in pillars" :key="i" :value="i + 1">
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.name"></v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+              <v-tooltip
+                right
+                v-for="(item, i) in pillars"
+                :key="i"
+                eager
+                :nudge-top="-40 + (40*i)"
+                max-width="320"
+                content-class="indicator-tooltip"
+                allow-overflow
+              >
+               <template v-slot:activator="{ on, attrs }">
+                  <v-list-item
+                    v-bind="attrs"
+                    v-on="on"
+                    class="pillar"
+                    :value="i + 1"
+                  >
+                    <v-list-item-icon
+                      class="pillars_icon"
+                    >
+                      <v-img
+                        max-height="24"
+                        max-width="24"
+                        :src="item.icon"
+                      ></v-img>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title v-text="item.name"></v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <v-img class="pillar-tooltip_img"
+                      max-height="60"
+                      max-width="60"
+                      :src="item.icon"
+                    ></v-img>
+                    {{item.name}}
+                  </v-card-title>
+                  <v-card-text>{{item.description}}</v-card-text>
+                </v-card>
+              </v-tooltip>
             </v-list-item-group>
           </v-list>
           <v-slide-group
@@ -41,7 +105,13 @@
               :key="n"
               :value="index + 1"
             >
-              <v-menu open-on-hover bottom>
+              <v-menu
+                open-on-hover
+                bottom
+                :nudge-left="255"
+                :nudge-bottom="46"
+                content-class="sdg-menu"
+              >
                 <template v-slot:activator="{ on }">
                   <img
                     v-on="on"
@@ -51,15 +121,37 @@
                   />
                 </template>
                 <div class="goals-tooltip-content">
-                  <img
-                    v-for="(n, index) in activeGoalTypes"
-                    @click="selectGoal(index + 1)"
-                    :key="n"
-                    :src="getGoalImage(index)"
-                    class="tooltip-image"
-                    height="56"
-                    width="56"
-                  />
+                  <v-tooltip
+                    right
+                      v-for="(n, index) in activeGoalTypes"
+                      :key="n"
+                    eager
+                    :nudge-right="(5 - index%6) * 56 || 6"
+                    :nudge-top="getGoalsTooltipNudgeTop(index)"
+                    max-width="380"
+                    content-class="indicator-tooltip"
+                    allow-overflow
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <img
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="selectGoal(index + 1)"
+                        :src="getGoalImage(index)"
+                        class="tooltip-image"
+                        height="56"
+                        width="56"
+                      />
+                    </template>
+                    <v-card>
+                      <v-card-title class="coal-title">
+                        {{goalDescriptions[n].title}}
+                      </v-card-title>
+                      <v-card-text>
+                        {{goalDescriptions[n].content}}
+                      </v-card-text>
+                    </v-card>
+                  </v-tooltip>
                 </div>
               </v-menu>
             </v-slide-item>
@@ -141,14 +233,20 @@ export default {
         {
           name: "SIDS offer Pillars",
           value: "pillars",
+          headerImg:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png',
+          description: 'UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.'
         },
         {
           name: "SDGs",
           value: "sdgs",
+          headerImg:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png',
+          description: 'The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS\'s ownership and leadership in overcoming these challenges.'
         },
         {
           name: "SAMOA Pathway",
           value: "samoaPriorities",
+          headerImg:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png',
+          description: 'The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.'
         },
       ],
       activePillar: 1,
@@ -156,14 +254,20 @@ export default {
         {
           name: "Blue Economy",
           value: "blue",
+          icon:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/blueEconomy.png',
+          description:'Harnessing the blue economy through an integrated approach rooted in sustainable finance and development.'
         },
         {
           name: "Climate Action",
           value: "climate",
+          icon:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/climateAction.png',
+          description:'Promoting decarbonized and resilient societies through scaled up climate action and enhanced efforts to mobilize climate finance.'
         },
         {
           name: "Digital transformation",
           value: "digital",
+          icon:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/digitalTransformation.png',
+          description:'Accelerating digital transformation through a whole-of-society approach that puts people at the centre for inclusive societies and resilient economies.'
         },
       ],
       sdgs: [
@@ -203,6 +307,140 @@ export default {
         "Invasive species",
         "Means of Implementation",
       ],
+      goalDescriptions:{
+        "No poverty" : {
+          "title": "Goal 1 - No Poverty",
+          "content": "To end poverty in all its forms, everywhere, through a powerful commitment to leave no one behind and to reach those fathest behind first."
+        },
+        "Zero hunger" : {
+          "title": "Goal 2 - Zero Hunger",
+          "content": "To end hunger, achieve food security and improve nutrition and promote sustainable agriculture."
+        },
+        "Good health and well-being" : {
+          "title": "Goal 3 - Good Health and Well-Being",
+          "content": "To ensure healthy lives and promote well-being for all at all ages."
+        },
+        "Quality education" : {
+          "title": "Goal 4 - Quality Education",
+          "content": "To ensure inclusive and equitable quality education and promote lifelong learning opportunities for all."
+        },
+        "Gender equality" : {
+          "title": "Goal 5 - Gender Equality",
+          "content": "To achieve gender equality and empower all women and girls."
+        },
+        "Clean water and sanitation" : {
+          "title": "Goal 6 - Clean Water and Sanitation",
+          "content": "To ensure availability and sustainable management of water and sanitation for all."
+        },
+        "Affordable and clean energy" : {
+          "title": "Goal 7 - Affordable and Clean Energy",
+          "content": "To ensure access to affordable, reliable, sustainable and modern energy for all."
+        },
+        "Decent work and economic growth" : {
+          "title": "Goal 8 - Decent Work and Economic Growth",
+          "content": "To foster sustained, inclusive and sustainable economic growth, full and productive employment and decent work for all."
+        },
+        "Industry, innovation and infrastructure" : {
+          "title": "Goal 9 - Industry, Innovation, and Infrastructure",
+          "content": "To build resilient infrastructure, promote inclusive and sustainable industrialization, and foster innovation"
+        },
+        "Reduced inequalities" : {
+          "title": "Goal 10 - Reduced Inequality",
+          "content": "To reduce income inequality within and among countries."
+        },
+        "Sustainable cities and communities" : {
+          "title": "Goal 11 - Sustainable cities and communities",
+          "content": "To make cities and human settlements inclusive, safe, resilient, and sustainable."
+        },
+        "Responsible consumption and production" : {
+          "title": "Goal 12 - Responsible consumption and production",
+          "content": "To ensure sustainable consumption and production patterns"
+        },
+        "Climate action" : {
+          "title": "Goal 13 - Climate Action",
+          "content": "To take urgent action to combat climate change and its impacts by regulating emissions and promoting developments in renewable energy"
+        },
+        "Life below water" : {
+          "title": "Goal 14 - Life Below Water",
+          "content": "To conserve and sustainably use the oceans, seas and marine resources for sustainable development."
+        },
+        "Life on Land" : {
+          "title": "Goal 15 - Life on Land",
+          "content": "To protect, restore and promote sustainable use of terrestrial ecosystems, sustainably manage forests, combat desertification, and halt and reverse land degradation and halt biodiversity loss"
+        },
+        "Peace, justice, and strong institutions" : {
+          "title": "Goal 16 - Peace, justice and strong institutions",
+          "content": "To promote peaceful and inclusive societies for sustainable development, provide access to justice for all and build effective, accountable and inclusive institutions at all levels."
+        },
+        "Partnerships for the goals" : {
+          "title": "Goal 17 - Partnership for the goals",
+          "content": "To strengthen the means of implementation and revitalize the global partnership for sustainable development."
+        },
+        "Sustainable, inclusive and equitable economic growth" : {
+          "title": "1. Sustained and sustainable, inclusive and equitable economic growth with decent work for all",
+          "content": "To support SIDS to achieve sustained, inclusive and equitable growth with full and productive employment, social protection and the creation of decent work for all."
+        },
+        "Climate Change" : {
+          "title": "2. Climate Change",
+          "content": "To help SIDS with climate adaptation, including persistent drought and extreme weather events, sea-level rise, coastal erosion and ocean acidification."
+        },
+        "Sustainable Energy" : {
+          "title": "3. Sustainable Energy",
+          "content": "To address challenges in accessing sustainable energy in the SIDS including enhanced accessibility to modern energy services, energy efficiency and use of economically viable and environmentally sound technology"
+        },
+        "Disaster Risk Reduction" : {
+          "title": "4. Disaster risk reduction",
+          "content": "To address the critical need to build resilience, strengthen monitoring and prevention, reduce vulnerability, raise awareness and increase preparedness to respond to and recover from disasters in SIDS"
+        },
+        "Oceans and Seas" : {
+          "title": "5. Oceans and seas",
+          "content": "To support healthy, productive and resilient oceans and coasts are critical for, inter alia, poverty eradication, access to sufficient, safe and nutritious food, livelihoods, economic development, essential ecosystem services, and identity and culture in SIDS."
+        },
+        "Food Security and Nutrition" : {
+          "title": "6. Food security and nutrition",
+          "content": "To support the right to have access to safe, sufficient and nutritious food, the eradication of hunger and the provision of livelihoods while conserving, protecting and ensuring the sustainable use of land, soil, forests, water, plants and animals, biodiversity and ecosystems."
+        },
+        "Water and Sanitation" : {
+          "title": "7. Water and sanitation",
+          "content": "To support the efforts of small island developing States to develop capacities for the effective, inclusive and sustainable implementation of the integrated management of water resources and related ecosystems"
+        },
+        "Sustainable Transportation" : {
+          "title": "8. Sustainable transportation",
+          "content": "To support SIDS to gain access to environmentally sound, safe, affordable, sustainable and well-maintained transportation"
+        },
+        "Sustainable Consumption and Production" : {
+          "title": "9. Sustainable consumption and production",
+          "content": "To support SIDS on sustainable consumption and production patterns to advance sustainable consumption and production, with an emphasis on MSMEs, sustainable tourism, waste management, food and nutrition, lifestyles, and rural supply chains."
+        },
+        "Chemical and Waste management" : {
+          "title": "10. Management of chemicals and waste, including hazardous waste",
+          "content": "To support SIDS in sound management of chemicals throughout their life cycle and of waste is crucial for the protection of human health and the environment"
+        },
+        "Health and NCDs" : {
+          "title": "11. Health and non-communicable diseases",
+          "content": "To support prevention, treatment, care, and education in health as well as support the national actions of SIDS in addressing communicable and non-communicable diseases."
+        },
+        "Gender Equality" : {
+          "title": "12. Gender Equality and women’s empowerment",
+          "content": "To support gender equality and women’s empowerment and the full realization of human rights for women and girls have a transformative and multiplier effect on sustainable development and is a driver of economic growth in SIDS."
+        },
+        "Social Development" : {
+          "title": "13. Social Development",
+          "content": "To support efforts to enhance social protection and inclusion, to improve well-being and to guarantee opportunities for the most vulnerable and disadvantaged to have equal access to education, health, food, water and sanitation, and productive resources."
+        },
+        "Biodiversity" : {
+          "title": "14. Biodiversity",
+          "content": "To suport the conservation and sustainable use of biodiversity, as well as their access to and the fair and equitable sharing of benefits arising from the utilization of genetic resources, with the vision of living in harmony with nature"
+        },
+        "Invasive species" : {
+          "title": "15. Invasive alien species",
+          "content": "To help multisectoral collaboration in SIDS to address invasive alien species in order to protect biodiversity and livelihoods, preserve and maintain ocean resources and ecosystem resiliency, and enhance food security and adapt to climate change"
+        },
+        "Means of Implementation" : {
+          "title": "16. Means of implementation, including partnerships",
+          "content": "To support SIDS in enhanced global partnership for development, adequate provision and mobilization of all means of implementation and continued international support to achieve internationally agreed goals."
+        }
+      },
       layers: [],
     };
   },
@@ -285,6 +523,14 @@ export default {
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
       this.$refs.slider.scrollOffset = 56 * (goalNumber - 1);
     },
+    getGoalsTooltipNudgeTop(index) {
+      if( index <6) {
+        return 6;
+      } else if (index < 12) {
+        return 56;
+      }
+      return 112;
+    }
   },
 };
 </script>
@@ -306,9 +552,39 @@ export default {
   flex-wrap: wrap;
 }
 .tooltip-image {
+  transition: 200ms;
   cursor: pointer;
 }
 .map-input {
   padding: 0 1em !important;
+}
+.indicator-tooltip {
+  background: none !important;
+  padding: 0 !important;
+}
+.tooltip-card_img {
+  margin: auto;
+}
+.pillars_icon {
+  margin-right: 5px !important;
+}
+.pillar {
+  padding: 0 8px;
+}
+.pillar-tooltip_img {
+  margin-right: 10px;
+}
+.tooltip-image:hover {
+  transform: scale(120%);
+}
+.sdg-menu {
+  padding: 10px;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+.coal-title {
+  word-break: keep-all !important;
+  word-wrap: normal;
+  /* white-space: nowrap */
 }
 </style>

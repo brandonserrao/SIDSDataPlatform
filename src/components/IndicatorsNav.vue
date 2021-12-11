@@ -8,6 +8,7 @@
         @blur="hideFullList"
         label="Search indicators"
         hide-details="auto"
+        @click:append="clearFullSearch"
         append-icon="mdi-close"
         prepend-icon="mdi-magnify"
       ></v-text-field>
@@ -20,6 +21,7 @@
           <template v-slot:default="{ item }">
             <v-tooltip
               right
+              open-delay="500"
               max-width="250"
               :key="item.Indicator"
               content-class="indicator-tooltip"
@@ -98,6 +100,7 @@
           label="Search indicators"
           hide-details="auto"
           append-icon="mdi-close"
+          @click:append="clearDeepSearch"
       ></v-text-field>
       <v-list v-if="dataset" dense :class="{'list-short' : activeIndicator}" class="list-indicators list-scrollabe">
         <v-list-item-group>
@@ -399,6 +402,13 @@ export default {
       this.activeCategory = indicator.Category;
       this.activeSubCategory = indicator.Subcategory;
       this.setActiveIndicator(indicator);
+    },
+    clearFullSearch() {
+      this.searchString = '';
+      this.activeSearch = false;
+    },
+    clearDeepSearch() {
+      this.deepSearch = '';
     }
   }
 }
