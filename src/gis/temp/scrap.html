@@ -1,0 +1,582 @@
+<template>
+  <div class="sidebarWrapper">
+    <br />
+    <div class="close-menu display-none"></div>
+    <div class="menu-box col-flex space-evenly">
+      <div class="row-flex full-width">
+        <div class="col-flex space-evenly">
+          <!-- Country Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon country-icon" @click="toggleMenu(0)"></div>
+            <div class="description hover">
+              Map : Select country of your choice
+            </div>
+            <div class="menu-drop row-flex align-items-center display-none">
+              <div class="row-flex" style="position: relative">
+                <select
+                  name="countries"
+                  id="country"
+                  class="countries"
+                  v-on:change="
+                    handleGisMenuChange({ country: $event.target.value })
+                  "
+                >
+                  <option value="Search Country or Region">
+                    Search Country or Region
+                  </option>
+                  <!--<option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>-->
+                </select>
+                <div class="down-arrow"></div>
+              </div>
+              <!--<div class="search-icon"></div> -->
+            </div>
+          </div>
+
+          <!-- Resolution Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon resolution-icon" @click="toggleMenu(1)"></div>
+            <div class="description hover">Resolution: Select Resolution</div>
+            <div
+              class="
+                menu-drop
+                row-flex
+                align-items-center
+                display-none
+                menu-drop-resolution
+              "
+            >
+              <div style="margin-right: 12px">Resolution:</div>
+
+              <div class="col-flex" style="position: relative">
+                <div
+                  class="
+                    row-flex
+                    space-between
+                    selected-resolution
+                    resolution
+                    align-items-center
+                  "
+                  @click="toggleSidebarMenu('resolution')"
+                >
+                  <div>5km hexbins</div>
+                  <div
+                    class="resolution-menu-icon"
+                    style="margin-right: 30px"
+                  ></div>
+                </div>
+
+                <div
+                  class="col-flex resolution-options display-none options-drop"
+                >
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      resolution-option
+                      align-items-center
+                    "
+                    @click="
+                      handleResolutionChange(
+                        '1km hexbins',
+                        'resolution-menu-icon'
+                      )
+                    "
+                  >
+                    <div>1km hexbins</div>
+                    <div class="resolution-menu-icon"></div>
+                  </div>
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      resolution-option
+                      align-items-center
+                    "
+                    @click="
+                      handleResolutionChange(
+                        '5km hexbins',
+                        'resolution-menu-icon'
+                      )
+                    "
+                  >
+                    <div>5km hexbins</div>
+                    <div class="resolution-menu-icon"></div>
+                  </div>
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      resolution-option
+                      align-items-center
+                    "
+                    @click="
+                      handleResolutionChange(
+                        '10km hexbins',
+                        'resolution-menu-icon'
+                      )
+                    "
+                  >
+                    <div>10km hexbins</div>
+                    <div class="resolution-menu-icon"></div>
+                  </div>
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      resolution-option
+                      align-items-center
+                    "
+                    @click="
+                      handleResolutionChange(
+                        'Admin Regions 1',
+                        'admin-region-one-icon'
+                      )
+                    "
+                  >
+                    <div>Admin Regions 1</div>
+                    <div class="admin-region-one-icon"></div>
+                  </div>
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      resolution-option
+                      align-items-center
+                    "
+                    @click="
+                      handleResolutionChange(
+                        'Admin Regions 2 ',
+                        'admin-region-two-icon'
+                      )
+                    "
+                  >
+                    <div>Admin Regions 2</div>
+                    <div class="admin-region-two-icon"></div>
+                  </div>
+                </div>
+
+                <div
+                  class="down-arrow"
+                  @click="toggleSelect('resolution')"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Color Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon color-icon" @click="toggleMenu(2)"></div>
+            <div class="description hover">Color: Select Color</div>
+            <div
+              class="
+                menu-drop
+                row-flex
+                align-items-center
+                display-none
+                menu-drop-color
+              "
+            >
+              <div style="margin-right: 12px">Color Scheme:</div>
+              <div class="col-flex" style="position: relative">
+                <div
+                  class="
+                    row-flex
+                    space-between
+                    selected-color
+                    color
+                    align-items-center
+                  "
+                  @click="toggleSidebarMenu('color')"
+                >
+                  <div>Original Color Scheme</div>
+                  <div
+                    class="menu-icon color-icon"
+                    style="margin-right: 30px"
+                  ></div>
+                </div>
+
+                <div class="col-flex color-options display-none options-drop">
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      color-option
+                      align-items-center
+                    "
+                    @click="handleColorChange('Original', 'icon color-icon')"
+                  >
+                    <div>Original Color Scheme</div>
+                    <div class="menu-icon color-icon"></div>
+                  </div>
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      color-option
+                      align-items-center
+                    "
+                    @click="handleColorChange('invert', 'icon color-icon')"
+                  >
+                    <div>Invert Colors</div>
+                    <div class="menu-icon color-icon"></div>
+                  </div>
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      color-option
+                      align-items-center
+                    "
+                    @click="handleColorChange('red', 'icon color-icon')"
+                  >
+                    <div>Reds</div>
+                    <div class="menu-icon color-icon"></div>
+                  </div>
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      color-option
+                      align-items-center
+                    "
+                    @click="handleColorChange('purple', 'icon color-icon')"
+                  >
+                    <div>Purples</div>
+                    <div class="menu-icon color-icon"></div>
+                  </div>
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      color-option
+                      align-items-center
+                    "
+                    @click="handleColorChange('blue', 'icon color-icon')"
+                  >
+                    <div>Blues</div>
+                    <div class="menu-icon color-icon"></div>
+                  </div>
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      color-option
+                      align-items-center
+                    "
+                    @click="
+                      handleColorChange('colorblind-safe', 'icon color-icon')
+                    "
+                  >
+                    <div>Colorblind Safe</div>
+                    <div class="menu-icon color-icon"></div>
+                  </div>
+                </div>
+
+                <div
+                  class="down-arrow"
+                  style="cursor: pointer"
+                  @click="toggleSidebarMenu('color')"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Basemap Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon basemap-icon" @click="toggleMenu(3)"></div>
+            <div class="description hover">Basemap: Select Basemap</div>
+            <div
+              class="
+                menu-drop
+                row-flex
+                align-items-center
+                display-none
+                menu-drop-basemap
+              "
+            >
+              <div class="basemap-menu-icon"></div>
+              <div style="margin: 0 12px 0 8px">Basemap:</div>
+              <div class="col-flex" style="position: relative">
+                <div
+                  class="
+                    row-flex
+                    space-between
+                    selected-basemap
+                    color
+                    align-items-center
+                  "
+                  @click="toggleSidebarMenu('basemap')"
+                >
+                  <div>Satellite Imagery</div>
+                  <div class="satellite-icon" style="margin-right: 30px"></div>
+                </div>
+
+                <div class="col-flex basemap-options display-none options-drop">
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      basemap-option
+                      align-items-center
+                    "
+                    @click="
+                      handleBasemapChange('Satellite Imagery', 'satellite-icon')
+                    "
+                  >
+                    <div>Satellite Imagery</div>
+                    <div
+                      class="satellite-icon"
+                      style="margin-right: 10px"
+                    ></div>
+                  </div>
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      basemap-option
+                      align-items-center
+                    "
+                    @click="
+                      handleBasemapChange('Mapbox Light', 'satellite-icon')
+                    "
+                  >
+                    <div>Mapbox Light</div>
+                    <div
+                      class="satellite-icon"
+                      style="margin-right: 10px"
+                    ></div>
+                  </div>
+                  <div
+                    class="
+                      row-flex
+                      space-between
+                      basemap-option
+                      align-items-center
+                    "
+                    @click="
+                      handleBasemapChange('Mapbox Dark', 'satellite-icon')
+                    "
+                  >
+                    <div>Mapbox Dark</div>
+                    <div
+                      class="satellite-icon"
+                      style="margin-right: 10px"
+                    ></div>
+                  </div>
+                </div>
+
+                <div
+                  class="down-arrow"
+                  @click="toggleSidebarMenu('basemap')"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-flex">
+          <!-- Boundaries Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon add-boundaries-icon" @click="toggleMenu(4)"></div>
+            <div class="description hover">Boundaries</div>
+            <div class="menu-drop row-flex display-none menu-big">
+              <div class="col-flex" style="height: auto; width: auto">
+                <div
+                  class="row-flex"
+                  style="
+                    border-top-left-radius: 5px;
+                    line-height: 52px;
+                    font-weight: bold;
+                    font-size: 16px;
+                    height: 52px;
+                    background-color: #c4c4c4;
+                    padding-left: 20px;
+                  "
+                >
+                  Add Boundaries
+                </div>
+                <div
+                  class="row-flex"
+                  style="
+                    background-color: #c4c4c4;
+                    border-bottom-right-radius: 5px;
+                    border-bottom-left-radius: 5px;
+                  "
+                >
+                  <div
+                    class="col-flex"
+                    style="
+                      width: 176px;
+                      margin: 0 10px 8px 10px;
+                      background-color: #dfdfdf;
+                      padding: 10px 10px;
+                    "
+                  >
+                    <div class="row-flex">
+                      <div class="text">Admin Region 1</div>
+                      <div class="admin-region-one-icon"></div>
+                      <input
+                        type="checkbox"
+                        autocomplete="off"
+                        id="admin-region-1"
+                        name="admin-region"
+                        value="admin-region-one"
+                        @change="
+                          handleBoundariesChange({
+                            'admin1-overlay': $event.target.checked,
+                          })
+                        "
+                      />
+                    </div>
+                    <div class="row-flex" style="margin-top: 10px">
+                      <div class="text">Admin Region 2</div>
+                      <div class="admin-region-two-icon"></div>
+                      <input
+                        type="checkbox"
+                        autocomplete="off"
+                        id="admin-region-2"
+                        name="admin-region"
+                        value="admin-region-two"
+                        @change="
+                          handleBoundariesChange({
+                            'admin2-overlay': $event.target.checked,
+                          })
+                        "
+                      />
+                    </div>
+                    <div class="row-flex" style="margin-top: 10px">
+                      <div class="text">Airports</div>
+                      <div class="admin-region-two-icon"></div>
+                      <input
+                        type="checkbox"
+                        autocomplete="off"
+                        id="admin-region-2"
+                        name="admin-region"
+                        value="admin-region-two"
+                        @change="
+                          handleBoundariesChange({
+                            'airports-extended': $event.target.checked,
+                          })
+                        "
+                      />
+                    </div>
+                    <div class="row-flex" style="margin-top: 10px">
+                      <div class="text">Ports</div>
+                      <div class="admin-region-two-icon"></div>
+                      <input
+                        type="checkbox"
+                        autocomplete="off"
+                        id="admin-region-2"
+                        name="admin-region"
+                        value="admin-region-two"
+                        @change="
+                          handleBoundariesChange({
+                            world_port_index: $event.target.checked,
+                          })
+                        "
+                      />
+                    </div>
+                    <div class="row-flex" style="margin-top: 10px">
+                      <div class="text">Health Centers</div>
+                      <div class="admin-region-two-icon"></div>
+                      <input
+                        type="checkbox"
+                        autocomplete="off"
+                        id="admin-region-2"
+                        name="admin-region"
+                        value="admin-region-two"
+                        @change="
+                          handleBoundariesChange({
+                            healthsites: $event.target.checked,
+                          })
+                        "
+                      />
+                    </div>
+                    <div class="row-flex" style="margin-top: 10px">
+                      <div class="text">Underwater Cables</div>
+                      <div class="admin-region-two-icon"></div>
+                      <input
+                        type="checkbox"
+                        autocomplete="off"
+                        id="admin-region-2"
+                        name="admin-region"
+                        value="admin-region-two"
+                        @change="
+                          handleBoundariesChange({
+                            'underwater-overlay': $event.target.checked,
+                          })
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-flex">
+                <div
+                  class="col-flex"
+                  style="width: 10px; height: 52px; background-color: #c4c4c4"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Height Select Menu -->
+          <div class="menu row-flex">
+            <div
+              id="height"
+              class="icon threeD-icon"
+              @click="handleHeightChange()"
+            ></div>
+            <div class="description hover">3D 2D</div>
+            <div
+              class="menu-drop row-flex align-items-center display-none"
+            ></div>
+          </div>
+
+          <!-- Opacity Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon opacity-icon" @click="toggleMenu(6)"></div>
+            <div class="description hover">Opacity</div>
+            <div class="menu-drop row-flex align-items-center display-none">
+              <div
+                class="row-flex align-items-center"
+                style="
+                  height: 40px;
+                  margin: 0 6px 0 0;
+                  background-color: #dfdfdf;
+                "
+              >
+                <div style="margin: 0 10px">Opacity</div>
+                <!--<input type="range" class="opacity-slider" id="opacity" name="opacity" min="0" max="100" oninput="handleGisMenuChange({'opacity':this.value})">-->
+                <input
+                  type="range"
+                  class="opacity-slider"
+                  id="opacity"
+                  name="opacity"
+                  value="70"
+                  min="0"
+                  max="100"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Labels Select Menu -->
+          <div class="menu row-flex">
+            <div
+              id="labels"
+              class="icon aminus-icon"
+              @click="handleLabelsChange()"
+            ></div>
+            <div class="description hover">A- A+</div>
+            <div
+              class="menu-drop row-flex align-items-center display-none"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Form</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
+    </style>
+  </head>
+
+  <body style="background-color:black">
+
+  <!-- Keep this div outside the row   -->
+  <div class="close-menu display-none"></div>
+
+  <div class="row container">
+
+  <div class="col-lg-9" style="width:100%; height:100vh;">
+
+  </div>
+
+  <div class="col-lg-3">
+
+    <div class="menu-box col-flex space-evely align-items-center">
+
+      <div style="font-weight: 600;color:white; font-size:18px">View</div>
+
+      <div class="row-flex full-width">
+        <div class="col-flex space-evenly">
+
+          <!-- Country Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon country-icon" onClick = toggleMenu(0)></div>
+            <div class="description hover">Map : Select country of your choice</div>
+            <div class="menu-drop row-flex align-items-center display-none">
+              <div class="col-flex space-evenly" style="position:relative; height:100%;">
+
+                <div class="big-menu row-flex selected-country country align-items-center" onClick="toggleCountryMenu()">
+                  <div class="country-name">Search Country or Region</div>
+                  <div class="flag" style="margin-right:40px"></div>
+                </div>
+
+                <div class="small-menu row-flex selected-country country align-items-center display-none" onClick="resetCountryMenu()">
+                  <div class="flag" style="margin-right:40px">Search</div>
+                </div>
+
+                <div class="col-flex country-options display-none options-drop">
+                  <div class="row-flex country-option align-items-center" onClick="handleCountryChange('Fiji','flag fiji')">
+                    <div class="country-name">Fiji</div>
+                    <div class="flag fiji" style="margin-right:10px"></div>
+                  </div>
+                  <div class="row-flex country-option align-items-center" onClick="handleCountryChange('Bermuda','flag bermuda')">
+                    <div class="country-name">Bermuda</div>
+                    <div class="flag bermuda" style="margin-right:10px"></div>
+                  </div>
+                  <div class="row-flex country-option align-items-center" onClick="handleCountryChange('Haiti','flag haiti')">
+                    <div class="country-name">Haiti</div>
+                    <div class="flag haiti" style="margin-right:10px"></div>
+                  </div>
+                  <div class="row-flex country-option align-items-center" onClick="handleCountryChange('Grenada','flag grenada')">
+                    <div class="country-name">Grenada</div>
+                    <div class="flag grenada" style="margin-right:10px"></div>
+                  </div>
+                </div>
+
+                <div class="down-arrow" style="cursor:pointer;" onClick="toggleCountryMenu()"></div>
+
+              </div>
+              <div class="row-flex align-items-center search-bar display-none full-height">
+                <input type="text" class="search-input" name="search-country" placeholder="Search Country">
+                <div class="search-icon"></div>
+              </div>
+              <div class="search-icon first-icon" onClick="toggleSearchBar()"></div>
+            </div>
+          </div>
+
+          <!-- Resolution Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon resolution-icon hex5" onClick = toggleMenu(1)></div>
+            <div class="description hover">Resolution: Select Resolution</div>
+            <div class="menu-drop row-flex display-none menu-big">
+              <div class="col-flex" style="border-top-left-radius:10px; background-color:#C4C4C4;border-bottom-left-radius: 5px;">
+
+                <div class="row-flex align-items-center space-between">
+                  <div class='row-flex align-items-center flex-start' style="margin-left: 15px;height:40px; font-weight: bold;">Resolution:</div>
+
+                  <div class="info-nobg-icon info-hover-icon-resolution" onClick="displayInfo('resolution')"></div>
+                  <div class="info-icon-blue info-blue-icon-resolution display-none" onClick="hideInfo('resolution')"></div>
+
+                </div>
+
+                <div class="col-flex" style="height:150px;width:380px; margin:0 8px 8px 8px; background-color:#DFDFDF">
+                  <div class="row-flex align-items-center" style=" margin-left: 10px;height:50px;">
+                    <div style="margin-right:15px;">Hexbins</div>
+                    <div class="row-flex resolution-option border-blue align-items-center" onClick="handleResolutionChange(0,'hex1')">
+                      <div style="font-weight:bold; margin-left:4px;">1 km</div>
+                      <div class="resolution-sub-icon hex1"></div>
+                    </div>
+                    <div class="row-flex resolution-option align-items-center" onClick="handleResolutionChange(1,'hex5')">
+                      <div style="font-weight: bold; margin-left:4px;">5 km</div>
+                      <div class="resolution-sub-icon hex5"></div>
+                    </div>
+                    <div class="row-flex resolution-option align-items-center" onClick="handleResolutionChange(2,'hex10')">
+                      <div style="font-weight: bold; margin-left:4px;">10 km</div>
+                      <div class="resolution-sub-icon hex10"></div>
+                    </div>
+                  </div>
+                  <div class="row-flex align-items-center" style=" margin-left: 10px;height:50px;">
+                    <div style="margin-right:15px;">Squares</div>
+                    <div class="row-flex resolution-option align-items-center" onClick="handleResolutionChange(3,'Square1')">
+                      <div style="font-weight: bold; margin-left:4px;">1 km</div>
+                      <div class="resolution-sub-icon Square1"></div>
+                    </div>
+                    <div class="row-flex resolution-option align-items-center" onClick="handleResolutionChange(4,'Square5')">
+                      <div style="font-weight: bold; margin-left:4px;">5 km</div>
+                      <div class="resolution-sub-icon Square5"></div>
+                    </div>
+                    <div class="row-flex resolution-option align-items-center" onClick="handleResolutionChange(5,'Square10')">
+                      <div style="font-weight: bold; margin-left:4px;">10 km</div>
+                      <div class="resolution-sub-icon Square10"></div>
+                    </div>
+                  </div>
+                  <div class="row-flex align-items-center" style=" margin-left: 10px;height:50px;">
+                    <div style="margin-right:15px;">Admin Regions</div>
+                    <div class="row-flex resolution-option align-items-center" onClick="handleResolutionChange(6,'adminRegion1')">
+                      <div style="font-weight: bold; margin-left:4px;">Level 1</div>
+                      <div class="resolution-sub-icon adminRegion1"></div>
+                    </div>
+                    <div class="row-flex resolution-option align-items-center" onClick="handleResolutionChange(7,'adminRegion2')">
+                      <div style="font-weight: bold; margin-left:4px;">Level 2</div>
+                      <div class="resolution-sub-icon adminRegion2"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-flex info-box info-box-resolution align-items-center display-none" style="width:calc(100% - 8px);">
+                  <div style="margin-top:18px;height:1.6px; background-color:black; width:80%;"></div>
+                  <div class='row-flex' style=" width: 84%;;margin-top:15px; font-weight:bold; font-size:16px;">Resolution</div>
+                  <div class="row-flex align-items-center" style="width:84%;margin-bottom:10px;">
+                    <div style="margin-top: 12px; font-size:12px;width:80%">Draw mode is a nice mode in which you draw some polygons and triangles really great.</div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="col-flex">
+                <div class="col-flex grey-rect"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Color Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon color-icon color-icon-1" onClick = toggleMenu(2)></div>
+            <div class="description hover">Color: Select Color</div>
+            <div class="menu-drop row-flex align-items-center display-none menu-drop-color">
+              <div style="margin-right:12px;width:120px;">Color Scheme:</div>
+              <div class="col-flex space-evenly full-height" style="position:relative;">
+
+                <div class="row-flex space-between selected-color color align-items-center" onClick="toggleColorMenu()">
+                  <div>Viridis</div>
+                  <div class="menu-icon color-icon-1" style="margin-right:30px;"></div>
+                </div>
+
+                <div class="col-flex color-options display-none options-drop">
+                  <div class="row-flex space-between color-option align-items-center" onClick="handleColorChange('Viridis','color-icon-2')">
+                    <div>Viridis</div>
+                    <div class="menu-option-icon color-icon-2"></div>
+                  </div>
+                  <div class="row-flex space-between color-option align-items-center" onClick="handleColorChange('A','color-icon-1')">
+                    <div>A</div>
+                    <div class="menu-option-icon color-icon-1"></div>
+                  </div>
+                  <div class="row-flex space-between color-option align-items-center" onClick="handleColorChange('B','color-icon-2')">
+                    <div>B</div>
+                    <div class="menu-option-icon color-icon-2"></div>
+                  </div>
+                  <div class="row-flex space-between color-option align-items-center" onClick="handleColorChange('C','color-icon-1')">
+                    <div>C</div>
+                    <div class="menu-option-icon color-icon-1"></div>
+                  </div>
+                </div>
+
+                <div class="down-arrow" style="cursor:pointer;" onclick="toggleColorMenu()"></div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Basemap Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon basemap-icon-handle basemap-icon" onClick = toggleMenu(3)></div>
+            <div class="description hover">Basemap: Select Basemap</div>
+            <div class="menu-drop row-flex align-items-center display-none menu-drop-basemap">
+              <div class="basemap-menu-icon"></div>
+              <div style="margin:0 12px 0 8px;">Basemap:</div>
+              <div class="col-flex full-height align-items-center space-evenly" style="position:relative;">
+
+                <div class="row-flex space-between selected-basemap basemap align-items-center" onClick="toggleBasemapMenu()">
+                  <div>Satellite Imagery</div>
+                  <div class="menu-icon-satellite satellite-icon" style="margin-right:36px;"></div>
+                </div>
+
+                <div class="col-flex basemap-options display-none options-drop">
+                  <div class="row-flex space-between basemap-option align-items-center" onClick="handleBasemapChange('Satellite','satellite-icon')">
+                    <div>Satellite Imagery</div>
+                    <div class="menu-option-icon-satellite satellite-icon" style="margin-right:10px;"></div>
+                  </div>
+                  <div class="row-flex space-between basemap-option align-items-center" onClick="handleBasemapChange('A','satellite-icon')">
+                    <div>A</div>
+                    <div class="menu-option-icon-satellite satellite-icon" style="margin-right:10px;"></div>
+                  </div>
+                  <div class="row-flex space-between basemap-option align-items-center" onClick="handleBasemapChange('B','satellite-icon')">
+                    <div>B</div>
+                    <div class="menu-option-icon-satellite satellite-icon" style="margin-right:10px;"></div>
+                  </div>
+                  <div class="row-flex space-between basemap-option align-items-center" onClick="handleBasemapChange('C','satellite-icon')">
+                    <div>C</div>
+                    <div class="menu-option-icon-satellite satellite-icon" style="margin-right:10px;"></div>
+                  </div>
+                </div>
+
+                <div class="down-arrow" onclick="toggleBasemapMenu()"></div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-flex">
+
+          <!-- Boundaries Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon add-boundaries-icon" onClick = toggleMenu(4)></div>
+            <div class="description hover">Boundaries</div>
+            <div class="menu-drop row-flex display-none menu-big">
+              <div class="col-flex" style="height:auto;width:auto; background-color:#C4C4C4;border-bottom-right-radius:5px;border-bottom-left-radius:5px;border-top-left-radius:5px;">
+                <div class="row-flex align-items-center space-between">
+                  <div class="row-flex" style="border-top-left-radius:5px; line-height:52px; font-weight:bold; font-size:16px; height:52px; background-color:#C4C4C4; padding-left:20px;">Add Boundaries</div>
+
+                  <div class="info-nobg-icon info-hover-icon-boundaries" onClick="displayInfo('boundaries')"></div>
+                  <div class="info-icon-blue info-blue-icon-boundaries display-none" onClick="hideInfo('boundaries')"></div>
+
+                </div>
+                <div class="row-flex" style="background-color:#C4C4C4; border-bottom-right-radius:5px; border-bottom-left-radius:5px;">
+                  <div class="col-flex" style="width:190px; margin:0 10px 8px 10px; background-color:#DFDFDF; padding:10px 10px;">
+                    <div class="row-flex align-items-center">
+                      <div class="text">Admin Region 1</div>
+                      <div class="admin-region-one-icon"></div>
+                      <input type="checkbox" id="admin-region-1" name="admin-region" value="admin-region-one" onChange="handleBoundryChange()">
+                    </div>
+                    <div class="row-flex align-items-center" style="margin-top:10px;">
+                      <div class="text">Admin Region 2</div>
+                      <div class="admin-region-two-icon"></div>
+                      <input type="checkbox" id="admin-region-2" name="admin-region" value="admin-region-two" onChange="handleBoundryChange()">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-flex info-box info-box-boundaries align-items-center display-none" style="width:calc(100% - 8px);">
+                  <div style="margin-top:18px;height:1.6px; background-color:black; width:80%;"></div>
+                  <div class='row-flex' style=" width: 84%;;margin-top:15px; font-weight:bold; font-size:16px;">Boundaries</div>
+                  <div class="row-flex align-items-center" style="width:84%;margin-bottom:10px;">
+                    <div style="margin-top: 12px; font-size:12px;width:80%">Draw mode is a nice mode in which you draw some polygons and triangles really great.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-flex">
+                <div class="col-flex grey-rect"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Height Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon threeD-icon" onClick = "handleHeightChange('threeD','twoD')"></div>
+            <div class="icon twoD-icon display-none" onClick = "handleHeightChange('twoD','threeD')"></div>
+            <div class="description hover">3D 2D</div>
+            <div class="menu-drop row-flex align-items-center display-none"></div>
+          </div>
+
+          <!-- Opacity Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon opacity-icon" onClick = toggleMenu(6)></div>
+            <div class="description hover">Opacity</div>
+            <div class="menu-drop row-flex align-items-center display-none">
+              <div class="row-flex align-items-center" style="height: 80%;margin:0 6px 0 0;background-color:#DFDFDF">
+                <div style="margin:0 10px;">Opacity: </div>
+                <input type="range" class="opacity-slider" id="opacity" name="opacity" min="-50" max="50" oninput="handleGisMenuChange({'opacity':this.value})">
+              </div>
+            </div>
+          </div>
+
+          <!-- Labels Select Menu -->
+          <div class="menu row-flex">
+            <div class="icon aminus-icon" onClick = "handleLabelsChange('aminus','aplus')"></div>
+            <div class="icon aplus-icon display-none" onClick = "handleLabelsChange('aplus','aminus')"></div>
+            <div class="description hover">A- A+</div>
+            <div class="menu-drop row-flex align-items-center display-none"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div style="font-weight: 600;color:white; font-size:18px">Analysis</div>
+
+      <div class="row-flex">
+
+        <div class="col-flex space-evenly">
+
+          <!-- Raster Calculator -->
+          <div class="menu row-flex">
+            <div class="icon calculator-icon" onClick = handleCalcMenu()></div>
+            <div class="description hover">Calculator</div>
+            <div class="menu-drop row-flex display-none menu-big menu-with-blue" id="calc-menu">
+              <div class="col-flex align-items-center" style="height:auto; width:auto;">
+                <div class="row-flex align-items-center space-between" style="border-top-left-radius:5px; height:52px; width: 360px;background-color:#C4C4C4;">
+                  <div class="row-flex align-items-center">
+                    <div style="margin: 0 15px;font-weight:bold; font-size:16px;">Raster Calculator</div>
+                    <div class="calculator-nobg-icon"></div>
+                  </div>
+
+                  <div class="info-nobg-icon info-hover-icon-calc" onClick="displayInfo('calc')"></div>
+                  <div class="info-icon-blue info-blue-icon-calc display-none" onClick="hideInfo('calc')"></div>
+
+                </div>
+                <div class="col-flex align-items-center" style="width:360px;background-color:#C4C4C4;border-bottom-left-radius:5px; border-bottom-right-radius:5px;">
+
+                  <div class="row-flex align-items-center" style="height:42px;width:340px;background-color:#DFDFDF;border:1px solid black;">
+                    <div style="font-weight:bold; margin:0 8px 0 8px;"><i>f(<span id="layer-variables"></span>)=</i></div>
+                    <input type="text" class="calc-input calc-function" style="font-weight:bold; padding:0 0 0 8px;background-color:#EFEFEF; width:160px;height: 24px;border-radius:4px;border:0;outline:none;"></input>
+                    <div class="color-black" id='input-N' style="margin:0 8px;cursor:pointer;" onClick="toggleInputBlueColor(this)">N</div>
+                    <div class="row-flex space-evenly" style="color:green; background-color:#EFEFEF; width:50px; border-radius:5px; cursor:pointer;" onClick = "calculatorRun()">Run</div>
+                  </div>
+
+                  <div class="col-flex" style="height:54px;width:340px;background-color:#DFDFDF;border:1px solid black;">
+                    <div class='row-flex align-items-center' style="margin:8px 0 6px 30px">
+                      <div class='calc-button' onClick="calcButtonPress('-')">-</div>
+                      <div class='calc-button' onClick="calcButtonPress('+')">+</div>
+                      <div class='calc-button' onClick="calcButtonPress('*')">*</div>
+                      <div class='calc-button' onClick="calcButtonPress('%')">%</div>
+                      <div class='calc-button' onClick="calcButtonPress('^')">^</div>
+                      <div class='calc-button' onClick="calcButtonPress('(')">(</div>
+                      <div class='calc-button' onClick="calcButtonPress(')')">)</div>
+                      <div class='calc-button' onClick="calcButtonPress('0')" style="margin-left:7px">0</div>
+                      <div class='calc-button' onClick="calcButtonPress('1')">1</div>
+                      <div class='calc-button' onClick="calcButtonPress('2')">2</div>
+                      <div class='calc-button' onClick="calcButtonPress('3')">3</div>
+                      <div class='calc-button' onClick="calcButtonPress('4')">4</div>
+                    </div>
+                    <div class='row-flex align-items-center' style="margin-left:30px">
+                      <div class='calc-button' onClick="calcButtonPress('==')">==</div>
+                      <div class='calc-button' onClick="calcButtonPress('>=')">>=</div>
+                      <div class='calc-button' onClick="calcButtonPress('<=')"><=</div>
+                      <div class='calc-button' onClick="calcButtonPress('>')">></div>
+                      <div class='calc-button' onClick="calcButtonPress('<')"><</div>
+                      <div class='calc-button' onClick="calcButtonPress('ln')">ln</div>
+                      <div class='calc-button' onClick="calcButtonPress('.')">.</div>
+                      <div class='calc-button' onClick="calcButtonPress('5')" style="margin-left:7px">5</div>
+                      <div class='calc-button' onClick="calcButtonPress('6')">6</div>
+                      <div class='calc-button' onClick="calcButtonPress('7')">7</div>
+                      <div class='calc-button' onClick="calcButtonPress('8')">8</div>
+                      <div class='calc-button' onClick="calcButtonPress('9')">9</div>
+                    </div>
+                  </div>
+
+                  <div class="col-flex" id="layers">
+
+                  </div>
+
+                  <div class="row-flex space-between align-items-center"  onClick="addLayer()" style="cursor:pointer;position:relative;height:30px;width:340px;margin:6px 0;">
+                    <div class="row-flex" style="line-height: 30px;padding: 0 0 0 10px; width: 100%; height: 100%;border:0; outline:none; background-color:#DFDFDF; border-radius:5px;">
+                      Add Layer as Variable
+                    </div>
+                    <div class="grey-plus-icon" style="position:absolute; right:0;"></div>
+                  </div>
+
+
+                </div>
+                <div class="col-flex info-box info-box-calc align-items-center display-none" style="width:360px;">
+                  <div style="margin-top:18px;height:1.6px; background-color:black; width:80%;"></div>
+                  <div class='row-flex' style=" width: 84%;;margin-top:15px; font-weight:bold; font-size:16px;">Calculator</div>
+                  <div class="row-flex align-items-center" style="width:84%; margin-bottom:10px;">
+                    <div style="margin-top: 12px; font-size:12px;width:80%">Ut fermentum semper mattis. In vel est ac nibh convallis tincidunt. Vestibulum dui arcu, imperdiet non bibendum vestibulum, imperdiet eu est.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-flex">
+                <div class="col-flex grey-rect"></div>
+              </div>
+            </div>
+            <div class="blue-box blue-box-calc display-none"></div>
+          </div>
+
+          <!-- Bivariate Mode -->
+          <div class="menu row-flex">
+            <div class="icon bivariate-mode-icon" onClick = handleBivariateMode()></div>
+            <div class="description hover">Bivariate</div>
+            <div class="menu-drop row-flex align-items-center display-none bivariate menu-with-blue">
+              <div class="row-flex align-items-center" style="height: 80%;margin:0 6px 0 0;">
+                <div class="row-flex align-items-center" style="font-weight: bold; padding-left: 10px;margin:0 10px 0 0;height: 100%;width:200px;background-color:#DFDFDF;">Bivariate Mode Enabled</div>
+
+                <div class="info-nobg-icon info-hover-icon-bivariate" onClick="displayInfo('bivariate')"></div>
+                <div class="info-icon-blue info-blue-icon-bivariate display-none" onClick="hideInfo('bivariate')"></div>
+
+              </div>
+              <div class="col-flex info-box info-box-bivariate align-items-center display-none">
+                <div style="margin-top:18px;height:1.6px; background-color:black; width:80%;"></div>
+                <div class='row-flex' style=" width: 84%;;margin-top:15px; font-weight:bold; font-size:16px;">Bivariate Mode</div>
+                <div class="row-flex align-items-center" style="width:84%; margin-bottom:10px;">
+                  <div style="margin-top: 12px; font-size:12px;width:80%">Ut fermentum semper mattis. In vel est ac nibh convallis tincidunt. Vestibulum dui arcu, imperdiet non bibendum vestibulum, imperdiet eu est.</div>
+                </div>
+              </div>
+            </div>
+            <div class="blue-box blue-box-bivariate display-none"></div>
+          </div>
+
+          <!-- Draw Menu -->
+          <div class="menu row-flex">
+            <div class="icon draw-icon" onClick = handleDrawMenu()></div>
+            <div class="description hover">Draw</div>
+            <div class="menu-drop row-flex display-none menu-big menu-with-blue" id="draw-menu">
+              <div class="col-flex align-items-center" style="height:auto; width:auto; position:relative;">
+                <div class="row-flex align-items-center space-evenly" style="border-top-left-radius:5px; height:52px; width: 280px;background-color:#C4C4C4;">
+                  <div class="row-flex" style="margin-left: 15px; line-height:52px; font-weight:bold; font-size:16px;">Draw Mode - Region Analysis</div>
+
+                  <div class="info-nobg-icon info-hover-icon-draw" onClick="displayInfo('draw')"></div>
+                  <div class="info-icon-blue info-blue-icon-draw display-none" onClick="hideInfo('draw')"></div>
+
+                </div>
+                <div class="col-flex align-items-center" style="width:280px;background-color:#C4C4C4;border-bottom-left-radius:5px; border-bottom-right-radius:5px;">
+                  <div class="row-flex space-between align-items-center" style="height:30px;width:250px;background-color:#DFDFDF">
+                    <div style="font-weight:bold; margin:0 10px;">Region Polygon 1</div>
+                    <div style="margin:0 10px 0 0;"><i>edit</i></div>
+                  </div>
+                  <div class="row-flex align-items-center" style="margin-top:5px; width:250px;height:90px">
+                     <div style="margin:0 10px">Draw a polygon for regional analysis.</div>
+                  </div>
+                  <div class="row-flex align-items-center space-evenly" style="margin: 10px 0;width:250px;height:30px;background-color:#DFDFDF;border-radius:5px;">
+                    <div style="color:#949494;margin:0 10px;">Add polygon to compares</div>
+                    <div class="grey-plus-icon"></div>
+                  </div>
+                </div>
+
+                <div class="col-flex info-box info-box-draw align-items-center display-none">
+                  <div style="margin-top:18px;height:1.6px; background-color:black; width:80%;"></div>
+                  <div class='row-flex' style=" width: 84%;;margin-top:15px; font-weight:bold; font-size:16px;">Draw Mode</div>
+                  <div class="row-flex align-items-center" style="width:84%;margin-bottom:10px;">
+                    <div style="margin-top: 12px; font-size:12px;width:80%">Draw mode is a nice mode in which you draw some polygons and triangles really great.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-flex">
+                <div class="col-flex grey-rect"></div>
+              </div>
+
+            </div>
+            <div class="blue-box blue-box-draw display-none"></div>
+          </div>
+
+          <!-- Download Menu -->
+          <div class="menu row-flex">
+            <div class="icon download-icon" onClick = toggleMenu(11)></div>
+            <div class="description hover">Download</div>
+            <div class="menu-drop row-flex display-none menu-big">
+              <div class="col-flex align-items-center" style="height:auto; width:auto;">
+                <div class="row-flex align-items-center" style="border-top-left-radius:5px; height:52px; width: 100%;background-color:#C4C4C4;">
+
+                  <div class="row-flex align-items-center space-evenly" style="width:95%">
+                    <div class="row-flex align-items-center">
+                      <div class="row-flex" style="margin-left: 15px; line-height:52px; font-weight:bold; font-size:16px;">Data Download</div>
+                      <div class="download-nobg-icon"></div>
+                    </div>
+                  </div>
+
+                  <div class="info-nobg-icon info-hover-icon-download" onClick="displayInfo('download')"></div>
+                  <div class="info-icon-blue info-blue-icon-download display-none" onClick="hideInfo('download')"></div>
+
+                </div>
+                <div class="row-flex space-evenly" style="background-color:#C4C4C4">
+                  <div class="col-flex align-items-center" style="width:100%;background-color:#DFDFDF;margin:0 10px 10px 10px">
+
+                    <div class="row-flex align-items-center" style="width:auto; margin-top:4px">
+                      <div style="width:170px; margin:0 8px; text-align:right"><b>Region:</b></div>
+                      <div class="row-flex align-items-center" style="width:520px;">
+                        <input type="radio" id="Visible-Area" name="region" value="Visible-Area" class='radio-button region'>
+                        <div class='row-flex align-items-center' style="margin:0 10px 0 5px">Visible Area</div>
+                        <input class='radio-button region' type="radio" name="region" value="CountryOrRegion">
+                        <div class="row-flex" style="position:relative;">
+                          <select name="countryorregion" class="countryorregion" id="cuntryorregion">
+                            <option value="Country Or Region">Country Or Region</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                          </select>
+                          <div class="down-arrow-c"></div>
+                        </div>
+                        <input class='radio-button region' type="radio" id="Polygon" name="region" value="Polygon">
+                        <div class='row-flex'>Polygon</div>
+                        <div class="row-flex" style="position:relative;">
+                          <select name="polygon" class="polygon" id="polygon">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                          </select>
+                          <div class="down-arrow-p"></div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="row-flex align-items-center" style="width:auto; margin-top:8px">
+                      <div style="width:170px; margin:0 8px; text-align:right"><b>Temporal Resolution:</b></div>
+                      <div class="row-flex align-items-center" style="width:520px;">
+                        <input class='radio-button temporal-resolution' type="radio" id="chosen-year" name="temporal-resolution" value="chosen-year">
+                        <div style="width:120px ; margin:0 5px">Chosen Year</div>
+                        <input class='radio-button temporal-resolution' type="radio" id="year-range" name="temporal-resolution" value="year-range">
+                        <div class='row-flex' style="margin: 0 10px;">Year Range</div>
+                        <input type="text" id="year-range-from" name="year-range-from" class="year-range-input">
+                        <div style="margin:0 10px">to</div>
+                        <input type="text" id="year-range-to" name="year-range-to" class="year-range-input">
+                      </div>
+                    </div>
+
+                    <div class="row-flex align-items-center" style="width:auto; margin-top:8px">
+                      <div style="width:170px; margin:0 8px; text-align:right"><b>Spatial Resolution:</b></div>
+                      <div class="row-flex align-items-center" style="width:520px;">
+                        <input class='radio-button spatial-resolution' type="radio" id="1km" name="spatial-resolution" value="1km">
+                        <div style="margin:0 10px 0 5px">1km</div>
+                        <input class='radio-button spatial-resolution' type="radio" id="2km" name="spatial-resolution" value="2km">
+                        <div style="margin:0 10px 0 5px">2km</div>
+                        <input class='radio-button spatial-resolution' type="radio" id="5km" name="spatial-resolution" value="5km">
+                        <div style="margin:0 10px 0 5px">5km</div>
+                        <input class='radio-button spatial-resolution' type="radio" id="10km" name="spatial-resolution" value="10km">
+                        <div style="margin:0 10px 0 5px">10km</div>
+                        <input class='radio-button spatial-resolution' type="radio" id="admin1" name="spatial-resolution" value="admin1">
+                        <div style="margin:0 10px 0 5px">Admin1</div>
+                        <input class='radio-button spatial-resolution' type="radio" id="admin2" name="spatial-resolution" value="admin2">
+                        <div style="margin:0 10px 0 5px">Admin2</div>
+                      </div>
+                    </div>
+
+                    <div class="row-flex align-items-center" style="width:auto; margin-top:8px">
+                      <div style="width:170px; margin:0 8px; text-align:right"><b>Grid Type:</b></div>
+                      <div class="row-flex align-items-center" style="width:520px;">
+                        <input class='radio-button grid-type' type="radio" id="hex" name="grid-type" value="hex">
+                        <div style="margin:0 10px 0 5px">Hex</div>
+                        <input class='radio-button grid-type' type="radio" id="square" name="grid-type" value="square">
+                        <div style="margin:0 10px 0 5px">Square</div>
+                      </div>
+                    </div>
+
+                    <div class="row-flex align-items-center" style="width:auto; margin-top:8px">
+                      <div style="width:170px; margin:0 8px; text-align:right"><b>File Type:</b></div>
+                      <div class="row-flex align-items-center" style="width:520px;">
+                        <input class='radio-button file-type' type="radio" id="geojson" name="file-type" value="geojson">
+                        <div style="margin:0 10px 0 5px">Geojson</div>
+                        <input class='radio-button file-type' type="radio" id="csv" name="file-type" value="csv">
+                        <div style="margin:0 10px 0 5px">CSV</div>
+                        <input class='radio-button file-type' type="radio" id="geotif" name="file-type" value="geotif">
+                        <div style="margin:0 10px 0 5px">Geotif</div>
+                      </div>
+                    </div>
+
+                    <div class="row-flex align-items-center" style="width:auto; margin-top:8px">
+                      <div style="width:170px; margin:0 8px; text-align:right"><b>Data Layers:</b></div>
+                      <div class="row-flex align-items-center" style="width:520px;">
+                        <input class='radio-button data-layers' type="radio" id="selected-layer" name="data-layers" value="selected-layer">
+                        <div style="margin:0 10px 0 5px">Selected Layer</div>
+                        <input class='radio-button data-layers' type="radio" id="all-layers" name="data-layers" value="all-layers">
+                        <div style="margin:0 10px 0 5px">All layers in selected datset</div>
+                      </div>
+                    </div>
+
+                    <div onClick="handleDownload()" class="row-flex space-evenly" style="cursor: pointer;margin:10px 0;background: #C4C4C4;font-size:20px;line-height:35px;width:130px; height:35px">Download</div>
+                    <div class="row-flex" style="margin: 0 10px;">For bulk download or access to the full database, please submit a data request here.
+                      All data is licensed for redistribution. More information can be found at the data info page.</div>
+                  </div>
+                </div>
+
+                <div class="col-flex info-box info-box-download align-items-center display-none" style="width:calc(100% - 8px);">
+                  <div style="margin-top:18px;height:1.6px; background-color:black; width:80%;"></div>
+                  <div class='row-flex' style=" width: 84%;;margin-top:15px; font-weight:bold; font-size:16px;">Download</div>
+                  <div class="row-flex align-items-center" style="width:84%;margin-bottom:10px;">
+                    <div style="margin-top: 12px; font-size:12px;width:80%">Draw mode is a nice mode in which you draw some polygons and triangles really great.</div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col-flex">
+                <div class="col-flex grey-rect"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-flex">
+
+          <!-- Upload Menu -->
+          <div class="menu row-flex">
+            <div class="icon upload-icon" onClick = toggleMenu(12)></div>
+            <div class="description hover">Upload</div>
+            <div class="menu-drop row-flex display-none menu-big">
+              <div class="col-flex align-items-center" style="height:auto; width:auto;background-color:#C4C4C4; border-radius:5px;border-top-right-radius:0px;">
+                <div class="col-flex" style="margin:12px 12px; background-color:#DFDFDF; border-radius:10px" >
+                  <div class="row-flex align-items-center" style="margin:16px 13px 14px 19px;">
+                    <div style="width:340px"><b>Upload spatial data</b> for overlay and analysis.
+                    Accepted file types include csv, tif, or geojson.</div>
+                    <div class="icon upload-icon"></div>
+                  </div>
+                  <input type="file" id="myfile" name="myfile">
+                </div>
+              </div>
+              <div class="col-flex">
+                <div class="col-flex grey-rect"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dual Mode -->
+          <div class="menu row-flex">
+            <div class="icon dual-mode-icon" onClick = handleDualMode()></div>
+            <div class="description hover">Dual Mode</div>
+            <div class="menu-drop row-flex align-items-center display-none dual-mode menu-with-blue">
+              <div class="row-flex align-items-center" style="height: 80%;margin:0 6px 0 0;">
+                <div class="row-flex align-items-center" style="font-weight: bold; padding-left: 10px;margin:0 10px 0 0;height: 100%;width:160px;background-color:#DFDFDF;">Dual Mode Enabled</div>
+
+                <div class="info-nobg-icon info-hover-icon-dualMode" onClick="displayInfo('dualMode')"></div>
+                <div class="info-icon-blue info-blue-icon-dualMode display-none" onClick="hideInfo('dualMode')"></div>
+
+              </div>
+
+              <div class="col-flex info-box info-box-dualMode align-items-center display-none">
+                <div class="row-flex" style="margin-top:18px;min-height:1.6px; width:80%; background-color:black;"></div>
+                <div class='row-flex' style=" width: 84%;;margin-top:15px; font-weight:bold; font-size:16px;">Dual Mode</div>
+                <div class="row-flex align-items-center" style="margin-bottom: 10px;;width:84%;">
+                  <div style="margin-top: 12px; font-size:12px;width:80%">Ut fermentum semper mattis. In vel est ac nibh convallis tincidunt. Vestibulum dui arcu, imperdiet non bibendum vestibulum, imperdiet eu est.</div>
+                </div>
+              </div>
+            </div>
+            <div class="blue-box blue-box-dual display-none"></div>
+          </div>
+
+          <!-- TBD -->
+          <div class="menu row-flex">
+            <div class="icon tbd-icon" onClick = toggleMenu(14)></div>
+            <div class="description hover">TBD</div>
+            <div class="menu-drop row-flex align-items-center display-none">
+              <div class="row-flex space-evenly align-items-center" style="width:60px; background-color:#DFDFDF; height:80%; font-weight:700; margin-right:6px;">TBD</div>
+
+            </div>
+          </div>
+
+          <!-- Info Menu -->
+          <div class="menu row-flex">
+            <div class="icon info-icon" onClick = toggleMenu(15)></div>
+            <div class="description hover">Info</div>
+            <div class="menu-drop row-flex display-none menu-big">
+              <div class="col-flex align-items-center" style="margin-top:-16px; height:auto; width:auto;background-color:#C4C4C4; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-bottom-right-radius:5px;border-top-right-radius:5px;">
+                <div class="row-flex" style="margin:10px; height:90px; width: 160px;background-color:#DFDFDF; border-radius:8px;">
+                  <div style="margin: 10px">Info here....</div>
+                </div>
+              </div>
+              <div class="col-flex">
+                <div class="col-flex grey-rect"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    </div>
+    </div>
+  <!-- </div> -->
+
+    <script src="script.js"></script>
+  </body>
+
+</html>
