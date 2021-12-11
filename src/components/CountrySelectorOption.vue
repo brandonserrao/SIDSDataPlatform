@@ -1,0 +1,51 @@
+<template>
+  <div
+    class="row-flex country-option align-items-center"
+    @click="emitCountryChange()"
+  >
+    <div class="country-name">{{ name }}</div>
+    <div class="flag" :class="{ id: id }" style="margin-right: 10px"></div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "CountrySelectorOption",
+  props: ["name", "id"],
+  methods: {
+    emitCountryChange() {
+      console.log(`emitCountryChange ${this.name} ${this.id}`);
+      this.$emit("option-select", { text: this.name, flag: this.id }); //emit the name and css selector that links to flag url
+    },
+  },
+};
+</script>
+
+<style scoped>
+.row-flex {
+  display: flex;
+  flex-direction: row;
+}
+.country-option {
+  height: 40px;
+  background-color: #dfdfdf;
+  padding-left: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.align-items-center {
+  align-items: center;
+}
+.country-name {
+  width: 200px;
+}
+.flag {
+  width: 38px;
+  height: 23px;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+</style>

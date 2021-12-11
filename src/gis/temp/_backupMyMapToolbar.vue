@@ -25,13 +25,9 @@
                   <option value="Search Country or Region">
                     Search Country or Region
                   </option>
-                  <!--<option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>-->
                 </select>
                 <div class="down-arrow"></div>
               </div>
-              <!--<div class="search-icon"></div> -->
             </div>
           </div>
 

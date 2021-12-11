@@ -54,6 +54,9 @@
                       <div class="flag" style="margin-right: 40px">Search</div>
                     </div>
 
+                    <!-- Ben's original hardcoded country-options -->
+                    <!--
+
                     <div
                       class="col-flex country-options display-none options-drop"
                     >
@@ -95,7 +98,20 @@
                         ></div>
                       </div>
                     </div>
+                    -->
 
+                    <!-- Brandon's component-based country-options-->
+                    <div
+                      class="col-flex country-options display-none options-drop"
+                    >
+                      <country-selector-option
+                        v-for="name in names"
+                        :key="name.GID_0"
+                        :name="name.NAME_0"
+                        :id="name.GID_0"
+                        @option-select="handleCountryChange($event)"
+                      ></country-selector-option>
+                    </div>
                     <div
                       class="down-arrow"
                       style="cursor: pointer"
@@ -2011,12 +2027,17 @@
 
 <script>
 import names from "@/gis/static/names";
+import CountrySelectorOption from "@/components/CountrySelectorOption";
 
 export default {
+  // props: ["names"],
   name: "MapToolbar",
+  components: {
+    CountrySelectorOption,
+  },
   data() {
     return {
-      names, //consider redoing these via props
+      names: names, //consider redoing these via props
       debug: true,
     };
   },
@@ -2551,6 +2572,7 @@ export default {
     },
 
     handleCountryChange(text, image) {
+      //Brandon - considering changing to tak
       var selected = document.getElementsByClassName("big-menu")[0];
       var countryMenu = document.getElementsByClassName("country-options")[0];
       countryMenu.classList.add("growUp");
@@ -3146,19 +3168,23 @@ body {
   height: 100%;
 }
 
-.fiji {
+.fiji,
+.FJI {
   background: url("../assets/gis/sidebar/fiji.png");
 }
 
-.bermuda {
+.bermuda,
+.BMU {
   background: url("../assets/gis/sidebar/bermuda.png");
 }
 
-.haiti {
+.haiti,
+.HTI {
   background: url("../assets/gis/sidebar/haiti.png");
 }
 
-.grenada {
+.grenada,
+.GRD {
   background: url("../assets/gis/sidebar/grenada.png");
 }
 
