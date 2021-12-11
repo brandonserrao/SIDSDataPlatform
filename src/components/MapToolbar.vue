@@ -765,6 +765,7 @@ export default {
       //{boundaryName:Str : this.checked:Bool?}
       // var k = Object.keys(object);
       // var v = Object.values(object);
+      console.log("handleBoundariesChange $emitting object");
       console.log(object);
       // addBoundaryLayer(object);//old code; replace with an emit
       this.$emit("select-boundary-layer", object);

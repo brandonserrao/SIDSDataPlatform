@@ -59,6 +59,10 @@ export default class Map {
     return new mapboxgl.Popup(options);
   }
 
+  getSource(id) {
+    return this.map.getSource(id);
+  }
+
   zoomToCountry(country) {
     // var v2 = new mapboxgl.LngLatBounds([selection[0], selection[1]]);
     var v2 = new mapboxgl.LngLatBounds(country.bb);
@@ -114,6 +118,7 @@ export default class Map {
     //called when map is loaded
 
     //pulls in the pointdata about airports volcanoes etc
+    console.log("d3.json fetching pointdata geojson file");
     d3.json(filepaths.pointdataFilePath).then(function (d) {
       map.addSource("points-source", {
         type: "geojson",
@@ -132,7 +137,7 @@ export default class Map {
       //LOADING ALLSIDS LAYER IF NOT ADDED BEFORE FOR SOME REASON;
       // WHY NECESSARY??? -> READ ON MAPBOX LAYER VS STYLE VS SOURCE!
       console.log(
-        "??? adding allsids layer because it wasnt added for some reason"
+        "entered IF-statement; likely triggers as runs after async fetch"
       );
       map.addLayer(
         {
