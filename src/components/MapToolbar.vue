@@ -36,7 +36,8 @@
                       "
                       @click="toggleCountryMenu()"
                     >
-                      <div class="country-name">Search Country or Region</div>
+                      <!-- <div class="country-name">Search Country or Region</div> -->
+                      <div class="country-name">{{ currentCountry }}</div>
                       <div class="flag" style="margin-right: 40px"></div>
                     </div>
 
@@ -2039,11 +2040,40 @@ export default {
     return {
       names: names, //consider redoing these via props
       debug: true,
+      currentCountry: "Search Country or Region", //placeholder text for country select searchbar
     };
   },
   methods: {
-    handleGisMenuChange(object) {
+    handleGisMenuChange(change_type, object) {
+      //determine type of menuchange based on eventType
+      console.log("handleGisMenuChange: object passed:");
       console.log(object);
+
+      if (change_type === "select-country") {
+        console.log(`change_type: ${change_type}`);
+        //value will be country name; returning the names.js object of sids info
+        let name = object.text;
+        let flag = object.flag;
+        console.log(`name: ${name} flag: ${flag}`);
+        let countryObject = this.sidsByName[name];
+        let bbox = this.sidsByName[name].bb;
+        console.log(`bounding box ${bbox}`);
+
+        this.$emit(change_type, countryObject); //custom event for parent to hear
+
+        //update .country-name selection bar
+        /*
+        //TODO: MAKE THIS WORK REACTIVELY
+        console.log(`this.currentCountry = ${this.currentCountry}`);
+        this.currentCountry = name;
+        console.log(
+          `this.currentCountry ${this.currentCountry} reassigned to name ${name}`
+        );
+        */
+        document.getElementsByClassName("country-name")[0].textContent = name;
+      } else {
+        alert(`${change_type} not yet handled by handleGisMenuChange`);
+      }
     },
     //my version: handleBoundariesChange
     handleBoundryChange() {
@@ -2571,7 +2601,12 @@ export default {
       this.handleGisMenuChange({ basemap: text });
     },
 
-    handleCountryChange(text, image) {
+    handleCountryChange(eventData) {
+      console.log(`handleCountryChange:`);
+      console.log(eventData);
+      let text = eventData.name;
+      let image = eventData.id;
+
       //Brandon - considering changing to tak
       var selected = document.getElementsByClassName("big-menu")[0];
       var countryMenu = document.getElementsByClassName("country-options")[0];
@@ -2588,7 +2623,9 @@ export default {
       selected2.children[0].className = image;
       selected2.children[0].innerHTML = "";
 
-      this.handleGisMenuChange({ Country: text });
+      // this.handleGisMenuChange({ Country: text });
+      console.log("passing eventData to handleGisMenuChange");
+      this.handleGisMenuChange("select-country", eventData); //text needs renaming to a better variable name
     },
 
     handleColorChange(text, image) {
