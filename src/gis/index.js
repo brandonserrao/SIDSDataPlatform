@@ -29,6 +29,16 @@ export default class Map {
 
       this._addSources();
     });
+    /* 
+    //for debugging the northwards offset zoom issue
+    this.map.on("click", (e) => {
+      // console.log("A click event occurred.");
+      let _debugMarker = new mapboxgl.Marker();
+      _debugMarker.setLngLat(e.lngLat); //.addTo(map);
+      console.log(`lngLat: ${e.lngLat} point: ${e.point}`);
+      console.log("panning to marker location");
+      this.map.panTo(e.lngLat);
+    }); */
   }
 
   testMapMethod() {

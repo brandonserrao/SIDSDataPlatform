@@ -1,13 +1,12 @@
 <template>
   <div class="map-container">
     <map-dataset-controller class="data-controller" />
-    <div id="map">
-      <map-toolbar
-        class="toolbar"
-        @select-country="selectCountry($event)"
-        @select-boundary-layer="addBoundaryLayer($event)"
-      />
-    </div>
+    <map-toolbar
+      class="toolbar"
+      @select-country="selectCountry($event)"
+      @select-boundary-layer="addBoundaryLayer($event)"
+    />
+    <div id="map"></div>
   </div>
 </template>
 
@@ -21,7 +20,10 @@ import globals from "@/gis/static/globals.js";
 import names from "@/gis/static/names";
 import GIS from "@/gis"; //gets and loads the index.js file from this directory, which has the mapboxgl Map class exported
 import MapDatasetController from "@/components/MapDatasetController";
-import MapToolbar from "@/components/MapToolbar";
+import MapToolbar from "@/components/MapToolbar"; //my attempt at adapting Ben's Form of new sidebar
+
+// import MapToolbar from "@/components/oldMapToolbar";//my old sidebar implementation, before Ben's
+
 // @ is an alias to /src
 
 export default {

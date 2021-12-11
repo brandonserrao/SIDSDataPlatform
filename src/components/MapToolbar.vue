@@ -1,13 +1,12 @@
-<!--BRANDON: MY RE-IMPLEMENTATION OF THE OLD RIGHTHAND SIDEBAR TO NEW VUE VERSION-->
+<!--BRANDON: Ben's New Form RIGHTHAND SIDEBAR-->
 <template>
   <div class="sidebarWrapper">
     <!-- Keep this div outside the row   -->
     <div class="close-menu display-none"></div>
 
     <div class="row container">
-      <div class="col-lg-9" style="width: 100%; height: 100vh"></div>
-
-      <div class="col-lg-3">
+      <div class="col-lg-9 HACK"></div>
+      <div class="col-lg-3 HACK">
         <div class="menu-box col-flex space-evely align-items-center">
           <div style="font-weight: 600; color: white; font-size: 18px">
             View
@@ -56,8 +55,7 @@
                     </div>
 
                     <!-- Ben's original hardcoded country-options -->
-                    <!--
-
+                    <!-- 
                     <div
                       class="col-flex country-options display-none options-drop"
                     >
@@ -98,8 +96,7 @@
                           style="margin-right: 10px"
                         ></div>
                       </div>
-                    </div>
-                    -->
+                    </div> -->
 
                     <!-- Brandon's component-based country-options-->
                     <div
@@ -757,1269 +754,6 @@
               </div>
             </div>
           </div>
-
-          <div style="font-weight: 600; color: white; font-size: 18px">
-            Analysis
-          </div>
-
-          <div class="row-flex">
-            <div class="col-flex space-evenly">
-              <!-- Raster Calculator -->
-              <div class="menu row-flex">
-                <div
-                  class="icon calculator-icon"
-                  @click="handleCalcMenu()"
-                ></div>
-                <div class="description hover">Calculator</div>
-                <div
-                  class="
-                    menu-drop
-                    row-flex
-                    display-none
-                    menu-big menu-with-blue
-                  "
-                  id="calc-menu"
-                >
-                  <div
-                    class="col-flex align-items-center"
-                    style="height: auto; width: auto"
-                  >
-                    <div
-                      class="row-flex align-items-center space-between"
-                      style="
-                        border-top-left-radius: 5px;
-                        height: 52px;
-                        width: 360px;
-                        background-color: #c4c4c4;
-                      "
-                    >
-                      <div class="row-flex align-items-center">
-                        <div
-                          style="
-                            margin: 0 15px;
-                            font-weight: bold;
-                            font-size: 16px;
-                          "
-                        >
-                          Raster Calculator
-                        </div>
-                        <div class="calculator-nobg-icon"></div>
-                      </div>
-
-                      <div
-                        class="info-nobg-icon info-hover-icon-calc"
-                        @click="displayInfo('calc')"
-                      ></div>
-                      <div
-                        class="info-icon-blue info-blue-icon-calc display-none"
-                        @click="hideInfo('calc')"
-                      ></div>
-                    </div>
-                    <div
-                      class="col-flex align-items-center"
-                      style="
-                        width: 360px;
-                        background-color: #c4c4c4;
-                        border-bottom-left-radius: 5px;
-                        border-bottom-right-radius: 5px;
-                      "
-                    >
-                      <div
-                        class="row-flex align-items-center"
-                        style="
-                          height: 42px;
-                          width: 340px;
-                          background-color: #dfdfdf;
-                          border: 1px solid black;
-                        "
-                      >
-                        <div style="font-weight: bold; margin: 0 8px 0 8px">
-                          <i>f(<span id="layer-variables"></span>)=</i>
-                        </div>
-                        <input
-                          type="text"
-                          class="calc-input calc-function"
-                          style="
-                            font-weight: bold;
-                            padding: 0 0 0 8px;
-                            background-color: #efefef;
-                            width: 160px;
-                            height: 24px;
-                            border-radius: 4px;
-                            border: 0;
-                            outline: none;
-                          "
-                        />
-                        <div
-                          class="color-black"
-                          id="input-N"
-                          style="margin: 0 8px; cursor: pointer"
-                          @click="toggleInputBlueColor(this)"
-                        >
-                          N
-                        </div>
-                        <div
-                          class="row-flex space-evenly"
-                          style="
-                            color: green;
-                            background-color: #efefef;
-                            width: 50px;
-                            border-radius: 5px;
-                            cursor: pointer;
-                          "
-                          @click="calculatorRun()"
-                        >
-                          Run
-                        </div>
-                      </div>
-
-                      <div
-                        class="col-flex"
-                        style="
-                          height: 54px;
-                          width: 340px;
-                          background-color: #dfdfdf;
-                          border: 1px solid black;
-                        "
-                      >
-                        <div
-                          class="row-flex align-items-center"
-                          style="margin: 8px 0 6px 30px"
-                        >
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('-')"
-                          >
-                            -
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('+')"
-                          >
-                            +
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('*')"
-                          >
-                            *
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('%')"
-                          >
-                            %
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('^')"
-                          >
-                            ^
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('(')"
-                          >
-                            (
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress(')')"
-                          >
-                            )
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('0')"
-                            style="margin-left: 7px"
-                          >
-                            0
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('1')"
-                          >
-                            1
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('2')"
-                          >
-                            2
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('3')"
-                          >
-                            3
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('4')"
-                          >
-                            4
-                          </div>
-                        </div>
-                        <div
-                          class="row-flex align-items-center"
-                          style="margin-left: 30px"
-                        >
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('==')"
-                          >
-                            ==
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('>=')"
-                          >
-                            >=
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('<=')"
-                          >
-                            &lt;=
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('>')"
-                          >
-                            &gt;
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('<')"
-                          >
-                            &lt;
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('ln')"
-                          >
-                            ln
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('.')"
-                          >
-                            .
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('5')"
-                            style="margin-left: 7px"
-                          >
-                            5
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('6')"
-                          >
-                            6
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('7')"
-                          >
-                            7
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('8')"
-                          >
-                            8
-                          </div>
-                          <div
-                            class="calc-button"
-                            @click="calcButtonPress('9')"
-                          >
-                            9
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-flex" id="layers"></div>
-
-                      <div
-                        class="row-flex space-between align-items-center"
-                        @click="addLayer()"
-                        style="
-                          cursor: pointer;
-                          position: relative;
-                          height: 30px;
-                          width: 340px;
-                          margin: 6px 0;
-                        "
-                      >
-                        <div
-                          class="row-flex"
-                          style="
-                            line-height: 30px;
-                            padding: 0 0 0 10px;
-                            width: 100%;
-                            height: 100%;
-                            border: 0;
-                            outline: none;
-                            background-color: #dfdfdf;
-                            border-radius: 5px;
-                          "
-                        >
-                          Add Layer as Variable
-                        </div>
-                        <div
-                          class="grey-plus-icon"
-                          style="position: absolute; right: 0"
-                        ></div>
-                      </div>
-                    </div>
-                    <div
-                      class="
-                        col-flex
-                        info-box info-box-calc
-                        align-items-center
-                        display-none
-                      "
-                      style="width: 360px"
-                    >
-                      <div
-                        style="
-                          margin-top: 18px;
-                          height: 1.6px;
-                          background-color: black;
-                          width: 80%;
-                        "
-                      ></div>
-                      <div
-                        class="row-flex"
-                        style="
-                          width: 84%;
-                          margin-top: 15px;
-                          font-weight: bold;
-                          font-size: 16px;
-                        "
-                      >
-                        Calculator
-                      </div>
-                      <div
-                        class="row-flex align-items-center"
-                        style="width: 84%; margin-bottom: 10px"
-                      >
-                        <div
-                          style="margin-top: 12px; font-size: 12px; width: 80%"
-                        >
-                          Ut fermentum semper mattis. In vel est ac nibh
-                          convallis tincidunt. Vestibulum dui arcu, imperdiet
-                          non bibendum vestibulum, imperdiet eu est.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-flex">
-                    <div class="col-flex grey-rect"></div>
-                  </div>
-                </div>
-                <div class="blue-box blue-box-calc display-none"></div>
-              </div>
-
-              <!-- Bivariate Mode -->
-              <div class="menu row-flex">
-                <div
-                  class="icon bivariate-mode-icon"
-                  @click="handleBivariateMode()"
-                ></div>
-                <div class="description hover">Bivariate</div>
-                <div
-                  class="
-                    menu-drop
-                    row-flex
-                    align-items-center
-                    display-none
-                    bivariate
-                    menu-with-blue
-                  "
-                >
-                  <div
-                    class="row-flex align-items-center"
-                    style="height: 80%; margin: 0 6px 0 0"
-                  >
-                    <div
-                      class="row-flex align-items-center"
-                      style="
-                        font-weight: bold;
-                        padding-left: 10px;
-                        margin: 0 10px 0 0;
-                        height: 100%;
-                        width: 200px;
-                        background-color: #dfdfdf;
-                      "
-                    >
-                      Bivariate Mode Enabled
-                    </div>
-
-                    <div
-                      class="info-nobg-icon info-hover-icon-bivariate"
-                      @click="displayInfo('bivariate')"
-                    ></div>
-                    <div
-                      class="
-                        info-icon-blue info-blue-icon-bivariate
-                        display-none
-                      "
-                      @click="hideInfo('bivariate')"
-                    ></div>
-                  </div>
-                  <div
-                    class="
-                      col-flex
-                      info-box info-box-bivariate
-                      align-items-center
-                      display-none
-                    "
-                  >
-                    <div
-                      style="
-                        margin-top: 18px;
-                        height: 1.6px;
-                        background-color: black;
-                        width: 80%;
-                      "
-                    ></div>
-                    <div
-                      class="row-flex"
-                      style="
-                        width: 84%;
-                        margin-top: 15px;
-                        font-weight: bold;
-                        font-size: 16px;
-                      "
-                    >
-                      Bivariate Mode
-                    </div>
-                    <div
-                      class="row-flex align-items-center"
-                      style="width: 84%; margin-bottom: 10px"
-                    >
-                      <div
-                        style="margin-top: 12px; font-size: 12px; width: 80%"
-                      >
-                        Ut fermentum semper mattis. In vel est ac nibh convallis
-                        tincidunt. Vestibulum dui arcu, imperdiet non bibendum
-                        vestibulum, imperdiet eu est.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="blue-box blue-box-bivariate display-none"></div>
-              </div>
-
-              <!-- Draw Menu -->
-              <div class="menu row-flex">
-                <div class="icon draw-icon" @click="handleDrawMenu()"></div>
-                <div class="description hover">Draw</div>
-                <div
-                  class="
-                    menu-drop
-                    row-flex
-                    display-none
-                    menu-big menu-with-blue
-                  "
-                  id="draw-menu"
-                >
-                  <div
-                    class="col-flex align-items-center"
-                    style="height: auto; width: auto; position: relative"
-                  >
-                    <div
-                      class="row-flex align-items-center space-evenly"
-                      style="
-                        border-top-left-radius: 5px;
-                        height: 52px;
-                        width: 280px;
-                        background-color: #c4c4c4;
-                      "
-                    >
-                      <div
-                        class="row-flex"
-                        style="
-                          margin-left: 15px;
-                          line-height: 52px;
-                          font-weight: bold;
-                          font-size: 16px;
-                        "
-                      >
-                        Draw Mode - Region Analysis
-                      </div>
-
-                      <div
-                        class="info-nobg-icon info-hover-icon-draw"
-                        @click="displayInfo('draw')"
-                      ></div>
-                      <div
-                        class="info-icon-blue info-blue-icon-draw display-none"
-                        @click="hideInfo('draw')"
-                      ></div>
-                    </div>
-                    <div
-                      class="col-flex align-items-center"
-                      style="
-                        width: 280px;
-                        background-color: #c4c4c4;
-                        border-bottom-left-radius: 5px;
-                        border-bottom-right-radius: 5px;
-                      "
-                    >
-                      <div
-                        class="row-flex space-between align-items-center"
-                        style="
-                          height: 30px;
-                          width: 250px;
-                          background-color: #dfdfdf;
-                        "
-                      >
-                        <div style="font-weight: bold; margin: 0 10px">
-                          Region Polygon 1
-                        </div>
-                        <div style="margin: 0 10px 0 0"><i>edit</i></div>
-                      </div>
-                      <div
-                        class="row-flex align-items-center"
-                        style="margin-top: 5px; width: 250px; height: 90px"
-                      >
-                        <div style="margin: 0 10px">
-                          Draw a polygon for regional analysis.
-                        </div>
-                      </div>
-                      <div
-                        class="row-flex align-items-center space-evenly"
-                        style="
-                          margin: 10px 0;
-                          width: 250px;
-                          height: 30px;
-                          background-color: #dfdfdf;
-                          border-radius: 5px;
-                        "
-                      >
-                        <div style="color: #949494; margin: 0 10px">
-                          Add polygon to compares
-                        </div>
-                        <div class="grey-plus-icon"></div>
-                      </div>
-                    </div>
-
-                    <div
-                      class="
-                        col-flex
-                        info-box info-box-draw
-                        align-items-center
-                        display-none
-                      "
-                    >
-                      <div
-                        style="
-                          margin-top: 18px;
-                          height: 1.6px;
-                          background-color: black;
-                          width: 80%;
-                        "
-                      ></div>
-                      <div
-                        class="row-flex"
-                        style="
-                          width: 84%;
-                          margin-top: 15px;
-                          font-weight: bold;
-                          font-size: 16px;
-                        "
-                      >
-                        Draw Mode
-                      </div>
-                      <div
-                        class="row-flex align-items-center"
-                        style="width: 84%; margin-bottom: 10px"
-                      >
-                        <div
-                          style="margin-top: 12px; font-size: 12px; width: 80%"
-                        >
-                          Draw mode is a nice mode in which you draw some
-                          polygons and triangles really great.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-flex">
-                    <div class="col-flex grey-rect"></div>
-                  </div>
-                </div>
-                <div class="blue-box blue-box-draw display-none"></div>
-              </div>
-
-              <!-- Download Menu -->
-              <div class="menu row-flex">
-                <div class="icon download-icon" @click="toggleMenu(11)"></div>
-                <div class="description hover">Download</div>
-                <div class="menu-drop row-flex display-none menu-big">
-                  <div
-                    class="col-flex align-items-center"
-                    style="height: auto; width: auto"
-                  >
-                    <div
-                      class="row-flex align-items-center"
-                      style="
-                        border-top-left-radius: 5px;
-                        height: 52px;
-                        width: 100%;
-                        background-color: #c4c4c4;
-                      "
-                    >
-                      <div
-                        class="row-flex align-items-center space-evenly"
-                        style="width: 95%"
-                      >
-                        <div class="row-flex align-items-center">
-                          <div
-                            class="row-flex"
-                            style="
-                              margin-left: 15px;
-                              line-height: 52px;
-                              font-weight: bold;
-                              font-size: 16px;
-                            "
-                          >
-                            Data Download
-                          </div>
-                          <div class="download-nobg-icon"></div>
-                        </div>
-                      </div>
-
-                      <div
-                        class="info-nobg-icon info-hover-icon-download"
-                        @click="displayInfo('download')"
-                      ></div>
-                      <div
-                        class="
-                          info-icon-blue info-blue-icon-download
-                          display-none
-                        "
-                        @click="hideInfo('download')"
-                      ></div>
-                    </div>
-                    <div
-                      class="row-flex space-evenly"
-                      style="background-color: #c4c4c4"
-                    >
-                      <div
-                        class="col-flex align-items-center"
-                        style="
-                          width: 100%;
-                          background-color: #dfdfdf;
-                          margin: 0 10px 10px 10px;
-                        "
-                      >
-                        <div
-                          class="row-flex align-items-center"
-                          style="width: auto; margin-top: 4px"
-                        >
-                          <div
-                            style="
-                              width: 170px;
-                              margin: 0 8px;
-                              text-align: right;
-                            "
-                          >
-                            <b>Region:</b>
-                          </div>
-                          <div
-                            class="row-flex align-items-center"
-                            style="width: 520px"
-                          >
-                            <input
-                              type="radio"
-                              id="Visible-Area"
-                              name="region"
-                              value="Visible-Area"
-                              class="radio-button region"
-                            />
-
-                            <div
-                              class="row-flex align-items-center"
-                              style="margin: 0 10px 0 5px"
-                            >
-                              Visible Area
-                            </div>
-
-                            <input
-                              class="radio-button region"
-                              type="radio"
-                              name="region"
-                              value="CountryOrRegion"
-                            />
-                            <div class="row-flex" style="position: relative">
-                              <select
-                                name="countryorregion"
-                                class="countryorregion"
-                                id="cuntryorregion"
-                              >
-                                <option value="Country Or Region">
-                                  Country Or Region
-                                </option>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                              </select>
-                              <div class="down-arrow-c"></div>
-                            </div>
-
-                            <input
-                              class="radio-button region"
-                              type="radio"
-                              id="Polygon"
-                              name="region"
-                              value="Polygon"
-                            />
-
-                            <div class="row-flex">Polygon</div>
-                            <div class="row-flex" style="position: relative">
-                              <select
-                                name="polygon"
-                                class="polygon"
-                                id="polygon"
-                              >
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                              </select>
-                              <div class="down-arrow-p"></div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          class="row-flex align-items-center"
-                          style="width: auto; margin-top: 8px"
-                        >
-                          <div
-                            style="
-                              width: 170px;
-                              margin: 0 8px;
-                              text-align: right;
-                            "
-                          >
-                            <b>Temporal Resolution:</b>
-                          </div>
-                          <div
-                            class="row-flex align-items-center"
-                            style="width: 520px"
-                          >
-                            <input
-                              class="radio-button temporal-resolution"
-                              type="radio"
-                              id="chosen-year"
-                              name="temporal-resolution"
-                              value="chosen-year"
-                            />
-
-                            <div style="width: 120px; margin: 0 5px">
-                              Chosen Year
-                            </div>
-
-                            <input
-                              class="radio-button temporal-resolution"
-                              type="radio"
-                              id="year-range"
-                              name="temporal-resolution"
-                              value="year-range"
-                            />
-
-                            <div class="row-flex" style="margin: 0 10px">
-                              Year Range
-                            </div>
-
-                            <input
-                              type="text"
-                              id="year-range-from"
-                              name="year-range-from"
-                              class="year-range-input"
-                            />
-                            <div style="margin: 0 10px">to</div>
-                            <input
-                              type="text"
-                              id="year-range-to"
-                              name="year-range-to"
-                              class="year-range-input"
-                            />
-                          </div>
-                        </div>
-
-                        <div
-                          class="row-flex align-items-center"
-                          style="width: auto; margin-top: 8px"
-                        >
-                          <div
-                            style="
-                              width: 170px;
-                              margin: 0 8px;
-                              text-align: right;
-                            "
-                          >
-                            <b>Spatial Resolution:</b>
-                          </div>
-                          <div
-                            class="row-flex align-items-center"
-                            style="width: 520px"
-                          >
-                            <input
-                              class="radio-button spatial-resolution"
-                              type="radio"
-                              id="1km"
-                              name="spatial-resolution"
-                              value="1km"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">1km</div>
-                            <input
-                              class="radio-button spatial-resolution"
-                              type="radio"
-                              id="2km"
-                              name="spatial-resolution"
-                              value="2km"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">2km</div>
-                            <input
-                              class="radio-button spatial-resolution"
-                              type="radio"
-                              id="5km"
-                              name="spatial-resolution"
-                              value="5km"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">5km</div>
-                            <input
-                              class="radio-button spatial-resolution"
-                              type="radio"
-                              id="10km"
-                              name="spatial-resolution"
-                              value="10km"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">10km</div>
-                            <input
-                              class="radio-button spatial-resolution"
-                              type="radio"
-                              id="admin1"
-                              name="spatial-resolution"
-                              value="admin1"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">Admin1</div>
-                            <input
-                              class="radio-button spatial-resolution"
-                              type="radio"
-                              id="admin2"
-                              name="spatial-resolution"
-                              value="admin2"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">Admin2</div>
-                          </div>
-                        </div>
-
-                        <div
-                          class="row-flex align-items-center"
-                          style="width: auto; margin-top: 8px"
-                        >
-                          <div
-                            style="
-                              width: 170px;
-                              margin: 0 8px;
-                              text-align: right;
-                            "
-                          >
-                            <b>Grid Type:</b>
-                          </div>
-                          <div
-                            class="row-flex align-items-center"
-                            style="width: 520px"
-                          >
-                            <input
-                              class="radio-button grid-type"
-                              type="radio"
-                              id="hex"
-                              name="grid-type"
-                              value="hex"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">Hex</div>
-                            <input
-                              class="radio-button grid-type"
-                              type="radio"
-                              id="square"
-                              name="grid-type"
-                              value="square"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">Square</div>
-                          </div>
-                        </div>
-
-                        <div
-                          class="row-flex align-items-center"
-                          style="width: auto; margin-top: 8px"
-                        >
-                          <div
-                            style="
-                              width: 170px;
-                              margin: 0 8px;
-                              text-align: right;
-                            "
-                          >
-                            <b>File Type:</b>
-                          </div>
-                          <div
-                            class="row-flex align-items-center"
-                            style="width: 520px"
-                          >
-                            <input
-                              class="radio-button file-type"
-                              type="radio"
-                              id="geojson"
-                              name="file-type"
-                              value="geojson"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">Geojson</div>
-                            <input
-                              class="radio-button file-type"
-                              type="radio"
-                              id="csv"
-                              name="file-type"
-                              value="csv"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">CSV</div>
-                            <input
-                              class="radio-button file-type"
-                              type="radio"
-                              id="geotif"
-                              name="file-type"
-                              value="geotif"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">Geotif</div>
-                          </div>
-                        </div>
-
-                        <div
-                          class="row-flex align-items-center"
-                          style="width: auto; margin-top: 8px"
-                        >
-                          <div
-                            style="
-                              width: 170px;
-                              margin: 0 8px;
-                              text-align: right;
-                            "
-                          >
-                            <b>Data Layers:</b>
-                          </div>
-                          <div
-                            class="row-flex align-items-center"
-                            style="width: 520px"
-                          >
-                            <input
-                              class="radio-button data-layers"
-                              type="radio"
-                              id="selected-layer"
-                              name="data-layers"
-                              value="selected-layer"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">
-                              Selected Layer
-                            </div>
-                            <input
-                              class="radio-button data-layers"
-                              type="radio"
-                              id="all-layers"
-                              name="data-layers"
-                              value="all-layers"
-                            />
-
-                            <div style="margin: 0 10px 0 5px">
-                              All layers in selected datset
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          @click="handleDownload()"
-                          class="row-flex space-evenly"
-                          style="
-                            cursor: pointer;
-                            margin: 10px 0;
-                            background: #c4c4c4;
-                            font-size: 20px;
-                            line-height: 35px;
-                            width: 130px;
-                            height: 35px;
-                          "
-                        >
-                          Download
-                        </div>
-                        <div class="row-flex" style="margin: 0 10px">
-                          For bulk download or access to the full database,
-                          please submit a data request here. All data is
-                          licensed for redistribution. More information can be
-                          found at the data info page.
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      class="
-                        col-flex
-                        info-box info-box-download
-                        align-items-center
-                        display-none
-                      "
-                      style="width: calc(100% - 8px)"
-                    >
-                      <div
-                        style="
-                          margin-top: 18px;
-                          height: 1.6px;
-                          background-color: black;
-                          width: 80%;
-                        "
-                      ></div>
-                      <div
-                        class="row-flex"
-                        style="
-                          width: 84%;
-                          margin-top: 15px;
-                          font-weight: bold;
-                          font-size: 16px;
-                        "
-                      >
-                        Download
-                      </div>
-                      <div
-                        class="row-flex align-items-center"
-                        style="width: 84%; margin-bottom: 10px"
-                      >
-                        <div
-                          style="margin-top: 12px; font-size: 12px; width: 80%"
-                        >
-                          Draw mode is a nice mode in which you draw some
-                          polygons and triangles really great.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-flex">
-                    <div class="col-flex grey-rect"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-flex">
-              <!-- Upload Menu -->
-              <div class="menu row-flex">
-                <div class="icon upload-icon" @click="toggleMenu(12)"></div>
-                <div class="description hover">Upload</div>
-                <div class="menu-drop row-flex display-none menu-big">
-                  <div
-                    class="col-flex align-items-center"
-                    style="
-                      height: auto;
-                      width: auto;
-                      background-color: #c4c4c4;
-                      border-radius: 5px;
-                      border-top-right-radius: 0px;
-                    "
-                  >
-                    <div
-                      class="col-flex"
-                      style="
-                        margin: 12px 12px;
-                        background-color: #dfdfdf;
-                        border-radius: 10px;
-                      "
-                    >
-                      <div
-                        class="row-flex align-items-center"
-                        style="margin: 16px 13px 14px 19px"
-                      >
-                        <div style="width: 340px">
-                          <b>Upload spatial data</b> for overlay and analysis.
-                          Accepted file types include csv, tif, or geojson.
-                        </div>
-                        <div class="icon upload-icon"></div>
-                      </div>
-                      <input type="file" id="myfile" name="myfile" />
-                    </div>
-                  </div>
-                  <div class="col-flex">
-                    <div class="col-flex grey-rect"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Dual Mode -->
-              <div class="menu row-flex">
-                <div
-                  class="icon dual-mode-icon"
-                  @click="handleDualMode()"
-                ></div>
-                <div class="description hover">Dual Mode</div>
-                <div
-                  class="
-                    menu-drop
-                    row-flex
-                    align-items-center
-                    display-none
-                    dual-mode
-                    menu-with-blue
-                  "
-                >
-                  <div
-                    class="row-flex align-items-center"
-                    style="height: 80%; margin: 0 6px 0 0"
-                  >
-                    <div
-                      class="row-flex align-items-center"
-                      style="
-                        font-weight: bold;
-                        padding-left: 10px;
-                        margin: 0 10px 0 0;
-                        height: 100%;
-                        width: 160px;
-                        background-color: #dfdfdf;
-                      "
-                    >
-                      Dual Mode Enabled
-                    </div>
-
-                    <div
-                      class="info-nobg-icon info-hover-icon-dualMode"
-                      @click="displayInfo('dualMode')"
-                    ></div>
-                    <div
-                      class="
-                        info-icon-blue info-blue-icon-dualMode
-                        display-none
-                      "
-                      @click="hideInfo('dualMode')"
-                    ></div>
-                  </div>
-
-                  <div
-                    class="
-                      col-flex
-                      info-box info-box-dualMode
-                      align-items-center
-                      display-none
-                    "
-                  >
-                    <div
-                      class="row-flex"
-                      style="
-                        margin-top: 18px;
-                        min-height: 1.6px;
-                        width: 80%;
-                        background-color: black;
-                      "
-                    ></div>
-                    <div
-                      class="row-flex"
-                      style="
-                        width: 84%;
-                        margin-top: 15px;
-                        font-weight: bold;
-                        font-size: 16px;
-                      "
-                    >
-                      Dual Mode
-                    </div>
-                    <div
-                      class="row-flex align-items-center"
-                      style="margin-bottom: 10px; width: 84%"
-                    >
-                      <div
-                        style="margin-top: 12px; font-size: 12px; width: 80%"
-                      >
-                        Ut fermentum semper mattis. In vel est ac nibh convallis
-                        tincidunt. Vestibulum dui arcu, imperdiet non bibendum
-                        vestibulum, imperdiet eu est.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="blue-box blue-box-dual display-none"></div>
-              </div>
-
-              <!-- TBD -->
-              <div class="menu row-flex">
-                <div class="icon tbd-icon" @click="toggleMenu(14)"></div>
-                <div class="description hover">TBD</div>
-                <div class="menu-drop row-flex align-items-center display-none">
-                  <div
-                    class="row-flex space-evenly align-items-center"
-                    style="
-                      width: 60px;
-                      background-color: #dfdfdf;
-                      height: 80%;
-                      font-weight: 700;
-                      margin-right: 6px;
-                    "
-                  >
-                    TBD
-                  </div>
-                </div>
-              </div>
-
-              <!-- Info Menu -->
-              <div class="menu row-flex">
-                <div class="icon info-icon" @click="toggleMenu(15)"></div>
-                <div class="description hover">Info</div>
-                <div class="menu-drop row-flex display-none menu-big">
-                  <div
-                    class="col-flex align-items-center"
-                    style="
-                      margin-top: -16px;
-                      height: auto;
-                      width: auto;
-                      background-color: #c4c4c4;
-                      border-top-left-radius: 5px;
-                      border-bottom-left-radius: 5px;
-                      border-bottom-right-radius: 5px;
-                      border-top-right-radius: 5px;
-                    "
-                  >
-                    <div
-                      class="row-flex"
-                      style="
-                        margin: 10px;
-                        height: 90px;
-                        width: 160px;
-                        background-color: #dfdfdf;
-                        border-radius: 8px;
-                      "
-                    >
-                      <div style="margin: 10px">Info here....</div>
-                    </div>
-                  </div>
-                  <div class="col-flex">
-                    <div class="col-flex grey-rect"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -2072,7 +806,10 @@ export default {
         */
         document.getElementsByClassName("country-name")[0].textContent = name;
       } else {
-        alert(`${change_type} not yet handled by handleGisMenuChange`);
+        alert(
+          `${change_type} not yet handled by handleGisMenuChange; This warning blocks flipping animation`
+        );
+        // console.log(`${change_type} not yet handled by handleGisMenuChange`);
       }
     },
     //my version: handleBoundariesChange
@@ -2086,6 +823,73 @@ export default {
 
       this.handleGisMenuChange(object);
     },
+
+    handleBasemapChange(text, image) {
+      var selected = document.getElementsByClassName("selected-basemap")[0];
+      var basemapMenu = document.getElementsByClassName("basemap-options")[0];
+      basemapMenu.classList.add("growUp");
+      setTimeout(() => {
+        basemapMenu.classList.add("display-none");
+        basemapMenu.classList.remove("growUp");
+      }, 280);
+
+      selected.children[0].innerHTML = text;
+      selected.children[1].className = "menu-icon-satellite " + image;
+
+      document.getElementsByClassName("basemap-icon-handle")[0].className =
+        "icon basemap-icon-handle " + image;
+
+      this.handleGisMenuChange({ basemap: text });
+    },
+
+    handleCountryChange(eventData) {
+      console.log(`handleCountryChange:`);
+      console.log(eventData);
+      let text = eventData.name;
+      let image = eventData.id;
+
+      //Brandon - considering changing to tak
+      var selected = document.getElementsByClassName("big-menu")[0];
+      var countryMenu = document.getElementsByClassName("country-options")[0];
+      countryMenu.classList.add("growUp");
+      setTimeout(() => {
+        countryMenu.classList.add("display-none");
+        countryMenu.classList.remove("growUp");
+      }, 280);
+
+      selected.children[0].innerHTML = text;
+      selected.children[1].className = image;
+
+      var selected2 = document.getElementsByClassName("small-menu")[0];
+      selected2.children[0].className = image;
+      selected2.children[0].innerHTML = "";
+
+      // this.handleGisMenuChange({ Country: text });
+      console.log("passing eventData to handleGisMenuChange");
+      this.handleGisMenuChange("select-country", eventData); //text needs renaming to a better variable name
+    },
+
+    handleResolutionChange(index, val) {
+      var resolutionOptions =
+        document.getElementsByClassName("resolution-option");
+
+      for (let i = 0; i < resolutionOptions.length; i++) {
+        if (index === i) {
+          resolutionOptions[i].classList.add("border-blue");
+        } else {
+          resolutionOptions[i].classList.remove("border-blue");
+        }
+      }
+
+      document.getElementsByClassName("resolution-icon")[0].className =
+        "icon resolution-icon " + val;
+
+      var object = {};
+      object["Resolution"] = val;
+
+      this.handleGisMenuChange(object);
+    },
+
     closeAllMenu(index) {
       console.log(`closeAllMenu(${index})`);
       var allMenu = document.getElementsByClassName("menu-drop");
@@ -2130,6 +934,179 @@ export default {
         infoIconBlue[i].classList.add("display-none");
         infoNoBgIconBlue[i].classList.remove("display-none");
       }
+    },
+
+    //handles open/closing related behaviour for sidebar menu
+    toggleMenu(index) {
+      var allMenu = document.getElementsByClassName("menu-drop");
+
+      for (let i = 0; i < allMenu.length; i++) {
+        if (i === index) {
+          if (allMenu[i].classList.contains("display-none")) {
+            this.removeHover();
+            this.closeAllMenu(i);
+            allMenu[i].classList.remove("display-none");
+            document
+              .getElementsByClassName("close-menu")[0]
+              .classList.remove("display-none");
+          } else {
+            this.closeAllMenu();
+            setTimeout(() => {
+              this.addHover();
+            }, 500);
+            document
+              .getElementsByClassName("close-menu")[0]
+              .classList.add("display-none");
+          }
+        }
+      }
+    },
+
+    //country-select related
+    resetCountryMenu() {
+      document
+        .getElementsByClassName("search-bar")[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("first-icon")[0]
+        .classList.remove("display-none");
+      document
+        .getElementsByClassName("big-menu")[0]
+        .classList.remove("display-none");
+      document
+        .getElementsByClassName("small-menu")[0]
+        .classList.add("display-none");
+    },
+    //country-select related
+    toggleSearchBar() {
+      document
+        .getElementsByClassName("search-bar")[0]
+        .classList.remove("display-none");
+      document
+        .getElementsByClassName("country-options")[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("first-icon")[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("big-menu")[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("small-menu")[0]
+        .classList.remove("display-none");
+    },
+
+    //NEW--------------------------------------------
+    toggleInputBlueColor(event) {
+      if (event.classList.contains("color-black")) {
+        event.className = "color-blue";
+      } else {
+        event.className = "color-black";
+      }
+    },
+
+    toggleBlueColor(event) {
+      if (event.classList.contains("color-black")) {
+        event.className = "color-blue layers-N";
+      } else {
+        event.className = "color-black layers-N";
+      }
+    },
+    hideInfo(val) {
+      document
+        .getElementsByClassName("info-hover-icon-" + val)[0]
+        .classList.remove("display-none");
+      document
+        .getElementsByClassName("info-blue-icon-" + val)[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("info-box-" + val)[0]
+        .classList.add("display-none");
+    },
+
+    displayInfo(val) {
+      document
+        .getElementsByClassName("info-hover-icon-" + val)[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("info-blue-icon-" + val)[0]
+        .classList.remove("display-none");
+      document
+        .getElementsByClassName("info-box-" + val)[0]
+        .classList.remove("display-none");
+    },
+
+    removeHover() {
+      var description = document.getElementsByClassName("description");
+
+      for (let i = 0; i < description.length; i++) {
+        description[i].classList.remove("hover");
+      }
+    },
+
+    addHover() {
+      var description = document.getElementsByClassName("description");
+
+      for (let i = 0; i < description.length; i++) {
+        description[i].classList.add("hover");
+      }
+    },
+
+    //IRRELEVANT RIGHT NOW---------------------------
+
+    //only used in this function apparently; why is it even outside?
+    //  let count = "a";
+    addLayer() {
+      let count = "a"; //moved in from outside
+      var layers = document.getElementsByClassName("layer-input");
+      var index = [];
+
+      for (let i = 0; i < layers.length; i++) {
+        index.push(layers[i].selectedIndex);
+      }
+
+      document.getElementById("layers").innerHTML =
+        document.getElementById("layers").innerHTML +
+        `
+          <div id='` +
+        count +
+        `-layer' class="row-flex align-items-center" style="margin-top:6px;">
+            <div class="row-flex align-items-center space-evenly" style="margin-right:6px; background-color:#A9A9A9;width:30px; height:30px;border-radius:5px;text-align:center; cursor:pointer;" @click="addVariables('` +
+        count +
+        `')"><i class='layers-value'><b>` +
+        count +
+        `</b></i></div>
+            <div class="row-flex space-between align-items-center" style="height:30px;width:304px;background-color:#DFDFDF; border-radius:5px;">
+
+              <div class="row-flex align-items-center" style="margin: 0 10px;">
+                <select name="` +
+        count +
+        `" class="layer-input" id="` +
+        count +
+        `layer-input" style=" padding: 0 0 0 4px; width: 240px; height: 30px;border:0; outline:none; background-color:#DFDFDF;">
+                  <option value="">Select New Dataset</option>
+                  <option value="Aaaaa">Aaaaa</option>
+                  <option value="Bbbbb">Bbbbb</option>
+                  <option value="Ccccc">Ccccc</option>
+                </select>
+              </div>
+
+              <div class="row-flex align-items-center">
+                <div class="color-black layers-N" style="cursor:pointer;" @click="toggleBlueColor(this)">N</div>
+                <div class="row-flex align-items-center" style="margin: 0 10px;cursor: pointer;height:10px;width:11px;" @click="removeLayer('` +
+        count +
+        `')">
+                  <div style="width:11px; height:1.5px; background-color:brown"></div>
+                </div>
+              </div>
+            </div>
+          </div>`;
+
+      for (let i = 0; i < layers.length; i++) {
+        layers[i].selectedIndex = index[i];
+      }
+
+      count = String.fromCharCode(count.charCodeAt(0) + 1);
     },
 
     calculatorRun() {
@@ -2218,79 +1195,6 @@ export default {
           }
         }
       }
-    },
-
-    //NEW--------------------------------------------
-    toggleInputBlueColor(event) {
-      if (event.classList.contains("color-black")) {
-        event.className = "color-blue";
-      } else {
-        event.className = "color-black";
-      }
-    },
-
-    toggleBlueColor(event) {
-      if (event.classList.contains("color-black")) {
-        event.className = "color-blue layers-N";
-      } else {
-        event.className = "color-black layers-N";
-      }
-    },
-
-    //IRRELEVANT RIGHT NOW---------------------------
-    //only used in this function apparently; why is it even outside?
-    //  let count = "a";
-    addLayer() {
-      let count = "a"; //moved in from outside
-      var layers = document.getElementsByClassName("layer-input");
-      var index = [];
-
-      for (let i = 0; i < layers.length; i++) {
-        index.push(layers[i].selectedIndex);
-      }
-
-      document.getElementById("layers").innerHTML =
-        document.getElementById("layers").innerHTML +
-        `
-  <div id='` +
-        count +
-        `-layer' class="row-flex align-items-center" style="margin-top:6px;">
-    <div class="row-flex align-items-center space-evenly" style="margin-right:6px; background-color:#A9A9A9;width:30px; height:30px;border-radius:5px;text-align:center; cursor:pointer;" @click="addVariables('` +
-        count +
-        `')"><i class='layers-value'><b>` +
-        count +
-        `</b></i></div>
-    <div class="row-flex space-between align-items-center" style="height:30px;width:304px;background-color:#DFDFDF; border-radius:5px;">
-
-       <div class="row-flex align-items-center" style="margin: 0 10px;">
-         <select name="` +
-        count +
-        `" class="layer-input" id="` +
-        count +
-        `layer-input" style=" padding: 0 0 0 4px; width: 240px; height: 30px;border:0; outline:none; background-color:#DFDFDF;">
-           <option value="">Select New Dataset</option>
-           <option value="Aaaaa">Aaaaa</option>
-           <option value="Bbbbb">Bbbbb</option>
-           <option value="Ccccc">Ccccc</option>
-         </select>
-       </div>
-
-       <div class="row-flex align-items-center">
-         <div class="color-black layers-N" style="cursor:pointer;" @click="toggleBlueColor(this)">N</div>
-         <div class="row-flex align-items-center" style="margin: 0 10px;cursor: pointer;height:10px;width:11px;" @click="removeLayer('` +
-        count +
-        `')">
-           <div style="width:11px; height:1.5px; background-color:brown"></div>
-         </div>
-       </div>
-    </div>
-  </div>`;
-
-      for (let i = 0; i < layers.length; i++) {
-        layers[i].selectedIndex = index[i];
-      }
-
-      count = String.fromCharCode(count.charCodeAt(0) + 1);
     },
 
     handleDownload() {
@@ -2405,6 +1309,7 @@ export default {
           .classList.add("display-none");
       }
     },
+
     //TO LOOK AT STILL--------------------------------
 
     //need to look at how it works/implemented in old version first
@@ -2464,30 +1369,6 @@ export default {
 
       object["Label"] = value;
       this.handleGisMenuChange(object);
-    },
-
-    hideInfo(val) {
-      document
-        .getElementsByClassName("info-hover-icon-" + val)[0]
-        .classList.remove("display-none");
-      document
-        .getElementsByClassName("info-blue-icon-" + val)[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("info-box-" + val)[0]
-        .classList.add("display-none");
-    },
-
-    displayInfo(val) {
-      document
-        .getElementsByClassName("info-hover-icon-" + val)[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("info-blue-icon-" + val)[0]
-        .classList.remove("display-none");
-      document
-        .getElementsByClassName("info-box-" + val)[0]
-        .classList.remove("display-none");
     },
 
     handleBivariateMode() {
@@ -2551,83 +1432,6 @@ export default {
       this.handleGisMenuChange(object);
     },
 
-    resetCountryMenu() {
-      document
-        .getElementsByClassName("search-bar")[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("first-icon")[0]
-        .classList.remove("display-none");
-      document
-        .getElementsByClassName("big-menu")[0]
-        .classList.remove("display-none");
-      document
-        .getElementsByClassName("small-menu")[0]
-        .classList.add("display-none");
-    },
-
-    toggleSearchBar() {
-      document
-        .getElementsByClassName("search-bar")[0]
-        .classList.remove("display-none");
-      document
-        .getElementsByClassName("country-options")[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("first-icon")[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("big-menu")[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("small-menu")[0]
-        .classList.remove("display-none");
-    },
-
-    handleBasemapChange(text, image) {
-      var selected = document.getElementsByClassName("selected-basemap")[0];
-      var basemapMenu = document.getElementsByClassName("basemap-options")[0];
-      basemapMenu.classList.add("growUp");
-      setTimeout(() => {
-        basemapMenu.classList.add("display-none");
-        basemapMenu.classList.remove("growUp");
-      }, 280);
-
-      selected.children[0].innerHTML = text;
-      selected.children[1].className = "menu-icon-satellite " + image;
-
-      document.getElementsByClassName("basemap-icon-handle")[0].className =
-        "icon basemap-icon-handle " + image;
-      this.handleGisMenuChange({ basemap: text });
-    },
-
-    handleCountryChange(eventData) {
-      console.log(`handleCountryChange:`);
-      console.log(eventData);
-      let text = eventData.name;
-      let image = eventData.id;
-
-      //Brandon - considering changing to tak
-      var selected = document.getElementsByClassName("big-menu")[0];
-      var countryMenu = document.getElementsByClassName("country-options")[0];
-      countryMenu.classList.add("growUp");
-      setTimeout(() => {
-        countryMenu.classList.add("display-none");
-        countryMenu.classList.remove("growUp");
-      }, 280);
-
-      selected.children[0].innerHTML = text;
-      selected.children[1].className = image;
-
-      var selected2 = document.getElementsByClassName("small-menu")[0];
-      selected2.children[0].className = image;
-      selected2.children[0].innerHTML = "";
-
-      // this.handleGisMenuChange({ Country: text });
-      console.log("passing eventData to handleGisMenuChange");
-      this.handleGisMenuChange("select-country", eventData); //text needs renaming to a better variable name
-    },
-
     handleColorChange(text, image) {
       var selected = document.getElementsByClassName("selected-color")[0];
       var colorMenu = document.getElementsByClassName("color-options")[0];
@@ -2684,68 +1488,6 @@ export default {
         }, 280);
       }
     },
-
-    handleResolutionChange(index, val) {
-      var resolutionOptions =
-        document.getElementsByClassName("resolution-option");
-
-      for (let i = 0; i < resolutionOptions.length; i++) {
-        if (index === i) {
-          resolutionOptions[i].classList.add("border-blue");
-        } else {
-          resolutionOptions[i].classList.remove("border-blue");
-        }
-      }
-
-      document.getElementsByClassName("resolution-icon")[0].className =
-        "icon resolution-icon " + val;
-
-      var object = {};
-      object["Resolution"] = val;
-
-      this.handleGisMenuChange(object);
-    },
-
-    removeHover() {
-      var description = document.getElementsByClassName("description");
-
-      for (let i = 0; i < description.length; i++) {
-        description[i].classList.remove("hover");
-      }
-    },
-
-    addHover() {
-      var description = document.getElementsByClassName("description");
-
-      for (let i = 0; i < description.length; i++) {
-        description[i].classList.add("hover");
-      }
-    },
-
-    toggleMenu(index) {
-      var allMenu = document.getElementsByClassName("menu-drop");
-
-      for (let i = 0; i < allMenu.length; i++) {
-        if (i === index) {
-          if (allMenu[i].classList.contains("display-none")) {
-            this.removeHover();
-            this.closeAllMenu(i);
-            allMenu[i].classList.remove("display-none");
-            document
-              .getElementsByClassName("close-menu")[0]
-              .classList.remove("display-none");
-          } else {
-            this.closeAllMenu();
-            setTimeout(() => {
-              this.addHover();
-            }, 500);
-            document
-              .getElementsByClassName("close-menu")[0]
-              .classList.add("display-none");
-          }
-        }
-      }
-    },
   },
   computed: {
     sidsByName() {
@@ -2776,6 +1518,11 @@ export default {
 </script>
 
 <style scoped>
+.HACK {
+  /*deals with the mapnavigation offset issue; caused by Ben's spacing divs for placing the sidebar creating boxes */
+  display: contents;
+}
+
 body {
   font-family: "Nunito", sans-serif;
 }
@@ -2787,6 +1534,10 @@ body {
   right: 20px;
   top: 45px;
   padding: 6px 0 0 6px;
+
+  /* background: #c4c4c4; */
+  background: none;
+  z-index: 1001; /*added to bring in front of mapbox map and in front of leftsidebar*/
 }
 
 .menu {
@@ -3168,6 +1919,9 @@ body {
   top: 92%;
   animation: growDown 0.4s;
   transform-origin: top;
+  /*added by me to allow scrolling*/
+  overflow: auto;
+  max-height: 50vh;
 }
 
 @keyframes growDown {
@@ -3567,9 +2321,10 @@ body {
 
 .close-menu {
   position: absolute;
-  height: 96%;
-  width: 96%;
+  height: 100%;
+  width: 100%;
   z-index: 1000;
+  /* original value from Ben's Form */
 }
 
 /* Flex classes */
