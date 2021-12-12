@@ -1,6 +1,9 @@
 <template>
   <div class="">
     <v-card class="mb-4">
+      <button class="printout" @click="printout">
+        Printout Datasets to Console
+      </button>
       <v-row>
         <v-col cols="6">
           <v-list dense>
@@ -68,7 +71,7 @@
       </v-row>
       <v-row dense>
         <v-col>
-          <v-select
+          <!-- <v-select
             class="map-input"
             dense
             v-model="activeDatasetName"
@@ -78,12 +81,23 @@
             label="Dataset"
             @input="emitDatasetSelect"
             outlined
+          ></v-select> -->
+          <v-select
+            class="map-input"
+            dense
+            v-model="activeDatasetName"
+            :items="filteredDatasets"
+            item-text="name"
+            item-value="name"
+            label="Dataset"
+            @input="emitUpdate"
+            outlined
           ></v-select>
         </v-col>
       </v-row>
       <v-row v-if="activeDataset && activeDataset.type === 'layers'" dense>
         <v-col>
-          <v-select
+          <!-- <v-select
             dense
             class="map-input"
             v-model="activeLayerName"
@@ -92,6 +106,17 @@
             :items="activeDataset.layers"
             label="Layer"
             @input="emitLayerSelect"
+            outlined
+          ></v-select> -->
+          <v-select
+            dense
+            class="map-input"
+            v-model="activeLayerName"
+            item-text="Description"
+            item-value="Description"
+            :items="activeDataset.layers"
+            label="Layer"
+            @input="emitUpdate"
             outlined
           ></v-select>
         </v-col>
@@ -260,6 +285,22 @@ export default {
     },
   },
   methods: {
+    printout() {
+      //testmethod for examining state/dataset
+      console.log(`filteredDataset:`);
+      console.log(this.filteredDatasets);
+
+      console.log(`activeDataset:`);
+      console.log(this.activeDataset);
+      console.log(`activeLayer:`);
+      console.log(this.activeLayer);
+    },
+    emitUpdate() {
+      console.log(`emitUpdate of activeDataset and activeLayer`);
+      // this.$emit("update", {this.activeDataset, this.activeLayer});
+      let active = { dataset: this.activeDataset, layer: this.activeLayer };
+      this.$emit("update", active);
+    },
     emitDatasetSelect(value) {
       console.log(`emitDatasetSelect( ${value} )`);
       this.$emit("dataset-select", value);

@@ -2,8 +2,19 @@
   <div class="map-container">
     <map-dataset-controller
       class="data-controller"
-      @dataset-select="activeDatasetName = $event"
-      @layer-select="activeLayerName = $event"
+      @update="updateMap($event.dataset, $event.layer)"
+      @dataset-select="
+        {
+          activeDatasetName = $event;
+          updateMapData('dataset-select', $event);
+        }
+      "
+      @layer-select="
+        {
+          activeLayerName = $event;
+          updateMapData('layer-select', $event);
+        }
+      "
     />
     <map-toolbar
       class="toolbar"
@@ -270,227 +281,40 @@ export default {
       }
     },
 
+    updateMapData(select_type, name) {
+      //
+      console.log(`updateMap for: ${select_type}, ${name}`);
+      if (select_type === "dataset-select") {
+        console.log("dataset-select");
+      } else if (select_type === "layer-select") {
+        console.log("layer-select");
+      } else {
+        console.log("!!!UNRECOGNIZED UPDATEMAP SELECT_TYPE!!!");
+      }
+    },
+    updateMap(activeDataset, activeLayer) {
+      //should receive the computed activeDataset and activeLayer from the MapDatasetController
+      //intends to obsolete updateMapData
+      //intended for use with @update
+      if (activeDataset) {
+        console.log(`updateMap received activeDataset:`);
+        console.log(activeDataset);
+      }
+      if (activeLayer) {
+        console.log(`updateMap recieved activeLayer`);
+        console.log(activeLayer);
+        if (!(activeDataset || activeLayer)) {
+          console.log("updateMap received bad params");
+          console.log(activeDataset);
+          console.log(activeLayer);
+        }
+      }
+    },
+
     testGeoDataMethod() {
       //testing; calls method from the map class
       console.log("zooming to Bahamas for test");
       this.map.testMapMethod();
-    },
-
-    Obsolete_addBoundaryLayer(object) {
-      let map = this.map; //patches reference to where map stored in component
-      //taken from old code
-      let pointsLayers = [
-        "airports-extended",
-        "healthsites",
-        "volcano_list",
-        "glopal_power_plant",
-        "world_port_index",
-      ];
-      let pointColors = {
-        "airports-extended": "blue",
-        healthsites: "red",
-        volcano_list: "orange",
-        glopal_power_plant: "green",
-        world_port_index: "yellow",
-      };
-      let pointDesc = {
-        "airports-extended": "Airport_Na",
-        healthsites: "name", //conflicting with power plants in geojson, need to change name
-        volcano_list: "Volcano_Na",
-        glopal_power_plant: "name",
-        world_port_index: "PORT_NAME",
-      };
-      let layerNames = Object.keys(object); //what layer is being added
-      let checkedBool = Object.values(object)[0]; //true or false if layerName
-      let layerName = layerNames[0];
-
-      if (pointsLayers.includes(layerName)) {
-        //some logic in here isn't allowing removal
-        if (map.getLayer(layerName)) {
-          console.log("removing boundary layer");
-          console.log(map.getLayer(layerName));
-          map.removeLayer(layerName);
-        } else {
-          console.log("adding boundary layer");
-          map.addLayer({
-            id: layerName,
-            type: "circle",
-            source: "points-source",
-            filter: ["==", "layer", layerName],
-            layout: {
-              visibility: "visible",
-            },
-            paint: {
-              "circle-color": pointColors[layerName],
-              "circle-radius": 7,
-              "circle-opacity": 0.7,
-            },
-          });
-        }
-        console.log(layerName);
-
-        console.log(`adding onclick listener to ${layerName} `);
-        map.on("click", layerName, (e) => {
-          const coordinates = e.features[0].geometry.coordinates.slice();
-          const description = e.features[0].properties[pointDesc[layerName]];
-
-          //console.log(coordinates);
-          // getIso(coordinates); TODO IMPLEMENT ISOCHRONE
-
-          /*
-          new mapboxgl.Popup({
-            className: "popupCustom",
-          })
-            .setLngLat(coordinates)
-            .setHTML(description)
-            .addTo(map);
-          */
-          map
-            .makePopUp({
-              className: "popupCustom",
-            })
-            .setLngLat(coordinates)
-            .setHTML(description)
-            .addTo(map);
-        });
-      } else if (layerName === "underwater-overlay") {
-        // addCables(); //TODO REENABLE ADDING CABLES
-        //below taken from addCables() in old code
-        if (map.getLayer("underwater")) {
-          console.log(`removing boundary layer  ${layerName} `);
-          map.removeLayer("underwater");
-        } else if (!map.getSource("underwater-source")) {
-          console.log(
-            `source not added; fetching boundary layer source and adding layer  ${layerName} `
-          );
-          d3.json(filepaths.cableFilePath).then(function (d) {
-            map.addSource("underwater-source", {
-              type: "geojson",
-              data: d,
-            });
-
-            map.addLayer(
-              {
-                id: "underwater",
-                type: "line",
-                source: "underwater-source",
-
-                layout: {
-                  visibility: "visible",
-                },
-
-                paint: {
-                  "line-color": ["get", "color"],
-                  "line-width": 2,
-                },
-              },
-              globals.firstSymbolId
-            );
-          });
-        } else {
-          map.addLayer(
-            {
-              id: "underwater",
-              type: "line",
-              source: "underwater-source",
-
-              layout: {
-                visibility: "visible",
-              },
-
-              paint: {
-                "line-color": ["get", "color"],
-                "line-width": 3,
-              },
-            },
-            globals.firstSymbolId
-          );
-        }
-
-        console.log(`adding onclick listener to ${layerName} `);
-        map.on("click", "underwater", function (e) {
-          /*
-          var popup = new mapboxgl.Popup({
-            closeButton: true,
-            closeOnClick: true,
-          });
-          */
-          let description = "<b>" + e.features[0].properties["slug"] + "</b>";
-          let coordinates = e.lngLat;
-
-          map
-            .makePopUp({
-              className: "popupCustom",
-            })
-            .setLngLat(coordinates)
-            .setHTML(description)
-            .addTo(map);
-          /*
-
-          popup
-            .setLngLat(e.lngLat)
-            .setHTML("<b>" + e.features[0].properties["slug"] + "</b>")
-            .addTo(map);
-            */
-        });
-
-        //------------------------------------------
-        console.log("added underwater cables data");
-        // alert("addCables not yet reimplemented");
-      } else if (!checkedBool) {
-        console.log(`checked ${checkedBool} , removing ${layerName}`);
-        map.removeLayer(layerName);
-      } else {
-        let slayer;
-        let color;
-        let source;
-
-        if (layerName === "admin1-overlay") {
-          source = "admin1";
-          slayer = "admin1";
-          color = "red";
-        } else if (layerName === "admin2-overlay") {
-          source = "admin2";
-          slayer = "admin2";
-          color = "#003399";
-        } else if (layerName === "allsids") {
-          //console.log('sids!')
-          source = "allsids";
-          slayer = "allSids";
-          color = "orange";
-        } else {
-          //source = 'pvaph'
-          //layer == 'airports=extended', 'healthsites', 'volcano-list', 'glopal_power_plant', ''
-          // console.log($(this).val());
-          // //console.log($(this).id())
-          // console.log($(this));
-        }
-
-        map.addLayer(
-          {
-            id: layerName,
-            type: "line",
-            source: source,
-            "source-layer": slayer,
-            layout: {
-              visibility: "visible",
-            },
-
-            paint: {
-              "line-color": color,
-              "line-width": 1,
-            },
-          },
-          this.firstSymbolId
-        );
-
-        if (map.getLayer("admin1-overlay")) {
-          map.moveLayer(layerName, "admin1-overlay");
-        }
-
-        // map.on("mouseover", function () {
-        // });
-      }
     },
   },
   mounted() {

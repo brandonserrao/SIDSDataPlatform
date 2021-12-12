@@ -27,7 +27,9 @@ export default class Map {
       this._removeUnusedLayers();
       this._createMiniMap();
 
-      this._addSources();
+      // this._addSources();
+      this._addPointSources();
+      this._addVectorSources();
     });
     /* 
     //for debugging the northwards offset zoom issue
@@ -121,22 +123,31 @@ export default class Map {
     this.map.removeLayer("admin-1-boundary-bg");
     this.map.removeLayer("airport-label");
   }
-  _addSources() {
+
+  showSpinner() {
+    document.querySelector(".loader-gis").style.display = "block";
+  }
+
+  hideSpinner() {
+    document.querySelector(".loader-gis").style.display = "none";
+  }
+
+  _addPointSources() {
     let map = this.map; //patching map reference
-
-    //taken from old code
-    //called when map is loaded
-
     //pulls in the pointdata about airports volcanoes etc
     console.log("d3.json fetching pointdata geojson file");
+
     d3.json(filepaths.pointdataFilePath).then(function (d) {
       map.addSource("points-source", {
         type: "geojson",
         data: d,
       });
     });
+  }
+  _addVectorSources() {
+    let map = this.map; //patching map reference
+    console.log(`vector sources: ${Object.keys(globals.sources)}`);
 
-    console.log(Object.keys(globals.sources));
     //LOAD SOURCES (VECTOR TILES)
     for (let idString of Object.keys(globals.sources)) {
       console.log("adding " + idString);
@@ -144,11 +155,8 @@ export default class Map {
     }
 
     if (!map.getLayer("allsids")) {
-      //LOADING ALLSIDS LAYER IF NOT ADDED BEFORE FOR SOME REASON;
-      // WHY NECESSARY??? -> READ ON MAPBOX LAYER VS STYLE VS SOURCE!
-      console.log(
-        "entered IF-statement; likely triggers as runs after async fetch"
-      );
+      console.log(`allsids not present->adding layer to map`);
+
       map.addLayer(
         {
           id: "allsids",

@@ -765,6 +765,21 @@
         </div>
       </div>
     </div>
+    <!-- SPINNER LOADER -->
+    <div class="loader-gis">
+      <svg
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        width="170"
+        height="170"
+        viewbox="0 0 200 173.20508075688772"
+      >
+        <path
+          fill="#003399"
+          d="M0 86.60254037844386L50 0L150 0L200 86.60254037844386L150 173.20508075688772L50 173.20508075688772Z"
+        ></path>
+      </svg>
+    </div>
   </div>
 </template>
 
@@ -1538,6 +1553,27 @@ export default {
 .HACK {
   /*deals with the mapnavigation offset issue; caused by Ben's spacing divs for placing the sidebar creating boxes */
   display: contents;
+}
+
+.loader-gis {
+  position: absolute;
+  /* border: 16px solid #f3f3f3;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px; */
+  animation: spin 4s linear infinite;
+
+  z-index: 3;
+  left: 45%;
+  top: 35%;
+}
+
+.loader-gis svg {
+  stroke-width: 8;
+  fill-opacity: 0.5;
+  animation: pulse 1s linear infinite;
+  stroke: #003399;
 }
 
 body {
