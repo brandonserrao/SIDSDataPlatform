@@ -624,7 +624,11 @@
                             id="admin-region-1"
                             name="admin-region"
                             value="admin-region-one"
-                            @change="handleBoundryChange()"
+                            @change="
+                              handleBoundryChange({
+                                'admin1-overlay': $event.target.checked,
+                              })
+                            "
                           />
                         </div>
                         <div
@@ -638,7 +642,11 @@
                             id="admin-region-2"
                             name="admin-region"
                             value="admin-region-two"
-                            @change="handleBoundryChange()"
+                            @change="
+                              handleBoundryChange({
+                                'admin2-overlay': $event.target.checked,
+                              })
+                            "
                           />
                         </div>
                       </div>
@@ -806,22 +814,28 @@ export default {
         */
         document.getElementsByClassName("country-name")[0].textContent = name;
       } else {
-        alert(
+        /*         alert(
           `${change_type} not yet handled by handleGisMenuChange; This warning blocks flipping animation`
-        );
-        // console.log(`${change_type} not yet handled by handleGisMenuChange`);
+        ); */
+        console.log(`${change_type} not yet handled by handleGisMenuChange`);
       }
     },
     //my version: handleBoundariesChange
-    handleBoundryChange() {
-      var object = {};
+    handleBoundryChange(object) {
+      /*    var object = {};
 
       object["boundry-region-1"] =
         document.getElementById("admin-region-1").checked;
       object["boundry-region-2"] =
         document.getElementById("admin-region-2").checked;
 
-      this.handleGisMenuChange(object);
+      this.handleGisMenuChange(object); 
+      */
+      //my code from handleBoundariesChange(object)
+      console.log("handleBoundryChange $emitting object");
+      console.log(object);
+      // addBoundaryLayer(object);//old code; replace with an emit
+      this.$emit("select-boundary-layer", object);
     },
 
     handleBasemapChange(text, image) {

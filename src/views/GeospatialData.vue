@@ -45,6 +45,9 @@ export default {
     },
 
     addBoundaryLayer(object) {
+      console.log("addBoundaryLayer(object) object is:");
+      console.log(object);
+
       let map = this.map; //patches reference to where map stored in component
       //taken from old code
       let pointsLayers = [
