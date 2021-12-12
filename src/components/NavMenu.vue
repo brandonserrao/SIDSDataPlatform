@@ -33,6 +33,7 @@ export default {
   height: 100%;
   padding-top: 25vh;
   text-transform: uppercase;
+  text-align: right;
 }
 .mdl-tabs__tab-bar {
   flex-direction: column;

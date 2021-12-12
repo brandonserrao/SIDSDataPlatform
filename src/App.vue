@@ -40,4 +40,7 @@ export default {
 :focus {
   outline: none;
 }
+.v-application {
+   font-family: 'Proxima Nova', sans-serif !important;
+ }
 </style>
