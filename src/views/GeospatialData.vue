@@ -293,21 +293,54 @@ export default {
       }
     },
     updateMap(activeDataset, activeLayer) {
+      console.log("updateMap fired;");
+      console.log("activeDataset: ");
+      console.log(activeDataset);
+      console.log("activeLayer: ");
+      console.log(activeLayer);
       //should receive the computed activeDataset and activeLayer from the MapDatasetController
       //intends to obsolete updateMapData
       //intended for use with @update
-      if (activeDataset) {
+      /*       if (activeDataset && !activeLayer) {
+        //case when only dataset selected
         console.log(`updateMap received activeDataset:`);
         console.log(activeDataset);
-      }
-      if (activeLayer) {
+      } else if (activeDataset && activeLayer) {
+        //case when a layer of a dataset is selected
         console.log(`updateMap recieved activeLayer`);
         console.log(activeLayer);
-        if (!(activeDataset || activeLayer)) {
+
+        if (!(activeDataset || activeLayer) || !activeDataset) {
+          //abnormal case of Layer but no dataset
           console.log("updateMap received bad params");
           console.log(activeDataset);
           console.log(activeLayer);
         }
+      } */
+      if (!activeDataset) {
+        console.log(`bad update; activeDataset falsy`);
+      } else if (activeDataset && !activeLayer) {
+        //either a single-type dataset or multiple before selecting layer
+        console.log(`activeDataset.type: ${activeDataset.type}`);
+        if (activeDataset.type === "single") {
+          //get Field_Name to use as id to pass to changeDataOnMap(id)
+          console.log("single dataset selected;");
+          let field_name = activeDataset.layers[0].Field_Name;
+          this.map.changeDataOnMap(field_name); //function from old code; handles data adding/display/switching
+        } else if (activeDataset.type === "temporal") {
+          console.log("temporal dataset selected; layers via timeline");
+          //get Field_Name to use as id to pass to changeDataOnMap(id)
+          let field_name = activeDataset.layers[0].Field_Name;
+          this.map.changeDataOnMap(field_name); //function from old code; handles data adding/display/switching
+        } else {
+          console.log(
+            "dataset selected; waiting for following layer selection"
+          );
+        }
+      } else if (activeDataset && activeLayer) {
+        //get Field_Name from activeLayer to use as id to pass to changeDataOnMap(id)
+        let field_name = activeLayer.Field_Name;
+        this.map.changeDataOnMap(field_name); //function from old code; handles data adding/display/switching
       }
     },
 

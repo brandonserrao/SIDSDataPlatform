@@ -132,6 +132,10 @@ export default class Map {
     document.querySelector(".loader-gis").style.display = "none";
   }
 
+  changeDataOnMap(Field_Name) {
+    console.log(`changeDataOnMap fired: ${Field_Name}`);
+  }
+
   _addPointSources() {
     let map = this.map; //patching map reference
     //pulls in the pointdata about airports volcanoes etc
