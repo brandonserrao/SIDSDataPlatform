@@ -153,11 +153,23 @@
         </a>
       </v-card-text>
     </v-card>
+
+    <div>
+      <!-- OLDCODE - HISTOGRAM/LEGEND FRAME -->
+      <div class="pic app-body population-per-km col-flex" id="histogram_frame">
+        <div class="row-flex space-evenly" id="legendTitle">
+          Select a Dataset and Layer to view data on the map.
+        </div>
+
+        <div class="row-flex space-evenly" id="updateLegend"></div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import datasets from "@/gis/static/layers";
+import globals from "@/gis/static/globals";
 
 export default {
   name: "MapDatasetController",
@@ -285,6 +297,15 @@ export default {
     },
   },
   methods: {
+    _fillAllLayers() {
+      //adding for attempted compatibility with oldcode;
+      // oldcode uses allLayers as a storage for all dataset/layer metadata that fuels the leftsidebar/mapdatacontroller;
+      // need to verify that the format of allLayers and filteredDatasets is the same
+      console.log("_fillAllLayers called");
+      globals.allLayers = this.filteredDatasets;
+      globals.activeDataset = this.activeDataset;
+      globals.activeLayer = this.activeLayer;
+    },
     printout() {
       //testmethod for examining state/dataset
       console.log(`filteredDataset:`);
@@ -340,6 +361,9 @@ export default {
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
       this.$refs.slider.scrollOffset = 56 * (goalNumber - 1);
     },
+  },
+  mounted() {
+    this._fillAllLayers(); //filling obsoleted allLayers with new filteredDatasets for attempted compatibility;
   },
 };
 </script>

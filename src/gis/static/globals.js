@@ -4,6 +4,13 @@ import constants from "@/gis/static/constants.js";
 
 const globals = {
   firstSymbolId: "tunnel-oneway-arrow-blue",
+  //current layer state manager
+  currentLayerState: {
+    color: null,
+    breaks: null,
+    dataLayer: null,
+    hexSize: "hex5",
+  },
   sources: {
     //{...ID:{SOURCE OBJECT}} USED WHEN ADDING LAYERSOURCES
     hex1: {
@@ -100,5 +107,9 @@ const globals = {
       data: null,
     },
   },
+  myHistogram: null,
+  activeDataset: null,
+  activeLayer: null,
+  allLayers: [], //from old code; should be obsoleted by filteredDatasets/datasets made in MapDataController.vue;
 };
 export default globals;

@@ -326,12 +326,12 @@ export default {
           //get Field_Name to use as id to pass to changeDataOnMap(id)
           console.log("single dataset selected;");
           let field_name = activeDataset.layers[0].Field_Name;
-          this.map.changeDataOnMap(field_name); //function from old code; handles data adding/display/switching
+          this.map.changeDataOnMap(field_name, activeDataset, activeLayer); //function from old code; handles data adding/display/switching
         } else if (activeDataset.type === "temporal") {
           console.log("temporal dataset selected; layers via timeline");
           //get Field_Name to use as id to pass to changeDataOnMap(id)
           let field_name = activeDataset.layers[0].Field_Name;
-          this.map.changeDataOnMap(field_name); //function from old code; handles data adding/display/switching
+          this.map.changeDataOnMap(field_name, activeDataset, activeLayer); //function from old code; handles data adding/display/switching
         } else {
           console.log(
             "dataset selected; waiting for following layer selection"
@@ -340,7 +340,7 @@ export default {
       } else if (activeDataset && activeLayer) {
         //get Field_Name from activeLayer to use as id to pass to changeDataOnMap(id)
         let field_name = activeLayer.Field_Name;
-        this.map.changeDataOnMap(field_name); //function from old code; handles data adding/display/switching
+        this.map.changeDataOnMap(field_name, activeDataset, activeLayer); //function from old code; handles data adding/display/switching
       }
     },
 
