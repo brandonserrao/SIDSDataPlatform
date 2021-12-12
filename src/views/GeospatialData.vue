@@ -20,6 +20,7 @@
       class="toolbar"
       @select-country="selectCountry($event)"
       @select-boundary-layer="addBoundaryLayer($event)"
+      @select-resolution="changeResolution($event)"
       :active_dataset="activeDatasetName"
       :active_layer="activeLayerName"
     />
@@ -62,6 +63,15 @@ export default {
     selectCountry(selection) {
       this.map.zoomToCountry(selection);
       // this.map.zoomTo(selection); //this. component instance; reffing its .map which is a Map class from index.js; calling class method zoomTo =
+    },
+
+    changeResolution(object) {
+      console.log("changeResolution(object) object is:");
+      console.log(object); //{resolution: "hex1"} for eg.
+
+      //oldcode goes in here; calling on mapclass methods
+      //call changeHexagonSize/changeResolution
+      this.map.changeHexagonSize(object); //oldcode expec: object = {Resolution: string}; newcode gives: {resolution: string}
     },
 
     addBoundaryLayer(object) {
@@ -282,6 +292,7 @@ export default {
     },
 
     updateMapData(select_type, name) {
+      //update based on leftsidebar interactionchoices
       //
       console.log(`updateMap for: ${select_type}, ${name}`);
       if (select_type === "dataset-select") {

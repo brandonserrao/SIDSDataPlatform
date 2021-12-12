@@ -828,6 +828,11 @@ export default {
         );
         */
         document.getElementsByClassName("country-name")[0].textContent = name;
+      } else if (change_type === "select-resolution") {
+        // let index = object.index; //unused;
+        let resolution = object.resolution;
+        let resolutionObject = { resolution: resolution };
+        this.$emit(change_type, resolutionObject); //custom event for parent to hear
       } else {
         /*         alert(
           `${change_type} not yet handled by handleGisMenuChange; This warning blocks flipping animation`
@@ -838,17 +843,30 @@ export default {
         console.log(`${change_type} not yet handled by handleGisMenuChange`);
       }
     },
+
+    handleResolutionChange(index, resolution) {
+      var resolutionOptions =
+        document.getElementsByClassName("resolution-option");
+
+      for (let i = 0; i < resolutionOptions.length; i++) {
+        if (index === i) {
+          resolutionOptions[i].classList.add("border-blue");
+        } else {
+          resolutionOptions[i].classList.remove("border-blue");
+        }
+      }
+
+      document.getElementsByClassName("resolution-icon")[0].className =
+        "icon resolution-icon " + resolution;
+
+      let eventData = { index: index, resolution: resolution };
+      // this.handleGisMenuChange({ Resolution: text });
+      console.log("passing eventData to handleGisMenuChange");
+      this.handleGisMenuChange("select-resolution", eventData); //text needs renaming to a better variable name
+    },
+
     //my version: handleBoundariesChange
     handleBoundryChange(object) {
-      /*    var object = {};
-
-      object["boundry-region-1"] =
-        document.getElementById("admin-region-1").checked;
-      object["boundry-region-2"] =
-        document.getElementById("admin-region-2").checked;
-
-      this.handleGisMenuChange(object); 
-      */
       //my code from handleBoundariesChange(object)
       console.log("handleBoundryChange $emitting object");
       console.log(object);
@@ -899,27 +917,6 @@ export default {
       // this.handleGisMenuChange({ Country: text });
       console.log("passing eventData to handleGisMenuChange");
       this.handleGisMenuChange("select-country", eventData); //text needs renaming to a better variable name
-    },
-
-    handleResolutionChange(index, val) {
-      var resolutionOptions =
-        document.getElementsByClassName("resolution-option");
-
-      for (let i = 0; i < resolutionOptions.length; i++) {
-        if (index === i) {
-          resolutionOptions[i].classList.add("border-blue");
-        } else {
-          resolutionOptions[i].classList.remove("border-blue");
-        }
-      }
-
-      document.getElementsByClassName("resolution-icon")[0].className =
-        "icon resolution-icon " + val;
-
-      var object = {};
-      object["Resolution"] = val;
-
-      this.handleGisMenuChange(object);
     },
 
     closeAllMenu(index) {

@@ -3,6 +3,8 @@ import "@/gis/styles/minimap.css";
 import filepaths from "@/gis/static/filepaths.js";
 // import constants from "@/gis/static/constants.js";
 import globals from "@/gis/static/globals.js";
+
+import constants from "@/gis/static/constants.js";
 import colors from "@/gis/static/colors.js";
 
 import * as d3 from "d3";
@@ -161,6 +163,105 @@ export default class Map {
     document.querySelector(".loader-gis").style.display = "none";
   }
 
+  //taken from old code
+  //manages the change when you chang the resolution
+  changeHexagonSize(resolutionObject) {
+    let map = this.map;
+    console.log("resolutionObject: ");
+    console.log(resolutionObject);
+    let resolution = resolutionObject.resolution;
+    console.log(
+      `changeHexagonSize( ${resolution} ); currentHexSize: ${globals.currentLayerState.hexSize}`
+    );
+
+    if (map.getLayer("ocean")) {
+      // $(".hexsize").toggle();
+      let ele_display = document.querySelector(".hexsize")[0].style.display;
+
+      if (ele_display === "none") {
+        ele_display = "block";
+      } else if (ele_display === "block") {
+        ele_display = "none";
+      } else alert("ocean has unexpected display type!! cannot toggle display");
+
+      map.removeLayer("ocean");
+    }
+
+    this.remove3d();
+    globals.currentLayerState.hexSize = resolution;
+
+    for (var x in constants.userLayers) {
+      //clear maplayers that are usercontrolled
+      if (map.getLayer(constants.userLayers[x])) {
+        map.removeLayer(constants.userLayers[x]);
+      }
+    }
+
+    var currentSourceData = Vue._.find(globals.sourceData, function (o) {
+      if (o.name == globals.currentLayerState.hexSize) {
+        console.log(`matching sourceData name: ${o.name}`);
+      }
+      //find the name of sourceData which matches current hexSize
+      return o.name === globals.currentLayerState.hexSize;
+    });
+    console.log("globals.currentLayerState : ");
+    console.log(globals.currentLayerState);
+    console.log("currentSourceData from in sourceData: ");
+    console.log(currentSourceData);
+
+    map.addLayer(
+      {
+        id: resolution,
+        type: "fill",
+        source: resolution,
+        "source-layer": currentSourceData.layer,
+        layout: {
+          visibility: "visible",
+        },
+        paint: {
+          "fill-color": "blue",
+          "fill-opacity": 0,
+        },
+      },
+      globals.firstSymbolId
+    );
+
+    if (resolution === "hex1") {
+      //showing loader in expectation of hex1 taking longer to display
+      console.log("handling spinner for hex1 loading");
+      // $(".loader-gis").show();
+      this.showSpinner();
+
+      map.once("idle", () => {
+        // $(".loader-gis").hide();
+        this.hideSpinner();
+      });
+    }
+
+    if (map.getStyle().name === "Mapbox Satellite") {
+      console.log(`map style is Mapbox Satellite; moveLayer to ${resolution}`);
+      map.moveLayer(resolution);
+    }
+
+    /*     map.once("idle", function (e) {
+      console.log(`map.once on idle triggered by ${e}`);
+      console.log("map idle-> recoloring");
+      this.recolorBasedOnWhatsOnPage();
+
+      //console.log('change bins');
+      //map.setPaintProperty(globals.currentLayerState.hexSize, 'fill-opacity', 0.7)
+      map.moveLayer(resolution, "allsids");
+    }); */
+    map.once("idle", () => {
+      console.log("map idle-> recoloring");
+      this.recolorBasedOnWhatsOnPage(); //as it's inside an arrow function this. should refer to the outer scope and should be able to find the function
+
+      //console.log('change bins');
+      //map.setPaintProperty(globals.currentLayerState.hexSize, 'fill-opacity', 0.7)
+      map.moveLayer(resolution, "allsids");
+    });
+  }
+
   changeDataOnMap(id, activeDataset, activeLayer) {
     console.log(`changeDataOnMap fired: ${id}`);
     let map = this.map;
@@ -198,6 +299,9 @@ export default class Map {
       }
     }
     this.remove3d();
+    console.log(
+      `changeDataOnMap(Field_Name: ${id}, activeDataset?.name: ${activeDataset?.name}, activeLayer?.Name: ${activeLayer?.Name}) updating globals.currentLayerState.dataLayer to ${id}`
+    );
     globals.currentLayerState.dataLayer = id; //update mapstate to reflect selected datalayer
 
     if (!map.getSource("hex5")) {
@@ -361,6 +465,89 @@ export default class Map {
     //END------------------------------------------
   }
 
+  recolorBasedOnWhatsOnPage() {
+    let map = this.map;
+    var features = map.queryRenderedFeatures({
+      layers: [globals.currentLayerState.hexSize],
+    });
+
+    if (features) {
+      var uniFeatures;
+      if (globals.currentLayerState.hexSize === "admin1") {
+        uniFeatures = this.getUniqueFeatures(features, "GID_1");
+      } else if (globals.currentLayerState.hexSize === "admin2") {
+        uniFeatures = this.getUniqueFeatures(features, "GID_2");
+      } else {
+        uniFeatures = this.getUniqueFeatures(features, "hexid");
+      }
+
+      var selecteData = uniFeatures.map(
+        (x) => x.properties[globals.currentLayerState.dataLayer]
+      );
+      //console.log(selecteData);
+      var breaks = chroma.limits(selecteData, "q", 4);
+      console.log(breaks);
+      map.setPaintProperty(globals.currentLayerState.hexSize, "fill-color", [
+        "interpolate",
+        ["linear"],
+        ["get", globals.currentLayerState.dataLayer],
+        breaks[0],
+        globals.currentLayerState.color[0],
+        breaks[1],
+        globals.currentLayerState.color[1],
+        breaks[2],
+        globals.currentLayerState.color[2],
+        breaks[3],
+        globals.currentLayerState.color[3],
+        breaks[4],
+        globals.currentLayerState.color[4],
+      ]);
+
+      //map.setPaintProperty(globals.currentLayerState.hexSize, 'fill-opacity', 0.7)
+
+      //addLegend(globals.currentLayerState.color, breaks, globals.currentLayerState.dataLayer)
+      if (isNaN(breaks[3]) || breaks[1] == 0) {
+        map.setPaintProperty(
+          globals.currentLayerState.hexSize,
+          "fill-opacity",
+          0.0
+        );
+        setTimeout(() => {
+          map.setFilter(globals.currentLayerState.hexSize, null);
+        }, 1000);
+        this.addNoDataLegend();
+      } else {
+        map.setFilter(globals.currentLayerState.hexSize, [
+          ">=",
+          globals.currentLayerState.dataLayer,
+          0,
+        ]);
+        console.log(`recoloring calling addLegend with: `);
+        console.log(
+          `currentLayerState.color: ${globals.currentLayerState.color}`
+        );
+        console.log(`breaks: ${breaks}`);
+        console.log(
+          `currentLayerState.dataLayer: ${globals.currentLayerState.dataLayer}`
+        );
+        // this.addLegend(
+        //   //!! I added extra params to addLegend, so needs more i think
+        //   globals.currentLayerState.color,
+        //   breaks,
+        //   globals.currentLayerState.dataLayer
+        // );
+        // this.addLegend()
+        setTimeout(() => {
+          map.setPaintProperty(
+            globals.currentLayerState.hexSize,
+            "fill-opacity",
+            0.8
+          );
+        }, 400);
+      }
+    }
+  }
+
   remove3d() {
     let map = this.map;
     //taken directly from old code
@@ -413,7 +600,7 @@ export default class Map {
     dataset
   ) {
     // let legData = Vue._.find(globals.allLayers, ["Field_Name", current]);
-
+    console.log("addLegend called with: ");
     console.log("activeDataset");
     console.log(activeDataset);
     console.log("activeLayer");
@@ -434,17 +621,23 @@ export default class Map {
       } else {
         alert(`activeDataset.type ${activeDataset.type} unrecognized`);
       }
-      console.log("activeDataset: ");
+      console.log("activeDataset given: ");
       console.log(activeDataset);
       console.log("activeDataset.layers");
-      console.log(activeDataset.layers);
+      console.log(activeDataset?.layers);
     }
-    for (let object of activeDataset.layers) {
-      if (object.Field_Name === id) {
-        legData = object;
-        console.log(legData);
-        break;
+    if (activeDataset) {
+      for (let object of activeDataset.layers) {
+        if (object.Field_Name === id) {
+          legData = object;
+          console.log(legData);
+          break;
+        }
       }
+    } else {
+      console.log(
+        `activeDataset is: ${activeDataset}; cannot get legendData from it`
+      );
     }
 
     // let legData = Vue._.find(globals.allLayers, ["Field_Name", current]); /
