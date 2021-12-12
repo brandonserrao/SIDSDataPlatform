@@ -6,6 +6,7 @@
       </v-col>
       <v-col cols="3">
         <v-select
+          rounded
           class="country-select"
           :value="country"
           @change="setCountry"
@@ -19,6 +20,7 @@
       </v-col>
       <v-col class="ml-auto" cols="2">
         <v-select
+          rounded
           dense
           v-model="region"
           :items="regions"
@@ -37,6 +39,7 @@
   <v-row justify="center">
     <v-col cols="6">
       <v-select
+        rounded
         :value="compare"
         :items="filteredCountries"
         item-text="Country"
@@ -87,6 +90,7 @@
     <v-row justify="center">
       <v-col cols="2">
         <v-btn
+          rounded
           class="ma-2"
           @click="exportCSV"
           color="primary"

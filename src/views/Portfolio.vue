@@ -12,7 +12,7 @@
       <v-col cols="10">
         <v-row justify="center">
           <v-col cols="7">
-            <v-btn-toggle dense :value="activePage">
+            <v-btn-toggle rounded dense :value="activePage">
               <v-btn value="samoa" @click="transitionTo('samoa')">
                 SAMOA Pathway
               </v-btn>
@@ -46,6 +46,7 @@
       </v-col>
       <v-col cols="2">
         <v-select
+          rounded
           dense
           :value="year"
           @change="setYear"
@@ -54,6 +55,7 @@
           outlined
         ></v-select>
         <v-select
+          rounded
           dense
           :value="fundingCategory"
           @change="setCategory"
@@ -62,6 +64,7 @@
           outlined
         ></v-select>
         <v-select
+          rounded
           dense
           :value="fundingSource"
           @change="setSource"

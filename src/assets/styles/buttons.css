@@ -1,0 +1,16 @@
+.v-btn {
+  transition: 200ms;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+}
+.v-btn.primary:hover {
+  background-color: #213D65 !important;
+  padding: 0 30px !important;
+}
+.v-btn.primary:active {
+  background-color: #082753 !important;
+}
+.v-btn.primary:before {
+  display: none;
+}

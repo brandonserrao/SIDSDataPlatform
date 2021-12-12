@@ -28,6 +28,7 @@ export default {
 </script>
 <style>
 @import './assets/styles/RootStyles.css';
+@import './assets/styles/buttons.css';
 #app{
   padding: 0;
 }

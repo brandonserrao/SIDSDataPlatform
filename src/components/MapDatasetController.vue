@@ -161,6 +161,7 @@
       <v-row dense>
         <v-col>
           <v-select
+            rounded
             class="map-input"
             dense
             v-model="activeDatasetName"
@@ -175,6 +176,7 @@
       <v-row v-if="activeDataset && activeDataset.type === 'layers'" dense>
         <v-col>
           <v-select
+            rounded
             dense
             class="map-input"
             v-model="activeLayerName"
