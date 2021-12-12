@@ -1,10 +1,16 @@
 <template>
   <div class="map-container">
-    <map-dataset-controller class="data-controller" />
+    <map-dataset-controller
+      class="data-controller"
+      @dataset-select="activeDatasetName = $event"
+      @layer-select="activeLayerName = $event"
+    />
     <map-toolbar
       class="toolbar"
       @select-country="selectCountry($event)"
       @select-boundary-layer="addBoundaryLayer($event)"
+      :active_dataset="activeDatasetName"
+      :active_layer="activeLayerName"
     />
     <div id="map"></div>
   </div>
@@ -32,6 +38,9 @@ export default {
     return {
       names: names,
       map: null,
+      //for implementing as props to pass from dataset-controller to map-toolbar
+      activeDatasetName: null,
+      activeLayerName: null,
     };
   },
   components: {

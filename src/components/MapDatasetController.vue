@@ -76,6 +76,7 @@
             item-text="name"
             item-value="name"
             label="Dataset"
+            @input="emitDatasetSelect"
             outlined
           ></v-select>
         </v-col>
@@ -90,6 +91,7 @@
             item-value="Description"
             :items="activeDataset.layers"
             label="Layer"
+            @input="emitLayerSelect"
             outlined
           ></v-select>
         </v-col>
@@ -113,13 +115,17 @@
     </v-card>
     <v-card v-if="activeLayer">
       <v-card-subtitle>
-        <b>{{activeLayer.Description}}
-        {{activeDataset.type === 'temporal' ? activeLayer.Temporal : ''}}</b>
+        <b
+          >{{ activeLayer.Description }}
+          {{ activeDataset.type === "temporal" ? activeLayer.Temporal : "" }}</b
+        >
       </v-card-subtitle>
       <v-card-text>
-        {{activeLayer.Desc_long}}<br/>
-          <b>Reference</b> {{activeLayer.Source_Name}} <br/>
-          <a :href="activeLayer.Source_Link" target="_blank"> {{activeLayer.Source_Link}} </a>
+        {{ activeLayer.Desc_long }}<br />
+        <b>Reference</b> {{ activeLayer.Source_Name }} <br />
+        <a :href="activeLayer.Source_Link" target="_blank">
+          {{ activeLayer.Source_Link }}
+        </a>
       </v-card-text>
     </v-card>
   </div>
@@ -254,6 +260,14 @@ export default {
     },
   },
   methods: {
+    emitDatasetSelect(value) {
+      console.log(`emitDatasetSelect( ${value} )`);
+      this.$emit("dataset-select", value);
+    },
+    emitLayerSelect(value) {
+      console.log(`emitLayerSelect( ${value} )`);
+      this.$emit("layer-select", value);
+    },
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
         let goalNmber = (index + 1).toString();
