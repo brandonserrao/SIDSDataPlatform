@@ -42,35 +42,42 @@
         </v-row>
       </v-col>
       <v-col cols="2">
-        <v-select
-          rounded
-          dense
-          :value="year"
-          @change="setYear"
-          :items="years"
-          label="Years"
-          outlined
-        ></v-select>
-        <v-select
-          rounded
-          dense
-          :value="fundingCategory"
-          @change="setCategory"
-          :items="fundingCategoriesTypes"
-          label="Funding categories"
-          outlined
-        ></v-select>
-        <v-select
-          rounded
-          dense
-          :value="fundingSource"
-          @change="setSource"
-          :items="fundingCategoriesFiltered"
-          label="Funding sources"
-          item-text="name"
-          item-value="name"
-          outlined
-        ></v-select>
+        <div class="select">
+          <label class="input-label">Years</label>
+          <v-select
+            rounded
+            dense
+            :value="year"
+            @change="setYear"
+            :items="years"
+            outlined
+          ></v-select>
+        </div>
+        <v-divider class="mb-5"></v-divider>
+        <div class="select">
+          <label class="input-label">Funding categories</label>
+          <v-select
+            rounded
+            dense
+            :value="fundingCategory"
+            @change="setCategory"
+            :items="fundingCategoriesTypes"
+            outlined
+          ></v-select>
+        </div>
+        <div class="select">
+          <label class="input-label">Funding sources</label>
+          <v-select
+            rounded
+            dense
+            :value="fundingSource"
+            @change="setSource"
+            :items="fundingCategoriesFiltered"
+            item-text="name"
+            item-value="name"
+            outlined
+            ></v-select>
+        </div>
         <portfolio-export
           :region="region"
           :year="year"

@@ -30,6 +30,7 @@ export default {
 @import './assets/styles/RootStyles.css';
 @import './assets/styles/buttons.css';
 @import './assets/styles/text.css';
+@import './assets/styles/forms.css';
 #app{
   padding: 0;
 }
