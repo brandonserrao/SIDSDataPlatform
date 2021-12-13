@@ -674,6 +674,18 @@ export default class Map {
     activeLayer, //should eliminate need for id etc
     selectedData //i believe this is input from updatingMap based on whats features/data on screen
   ) {
+    console.log("updateHistogram params passed are:");
+    console.log("colors:");
+    console.log(colors);
+    console.log("breaks:");
+    console.log(breaks);
+    console.log("precision:");
+    console.log(precision);
+    console.log("activeLayer:");
+    console.log(activeLayer);
+    console.log("selectedData:");
+    console.log(selectedData);
+
     //old code
 
     // histogram-------------------------------------------
