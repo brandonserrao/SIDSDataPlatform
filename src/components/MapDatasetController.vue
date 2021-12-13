@@ -173,15 +173,18 @@
 <script>
 import datasets from "@/gis/static/layers";
 import globals from "@/gis/static/globals";
+/* 
+import * as d3 from "d3";
+import chroma from "chroma-js"; */
+import Chart from "chart.js"; //disabled temporarily because of myHistogram/Chart.js issue
 
 export default {
   name: "MapDatasetController",
-  props: ["displayLegend"],
+  props: ["displayLegend", "map"],
   data() {
     return {
       // histogramCanvasElement: this.$refs.canvas_histogram,
       histogramCanvasElement: null,
-
       activeGoal: 1,
       activeDatasetName: null,
       activeLayerName: null,
@@ -329,22 +332,50 @@ export default {
       console.log(this.activeDataset);
       console.log(`activeLayer:`);
       console.log(this.activeLayer);
+      console.log("map passed in via prop");
+      console.log(this.map);
     },
+
     emitUpdate() {
       console.log(`emitUpdate of activeDataset and activeLayer`);
       // this.$emit("update", {this.activeDataset, this.activeLayer});
       let active = { dataset: this.activeDataset, layer: this.activeLayer };
       this.$emit("update", active);
 
-      this.emitHistogramUpdate(); //piggybacking on the general update
+      console.log(`in emitUpdate  updateHistogramCanvas`);
+
+      // this.emitHistogramUpdate(); //piggybacking on the general update //used in (failed) attempt to pass canvas element up in emits
+      this.updateHistogramCanvas(this.map);
     },
-    emitHistogramUpdate() {
+    updateHistogramCanvas(map) {
+      //old code, adapted; disabled because cannot figure out issue Chart.js has with it right now
+      console.log("in updateHistogramCanvas:");
+      console.log("map:");
+      console.log(map);
+      console.log("myHistogram data: ");
+      console.log(map.data);
+      console.log("myHistogram options: ");
+      console.log(map.option);
+      console.log("myHistogram canvas: ");
+      console.log(map.canvas);
+
+      globals.myHistogram = Chart.Bar(
+        this.$refs.canvas_histogram, //histogram canvas element by $ref
+        {
+          data: map.data,
+          options: map.option,
+        }
+      );
+    },
+    /*     emitHistogramUpdate() {
       console.log("emitHistogramUpdate! histogramCanvasElement:");
       // this.histogramCanvasElement = document.getElementById("histogram");
       this.histogramCanvasElement = this.$refs.canvas_histogram;
       console.log(this.histogramCanvasElement);
       this.$emit("histogram-update", this.histogramCanvasElement);
-    } /*
+    }, */
+
+    /*
     emitDatasetSelect(value) {//obsoleted by emitUpdate
       console.log(`emitDatasetSelect( ${value} )`);
       this.$emit("dataset-select", value);
@@ -352,7 +383,7 @@ export default {
     emitLayerSelect(value) {//obsoleted by emitUpdate
       console.log(`emitLayerSelect( ${value} )`);
       this.$emit("layer-select", value);
-    }, */,
+    }, */
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
         let goalNmber = (index + 1).toString();

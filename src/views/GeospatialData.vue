@@ -2,6 +2,7 @@
   <div class="map-container">
     <map-dataset-controller
       class="data-controller"
+      :map="map"
       @update="updateMap($event.dataset, $event.layer)"
       @dataset-select="
         {
@@ -16,7 +17,6 @@
         }
       "
       :displayLegend="displayLegend"
-      @histogram-update="updateHistogram(canvasElement)"
     />
     <map-toolbar
       class="toolbar"
@@ -298,11 +298,11 @@ export default {
         }
       }
     },
-    updateHistogram(canvasElement) {
+    /*     updateHistogram(canvasElement) {
       console.log("updateHistogram on canvasElement:");
       console.log(canvasElement);
       this.map.setHistogramElement(canvasElement);
-    },
+    }, */
 
     updateMapData(select_type, name) {
       //update based on leftsidebar interactionchoices

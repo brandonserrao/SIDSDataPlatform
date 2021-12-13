@@ -35,6 +35,11 @@ export default class Map {
     });
 
     this.histogramCanvasElement = null; //storage for the html element that holds the target canvas for the histogram
+    this.colors = null;
+    this.breaks = null;
+    this.precision = null;
+    this.activeLayer = null;
+    this.selectedData = null;
 
     this.map.on("load", () => {
       this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
@@ -435,6 +440,7 @@ export default class Map {
           setTimeout(() => {
             map.setFilter(globals.currentLayerState.hexSize, null);
           }, 100);
+          console.log("changeDataOnMap calliing addNoDataLegend()");
           this.addNoDataLegend();
         } else {
           map.setFilter(globals.currentLayerState.hexSize, [">=", id, 0]);
@@ -518,6 +524,7 @@ export default class Map {
         setTimeout(() => {
           map.setFilter(globals.currentLayerState.hexSize, null);
         }, 1000);
+        console.log("recoloring calliing addNoDataLegend()");
         this.addNoDataLegend();
       } else {
         map.setFilter(globals.currentLayerState.hexSize, [
@@ -571,24 +578,33 @@ export default class Map {
 
   //adapted from oldcode
   addNoDataLegend() {
-    /* //the infobox is suceeded by the new vue-based on
-    let infoBoxTitle = document.getElementById("infoBoxTitle");
-    let infoBoxText = document.getElementById("infoBoxText");
-    let infoBoxLink = document.getElementById("infoBoxLink");
+    console.log("!!ATTENTION!! addNoDataLegend called");
 
-    infoBoxTitle.innerHTML = "No Data for this Region";
-    infoBoxText.innerHTML = "";
-    infoBoxLink.innerHTML = "";
-*/
     let legendTitle = document.getElementById("legendTitle");
     let updateLegend = document.getElementById("updateLegend");
     updateLegend.innerHTML = "";
     legendTitle.innerHTML = "";
 
-    let element = document.getElementById("histogram");
+    /*     let element = document.getElementById("histogram");
     if (typeof element != "undefined" && element != null) {
-      // $("#histogram").remove();
-      document.querySelector("#histogram").remove();
+      document.getElementById("histogram").remove();
+    } */
+
+    //#clear old canvas
+    let old_canvas = document.getElementById("histogram");
+    if (typeof old_canvas != "undefined" && old_canvas != null) {
+      old_canvas.remove();
+
+      //#recreate an empty canvas element and add it to the frame
+      let histogram_frame = document.getElementById("histogram_frame");
+      let canvasNode = document.createElement("CANVAS");
+      canvasNode.id = "histogram";
+      canvasNode.classList.add("histogram_canvas");
+      canvasNode.setAttribute("width", 320);
+      canvasNode.setAttribute("height", 115);
+      histogram_frame.appendChild(canvasNode);
+      console.log("new canvasNode added to histogramFrame: ");
+      console.log(canvasNode);
     }
   }
 
@@ -602,21 +618,22 @@ export default class Map {
     // let activeLayer = activeLayer; //activeLayer is oldcode variable of the active layer from allLayers globalvariable
 
     //Debugging logs--------------------------------------
-    console.log("addLegend2 called with: ");
-    console.log("in addLegend2 activeLayer");
+    console.log("addLegend called with: ");
+    console.log("in addLegend activeLayer");
     console.log(activeLayer);
-    console.log("in addLegend2 selectedData: ");
+    console.log("in addLegend selectedData: ");
     console.log(selectedData);
     //END-Debugging logs-------------------------------------------------------------------------------
 
     //LEGEND SETUP------------------------------------------------
     let legendTitle = document.getElementById("legendTitle");
     let updateLegend = document.getElementById("updateLegend");
+
     //reset the legend elements
     updateLegend.innerHTML = "";
     legendTitle.innerHTML = "";
     console.log(`activeLayer: ${activeLayer}`);
-    legendTitle.innerHTML = "<span>" + activeLayer.Units + "</span>";
+    legendTitle.innerHTML = "<span>" + activeLayer.Unit + "</span>";
     //creating legend-hexagon colored symbols
     for (let x in colors) {
       let containerDiv = document.createElement("div");
@@ -638,18 +655,17 @@ export default class Map {
     }
     //END-LEGEND SETUP -----------------------------------------------
     //HISTOGRAM-----------------------------------------------------
-    console.log("addLegend2 calling updateHistogram");
+    console.log("addLegend calling updateHistogram");
     this.updateHistogram(colors, breaks, precision, activeLayer, selectedData);
     //-----------------------------------------------------------
   }
 
-  //for storing/retreiving the element that holds the target histogram canvas
-  setHistogramElement(histogramCanvasElement) {
+  /*   setHistogramElement(histogramCanvasElement) {
     this.histogramCanvasElement = histogramCanvasElement;
   }
   getHistogramElement() {
     return this.histogramCanvasElement;
-  }
+  } */
 
   updateHistogram( //called in addLegend; extracted for cleanliness
     colors,
@@ -659,19 +675,25 @@ export default class Map {
     selectedData //i believe this is input from updatingMap based on whats features/data on screen
   ) {
     //old code
-    // let selectedData = selectedData; //selectedData is oldcode variable;
-    // let activeLayer = activeLayer; //activeLayer is oldcode variable of the active layer from allLayers globalvariable
 
-    // histogram
-    var element = document.getElementById("histogram");
-    if (typeof element != "undefined" && element != null) {
-      // $("#histogram").remove();
-      document.getElementById("histogram").remove();
+    // histogram-------------------------------------------
+    //#clear old canvas
+    let old_canvas = document.getElementById("histogram");
+    if (typeof old_canvas != "undefined" && old_canvas != null) {
+      old_canvas.remove();
+      //#recreate an empty canvas element and add it to the frame
+      let histogram_frame = document.getElementById("histogram_frame");
+      let canvasNode = document.createElement("CANVAS");
+      canvasNode.id = "histogram";
+      canvasNode.classList.add("histogram_canvas");
+      canvasNode.setAttribute("width", 320);
+      canvasNode.setAttribute("height", 115);
+      histogram_frame.appendChild(canvasNode);
+      console.log("new canvasNode added to histogramFrame: ");
+      console.log(canvasNode);
     }
 
-    // let canvas = document.getElementById("histogram"); //disabled temporarily because of myHistogram/Chart.js issue
-    let canvas = this.histogramCanvasElement; //get the stored canvas element; supposed to be stored via emits from controller component where the canvas element exists, and passed into here via setter
-    //will need to add code to clear its content out as well
+    let canvas = document.getElementById("histogram");
 
     // break
     var nGroup = 200;
@@ -729,7 +751,6 @@ export default class Map {
  */
     chroma.scale([colors[0], colors[4]]).mode("lch").colors(nGroup);
 
-    //disabled temporarily because of myHistogram/Chart.js issue
     var data = {
       labels: breaks_precision.slice(0, -1),
       datasets: [
@@ -785,8 +806,12 @@ export default class Map {
               max: maxY,
               //min: 1,
 
-              callback: function (value) {
-                //params removed as unused and throws error in newcode //used to include index, values
+              callback: function (value, index, values) {
+                if (index || values) {
+                  console.log(
+                    `in scales>yAxes>ticks: index or values: ${index} ${values}`
+                  );
+                }
                 if (value === 100000000) return "100M";
                 if (value === 10000000) return "10M";
                 if (value === 1000000) return "1M";
@@ -821,7 +846,7 @@ export default class Map {
             scaleLabel: {
               display: false,
               // labelString: activeLayer.units,
-              labelString: activeLayer.Units,
+              labelString: activeLayer.Unit,
             },
             ticks: {
               maxTicksLimit: 10,
@@ -833,12 +858,12 @@ export default class Map {
 
     //Histogram in addLegend
     //old code, adapted; disabled because cannot figure out issue Chart.js has with it right now
-    console.log("myHistogram data: ");
+    /*     console.log("myHistogram data: ");
     console.log(data);
     console.log("myHistogram options: ");
     console.log(option);
     console.log("myHistogram canvas: ");
-    console.log(canvas);
+    console.log(canvas); */
     globals.myHistogram = Chart.Bar(canvas, {
       data: data,
       options: option,
@@ -929,7 +954,7 @@ export default class Map {
     updateLegend.innerHTML = "";
     legendTitle.innerHTML = "";
     console.log(`legData: ${legData}`);
-    legendTitle.innerHTML = "<span>" + legData.units + "</span>";
+    legendTitle.innerHTML = "<span>" + legData.Unit + "</span>";
 
     for (var x in colors) {
       var containerDiv = document.createElement("div");
