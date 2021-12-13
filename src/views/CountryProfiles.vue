@@ -2,7 +2,7 @@
   <div class="mt-5">
     <v-row justify="center">
       <v-col offset="3" cols="3">
-        <h2 class="country-profile-header">Country profile</h2>
+        <h2 class="page-header country-profile-header">Country profile</h2>
       </v-col>
       <v-col cols="3">
         <v-select
@@ -299,7 +299,7 @@ export default {
 <style media="screen">
   .country-profile-header {
     text-align: right;
-    padding-top: 10px;
+    padding-top: 5px;
     margin-right: 10px;
   }
   .country-select {

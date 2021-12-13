@@ -1,6 +1,6 @@
 <template>
   <div class="">
-  <h2 class="transition" :class="{'left' : view === 'indicators', 'no-left'  :view != 'indicators'}">Development Indicators</h2>
+  <h2 class="page-header transition" :class="{'left' : view === 'indicators', 'no-left'  :view != 'indicators'}">Development Indicators</h2>
   <v-row>
     <v-col cols='3'>
       <indicators-nav/>

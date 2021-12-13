@@ -1,6 +1,6 @@
 <template>
   <div class="map d-flex" :class="regionClass" :style="backgroundData">
-    <h2 class="prtfolio-header mt-10 mb-2">UNDP Portfolio in Small Island Developing States</h2>
+    <h2 class="page-header prtfolio-header mt-10 mb-2">UNDP Portfolio in Small Island Developing States</h2>
     <v-row justify="end">
       <v-card
         class="ma-2"
@@ -148,23 +148,35 @@ export default {
       this.$router.push({query: Object.assign({}, this.$route.query, {region : this.mapClicks[this.region][clickIndex]})})
     },
     updateBackground(clickIndex) {
-      let rootThis = this;
-      let region = this.mapClicks[this.region][clickIndex]
+      let region = this.mapClicks[this.region][clickIndex];
+      this.updateMapImage(region);
+    },
+    updateMapImage(region) {
+      let regionToSet = region,
+      rootThis = this;
       if(region === 'All') {
-        region = '';
+        regionToSet = '';
       }
-      let img = 'https://sids-dashboard.github.io/SIDSDataPlatform/graphics/sidsMapNewest' + region + '-01.png'
+      let img = 'https://sids-dashboard.github.io/SIDSDataPlatform/graphics/sidsMapNewest' + regionToSet + '-01.png'
       var img_tag = new Image();
       // when preload is complete, apply the image to the div
       img_tag.onload = function () {
           rootThis.backgroundData = {
             'background-image': `url(${img})`
           }
-          rootThis.regionClass = `map-${region}`
+          rootThis.regionClass = `map-${rootThis.region}`
       }
       // setting 'src' actually starts the preload
       img_tag.src = img;
     }
+  },
+  watch: {
+    region() {
+      this.updateMapImage(this.region);
+    }
+  },
+  mounted() {
+    this.updateMapImage(this.region);
   }
 }
 </script>

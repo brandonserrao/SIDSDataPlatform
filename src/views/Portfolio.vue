@@ -11,18 +11,15 @@
     <v-row justify="center">
       <v-col cols="10">
         <v-row justify="center">
-          <v-col cols="7">
-            <v-btn-toggle rounded dense :value="activePage">
-              <v-btn value="samoa" @click="transitionTo('samoa')">
-                SAMOA Pathway
-              </v-btn>
-              <v-btn value="sdgs" @click="transitionTo('sdgs')">
-                Sustainable Development Goals
-              </v-btn>
-              <v-btn value="signature-solutions" @click="transitionTo('signature-solutions')">
-                Signature Solutions
-              </v-btn>
-            </v-btn-toggle>
+          <v-col cols="12">
+              <v-tabs
+                class="tabs prtfolio-slider"
+                v-model="activePage"
+              >
+                <v-tab value="samoa" @click="transitionTo('samoa')">SAMOA Pathway</v-tab>
+                <v-tab value="sdgs" @click="transitionTo('sdgs')">Sustainable Development Goals</v-tab>
+                <v-tab value="signature-solutions" @click="transitionTo('signature-solutions')">Signature Solutions</v-tab>
+              </v-tabs>
           </v-col>
         </v-row>
         <v-row justify="center">
@@ -295,6 +292,10 @@ export default {
 }
 </script>
 <style media="screen">
+  .prtfolio-slider {
+    max-width: 792px;
+    margin-left: auto;
+  }
   .mt-negative{
     margin-top: -205px !important;
   }

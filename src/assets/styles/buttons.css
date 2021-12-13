@@ -3,6 +3,8 @@
   font-size: 14px !important;
   font-weight: 700 !important;
   letter-spacing: 0.1em !important;
+  padding: 0 30px !important;
+  box-shadow: none;
 }
 .v-btn.primary:hover {
   background-color: #213D65 !important;
@@ -13,4 +15,40 @@
 }
 .v-btn.primary:before {
   display: none;
+}
+.v-tabs {
+  background: #FFFFFF;
+  border: 2px solid #E9ECF6;
+  border-radius: 40px;
+}
+.v-tab {
+  transition: 200ms;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 16px !important;
+  line-height: 16px !important;
+  letter-spacing: 0.04em !important;
+  color: #110848 !important;
+  height: 36px !important;
+  padding: 10px 25px !important;
+  border-radius: 25px !important;
+  overflow: hidden;
+  position: relative;
+  z-index: 5;
+  background: transparent;
+}
+.v-tab + .v-tab {
+  margin-left: 5px;
+}
+.v-tabs-bar {
+  height: auto !important;
+  padding: 5px !important;
+}
+.v-tabs-slider-wrapper {
+  height: 36px !important;
+  border-radius: 36px;
+  overflow: hidden;
+}
+.v-tabs-slider {
+  background: #E9ECF6 !important;
 }
