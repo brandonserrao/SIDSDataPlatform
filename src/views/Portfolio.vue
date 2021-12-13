@@ -53,7 +53,7 @@
             outlined
           ></v-select>
         </div>
-        <v-divider class="mb-5"></v-divider>
+        <v-divider class="mb-6"></v-divider>
         <div class="select">
           <label class="input-label">Funding categories</label>
           <v-select
