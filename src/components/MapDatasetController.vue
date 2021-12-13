@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <v-card class="mb-4">
-      <button class="printout" @click="printout">
+      <button class="printout debug" @click="printout">
         Printout Datasets to Console
       </button>
       <v-row>
@@ -71,17 +71,6 @@
       </v-row>
       <v-row dense>
         <v-col>
-          <!-- <v-select
-            class="map-input"
-            dense
-            v-model="activeDatasetName"
-            :items="filteredDatasets"
-            item-text="name"
-            item-value="name"
-            label="Dataset"
-            @input="emitDatasetSelect"
-            outlined
-          ></v-select> -->
           <v-select
             class="map-input"
             dense
@@ -97,17 +86,6 @@
       </v-row>
       <v-row v-if="activeDataset && activeDataset.type === 'layers'" dense>
         <v-col>
-          <!-- <v-select
-            dense
-            class="map-input"
-            v-model="activeLayerName"
-            item-text="Description"
-            item-value="Description"
-            :items="activeDataset.layers"
-            label="Layer"
-            @input="emitLayerSelect"
-            outlined
-          ></v-select> -->
           <v-select
             dense
             class="map-input"
@@ -154,8 +132,27 @@
       </v-card-text>
     </v-card>
 
+    <!-- New Legend/Histogram -->
+    <v-card
+      v-if="displayLegend"
+      :onload="_onloadLegend()"
+      class="histogram_frame"
+    >
+      <v-card-subtitle>
+        <p>Legend/Histogram Header</p>
+      </v-card-subtitle>
+      <div id="histogram_frame" class="pic app-body population-per-km col-flex">
+        <div>displayLegend = {{ displayLegend ? "Truthy" : "Falsy" }}</div>
+        <div class="row-flex space-evenly" id="legendTitle">id=legendTitle</div>
+        <div class="row-flex space-evenly" id="updateLegend">
+          id=updateLegend
+        </div>
+      </div>
+    </v-card>
+
+    <!-- OLDCODE - HISTOGRAM/LEGEND FRAME -->
+    <!-- 
     <div>
-      <!-- OLDCODE - HISTOGRAM/LEGEND FRAME -->
       <div class="pic app-body population-per-km col-flex" id="histogram_frame">
         <div class="row-flex space-evenly" id="legendTitle">
           Select a Dataset and Layer to view data on the map.
@@ -164,6 +161,7 @@
         <div class="row-flex space-evenly" id="updateLegend"></div>
       </div>
     </div>
+     -->
   </div>
 </template>
 
@@ -173,6 +171,7 @@ import globals from "@/gis/static/globals";
 
 export default {
   name: "MapDatasetController",
+  props: ["displayLegend"],
   data() {
     return {
       activeGoal: 1,
@@ -306,6 +305,9 @@ export default {
       globals.activeDataset = this.activeDataset;
       globals.activeLayer = this.activeLayer;
     },
+    _onloadLegend() {
+      console.log("legend onload triggered");
+    },
     printout() {
       //testmethod for examining state/dataset
       console.log(`filteredDataset:`);
@@ -370,6 +372,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.printout {
+  background-color: burlywood;
+}
+
 .goals-slider {
   padding: 8px 0;
   width: 106px;

@@ -228,13 +228,13 @@ export default class Map {
 
     if (resolution === "hex1") {
       //showing loader in expectation of hex1 taking longer to display
-      console.log("handling spinner for hex1 loading");
       // $(".loader-gis").show();
-      this.showSpinner();
+      // console.log("handling spinner for hex1 loading");
+      // this.showSpinner();
 
       map.once("idle", () => {
         // $(".loader-gis").hide();
-        this.hideSpinner();
+        // this.hideSpinner();
       });
     }
 
@@ -578,8 +578,8 @@ export default class Map {
     infoBoxLink.innerHTML = "";
 */
     let legendTitle = document.getElementById("legendTitle");
-    let legend = document.getElementById("updateLegend");
-    legend.innerHTML = "";
+    let updateLegend = document.getElementById("updateLegend");
+    updateLegend.innerHTML = "";
     legendTitle.innerHTML = "";
 
     let element = document.getElementById("histogram");
@@ -589,8 +589,55 @@ export default class Map {
     }
   }
 
-  //taken directly from oldcode
   addLegend(
+    colors,
+    breaks,
+    precision,
+    activeLayer, //should eliminate need for id etc
+    selectedData //i believe this is input from updatingMap based on whats features/data on screen
+  ) {
+    let legData = activeLayer; //legData is oldcode variable of the active layer from allLayers globalvariable
+
+    //Debugging logs--------------------------------------
+    console.log("addLegend2 called with: ");
+    console.log("activeLayer");
+    console.log(activeLayer);
+    console.log("selectedData: ");
+    console.log(selectedData);
+    //END-Debugging logs-------------------------------------------------------------------------------
+
+    //LEGEND SETUP------------------------------------------------
+    let legendTitle = document.getElementById("legendTitle");
+    let updateLegend = document.getElementById("updateLegend");
+    //reset the legend elements
+    updateLegend.innerHTML = "";
+    legendTitle.innerHTML = "";
+    console.log(`legData: ${legData}`);
+    legendTitle.innerHTML = "<span>" + legData.Units + "</span>";
+    //creating legend-hexagon colored symbols
+    for (let x in colors) {
+      let containerDiv = document.createElement("div");
+      containerDiv.classList.add("col-flex");
+      containerDiv.classList.add("align-items-center");
+
+      let words = document.createElement("div");
+      words.classList.add("population-per-km-text");
+      //words.innerHTML = Number.parseFloat(breaks[x]).toFixed(3)
+      words.innerHTML = this.nFormatter(breaks[x], precision);
+      //words.innerHTML = Number(this.nFormatter(breaks[x], 2))
+      let hexI = document.createElement("div");
+      hexI.classList.add("population-per-km-img");
+      hexI.style.backgroundColor = colors[x];
+
+      containerDiv.appendChild(words);
+      containerDiv.appendChild(hexI);
+      updateLegend.appendChild(containerDiv);
+    }
+    //END-LEGEND SETUP -----------------------------------------------
+  }
+
+  //taken directly from oldcode
+  oldaddLegend(
     colors,
     breaks,
     precision,
@@ -610,6 +657,7 @@ export default class Map {
 
     let legData = null;
     if (activeDataset) {
+      //should be able to skip this by using activeLayer; activeLayer is the direct dataset
       if (activeDataset.type === "single") {
         //single layer dataset
       } else if (activeDataset.type === "layers") {
@@ -668,8 +716,8 @@ export default class Map {
 
       */
     var legendTitle = document.getElementById("legendTitle");
-    var legend = document.getElementById("updateLegend");
-    legend.innerHTML = "";
+    var updateLegend = document.getElementById("updateLegend");
+    updateLegend.innerHTML = "";
     legendTitle.innerHTML = "";
     console.log(`legData: ${legData}`);
     legendTitle.innerHTML = "<span>" + legData.units + "</span>";
@@ -690,7 +738,7 @@ export default class Map {
 
       containerDiv.appendChild(words);
       containerDiv.appendChild(hexI);
-      legend.appendChild(containerDiv);
+      updateLegend.appendChild(containerDiv);
     }
 
     //console.log("colors",colors)
@@ -800,7 +848,7 @@ export default class Map {
       tooltips: {
         enabled: false,
       },
-      legend: {
+      updateLegend: {
         display: false,
       },
       annotation: {

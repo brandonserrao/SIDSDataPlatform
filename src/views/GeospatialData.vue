@@ -15,6 +15,7 @@
           updateMapData('layer-select', $event);
         }
       "
+      :displayLegend="displayLegend"
     />
     <map-toolbar
       class="toolbar"
@@ -23,6 +24,7 @@
       @select-resolution="changeResolution($event)"
       :active_dataset="activeDatasetName"
       :active_layer="activeLayerName"
+      @toggle-legend="toggleLegend()"
     />
     <div id="map"></div>
   </div>
@@ -53,6 +55,7 @@ export default {
       //for implementing as props to pass from dataset-controller to map-toolbar
       activeDatasetName: null,
       activeLayerName: null,
+      displayLegend: true,
     };
   },
   components: {
@@ -60,6 +63,10 @@ export default {
     MapToolbar,
   },
   methods: {
+    toggleLegend() {
+      console.log(`toggling Legend: displayLegend= ${this.displayLegend}`);
+      this.displayLegend = !this.displayLegend;
+    },
     selectCountry(selection) {
       this.map.zoomToCountry(selection);
       // this.map.zoomTo(selection); //this. component instance; reffing its .map which is a Map class from index.js; calling class method zoomTo =
@@ -381,5 +388,62 @@ export default {
   top: 2em;
   width: 400px;
   z-index: 999;
+}
+
+/* FOR LEGEND ??*/
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9e9e9e;
+  border-radius: 10px;
+}
+
+.population-density-box {
+  width: 350px;
+  height: 180px;
+  margin-top: 5px;
+  /*border-radius: 10px; */
+  background-color: #dddddd;
+  margin-left: 30px;
+  /*sebastian added */
+  position: relative;
+  z-index: 3;
+  padding: 10px;
+}
+
+.population-per-km {
+  max-width: 350px;
+  /*margin-top: 12px; */
+  background-color: #dddddd;
+  /*border-radius: 10px; */
+  padding: 10px;
+  margin-left: 30px;
+  /*sebastian added */
+  position: relative;
+  z-index: 1;
+  height: 199px;
+}
+
+.population-per-km-text {
+  font-size: 11px;
+  line-height: 14px;
+  margin-top: 5px;
+}
+
+.population-per-km-img {
+  width: 17px;
+  height: 15px;
+  background: url("../assets/polygon.png");
+  background-repeat: no-repeat;
+  background-size: 101% 101%;
+  margin-top: 2px;
+  z-index: 4;
 }
 </style>

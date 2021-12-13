@@ -745,11 +745,15 @@
                 </div>
               </div>
 
-              <!-- Labels Select Menu -->
+              <!-- Labels Select Menu 
+              
+              "handleLabelsChange('aminus', 'aplus')"
+
+              -->
               <div class="menu row-flex">
                 <div
                   class="icon aminus-icon"
-                  @click="handleLabelsChange('aminus', 'aplus')"
+                  @click="emit_toggle_legend()"
                 ></div>
                 <div
                   class="icon aplus-icon display-none"
@@ -766,6 +770,7 @@
       </div>
     </div>
     <!-- SPINNER LOADER -->
+    <!--     
     <div class="loader-gis">
       <svg
         version="1.1"
@@ -779,7 +784,7 @@
           d="M0 86.60254037844386L50 0L150 0L200 86.60254037844386L150 173.20508075688772L50 173.20508075688772Z"
         ></path>
       </svg>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -801,6 +806,9 @@ export default {
     };
   },
   methods: {
+    emit_toggle_legend() {
+      this.$emit("toggle-legend");
+    },
     handleGisMenuChange(change_type, object) {
       //determine type of menuchange based on eventType
       console.log("handleGisMenuChange: object passed:");
