@@ -112,6 +112,7 @@
             step="1"
             ticks="always"
             tick-size="4"
+            @input="emitUpdate"
           ></v-slider>
         </v-col>
       </v-row>
@@ -138,14 +139,9 @@
       :onload="_onloadLegend()"
       class="histogram_frame"
     >
-      <v-card-subtitle>
-        <p>Legend/Histogram Header</p>
-      </v-card-subtitle>
       <div id="histogram_frame" class="pic app-body population-per-km col-flex">
-        <div class="row-flex space-evenly" id="legendTitle">id=legendTitle</div>
-        <div class="row-flex space-evenly" id="updateLegend">
-          id=updateLegend
-        </div>
+        <div class="row-flex space-evenly" id="legendTitle"></div>
+        <div class="row-flex space-evenly" id="updateLegend"></div>
         <canvas
           ref="canvas_histogram"
           id="histogram"
@@ -336,10 +332,14 @@ export default {
       console.log(this.map);
     },
 
-    emitUpdate() {
+    emitUpdate(vSlider_inputValue) {
       console.log(`emitUpdate of activeDataset and activeLayer`);
       // this.$emit("update", {this.activeDataset, this.activeLayer});
-      let active = { dataset: this.activeDataset, layer: this.activeLayer };
+
+      //if called by v-slider, should pass its input value, which is the index of the desired layer in the array dataset.layers
+      this.activeLayer = this.activeDataset.layers[vSlider_inputValue];
+
+      let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
       this.$emit("update", active);
 
       console.log(`in emitUpdate  updateHistogramCanvas`);

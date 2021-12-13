@@ -33,13 +33,13 @@ export default class Map {
       zoom: 7,
       maxZoom: 14,
     });
-
+    /* //likely unused; from misguided attempt to pass histogramcanvas back from controller 
     this.histogramCanvasElement = null; //storage for the html element that holds the target canvas for the histogram
     this.colors = null;
     this.breaks = null;
     this.precision = null;
     this.activeLayer = null;
-    this.selectedData = null;
+    this.selectedData = null; */
 
     this.map.on("load", () => {
       this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
