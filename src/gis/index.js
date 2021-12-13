@@ -9,7 +9,7 @@ import colors from "@/gis/static/colors.js";
 
 import * as d3 from "d3";
 import chroma from "chroma-js";
-// import Chart from "chart.js"; //disabled temporarily because of myHistogram/Chart.js issue
+import Chart from "chart.js"; //disabled temporarily because of myHistogram/Chart.js issue
 
 //---------used to bring in lodash for oldcode
 import Vue from "vue";
@@ -33,6 +33,8 @@ export default class Map {
       zoom: 7,
       maxZoom: 14,
     });
+
+    this.histogramCanvasElement = null; //storage for the html element that holds the target canvas for the histogram
 
     this.map.on("load", () => {
       this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
@@ -263,13 +265,14 @@ export default class Map {
   }
 
   changeDataOnMap(id, activeDataset, activeLayer) {
-    console.log(`changeDataOnMap fired: ${id}`);
+    console.log(`changeDataOnMap fired: id = ${id}, activeLayer:`);
+    console.log(activeLayer);
     let map = this.map;
 
     //TAKEN FROM OLDCODE changeDataOnMap
-    console.log(
+    /*     console.log(
       `changeDataOnMap( ${id} ); currentHexSize: ${globals.currentLayerState.hexSize}`
-    );
+    ); */
     if (map.getLayer("ocean")) {
       console.log("ocean layer exists...");
       //if oceans already added:
@@ -354,15 +357,15 @@ export default class Map {
         }
 
         //console.log(uniFeatures);
-        var selecteData = uniFeatures.map((x) => x.properties[id]);
-        //console.log(selecteData);
+        var selectedData = uniFeatures.map((x) => x.properties[id]);
+        //console.log(selectedData);
 
         /*        //commented out to adapt to new code not tolerating these not being used 
-        var max = Math.max(...selecteData);
-        var min = Math.min(...selecteData); */
+        var max = Math.max(...selectedData);
+        var min = Math.min(...selectedData); */
 
         //var colorz = chroma.scale(['lightyellow', 'navy']).domain([min, max], 5, 'quantiles');
-        var breaks = chroma.limits(selecteData, "q", 4);
+        var breaks = chroma.limits(selectedData, "q", 4);
         //console.log("BREAK",breaks)
         var breaks_new = [];
         var precision = 1;
@@ -436,19 +439,19 @@ export default class Map {
         } else {
           map.setFilter(globals.currentLayerState.hexSize, [">=", id, 0]);
 
-          //console.log(selecteData)
+          //console.log(selectedData)
           //console.log(max)
 
           console.log(`addLegend called in with intended id/Field_Name: ${id}`);
-          // this.addLegend(colorRamp, breaks, precision, id, selecteData); //oldcode;
+          // this.addLegend(colorRamp, breaks, precision, id, selectedData); //oldcode;
+          /*            //commented out; uses the older form of addLegend
+            this.addLegend(colorRamp,breaks,precision,id,activeDataset,activeLayer,selectedData); */
           this.addLegend(
             colorRamp,
             breaks,
             precision,
-            id,
-            activeDataset,
             activeLayer,
-            selecteData
+            selectedData
           );
           setTimeout(() => {
             map.setPaintProperty(
@@ -481,11 +484,11 @@ export default class Map {
         uniFeatures = this.getUniqueFeatures(features, "hexid");
       }
 
-      var selecteData = uniFeatures.map(
+      var selectedData = uniFeatures.map(
         (x) => x.properties[globals.currentLayerState.dataLayer]
       );
-      //console.log(selecteData);
-      var breaks = chroma.limits(selecteData, "q", 4);
+      //console.log(selectedData);
+      var breaks = chroma.limits(selectedData, "q", 4);
       console.log(breaks);
       map.setPaintProperty(globals.currentLayerState.hexSize, "fill-color", [
         "interpolate",
@@ -596,13 +599,13 @@ export default class Map {
     activeLayer, //should eliminate need for id etc
     selectedData //i believe this is input from updatingMap based on whats features/data on screen
   ) {
-    let legData = activeLayer; //legData is oldcode variable of the active layer from allLayers globalvariable
+    // let activeLayer = activeLayer; //activeLayer is oldcode variable of the active layer from allLayers globalvariable
 
     //Debugging logs--------------------------------------
     console.log("addLegend2 called with: ");
-    console.log("activeLayer");
+    console.log("in addLegend2 activeLayer");
     console.log(activeLayer);
-    console.log("selectedData: ");
+    console.log("in addLegend2 selectedData: ");
     console.log(selectedData);
     //END-Debugging logs-------------------------------------------------------------------------------
 
@@ -612,8 +615,8 @@ export default class Map {
     //reset the legend elements
     updateLegend.innerHTML = "";
     legendTitle.innerHTML = "";
-    console.log(`legData: ${legData}`);
-    legendTitle.innerHTML = "<span>" + legData.Units + "</span>";
+    console.log(`activeLayer: ${activeLayer}`);
+    legendTitle.innerHTML = "<span>" + activeLayer.Units + "</span>";
     //creating legend-hexagon colored symbols
     for (let x in colors) {
       let containerDiv = document.createElement("div");
@@ -634,10 +637,216 @@ export default class Map {
       updateLegend.appendChild(containerDiv);
     }
     //END-LEGEND SETUP -----------------------------------------------
+    //HISTOGRAM-----------------------------------------------------
+    console.log("addLegend2 calling updateHistogram");
+    this.updateHistogram(colors, breaks, precision, activeLayer, selectedData);
+    //-----------------------------------------------------------
+  }
+
+  //for storing/retreiving the element that holds the target histogram canvas
+  setHistogramElement(histogramCanvasElement) {
+    this.histogramCanvasElement = histogramCanvasElement;
+  }
+  getHistogramElement() {
+    return this.histogramCanvasElement;
+  }
+
+  updateHistogram( //called in addLegend; extracted for cleanliness
+    colors,
+    breaks,
+    precision,
+    activeLayer, //should eliminate need for id etc
+    selectedData //i believe this is input from updatingMap based on whats features/data on screen
+  ) {
+    //old code
+    // let selectedData = selectedData; //selectedData is oldcode variable;
+    // let activeLayer = activeLayer; //activeLayer is oldcode variable of the active layer from allLayers globalvariable
+
+    // histogram
+    var element = document.getElementById("histogram");
+    if (typeof element != "undefined" && element != null) {
+      // $("#histogram").remove();
+      document.getElementById("histogram").remove();
+    }
+
+    // let canvas = document.getElementById("histogram"); //disabled temporarily because of myHistogram/Chart.js issue
+    let canvas = this.histogramCanvasElement; //get the stored canvas element; supposed to be stored via emits from controller component where the canvas element exists, and passed into here via setter
+    //will need to add code to clear its content out as well
+
+    // break
+    var nGroup = 200;
+    // console.log(`in addHistogram: selectedData = ${selectedData}`);
+    // console.log(selectedData);
+    var breaks_histogram = chroma.limits(selectedData, "e", nGroup);
+    //console.log("breaks_histogram",breaks_histogram);
+
+    // new color
+    var break_index = 0;
+    var histogram_break_count = Array(4).fill(0);
+    for (let i = 0; i < nGroup; i++) {
+      if (breaks_histogram[i] > breaks[break_index + 1]) break_index += 1;
+      histogram_break_count[break_index] += 1;
+    }
+    var colorRampNew = [];
+    for (let i = 0; i < 4; i++) {
+      //old code did not init with var/let anywhere i could find, so init'ing here
+      let colorRampPart = chroma
+        .scale([colors[i], colors[i + 1]])
+        .mode("lch")
+        .colors(histogram_break_count[i]);
+      colorRampNew = colorRampNew.concat(colorRampPart);
+      //console.log(colorRampNew);
+    }
+
+    // precision
+    var breaks_precision = [];
+    for (let i = 0; i < breaks_histogram.length; i++) {
+      breaks_precision.push(this.nFormatter(breaks_histogram[i], precision));
+    }
+    //console.log("breaks_precision:",breaks_precision)
+
+    var histogram_data = Array(nGroup).fill(0);
+    for (let i = 0; i < selectedData.length; i++) {
+      for (let j = 0; j < nGroup - 1; j++) {
+        if (
+          selectedData[i] >= breaks_histogram[j] &&
+          selectedData[i] < breaks_histogram[j + 1]
+        ) {
+          histogram_data[j] += 1;
+        }
+      }
+      if (selectedData[i] >= breaks_histogram[nGroup - 1]) {
+        histogram_data[nGroup - 1] += 1;
+      }
+    }
+    //console.log("histogram_data",histogram_data)
+
+    //commented out as never used
+    /*     var colorRampN = chroma
+      .scale([colors[0], colors[4]])
+      .mode("lch")
+      .colors(nGroup); // yellow to dark-blue
+ */
+    chroma.scale([colors[0], colors[4]]).mode("lch").colors(nGroup);
+
+    //disabled temporarily because of myHistogram/Chart.js issue
+    var data = {
+      labels: breaks_precision.slice(0, -1),
+      datasets: [
+        {
+          data: histogram_data,
+          backgroundColor: colorRampNew,
+        },
+      ],
+    };
+
+    var maxY = Math.pow(10, Math.ceil(Math.log10(Math.max(...histogram_data))));
+    var minY = Math.pow(10, Math.ceil(Math.log10(Math.min(...histogram_data))));
+
+    //console.log(maxY,minY);
+    //console.log(Math.min(...histogram_data));
+
+    var option = {
+      responsive: true,
+      tooltips: {
+        enabled: false,
+      },
+      updateLegend: {
+        display: false,
+      },
+      annotation: {
+        annotations: [
+          {
+            type: "line",
+            mode: "vertical",
+            scaleID: "x-axis-0",
+            value: "70%",
+            borderColor: "black",
+            label: {
+              content: "Your Score",
+              enabled: true,
+              position: "center",
+            },
+          },
+        ],
+      },
+      scales: {
+        borderWidth: 0,
+        yAxes: [
+          {
+            display: true,
+            type: "logarithmic",
+
+            ticks: {
+              //scaleStepWidth: 10,
+              maxTicksLimit: 4,
+              //autoSkip: true,
+              //stepSize:10,
+              max: maxY,
+              //min: 1,
+
+              callback: function (value) {
+                //params removed as unused and throws error in newcode //used to include index, values
+                if (value === 100000000) return "100M";
+                if (value === 10000000) return "10M";
+                if (value === 1000000) return "1M";
+                if (value === 100000) return "100K";
+                if (value === 10000) return "10K";
+                if (value === 1000) return "1K";
+                if (value === 100) return "100";
+                if (value === 10) return "10";
+                if (value === 1) return "1";
+                return null;
+              },
+            },
+            afterBuildTicks: function (chartObj) {
+              //Build ticks labelling as per your need
+              chartObj.ticks = [];
+              var ticksScale = maxY;
+              while (ticksScale > minY && ticksScale >= 1) {
+                //console.log(ticksScale);
+                chartObj.ticks.push(ticksScale);
+                ticksScale /= 10;
+              }
+            },
+          },
+        ],
+        xAxes: [
+          {
+            barPercentage: 1.0,
+            categoryPercentage: 1.0,
+            gridLines: {
+              display: true,
+            },
+            scaleLabel: {
+              display: false,
+              // labelString: activeLayer.units,
+              labelString: activeLayer.Units,
+            },
+            ticks: {
+              maxTicksLimit: 10,
+            },
+          },
+        ],
+      },
+    };
+
+    //Histogram in addLegend
+    //old code, adapted; disabled because cannot figure out issue Chart.js has with it right now
+    console.log("myHistogram data: ");
+    console.log(data);
+    console.log("myHistogram options: ");
+    console.log(option);
+    console.log("myHistogram canvas: ");
+    console.log(canvas);
+    globals.myHistogram = Chart.Bar(canvas, {
+      data: data,
+      options: option,
+    });
   }
 
   //taken directly from oldcode
-  oldaddLegend(
+  oldaddLegend( //obsoleted by (new) addLegend
     colors,
     breaks,
     precision,
@@ -646,7 +855,7 @@ export default class Map {
     activeLayer,
     dataset
   ) {
-    // let legData = Vue._.find(globals.allLayers, ["Field_Name", current]);
+    // let activeLayer = Vue._.find(globals.allLayers, ["Field_Name", current]);
     console.log("addLegend called with: ");
     console.log("activeDataset");
     console.log(activeDataset);

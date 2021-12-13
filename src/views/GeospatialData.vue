@@ -16,6 +16,7 @@
         }
       "
       :displayLegend="displayLegend"
+      @histogram-update="updateHistogram(canvasElement)"
     />
     <map-toolbar
       class="toolbar"
@@ -296,6 +297,11 @@ export default {
           }
         }
       }
+    },
+    updateHistogram(canvasElement) {
+      console.log("updateHistogram on canvasElement:");
+      console.log(canvasElement);
+      this.map.setHistogramElement(canvasElement);
     },
 
     updateMapData(select_type, name) {

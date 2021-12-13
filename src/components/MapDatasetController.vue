@@ -142,11 +142,16 @@
         <p>Legend/Histogram Header</p>
       </v-card-subtitle>
       <div id="histogram_frame" class="pic app-body population-per-km col-flex">
-        <div>displayLegend = {{ displayLegend ? "Truthy" : "Falsy" }}</div>
         <div class="row-flex space-evenly" id="legendTitle">id=legendTitle</div>
         <div class="row-flex space-evenly" id="updateLegend">
           id=updateLegend
         </div>
+        <canvas
+          ref="canvas_histogram"
+          id="histogram"
+          width="320"
+          height="115"
+        ></canvas>
       </div>
     </v-card>
 
@@ -174,6 +179,9 @@ export default {
   props: ["displayLegend"],
   data() {
     return {
+      // histogramCanvasElement: this.$refs.canvas_histogram,
+      histogramCanvasElement: null,
+
       activeGoal: 1,
       activeDatasetName: null,
       activeLayerName: null,
@@ -249,6 +257,10 @@ export default {
     };
   },
   computed: {
+    /*     histogramCanvasElement() {//!! doing via a $ref on the element itself and ref'd in Data
+      //intended to get and store the histogram canvas, in order to make it available to be updated by the Map classmethods, via emitting
+      return document.getElementById("histogram");
+    }, */
     filteredDatasets() {
       return this.datasets.reduce((array, dataset) => {
         let filtered = Object.assign({}, dataset);
@@ -323,15 +335,24 @@ export default {
       // this.$emit("update", {this.activeDataset, this.activeLayer});
       let active = { dataset: this.activeDataset, layer: this.activeLayer };
       this.$emit("update", active);
+
+      this.emitHistogramUpdate(); //piggybacking on the general update
     },
-    emitDatasetSelect(value) {
+    emitHistogramUpdate() {
+      console.log("emitHistogramUpdate! histogramCanvasElement:");
+      // this.histogramCanvasElement = document.getElementById("histogram");
+      this.histogramCanvasElement = this.$refs.canvas_histogram;
+      console.log(this.histogramCanvasElement);
+      this.$emit("histogram-update", this.histogramCanvasElement);
+    } /*
+    emitDatasetSelect(value) {//obsoleted by emitUpdate
       console.log(`emitDatasetSelect( ${value} )`);
       this.$emit("dataset-select", value);
     },
-    emitLayerSelect(value) {
+    emitLayerSelect(value) {//obsoleted by emitUpdate
       console.log(`emitLayerSelect( ${value} )`);
       this.$emit("layer-select", value);
-    },
+    }, */,
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
         let goalNmber = (index + 1).toString();
@@ -366,15 +387,34 @@ export default {
   },
   mounted() {
     this._fillAllLayers(); //filling obsoleted allLayers with new filteredDatasets for attempted compatibility;
+
+    // this.$nextTick(function () {
+    //   //in order to wait until the vue is fully loaded, before looking for the
+    //   // this.histogramCanvasElement = this.$refs.canvas_histogram;
+    //   this.emitHistogramUpdate(); //should pass the histogramcanvas element into the map class to store it
+    // });
   },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+/*Brandon additions*/
 .printout {
   background-color: burlywood;
 }
+
+.row-flex {
+  display: flex;
+  flex-direction: row;
+  /* margin-top: 3px; */
+  font-size: 11px;
+}
+
+.space-evenly {
+  justify-content: space-evenly;
+}
+/*End of Brandon additions*/
 
 .goals-slider {
   padding: 8px 0;
