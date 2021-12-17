@@ -261,9 +261,9 @@ export default class Map {
 
     //clear out all userLayers
     console.log(`removing all userLayers`);
-    for (var layer in globals.userLayers) {
-      if (this.map.getLayer(globals.userLayers[layer])) {
-        this.map.removeLayer(globals.userLayers[layer]);
+    for (var layer in constants.userLayers) {
+      if (this.map.getLayer(constants.userLayers[layer])) {
+        this.map.removeLayer(constants.userLayers[layer]);
       }
     }
 
