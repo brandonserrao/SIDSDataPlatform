@@ -412,4 +412,13 @@ export default {
   margin-top: 2px;
   z-index: 4;
 }
+
+/* onclick of hexes mapbox control bottom-right */
+.my-custom-control {
+  display: none;
+  background-color: rgba(221, 221, 221, 0.9);
+  height: 0px;
+  width: 0px;
+  padding: 5px;
+}
 </style>
