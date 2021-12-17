@@ -31,8 +31,12 @@ export default {
 @import './assets/styles/buttons.css';
 @import './assets/styles/text.css';
 @import './assets/styles/forms.css';
+
+
+
 #app{
   padding: 0;
+  background-color: #F4F5F8;
 }
 #content{
   min-height: calc(100vh - 100px);

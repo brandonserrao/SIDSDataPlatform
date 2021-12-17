@@ -1,7 +1,7 @@
 <template>
   <div class="map d-flex" :class="regionClass" :style="backgroundData">
-    <h2 class="page-header prtfolio-header mt-10 mb-2">UNDP Portfolio in Small Island Developing States</h2>
-    <v-row justify="end">
+    <h2 class="page-header prtfolio-header mt-5 mb-2">UNDP Portfolio in Small Island Developing States</h2>
+    <v-row justify="end map_info">
       <v-card
         class="ma-2"
       >
@@ -27,8 +27,6 @@
         <v-card-text class="custom-chip_text">Total Project Funding</v-card-text>
       </v-card>
     </v-row>
-
-
     <v-row class="map_zones">
       <v-col cols="10">
         <v-row class="map_zones">
@@ -223,5 +221,8 @@ export default {
   text-align: center;
   font-size: 12px;
   line-height: 1;
+}
+.map_info {
+  flex-grow: 0;
 }
 </style>

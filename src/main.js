@@ -6,6 +6,7 @@ import vuetify from './plugins/vuetify';
 
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/light.css';
+import 'flag-icon-css/css/flag-icons.css';
 
 
 Vue.config.productionTip = false

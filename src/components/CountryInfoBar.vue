@@ -1,8 +1,8 @@
 <template>
-  <v-card class="overflow">
+  <v-card flat class="overflow">
     <v-row dense>
       <v-col cols="4">
-      <v-subheader class="info-bar_header">{{country.Country}}</v-subheader>
+      <v-subheader class="info-bar_header block-header">{{country.Country}}</v-subheader>
         <v-list dense class="indicators-list"
         >
           <v-list-item

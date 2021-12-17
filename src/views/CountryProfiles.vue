@@ -11,7 +11,6 @@
           :value="country"
           @change="setCountry"
           :items="filteredCountries"
-          label="Country"
           item-text="Country"
           item-value="id"
           outlined
@@ -19,14 +18,15 @@
         ></v-select>
       </v-col>
       <v-col class="ml-auto" cols="2">
-        <v-select
-          rounded
-          dense
-          v-model="region"
-          :items="regions"
-          label="Region"
-          outlined
-        ></v-select>
+        <div class="select">
+          <v-select
+            rounded
+            dense
+            v-model="region"
+            :items="regions"
+            outlined
+          ></v-select>
+        </div>
       </v-col>
     </v-row>
   <v-row justify="center">
@@ -38,19 +38,34 @@
   </v-row>
   <v-row justify="center">
     <v-col cols="6">
-      <v-select
-        rounded
-        :value="compare"
-        :items="filteredCountries"
-        item-text="Country"
-        item-value="id"
-        label="Overlay countries to compare indicator rank among SIDS"
-        @change="setCompareCountries"
-        outlined
-        multiple
-        dense
-        hide-details
-      ></v-select>
+      <div class="select">
+        <label class="input-label">Overlay countries to compare indicator rank among SIDS</label>
+        <v-select
+          rounded
+          :value="compare"
+          :items="filteredCountries"
+          item-text="Country"
+          item-value="id"
+          placeholder="Select countries"
+          @change="setCompareCountries"
+          chips
+          outlined
+          multiple
+          dense
+          hide-details
+        >
+        <template #selection="{ item, index }">
+          <v-chip :color="getColor(index)">{{item.Country}} </v-chip>
+        </template>
+          <template slot="item" slot-scope="data">
+          <i
+            class="flag-icon select_icon"
+            :class="'flag-icon-' + data.item.code"
+          ></i>
+          {{ data.item.Country }}
+          </template>
+        </v-select>
+      </div>
     </v-col>
   </v-row>
     <v-row justify="center">
@@ -121,6 +136,7 @@ export default {
     activeCountry:null,
     region:'All SIDS',
     regions:["All SIDS", "Caribbean", "AIS", "Pacific"],
+    colorScheme: ["#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"],
     graphOptions:{
       Climate: {
         w: 200,
@@ -173,7 +189,7 @@ export default {
       return this.countries.find(country => country.id === this.country);
     },
     graphCountriesProfiles() {
-      return Array.from(new Set(this.compare.concat([this.country])));
+      return Array.from(new Set([this.country].concat(this.compare)));
     },
     filteredCountries() {
       if(this.region === this.regions[0]) {
@@ -287,6 +303,9 @@ export default {
           compare: value.toString()
         }
       })
+    },
+    getColor(index) {
+      return this.colorScheme[index%4];
     }
   },
   created() {
@@ -299,10 +318,17 @@ export default {
 <style media="screen">
   .country-profile-header {
     text-align: right;
-    padding-top: 5px;
     margin-right: 10px;
   }
   .country-select {
+    font-size: 18px !important;
     font-weight: bold;
+  }
+  .country-select .v-input__append-inner{
+    margin-top: 12px !important;
+  }
+  .select_icon {
+    display: inline-block;
+    margin-right: 10px;
   }
 </style>

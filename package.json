@@ -14,7 +14,7 @@
     "chroma-js": "^2.1.2",
     "core-js": "^3.6.5",
     "d3": "^5.16.0",
-    "flag-icon-css": "^4.1.6",
+    "flag-icon-css": "^4.1.7",
     "install": "^0.13.0",
     "jquery": "^3.6.0",
     "mapbox-gl": "^1.13.0",

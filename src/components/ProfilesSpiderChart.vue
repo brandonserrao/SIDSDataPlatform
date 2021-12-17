@@ -1,6 +1,6 @@
 <template>
   <div class="graph-container">
-      <h4 class="text-center"
+      <h4 class="block-subheader text-center"
         :style="{color: graphOptions.textColor}">
         {{headerText}}
       </h4>
@@ -220,7 +220,6 @@ export default {
       }
 
       //Create the straight lines radiating outward from the center
-      console.log(allAxis)
       let axis = axisGrid.selectAll(".axis")
         .data(allAxis)
         .enter()

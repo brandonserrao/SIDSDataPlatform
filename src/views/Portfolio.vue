@@ -1,11 +1,13 @@
 <template>
   <div class="">
     <v-row>
-      <portfolio-map
-        :region="region"
-        @updateRegion="changeFilter({type:'region'})"
-        :projects="filteredProjects"
-      ></portfolio-map>
+      <v-col cols="12">
+        <portfolio-map
+          :region="region"
+          @updateRegion="changeFilter({type:'region'})"
+          :projects="filteredProjects"
+        ></portfolio-map>
+      </v-col>
     </v-row>
     <router-view class="mb-3 mt-negative"></router-view>
     <v-row justify="center">

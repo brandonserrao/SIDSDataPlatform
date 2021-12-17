@@ -1,6 +1,6 @@
 <template>
-  <v-card class="overflow">
-    <v-subheader class="finance-header">Finance</v-subheader>
+  <v-card flat class="overflow">
+    <v-subheader class="finance-header block-subheader">Finance</v-subheader>
       <v-list dense class="indicators-list"
       >
         <v-list-item
@@ -86,9 +86,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.finance-header {
-  color: #0018a0;
-}
 .indicators-list .one-line {
   flex-wrap: nowrap;
   padding: 4px 0;
