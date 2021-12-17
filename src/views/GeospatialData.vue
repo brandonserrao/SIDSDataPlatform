@@ -1,21 +1,10 @@
 <template>
   <div class="map-container">
+    <button class="debug" @click="_logSources()">Debug logger</button>
     <map-dataset-controller
       class="data-controller"
       :map="map"
       @update="updateMap($event.dataset, $event.layer)"
-      @dataset-select="
-        {
-          activeDatasetName = $event;
-          updateMapData('dataset-select', $event);
-        }
-      "
-      @layer-select="
-        {
-          activeLayerName = $event;
-          updateMapData('layer-select', $event);
-        }
-      "
       :displayLegend="displayLegend"
     />
     <map-toolbar
@@ -64,6 +53,12 @@ export default {
     MapToolbar,
   },
   methods: {
+    _logSources() {
+      //debugging: to look at sources loaded onto mapbox map
+      console.log(`listing sources in map`);
+      this.map.logSources();
+    },
+
     toggleLegend() {
       console.log(`toggling Legend: displayLegend= ${this.displayLegend}`);
       this.displayLegend = !this.displayLegend;
@@ -298,80 +293,45 @@ export default {
         }
       }
     },
-    /*     updateHistogram(canvasElement) {
-      console.log("updateHistogram on canvasElement:");
-      console.log(canvasElement);
-      this.map.setHistogramElement(canvasElement);
-    }, */
 
-    updateMapData(select_type, name) {
-      //update based on leftsidebar interactionchoices
-      //
-      console.log(`updateMap for: ${select_type}, ${name}`);
-      if (select_type === "dataset-select") {
-        console.log("dataset-select");
-      } else if (select_type === "layer-select") {
-        console.log("layer-select");
-      } else {
-        console.log("!!!UNRECOGNIZED UPDATEMAP SELECT_TYPE!!!");
-      }
-    },
     updateMap(activeDataset, activeLayer) {
-      console.log("updateMap fired;");
-      console.log("activeDataset: ");
-      console.log(activeDataset);
-      console.log("activeLayer: ");
-      console.log(activeLayer);
-      //should receive the computed activeDataset and activeLayer from the MapDatasetController
-      //intends to obsolete updateMapData
-      //intended for use with @update
-      /*       if (activeDataset && !activeLayer) {
-        //case when only dataset selected
-        console.log(`updateMap received activeDataset:`);
-        console.log(activeDataset);
-      } else if (activeDataset && activeLayer) {
-        //case when a layer of a dataset is selected
-        console.log(`updateMap recieved activeLayer`);
-        console.log(activeLayer);
-
-        if (!(activeDataset || activeLayer) || !activeDataset) {
-          //abnormal case of Layer but no dataset
-          console.log("updateMap received bad params");
-          console.log(activeDataset);
-          console.log(activeLayer);
-        }
-      } */
+      //if there isn't a dataset selected and updatecalls;
+      //reset actives (can serve as trigger to reset selection)
       if (!activeDataset) {
-        console.log(`bad update; activeDataset falsy`);
-      } else if (activeDataset && !activeLayer) {
-        //either a single-type dataset or multiple before selecting layer
-        console.log(`activeDataset.type: ${activeDataset.type}`);
-        if (activeDataset.type === "single") {
-          //get Field_Name to use as id to pass to changeDataOnMap(id)
-          console.log("single dataset selected;");
-          let field_name = activeDataset.layers[0].Field_Name;
-          this.map.changeDataOnMap(field_name, activeDataset, activeLayer); //function from old code; handles data adding/display/switching
-        } else if (activeDataset.type === "temporal") {
-          console.log("temporal dataset selected; layers via timeline");
-          //get Field_Name to use as id to pass to changeDataOnMap(id)
-          let field_name = activeDataset.layers[0].Field_Name;
-          this.map.changeDataOnMap(field_name, activeDataset, activeLayer); //function from old code; handles data adding/display/switching
-        } else {
-          console.log(
-            "dataset selected; waiting for following layer selection"
-          );
+        console.log(
+          "no dataset/layer to updateMap with; resetting activeDataset/Layer"
+        );
+        activeDataset = null;
+        activeLayer = null;
+      } else {
+        //check for recognized dataset.type
+        switch (activeDataset.type) {
+          case "single": //only contains one layer; pull it from dataset
+            activeLayer = activeDataset.layers[0];
+            break;
+          case "layers": //has multiple datasets -> activeLayer will be truthy
+            break;
+          case "temporal": //has multiple datasets -> activeLayer will be truthy
+            break;
+          default:
+            alert(
+              `Unrecognized case of activeDataset.type: ${activeDataset.type} in updateMap`
+            );
         }
-      } else if (activeDataset && activeLayer) {
-        //get Field_Name from activeLayer to use as id to pass to changeDataOnMap(id)
-        let field_name = activeLayer.Field_Name;
-        this.map.changeDataOnMap(field_name, activeDataset, activeLayer); //function from old code; handles data adding/display/switching
+        //
+        if (activeLayer) {
+          console.log(`activeLayer: ${activeLayer.Field_Name}`);
+          //if there's a layer chosen -> changeDataOnMap
+          if (activeLayer.Field_Name === "depth") {
+            console.log("updateMap w/ Ocean Data-Depths:");
+            console.log(activeLayer.Description);
+            this.map.addOcean(activeDataset, activeLayer);
+          } else {
+            console.log("updateMap w/ changeDataOnMap");
+            this.map.changeDataOnMap(activeDataset, activeLayer);
+          }
+        }
       }
-    },
-
-    testGeoDataMethod() {
-      //testing; calls method from the map class
-      console.log("zooming to Bahamas for test");
-      this.map.testMapMethod();
     },
   },
   mounted() {

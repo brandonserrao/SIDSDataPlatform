@@ -97,7 +97,8 @@ const globals = {
     oceanSource: {
       name: "ocean",
       layer: "oceans",
-      mainId: null,
+      // mainId: null,
+      mainId: "ocean",
       data: null,
     },
     hex5clippedSource: {

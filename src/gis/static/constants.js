@@ -18,6 +18,7 @@ const constants = {
   hexes: ["hex1", "hex5", "hex10", "hex5clipped"],
   admins: ["admin1", "admin2"],
   userLayers: [
+    //user manipulable/toggleable data layers
     "hex1",
     "hex5",
     "hex10",

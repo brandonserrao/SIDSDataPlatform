@@ -9,7 +9,7 @@ import colors from "@/gis/static/colors.js";
 
 import * as d3 from "d3";
 import chroma from "chroma-js";
-import Chart from "chart.js"; //disabled temporarily because of myHistogram/Chart.js issue
+import Chart from "chart.js";
 
 //---------used to bring in lodash for oldcode
 import Vue from "vue";
@@ -33,43 +33,15 @@ export default class Map {
       zoom: 7,
       maxZoom: 14,
     });
-    /* //likely unused; from misguided attempt to pass histogramcanvas back from controller 
-    this.histogramCanvasElement = null; //storage for the html element that holds the target canvas for the histogram
-    this.colors = null;
-    this.breaks = null;
-    this.precision = null;
-    this.activeLayer = null;
-    this.selectedData = null; */
 
     this.map.on("load", () => {
       this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
       this._removeUnusedLayers();
       this._createMiniMap();
 
-      // this._addSources();
       this._addPointSources();
       this._addVectorSources();
     });
-    /* 
-    //for debugging the northwards offset zoom issue
-    this.map.on("click", (e) => {
-      // console.log("A click event occurred.");
-      let _debugMarker = new mapboxgl.Marker();
-      _debugMarker.setLngLat(e.lngLat); //.addTo(map);
-      console.log(`lngLat: ${e.lngLat} point: ${e.point}`);
-      console.log("panning to marker location");
-      this.map.panTo(e.lngLat);
-    }); */
-  }
-
-  testMapMethod() {
-    console.log("testMapMethod trigger");
-    this.map.fitBounds([
-      //using bahamas bbox for tesitng
-      [-80.47598, 20.91208],
-      [-72.71208, 27.27139],
-    ]);
-    // this.map.panTo([-74, 38]);
   }
 
   on(type, layerIds, listenerFunction) {
@@ -95,7 +67,6 @@ export default class Map {
   }
 
   zoomToCountry(country) {
-    // var v2 = new mapboxgl.LngLatBounds([selection[0], selection[1]]);
     var v2 = new mapboxgl.LngLatBounds(country.bb);
     console.log(`zoomTo(${country.NAME_0}) calling map.fitBounds on .bb`);
     this.map.fitBounds(v2, {
@@ -269,23 +240,104 @@ export default class Map {
     });
   }
 
-  changeDataOnMap(id, activeDataset, activeLayer) {
-    console.log(`changeDataOnMap fired: id = ${id}, activeLayer:`);
+  addOcean(activeDataset, activeLayer) {
+    if (!(activeDataset.name === "Ocean Data")) {
+      alert("addOcean called with non-Ocean Data activeDataset!!!");
+    }
+
+    //update state
+    globals.currentLayerState.dataLayer = activeLayer.Field_Name;
+    globals.currentLayerState.hexSize = "ocean";
+    //ocean-specific layer state values hardcoded
+    //ocean data uses pre-decided breaks and color;
+    globals.currentLayerState.breaks = [-4841, -3805, -2608, -1090, 0];
+    globals.currentLayerState.color = [
+      "#08519c",
+      "#3182bd",
+      "#6baed6",
+      "#bdd7e7",
+      "#eff3ff",
+    ];
+
+    //clear out all userLayers
+    console.log(`removing all userLayers`);
+    for (var layer in globals.userLayers) {
+      if (this.map.getLayer(globals.userLayers[layer])) {
+        this.map.removeLayer(globals.userLayers[layer]);
+      }
+    }
+
+    //add the layer
+    this.map.addLayer(
+      {
+        id: "ocean",
+        type: "fill",
+        source: "ocean",
+        "source-layer": "oceans",
+        layout: {
+          visibility: "visible",
+        },
+        filter: ["<", "depth", 0],
+        paint: {
+          "fill-color": [
+            "interpolate",
+            ["linear"],
+            ["get", "depth"],
+            -4841,
+            "#08519c",
+            -3805,
+            "#3182bd",
+            -2608,
+            "#6baed6",
+            -1090,
+            "#bdd7e7",
+            1322,
+            "#eff3ff",
+          ],
+          "fill-opacity": 0.8,
+        },
+      },
+      globals.firstSymbolId
+    );
+
+    setTimeout(() => {
+      var features = this.map.queryRenderedFeatures({
+        layers: ["ocean"],
+      });
+
+      if (features) {
+        var uniFeatures;
+        uniFeatures = this.getUniqueFeatures(features, "depth"); //depth is field_id for ocean depths layer
+        var selectedData = uniFeatures.map((x) => x.properties["depth"]);
+        this.addLegend(
+          globals.currentLayerState.color,
+          globals.currentLayerState.breaks,
+          2,
+          activeLayer,
+          selectedData
+        );
+      }
+    }, 600);
+
+    this.addLegend();
+  }
+
+  changeDataOnMap(activeDataset, activeLayer) {
+    let Field_Name = activeLayer.Field_Name; //get the selected layer's Field_Name
+    console.log(`changeDataOnMap fired: ${Field_Name}, activeLayer:`);
     console.log(activeLayer);
     let map = this.map;
 
     //TAKEN FROM OLDCODE changeDataOnMap
-    /*     console.log(
-      `changeDataOnMap( ${id} ); currentHexSize: ${globals.currentLayerState.hexSize}`
-    ); */
+
+    //------------------------------------------------------
     if (map.getLayer("ocean")) {
       console.log("ocean layer exists...");
-      //if oceans already added:
 
-      if (!id.includes("fl")) {
-        //if fl inside of the id (i.e. it's a fishing/ocean related layer)
+      if (!Field_Name.includes("fl")) {
+        //if fl inside of the Field_Name (i.e. it's a fishing/ocean related layer)
         console.log(
-          `${id} is not fishing/ocean related; removing ocean layer and adding hex5 layer`
+          `activeLayer ${Field_Name} is not fishing/ocean related; removing ocean layer and adding hex5 layer`
         );
         map.removeLayer("ocean");
 
@@ -305,25 +357,39 @@ export default class Map {
           },
         });
       }
+    } else {
+      console.log("map has no 'ocean' layer");
     }
-    this.remove3d();
-    console.log(
-      `changeDataOnMap(Field_Name: ${id}, activeDataset?.name: ${activeDataset?.name}, activeLayer?.Name: ${activeLayer?.Name}) updating globals.currentLayerState.dataLayer to ${id}`
-    );
-    globals.currentLayerState.dataLayer = id; //update mapstate to reflect selected datalayer
+    //-------------------------------------------------------------
 
+    this.remove3d();
+
+    console.log(
+      `changeDataOnMap(Field_Name: ${Field_Name}, 
+        activeDataset?.name: ${activeDataset?.name}, 
+        activeLayer?.Description: ${activeLayer?.Description})`
+    );
+
+    globals.currentLayerState.dataLayer = Field_Name; //update global to reflect selected datalayer
+
+    //-------------------------------------------
     if (!map.getSource("hex5")) {
       //console.log('no source')
-      console.log("UNEXPECTED ATTEMPTED FIRING OF ADDHEXSOURCE()");
-      // addHexSource();
+      console.log("no hex5 source; re-adding all vector sources");
+      this._addVectorSources();
     } else {
       //console.log('source!')
     }
+    //------------------------------------------
+
+    //unsure the need for this, pay attention if obsolete
     if (!map.getLayer(globals.currentLayerState.hexSize)) {
-      //if
-      var currentSourceData = Vue._.find(globals.sourceData, function (o) {
+      console.log(
+        `MAP LACKING LAYER for ${globals.currentLayerState.hexSize}; adding layer;`
+      );
+      var currentSourceData = Vue._.find(globals.sourceData, function (source) {
         //get matching sourceData
-        return o.name === globals.currentLayerState.hexSize;
+        return source.name === globals.currentLayerState.hexSize;
       });
 
       map.addLayer({
@@ -347,6 +413,9 @@ export default class Map {
     }
 
     setTimeout(() => {
+      console.log(
+        `queryRenderedFeatures on layers: ${globals.currentLayerState.hexSize} `
+      );
       var features = map.queryRenderedFeatures({
         layers: [globals.currentLayerState.hexSize],
       });
@@ -362,16 +431,9 @@ export default class Map {
         }
 
         //console.log(uniFeatures);
-        var selectedData = uniFeatures.map((x) => x.properties[id]);
-        //console.log(selectedData);
+        var selectedData = uniFeatures.map((x) => x.properties[Field_Name]);
 
-        /*        //commented out to adapt to new code not tolerating these not being used 
-        var max = Math.max(...selectedData);
-        var min = Math.min(...selectedData); */
-
-        //var colorz = chroma.scale(['lightyellow', 'navy']).domain([min, max], 5, 'quantiles');
         var breaks = chroma.limits(selectedData, "q", 4);
-        //console.log("BREAK",breaks)
         var breaks_new = [];
         var precision = 1;
         do {
@@ -385,21 +447,21 @@ export default class Map {
 
         var colorRamp = colors.colorSeq["yellow-blue"];
 
-        if (id.substring(0, 2) === "1a") {
+        if (Field_Name.substring(0, 2) === "1a") {
           colorRamp = colors.colorDiv.gdpColor;
-        } else if (id.substring(0, 2) === "1c") {
+        } else if (Field_Name.substring(0, 2) === "1c") {
           colorRamp = colors.colorSeq["pop"];
-        } else if (id === "7d10") {
+        } else if (Field_Name === "7d10") {
           colorRamp = colors.colorSeq["combo"];
-        } else if (id === "7d5") {
+        } else if (Field_Name === "7d5") {
           colorRamp = colors.colorSeq["minty"];
-        } else if (id === "7d7") {
+        } else if (Field_Name === "7d7") {
           colorRamp = colors.colorSeq["blues"];
-        } else if (id === "7d4") {
+        } else if (Field_Name === "7d4") {
           colorRamp = colors.colorSeq["pinkish"];
-        } else if (id === "7d8") {
+        } else if (Field_Name === "7d8") {
           colorRamp = colors.colorSeq["silvers"];
-        } else if (id === "d") {
+        } else if (Field_Name === "d") {
           breaks = [-4841, -3805, -2608, -1090, 1322];
           colorRamp = colors.colorSeq["ocean"];
         }
@@ -414,7 +476,7 @@ export default class Map {
           [
             "interpolate",
             ["linear"],
-            ["get", id],
+            ["get", Field_Name],
             breaks[0],
             colorRamp[0],
             breaks[1],
@@ -428,10 +490,11 @@ export default class Map {
           ],
         ]);
 
-        //map.setFilter(globals.currentLayerState.hexSize,['>=',id, 0])
+        console.log("validating breaks in data");
         if (isNaN(breaks[3]) || breaks[1] == 0) {
-          //setTimeout(() => { map.setFilter(globals.currentLayerState.hexSize, null) }, 500);
-
+          console.log(
+            `breaks are NaN, ${globals.currentLayerState.hexSize} set to transparent`
+          );
           map.setPaintProperty(
             globals.currentLayerState.hexSize,
             "fill-opacity",
@@ -440,18 +503,17 @@ export default class Map {
           setTimeout(() => {
             map.setFilter(globals.currentLayerState.hexSize, null);
           }, 100);
-          console.log("changeDataOnMap calliing addNoDataLegend()");
           this.addNoDataLegend();
         } else {
-          map.setFilter(globals.currentLayerState.hexSize, [">=", id, 0]);
+          map.setFilter(globals.currentLayerState.hexSize, [
+            ">=",
+            Field_Name,
+            0,
+          ]);
+          console.log(
+            `addLegend called in with intended Field_Name: ${Field_Name}`
+          );
 
-          //console.log(selectedData)
-          //console.log(max)
-
-          console.log(`addLegend called in with intended id/Field_Name: ${id}`);
-          // this.addLegend(colorRamp, breaks, precision, id, selectedData); //oldcode;
-          /*            //commented out; uses the older form of addLegend
-            this.addLegend(colorRamp,breaks,precision,id,activeDataset,activeLayer,selectedData); */
           this.addLegend(
             colorRamp,
             breaks,
@@ -562,9 +624,10 @@ export default class Map {
     let map = this.map;
     //taken directly from old code
     console.log("removing 3d");
-    let lay = map.getStyle().layers;
+
+    let mapLayers = map.getStyle().layers;
     //console.log(lay);
-    let threedee = Vue._.find(lay, function (o) {
+    let threedee = Vue._.find(mapLayers, function (o) {
       return o.type === "fill-extrusion";
     });
     if (threedee) {
@@ -584,11 +647,6 @@ export default class Map {
     let updateLegend = document.getElementById("updateLegend");
     updateLegend.innerHTML = "";
     legendTitle.innerHTML = "";
-
-    /*     let element = document.getElementById("histogram");
-    if (typeof element != "undefined" && element != null) {
-      document.getElementById("histogram").remove();
-    } */
 
     //#clear old canvas
     let old_canvas = document.getElementById("histogram");
@@ -660,18 +718,11 @@ export default class Map {
     //-----------------------------------------------------------
   }
 
-  /*   setHistogramElement(histogramCanvasElement) {
-    this.histogramCanvasElement = histogramCanvasElement;
-  }
-  getHistogramElement() {
-    return this.histogramCanvasElement;
-  } */
-
   updateHistogram( //called in addLegend; extracted for cleanliness
     colors,
     breaks,
     precision,
-    activeLayer, //should eliminate need for id etc
+    activeLayer,
     selectedData //i believe this is input from updatingMap based on whats features/data on screen
   ) {
     console.log("updateHistogram params passed are:");
@@ -869,319 +920,20 @@ export default class Map {
     };
 
     //Histogram in addLegend
-    //old code, adapted; disabled because cannot figure out issue Chart.js has with it right now
+    //old code, adapted;
     /*     console.log("myHistogram data: ");
     console.log(data);
     console.log("myHistogram options: ");
     console.log(option);
     console.log("myHistogram canvas: ");
     console.log(canvas); */
+    console.log("in updateHistogram");
+    console.log("creating myHistogram");
     globals.myHistogram = Chart.Bar(canvas, {
       data: data,
       options: option,
     });
-  }
-
-  //taken directly from oldcode
-  oldaddLegend( //obsoleted by (new) addLegend
-    colors,
-    breaks,
-    precision,
-    id,
-    activeDataset,
-    activeLayer,
-    dataset
-  ) {
-    // let activeLayer = Vue._.find(globals.allLayers, ["Field_Name", current]);
-    console.log("addLegend called with: ");
-    console.log("activeDataset");
-    console.log(activeDataset);
-    console.log("activeLayer");
-    console.log(activeLayer);
-    console.log("id");
-    console.log(id);
-
-    let legData = null;
-    if (activeDataset) {
-      //should be able to skip this by using activeLayer; activeLayer is the direct dataset
-      if (activeDataset.type === "single") {
-        //single layer dataset
-      } else if (activeDataset.type === "layers") {
-        //multiple layers (nontemporal)
-        console.log("multiplelayers-type dataset");
-      } else if (activeDataset.type === "temporal") {
-        ///temporal dataset
-        console.log("temporal-type dataset");
-      } else {
-        alert(`activeDataset.type ${activeDataset.type} unrecognized`);
-      }
-      console.log("activeDataset given: ");
-      console.log(activeDataset);
-      console.log("activeDataset.layers");
-      console.log(activeDataset?.layers);
-    }
-    if (activeDataset) {
-      for (let object of activeDataset.layers) {
-        if (object.Field_Name === id) {
-          legData = object;
-          console.log(legData);
-          break;
-        }
-      }
-    } else {
-      console.log(
-        `activeDataset is: ${activeDataset}; cannot get legendData from it`
-      );
-    }
-
-    // let legData = Vue._.find(globals.allLayers, ["Field_Name", current]); /
-
-    // let legData = activeLayer; //passed from parameter;
-    // console.log("legData from activeLayer passed in as parameter :");
-    // console.log(legData);
-
-    /* //the infobox is succeeded by the new vue-based one
-    var infoBoxTitle = document.getElementById("infoBoxTitle");
-    var infoBoxText = document.getElementById("infoBoxText");
-    var infoBoxLink = document.getElementById("infoBoxLink");
-
-    infoBoxTitle.innerHTML = "";
-    infoBoxText.innerHTML = "";
-    infoBoxLink.innerHTML = "";
-
-    infoBoxTitle.innerHTML = legData.desc + " " + legData.time;
-    infoBoxText.innerHTML = legData.desc_long;
-    infoBoxLink.innerHTML =
-      "<strong>Reference: </strong>" +
-      legData.source_name +
-      ' - <a href="' +
-      legData.link +
-      '" target="_blank">' +
-      legData.link +
-      "</a>";
-
-      */
-    var legendTitle = document.getElementById("legendTitle");
-    var updateLegend = document.getElementById("updateLegend");
-    updateLegend.innerHTML = "";
-    legendTitle.innerHTML = "";
-    console.log(`legData: ${legData}`);
-    legendTitle.innerHTML = "<span>" + legData.Unit + "</span>";
-
-    for (var x in colors) {
-      var containerDiv = document.createElement("div");
-      containerDiv.classList.add("col-flex");
-      containerDiv.classList.add("align-items-center");
-
-      var words = document.createElement("div");
-      words.classList.add("population-per-km-text");
-      //words.innerHTML = Number.parseFloat(breaks[x]).toFixed(3)
-      words.innerHTML = this.nFormatter(breaks[x], precision);
-      //words.innerHTML = Number(this.nFormatter(breaks[x], 2))
-      var hexI = document.createElement("div");
-      hexI.classList.add("population-per-km-img");
-      hexI.style.backgroundColor = colors[x];
-
-      containerDiv.appendChild(words);
-      containerDiv.appendChild(hexI);
-      updateLegend.appendChild(containerDiv);
-    }
-
-    //console.log("colors",colors)
-    //console.log("breaks",breaks)
-    //console.log("precision",precision)
-    //console.log("current",current)
-    //console.log("dataset",dataset)
-
-    // histogram
-    var element = document.getElementById("histogram");
-    if (typeof element != "undefined" && element != null) {
-      // $("#histogram").remove();
-      document.getElementById("#histogram").remove();
-    }
-    /*     $("#histogram_frame").append(
-      '<canvas id="histogram" width="320" height="115"><canvas>'
-    ); */
-    document
-      .getElementById("histogram_frame")
-      .append('<canvas id="histogram" width="320" height="115"><canvas>');
-    // var canvas = document.getElementById("histogram"); //disabled temporarily because of myHistogram/Chart.js issue
-
-    // break
-    var nGroup = 200;
-    var breaks_histogram = chroma.limits(dataset, "e", nGroup);
-    //console.log("breaks_histogram",breaks_histogram);
-
-    // old color
-    /*
-      var histogram_color = Array(nGroup).fill("");
-      var color_index=0;
-      for (var i = 0; i < nGroup; i++)   
-      {        
-          if (breaks_histogram[i]>breaks[color_index+1])
-              color_index+=1;    
-          histogram_color[i]=colors[color_index];
-      }
-      */
-
-    // new color
-    var break_index = 0;
-    var histogram_break_count = Array(4).fill(0);
-    for (let i = 0; i < nGroup; i++) {
-      if (breaks_histogram[i] > breaks[break_index + 1]) break_index += 1;
-      histogram_break_count[break_index] += 1;
-    }
-    var colorRampNew = [];
-    for (let i = 0; i < 4; i++) {
-      //old code did not init with var/let anywhere i could find, so init'ing here
-      let colorRampPart = chroma
-        .scale([colors[i], colors[i + 1]])
-        .mode("lch")
-        .colors(histogram_break_count[i]);
-      colorRampNew = colorRampNew.concat(colorRampPart);
-      //console.log(colorRampNew);
-    }
-
-    // precision
-    var breaks_precision = [];
-    for (let i = 0; i < breaks_histogram.length; i++) {
-      breaks_precision.push(this.nFormatter(breaks_histogram[i], precision));
-    }
-    //console.log("breaks_precision:",breaks_precision)
-
-    var histogram_data = Array(nGroup).fill(0);
-    for (let i = 0; i < dataset.length; i++) {
-      for (let j = 0; j < nGroup - 1; j++) {
-        if (
-          dataset[i] >= breaks_histogram[j] &&
-          dataset[i] < breaks_histogram[j + 1]
-        ) {
-          histogram_data[j] += 1;
-        }
-      }
-      if (dataset[i] >= breaks_histogram[nGroup - 1]) {
-        histogram_data[nGroup - 1] += 1;
-      }
-    }
-    //console.log("histogram_data",histogram_data)
-
-    //commented out as never used
-    /*     var colorRampN = chroma
-      .scale([colors[0], colors[4]])
-      .mode("lch")
-      .colors(nGroup); // yellow to dark-blue
- */
-
-    /*    //disabled temporarily because of myHistogram/Chart.js issue
-    var data = {
-      labels: breaks_precision.slice(0, -1),
-      datasets: [
-        {
-          data: histogram_data,
-          backgroundColor: colorRampNew,
-        },
-      ],
-    }; 
-
-    var maxY = Math.pow(10, Math.ceil(Math.log10(Math.max(...histogram_data))));
-    var minY = Math.pow(10, Math.ceil(Math.log10(Math.min(...histogram_data))));
-
-    //console.log(maxY,minY);
-    //console.log(Math.min(...histogram_data));
-    
-    var option = {
-      responsive: true,
-      tooltips: {
-        enabled: false,
-      },
-      updateLegend: {
-        display: false,
-      },
-      annotation: {
-        annotations: [
-          {
-            type: "line",
-            mode: "vertical",
-            scaleID: "x-axis-0",
-            value: "70%",
-            borderColor: "black",
-            label: {
-              content: "Your Score",
-              enabled: true,
-              position: "center",
-            },
-          },
-        ],
-      },
-      scales: {
-        borderWidth: 0,
-        yAxes: [
-          {
-            display: true,
-            type: "logarithmic",
-
-            ticks: {
-              //scaleStepWidth: 10,
-              maxTicksLimit: 4,
-              //autoSkip: true,
-              //stepSize:10,
-              max: maxY,
-              //min: 1,
-
-              callback: function (value) {
-                //params removed as unused and throws error in newcode //used to include index, values
-                if (value === 100000000) return "100M";
-                if (value === 10000000) return "10M";
-                if (value === 1000000) return "1M";
-                if (value === 100000) return "100K";
-                if (value === 10000) return "10K";
-                if (value === 1000) return "1K";
-                if (value === 100) return "100";
-                if (value === 10) return "10";
-                if (value === 1) return "1";
-                return null;
-              },
-            },
-            afterBuildTicks: function (chartObj) {
-              //Build ticks labelling as per your need
-              chartObj.ticks = [];
-              var ticksScale = maxY;
-              while (ticksScale > minY && ticksScale >= 1) {
-                //console.log(ticksScale);
-                chartObj.ticks.push(ticksScale);
-                ticksScale /= 10;
-              }
-            },
-          },
-        ],
-        xAxes: [
-          {
-            barPercentage: 1.0,
-            categoryPercentage: 1.0,
-            gridLines: {
-              display: true,
-            },
-            scaleLabel: {
-              display: false,
-              labelString: legData.units,
-            },
-            ticks: {
-              maxTicksLimit: 10,
-            },
-          },
-        ],
-      },
-    };
- */
-    //Histogram in addLegend
-    /* //old code, adapted; disabled because cannot figure out issue Chart.js has with it right now
-    console.log(data);
-    console.log(option);
-    globals.myHistogram = Chart.Bar(canvas, {
-      data: data,
-      options: option,
-    });
-    */
+    console.log(globals.myHistogram);
   }
 
   //taken from old code
@@ -1243,6 +995,7 @@ export default class Map {
     });
   }
   _addVectorSources() {
+    console.log(`_addVectorSources()`);
     let map = this.map; //patching map reference
     console.log(`vector sources: ${Object.keys(globals.sources)}`);
 
@@ -1252,9 +1005,8 @@ export default class Map {
       map.addSource(idString, globals.sources[idString]);
     }
 
+    //load the allsids outline onto the map as a layer, if not present
     if (!map.getLayer("allsids")) {
-      console.log(`allsids not present->adding layer to map`);
-
       map.addLayer(
         {
           id: "allsids",
@@ -1274,6 +1026,12 @@ export default class Map {
     }
 
     //finished loading in so hide spinner
-    // hideSpinner();//TODO REIMPLEMENT SPINNER
+    // hideSpinner();//TODO: REIMPLEMENT SPINNER
+  }
+
+  logSources() {
+    //for debugging
+    console.log(this.map.style.sourceCaches);
+    console.log(this.map.style._layers);
   }
 }

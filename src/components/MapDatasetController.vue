@@ -1,9 +1,9 @@
 <template>
   <div class="">
     <v-card class="mb-4">
-      <button class="printout debug" @click="printout">
+      <!--       <button class="printout debug" @click="">
         Printout Datasets to Console
-      </button>
+      </button> -->
       <v-row>
         <v-col cols="6">
           <v-list dense>
@@ -134,11 +134,7 @@
     </v-card>
 
     <!-- New Legend/Histogram -->
-    <v-card
-      v-if="displayLegend"
-      :onload="_onloadLegend()"
-      class="histogram_frame"
-    >
+    <v-card v-if="displayLegend" class="histogram_frame">
       <div id="histogram_frame" class="pic app-body population-per-km col-flex">
         <div class="row-flex space-evenly" id="legendTitle"></div>
         <div class="row-flex space-evenly" id="updateLegend"></div>
@@ -150,37 +146,22 @@
         ></canvas>
       </div>
     </v-card>
-
-    <!-- OLDCODE - HISTOGRAM/LEGEND FRAME -->
-    <!-- 
-    <div>
-      <div class="pic app-body population-per-km col-flex" id="histogram_frame">
-        <div class="row-flex space-evenly" id="legendTitle">
-          Select a Dataset and Layer to view data on the map.
-        </div>
-
-        <div class="row-flex space-evenly" id="updateLegend"></div>
-      </div>
-    </div>
-     -->
   </div>
 </template>
 
 <script>
 import datasets from "@/gis/static/layers";
-import globals from "@/gis/static/globals";
+// import globals from "@/gis/static/globals";
 /* 
 import * as d3 from "d3";
 import chroma from "chroma-js"; */
-import Chart from "chart.js"; //disabled temporarily because of myHistogram/Chart.js issue
+// import Chart from "chart.js";
 
 export default {
   name: "MapDatasetController",
   props: ["displayLegend", "map"],
   data() {
     return {
-      // histogramCanvasElement: this.$refs.canvas_histogram,
-      histogramCanvasElement: null,
       activeGoal: 1,
       activeDatasetName: null,
       activeLayerName: null,
@@ -256,10 +237,6 @@ export default {
     };
   },
   computed: {
-    /*     histogramCanvasElement() {//!! doing via a $ref on the element itself and ref'd in Data
-      //intended to get and store the histogram canvas, in order to make it available to be updated by the Map classmethods, via emitting
-      return document.getElementById("histogram");
-    }, */
     filteredDatasets() {
       return this.datasets.reduce((array, dataset) => {
         let filtered = Object.assign({}, dataset);
@@ -307,83 +284,15 @@ export default {
     },
   },
   methods: {
-    _fillAllLayers() {
-      //adding for attempted compatibility with oldcode;
-      // oldcode uses allLayers as a storage for all dataset/layer metadata that fuels the leftsidebar/mapdatacontroller;
-      // need to verify that the format of allLayers and filteredDatasets is the same
-      console.log("_fillAllLayers called");
-      globals.allLayers = this.filteredDatasets;
-      globals.activeDataset = this.activeDataset;
-      globals.activeLayer = this.activeLayer;
-    },
-    _onloadLegend() {
-      console.log("legend onload triggered");
-    },
-    printout() {
-      //testmethod for examining state/dataset
-      console.log(`filteredDataset:`);
-      console.log(this.filteredDatasets);
-
-      console.log(`activeDataset:`);
-      console.log(this.activeDataset);
-      console.log(`activeLayer:`);
-      console.log(this.activeLayer);
-      console.log("map passed in via prop");
-      console.log(this.map);
-    },
-
-    emitUpdate(vSlider_inputValue) {
-      console.log(`emitUpdate of activeDataset and activeLayer`);
-      // this.$emit("update", {this.activeDataset, this.activeLayer});
-
-      //if called by v-slider, should pass its input value, which is the index of the desired layer in the array dataset.layers
-      this.activeLayer = this.activeDataset.layers[vSlider_inputValue];
-
+    /**
+     *passes current dataset+layer selection upwards
+     */
+    emitUpdate() {
+      // console.log(`emitUpdate of activeDataset and activeLayer`);
       let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
       this.$emit("update", active);
-
-      console.log(`in emitUpdate  updateHistogramCanvas`);
-
-      // this.emitHistogramUpdate(); //piggybacking on the general update //used in (failed) attempt to pass canvas element up in emits
-      this.updateHistogramCanvas(this.map);
     },
-    updateHistogramCanvas(map) {
-      //old code, adapted; disabled because cannot figure out issue Chart.js has with it right now
-      console.log("in updateHistogramCanvas:");
-      console.log("map:");
-      console.log(map);
-      console.log("myHistogram data: ");
-      console.log(map.data);
-      console.log("myHistogram options: ");
-      console.log(map.option);
-      console.log("myHistogram canvas: ");
-      console.log(map.canvas);
 
-      globals.myHistogram = Chart.Bar(
-        this.$refs.canvas_histogram, //histogram canvas element by $ref
-        {
-          data: map.data,
-          options: map.option,
-        }
-      );
-    },
-    /*     emitHistogramUpdate() {
-      console.log("emitHistogramUpdate! histogramCanvasElement:");
-      // this.histogramCanvasElement = document.getElementById("histogram");
-      this.histogramCanvasElement = this.$refs.canvas_histogram;
-      console.log(this.histogramCanvasElement);
-      this.$emit("histogram-update", this.histogramCanvasElement);
-    }, */
-
-    /*
-    emitDatasetSelect(value) {//obsoleted by emitUpdate
-      console.log(`emitDatasetSelect( ${value} )`);
-      this.$emit("dataset-select", value);
-    },
-    emitLayerSelect(value) {//obsoleted by emitUpdate
-      console.log(`emitLayerSelect( ${value} )`);
-      this.$emit("layer-select", value);
-    }, */
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
         let goalNmber = (index + 1).toString();
@@ -416,24 +325,12 @@ export default {
       this.$refs.slider.scrollOffset = 56 * (goalNumber - 1);
     },
   },
-  mounted() {
-    this._fillAllLayers(); //filling obsoleted allLayers with new filteredDatasets for attempted compatibility;
-
-    // this.$nextTick(function () {
-    //   //in order to wait until the vue is fully loaded, before looking for the
-    //   // this.histogramCanvasElement = this.$refs.canvas_histogram;
-    //   this.emitHistogramUpdate(); //should pass the histogramcanvas element into the map class to store it
-    // });
-  },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 /*Brandon additions*/
-.printout {
-  background-color: burlywood;
-}
 
 .row-flex {
   display: flex;

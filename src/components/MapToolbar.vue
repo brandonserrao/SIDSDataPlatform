@@ -845,9 +845,9 @@ export default {
         /*         alert(
           `${change_type} not yet handled by handleGisMenuChange; This warning blocks flipping animation`
         ); */
-        console.log(
+        /*         console.log(
           `active_dataset: ${this.active_dataset}; active_layer: ${this.active_layer}`
-        );
+        ); */
         console.log(`${change_type} not yet handled by handleGisMenuChange`);
       }
     },
