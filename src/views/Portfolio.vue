@@ -23,7 +23,6 @@
                 <v-tab value="sdgs" @click="transitionTo('sdgs')">Sustainable Development Goals</v-tab>
                 <v-tab value="signature-solutions" @click="transitionTo('signature-solutions')">Signature Solutions</v-tab>
               </v-tabs>
-              {{activePage}}
           </v-col>
         </v-row>
         <v-row justify="center">
@@ -115,7 +114,6 @@ export default {
   props:['year', 'fundingCategory', 'fundingSource', 'region'],
   mixins:[sidsdata],
   data: function () {
-    console.log(this.$route.path.split('/')[2])
     return {
       goalType:'Sustainable Development Goals',
       activePage:['samoa', 'sdgs', 'signature-solutions'].indexOf(this.$route.path.split('/')[2]),
