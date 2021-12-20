@@ -167,6 +167,7 @@ export default {
               },
               theme: 'light',
               interactive: true,
+              maxWidth:420,
               allowHTML: true,
               appendTo: () => document.body
             });

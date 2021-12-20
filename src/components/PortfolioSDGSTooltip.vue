@@ -1,6 +1,6 @@
 <template>
   <div class="tooltip-root">
-    <h4>{{header}}</h4>
+    <h4 class="block-subheader">{{header}}</h4>
     <div class="tableContainer">
 
         <v-data-table
@@ -8,6 +8,7 @@
           :items="dataWithIDs"
           height="200"
           fixed-header
+          width="370"
           hide-default-footer
           :items-per-page="9999"
           item-key="subId"
@@ -57,7 +58,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .tooltip-root {
-  max-width: 320px;
+  max-width: 400px;
+  padding: 0;
 }
 .indicators-list {
   padding-bottom: 0;
@@ -85,5 +87,8 @@ export default {
 }
 .p-0 {
   padding: 0 !important;
+}
+.tableContainer {
+  margin: 0 -9px 0;
 }
 </style>

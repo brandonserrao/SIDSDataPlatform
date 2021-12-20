@@ -10,6 +10,7 @@
   font-size: 14px !important;
 }
 .v-select {
+
   font-weight: 600 !important;
 }
 .v-select fieldset {
@@ -22,6 +23,8 @@
 .v-input__slot {
   min-height: 36px !important;
   padding: 0 8px 0 18px !important;
+
+      transition: none !important;
 }
 .v-text-field input {
   padding: 2px 0 2px !important;
@@ -31,4 +34,7 @@
 }
 .v-select__selections {
   color: #082753 !important
+}
+.v-select.v-select--is-multi.v-input--is-dirty .v-input__slot {
+  padding: 0 8px 0 1px !important;
 }

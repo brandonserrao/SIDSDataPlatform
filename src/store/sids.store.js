@@ -54,6 +54,7 @@ export default {
             return source.donors && source.donors.includes(category.name)
           })
         })
+        console.log(filteredData);
         commit("setFundingCategories", filteredData);
         dispatch('setFullDonorsInfo');
       }
@@ -61,6 +62,7 @@ export default {
     async setSIDSData({ state, commit }) {
       if(!state.SIDSData){
         const SIDSData = await service.loadSIDSData();
+        console.log(SIDSData)
         commit("setSIDSData", SIDSData);
       }
     },

@@ -1,7 +1,7 @@
 <template>
   <div class="map d-flex" :class="regionClass" :style="backgroundData">
     <h2 class="page-header prtfolio-header mt-5 mb-2">UNDP Portfolio in Small Island Developing States</h2>
-    <v-row justify="end map_info">
+    <v-row justify="end">
       <v-card
         class="ma-2"
       >
@@ -129,12 +129,8 @@ export default {
     },
     projectsFundning() {
       let funding = 0;
-      let distinctProjects = [];
       this.projects.map(project => {
-          if (!distinctProjects.includes(project.title)) {
-            distinctProjects.push(project.title)
-            funding = funding + parseInt(project.budget);
-          }
+        funding = funding + parseInt(project.budget);
       })
       return this.nFormatter(funding)
     }
@@ -183,7 +179,8 @@ export default {
 .map {
   cursor: pointer;
   flex-direction: column;
-  min-height: 80vh;
+  height: 80vh;
+  max-height: 720px;
   background-size: 95%;
   width: 100%;
   background-position: 50% -10px;

@@ -10,18 +10,27 @@
           class="country-select"
           :value="country"
           @change="setCountry"
-          :items="filteredCountries"
+          :items="countries"
           item-text="Country"
           item-value="id"
           outlined
           hide-details
-        ></v-select>
+        >
+          <template  slot="item" slot-scope="data">
+            <i
+              class="flag-icon select_icon"
+              :class="'flag-icon-' + data.item.code"
+            ></i>
+            {{ data.item.Country }}
+          </template>
+        </v-select>
       </v-col>
       <v-col class="ml-auto" cols="2">
         <div class="select">
           <v-select
             rounded
             dense
+            @change="changeRegion(region)"
             v-model="region"
             :items="regions"
             outlined
@@ -54,9 +63,16 @@
           dense
           hide-details
         >
-        <template #selection="{ item, index }">
-          <v-chip :color="getColor(index)">{{item.Country}} </v-chip>
-        </template>
+          <template #selection="{ item, index }">
+            <v-chip
+              class="muliselect-chip"
+              close
+              @click:close="removeCountry(item.id)"
+              :style="getChipStyle(index)"
+              :color="getColor(index)">
+              {{item.Country}}
+            </v-chip>
+          </template>
           <template slot="item" slot-scope="data">
           <i
             class="flag-icon select_icon"
@@ -137,6 +153,7 @@ export default {
     region:'All SIDS',
     regions:["All SIDS", "Caribbean", "AIS", "Pacific"],
     colorScheme: ["#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"],
+    rgbaColorScheme:['rgba(237, 201, 81, 0.4)','rgba(204, 51, 63, 0.4)','rgba(0, 160, 176, 0.4)','rgba(255, 255, 255, 0.4)'],
     graphOptions:{
       Climate: {
         w: 200,
@@ -304,8 +321,22 @@ export default {
         }
       })
     },
+    removeCountry(countryId) {
+      this.setCompareCountries(this.compare.filter(compareCountryId => compareCountryId !== countryId))
+    },
     getColor(index) {
       return this.colorScheme[index%4];
+    },
+    getChipStyle(index) {
+      return `background-color:${this.rgbaColorScheme[index%4]}`;
+    },
+    changeRegion() {
+      // if(region !=='All SIDS' && this.activeCountryProfile.Region !== region) {
+      //   this.setCountry(this.filteredCountries[0].id)
+      // }
+      // this.setCompareCountries(this.compare.filter(country => {
+      //   this.countries.find(country => country.id === this.country)
+      // }))
     }
   },
   created() {
@@ -330,5 +361,9 @@ export default {
   .select_icon {
     display: inline-block;
     margin-right: 10px;
+  }
+  .muliselect-chip {
+    border-style: solid;
+    border-width: 2px;
   }
 </style>
