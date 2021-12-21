@@ -64,6 +64,7 @@
           @change="setCompareCountries"
           chips
           outlined
+          hide-selected
           multiple
           dense
           hide-details
