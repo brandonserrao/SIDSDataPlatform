@@ -10,18 +10,23 @@
           class="country-select"
           :value="country"
           @change="setCountry"
-          :items="countries"
+          :items="filteredCountries"
+          hide-selected
+          menu-props='{auto:false}'
           item-text="Country"
           item-value="id"
           outlined
           hide-details
         >
           <template  slot="item" slot-scope="data">
-            <i
-              class="flag-icon select_icon"
-              :class="'flag-icon-' + data.item.code"
-            ></i>
-            {{ data.item.Country }}
+            <div>
+              <i
+                class="flag-icon select_icon"
+                :class="'flag-icon-' + data.item.code"
+              ></i>
+              {{ data.item.Country }}
+            </div>
+          <div></div>
           </template>
         </v-select>
       </v-col>
@@ -212,7 +217,28 @@ export default {
       if(this.region === this.regions[0]) {
         return this.countries
       }
-      return this.countries.filter(country => country['Region'] === this.region );
+      let filter = this.countries.map(country => {
+        country.disabled = country['Region'] !== this.region
+        return country
+      });
+
+      filter = filter.sort((country1, country2) => {
+        if(!country1.disabled && country2.disabled) {
+          return -1;
+        }
+        if(country1.disabled && !country2.disabled) {
+          return 1;
+        }
+        if (country1.Country > country2.Country) {
+          return 1;
+        }
+        if (country1.Country > country2.Country) {
+          return -1;
+        }
+        return 0;
+      })
+      console.log(filter)
+      return filter
     },
     ...mapState({
       countries: state => state.sids.countryList,
@@ -354,6 +380,13 @@ export default {
   .country-select {
     font-size: 18px !important;
     font-weight: bold;
+  }
+  .v-list-item--disabled {
+    /* min-height: 1px !important;
+    overflow: hidden !important;
+    display: block;
+    height: 1px;
+    margin-top: -1px; */
   }
   .country-select .v-input__append-inner{
     margin-top: 12px !important;

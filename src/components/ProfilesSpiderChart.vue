@@ -256,6 +256,7 @@ export default {
                 return template.innerHTML;
               },
               theme: 'light',
+              maxWidth:400,
               interactive: true,
               allowHTML: true,
               appendTo: () => document.body
@@ -324,7 +325,7 @@ export default {
             .attr("class", "radarStroke")
             .attr("d", function (d) { return radarLine(d.axes); })
             .style("stroke-width", this.fullGraphOptions.strokeWidth + "px")
-            .style("stroke", (d, i) => this.fullGraphOptions.color(i))
+            .style("stroke", (d, i) => {console.log(d, i, 'id'); return this.fullGraphOptions.color(i)})
             .style("fill", "none")
             .style("filter", "url(#glow)")
             .style("pointer-events","none");

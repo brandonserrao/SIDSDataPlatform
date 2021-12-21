@@ -19,9 +19,9 @@
                 class="tabs prtfolio-slider"
                 v-model="activePage"
               >
-                <v-tab value="samoa" @click="transitionTo('samoa')">SAMOA Pathway</v-tab>
-                <v-tab value="sdgs" @click="transitionTo('sdgs')">Sustainable Development Goals</v-tab>
-                <v-tab value="signature-solutions" @click="transitionTo('signature-solutions')">Signature Solutions</v-tab>
+                <v-tab @change="transitionTo('samoa')">SAMOA Pathway</v-tab>
+                <v-tab @change="transitionTo('sdgs')">Sustainable Development Goals</v-tab>
+                <v-tab @change="transitionTo('signature-solutions')">Signature Solutions</v-tab>
               </v-tabs>
           </v-col>
         </v-row>
@@ -297,8 +297,6 @@ export default {
       }
     },
     transitionTo(to) {
-      console.log(to)
-      this.activePage = to;
       this.$router.push({path:`/portfolio/${to}`, query: this.$route.query})
     }
   }

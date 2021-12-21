@@ -42,7 +42,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .tooltip-root {
-  max-width: 320px;
+  max-width: 400px;
 }
 .indicators-list {
   padding-bottom: 0;
