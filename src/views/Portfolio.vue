@@ -309,6 +309,7 @@ export default {
     margin-top: -22px;
   }
   .mt-negative{
+    height: 215px;
     margin-top: -205px !important;
   }
   .tabs-column {
