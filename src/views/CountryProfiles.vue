@@ -216,7 +216,10 @@ export default {
     },
     filteredCountries() {
       if(this.region === this.regions[0]) {
-        return this.countries
+        return this.countries.map(country => {
+          country.disabled = false
+          return country
+        });
       }
       let filter = this.countries.map(country => {
         country.disabled = country['Region'] !== this.region
@@ -356,14 +359,6 @@ export default {
     },
     getChipStyle(index) {
       return `background-color:${this.rgbaColorScheme[index%4]}`;
-    },
-    changeRegion() {
-      // if(region !=='All SIDS' && this.activeCountryProfile.Region !== region) {
-      //   this.setCountry(this.filteredCountries[0].id)
-      // }
-      // this.setCompareCountries(this.compare.filter(country => {
-      //   this.countries.find(country => country.id === this.country)
-      // }))
     }
   },
   created() {
@@ -383,11 +378,7 @@ export default {
     font-weight: bold;
   }
   .v-list-item--disabled {
-    /* min-height: 1px !important;
-    overflow: hidden !important;
-    display: block;
-    height: 1px;
-    margin-top: -1px; */
+    display: none !important;
   }
   .country-select .v-input__append-inner{
     margin-top: 12px !important;

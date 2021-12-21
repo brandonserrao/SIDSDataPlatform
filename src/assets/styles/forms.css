@@ -9,7 +9,7 @@
 .v-input {
   font-size: 14px !important;
 }
-.v-select {
+.v-select, .v-input {
 
   font-weight: 600 !important;
 }

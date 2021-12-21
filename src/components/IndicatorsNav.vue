@@ -1,17 +1,23 @@
 <template>
   <div class="indicators-nav">
-    <v-card>
-      <v-text-field v-if="!dataset"
-        class="ml-2 mr-2"
-        v-model="searchString"
-        @focus="showFullList"
-        @blur="hideFullList"
-        label="Search indicators"
-        hide-details="auto"
-        @click:append="clearFullSearch"
-        append-icon="mdi-close"
-        prepend-icon="mdi-magnify"
-      ></v-text-field>
+    <div>
+      <label class="input-label">
+        Search indicators
+        <v-text-field v-if="!dataset"
+          class="ml-2 mr-2"
+          rounded
+          outlined
+          dense
+          v-model="searchString"
+          @focus="showFullList"
+          @blur="hideFullList"
+          hide-details="auto"
+          @click:append="clearFullSearch"
+          append-icon="mdi-close"
+          prepend-icon="mdi-magnify"
+        ></v-text-field>
+      </label>
+
       <v-virtual-scroll
         v-if="activeSearch"
         :items="allIndicators"
@@ -142,7 +148,7 @@
           </template>
         </v-list-item-group>
       </v-list>
-    </v-card>
+    </div>
     <v-card class="mt-2" v-if="activeIndicator">
       <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.Indicator}}</v-card-title>
       <v-card-text>
