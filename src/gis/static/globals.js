@@ -4,6 +4,7 @@ import constants from "@/gis/static/constants.js";
 
 const globals = {
   firstSymbolId: "tunnel-oneway-arrow-blue",
+  basemapLabels: [], //current basemap labels, for use in addLabels -> the toggling of the labels of a current basemap style
   //current layer state manager
   currentLayerState: {
     color: null,

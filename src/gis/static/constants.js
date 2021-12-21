@@ -8,6 +8,12 @@ const constants = {
       "https://sebastian-ch.github.io/sidsDataTest/data/hex5clipped/{z}/{x}/{y}.pbf",
     admin1:
       "https://sebastian-ch.github.io/sidsDataTest/data/admin1/{z}/{x}/{y}.pbf",
+    // "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/admin1/%7Bz%7D/%7Bx%7D/%7By%7D.pbf",
+    // "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/admin1/%7Bz%7D/%7Bx%7D/%7By%7D.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
+    /*     geohubAdmin1_short:
+      "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/admin1/%7Bz%7D/%7Bx%7D/%7By%7D.pbf",
+    geohubAdmin1_long:
+      "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/admin1/%7Bz%7D/%7Bx%7D/%7By%7D.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D", */
     admin2:
       "https://sebastian-ch.github.io/sidsDataTest/data/admin2/{z}/{x}/{y}.pbf",
     ocean:
@@ -34,19 +40,23 @@ const constants = {
   ],
   styles: [
     {
-      title: "Satellite With Labels",
+      name: "Mapbox Satellite Streets",
+      // title: "Satellite With Labels",
       uri: "mapbox://styles/mapbox/satellite-streets-v11",
     },
     {
-      title: "Light",
+      name: "Mapbox Light",
+      // title: "Light",
       uri: "mapbox://styles/mapbox/light-v10",
     },
     {
-      title: "Satellite Imagery",
+      name: "Satellite Imagery", //double check for correct name
+      // title: "Satellite Imagery",
       uri: "mapbox://styles/mapbox/satellite-v9",
     },
     {
-      title: "Mapbox Dark",
+      name: "Mapbox Dark",
+      // title: "Mapbox Dark",
       uri: "mapbox://styles/mapbox/dark-v10",
     },
   ],
@@ -55,6 +65,7 @@ const constants = {
     "admin-1-boundary-bg",
     "road-label",
     "road-number-shield",
+    "road-exit-shield",
     "airport-label",
   ],
 };

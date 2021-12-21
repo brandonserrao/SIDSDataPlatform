@@ -481,6 +481,26 @@
                     <div
                       class="col-flex basemap-options display-none options-drop"
                     >
+                      <!-- <div
+                        class="
+                          row-flex
+                          space-between
+                          basemap-option
+                          align-items-center
+                        "
+                        @click="
+                          handleBasemapChange(
+                            'Satellite Imagery',
+                            'satellite-icon'
+                          )
+                        "
+                      >
+                        <div>Satellite Imagery</div>
+                        <div
+                          class="menu-option-icon-satellite satellite-icon"
+                          style="margin-right: 10px"
+                        ></div>
+                      </div> -->
                       <div
                         class="
                           row-flex
@@ -489,10 +509,13 @@
                           align-items-center
                         "
                         @click="
-                          handleBasemapChange('Satellite', 'satellite-icon')
+                          handleBasemapChange(
+                            'Mapbox Satellite Streets',
+                            'satellite-icon'
+                          )
                         "
                       >
-                        <div>Satellite Imagery</div>
+                        <div>Mapbox Satellite Streets</div>
                         <div
                           class="menu-option-icon-satellite satellite-icon"
                           style="margin-right: 10px"
@@ -505,9 +528,11 @@
                           basemap-option
                           align-items-center
                         "
-                        @click="handleBasemapChange('A', 'satellite-icon')"
+                        @click="
+                          handleBasemapChange('Mapbox Light', 'satellite-icon')
+                        "
                       >
-                        <div>A</div>
+                        <div>Mapbox Light</div>
                         <div
                           class="menu-option-icon-satellite satellite-icon"
                           style="margin-right: 10px"
@@ -520,24 +545,11 @@
                           basemap-option
                           align-items-center
                         "
-                        @click="handleBasemapChange('B', 'satellite-icon')"
-                      >
-                        <div>B</div>
-                        <div
-                          class="menu-option-icon-satellite satellite-icon"
-                          style="margin-right: 10px"
-                        ></div>
-                      </div>
-                      <div
-                        class="
-                          row-flex
-                          space-between
-                          basemap-option
-                          align-items-center
+                        @click="
+                          handleBasemapChange('Mapbox Dark', 'satellite-icon')
                         "
-                        @click="handleBasemapChange('C', 'satellite-icon')"
                       >
-                        <div>C</div>
+                        <div>Mapbox Dark</div>
                         <div
                           class="menu-option-icon-satellite satellite-icon"
                           style="margin-right: 10px"
@@ -837,22 +849,21 @@ export default {
         */
         document.getElementsByClassName("country-name")[0].textContent = name;
       } else if (change_type === "select-resolution") {
-        // let index = object.index; //unused;
         let resolution = object.resolution;
         let resolutionObject = { resolution: resolution };
         this.$emit(change_type, resolutionObject); //custom event for parent to hear
+      } else if (change_type === "select-basemap") {
+        let basemap = object.name;
+        let icon = object.icon;
+        let basemapObject = { name: basemap, icon: icon };
+        this.$emit(change_type, basemapObject); //custom event for parent to hear
       } else {
-        /*         alert(
-          `${change_type} not yet handled by handleGisMenuChange; This warning blocks flipping animation`
-        ); */
-        /*         console.log(
-          `active_dataset: ${this.active_dataset}; active_layer: ${this.active_layer}`
-        ); */
         console.log(`${change_type} not yet handled by handleGisMenuChange`);
       }
     },
 
     handleResolutionChange(index, resolution) {
+      console.log("handleResolutionChange");
       var resolutionOptions =
         document.getElementsByClassName("resolution-option");
 
@@ -883,6 +894,7 @@ export default {
     },
 
     handleBasemapChange(text, image) {
+      console.log("handleBasemapChange");
       var selected = document.getElementsByClassName("selected-basemap")[0];
       var basemapMenu = document.getElementsByClassName("basemap-options")[0];
       basemapMenu.classList.add("growUp");
@@ -897,7 +909,12 @@ export default {
       document.getElementsByClassName("basemap-icon-handle")[0].className =
         "icon basemap-icon-handle " + image;
 
-      this.handleGisMenuChange({ basemap: text });
+      // this.handleGisMenuChange({ basemap: text });
+      console.log(
+        "passing handleBasemapChange eventData to handleGisMenuChange"
+      );
+      let eventData = { name: text, icon: image };
+      this.handleGisMenuChange("select-basemap", eventData);
     },
 
     handleCountryChange(eventData) {
@@ -923,7 +940,9 @@ export default {
       selected2.children[0].innerHTML = "";
 
       // this.handleGisMenuChange({ Country: text });
-      console.log("passing eventData to handleGisMenuChange");
+      console.log(
+        "passing handleCountryChange eventData to handleGisMenuChange"
+      );
       this.handleGisMenuChange("select-country", eventData); //text needs renaming to a better variable name
     },
 
@@ -1179,6 +1198,7 @@ export default {
       }
       object["layers"] = layers;
 
+      console.log("caculatorRun->handleGisMenuChange");
       this.handleGisMenuChange(object);
     },
 
@@ -1298,6 +1318,7 @@ export default {
         }
       }
 
+      console.log("handleDownload->handleGisMenuChange");
       this.handleGisMenuChange(object);
     },
 
@@ -1376,6 +1397,7 @@ export default {
       }
 
       object["height"] = value;
+      console.log("handleHeightChange->handleGisMenuChange");
       this.handleGisMenuChange(object);
     },
 
@@ -1405,6 +1427,7 @@ export default {
       }
 
       object["Label"] = value;
+      console.log("handleLabelsChange->handleGisMenuChange");
       this.handleGisMenuChange(object);
     },
 
@@ -1436,6 +1459,7 @@ export default {
       }
 
       object["bivariate-mode"] = key;
+      console.log("handleBivariateMode->handleGisMenuChange");
       this.handleGisMenuChange(object);
     },
 
@@ -1466,6 +1490,7 @@ export default {
       }
 
       object["dual-mode"] = key;
+      console.log("handleDualMode->handleGisMenuChange");
       this.handleGisMenuChange(object);
     },
 
@@ -1484,6 +1509,7 @@ export default {
 
       document.getElementsByClassName("color-icon")[0].className =
         "icon color-icon " + image;
+      console.log("handleColorChange->handleGisMenuChange");
       this.handleGisMenuChange({ Color: text });
     },
 

@@ -12,6 +12,7 @@
       @select-country="selectCountry($event)"
       @select-boundary-layer="addBoundaryLayer($event)"
       @select-resolution="changeResolution($event)"
+      @select-basemap="changeBasemap($event)"
       :active_dataset="activeDatasetName"
       :active_layer="activeLayerName"
       @toggle-legend="toggleLegend()"
@@ -75,6 +76,15 @@ export default {
       //oldcode goes in here; calling on mapclass methods
       //call changeHexagonSize/changeResolution
       this.map.changeHexagonSize(object); //oldcode expec: object = {Resolution: string}; newcode gives: {resolution: string}
+    },
+
+    changeBasemap(object) {
+      console.log("changeBasemap(object) object is:");
+      console.log(object);
+
+      //oldcode goes in here; calling on mapclass methods
+      //call
+      this.map.changeBasemap(object);
     },
 
     addBoundaryLayer(object) {

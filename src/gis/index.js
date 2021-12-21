@@ -9,7 +9,8 @@ import colors from "@/gis/static/colors.js";
 
 import * as d3 from "d3";
 import chroma from "chroma-js";
-import Chart from "chart.js";
+import Chart from "chart.js"; //testing replacement with older version used from CDN
+// import Chart from "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js";
 
 import { featureCollection } from "@turf/helpers";
 import dissolve from "@turf/dissolve";
@@ -249,6 +250,99 @@ export default class Map {
       //console.log('change bins');
       //map.setPaintProperty(globals.currentLayerState.hexSize, 'fill-opacity', 0.7)
       map.moveLayer(resolution, "allsids");
+    });
+  }
+  changeBasemap(selectionObject) {
+    let self = this;
+    let map = this.map;
+    console.log("selectionObject: ");
+    console.log(selectionObject);
+    let basemapName = selectionObject.name;
+    let basemapIcon = selectionObject.icon;
+    console.log(`changeBasemap( ${basemapName} ); icon: ${basemapIcon}`);
+
+    ////adapting from old basemapSwitch.js
+    //get the basemap names
+    let currentBasemap = map.getStyle().name;
+    let selectedBasemap = selectionObject.name;
+    console.log(`${currentBasemap} -> ${selectedBasemap}`);
+
+    //get the uri from the store of styles uri's, and set it
+    let thisStyle = Vue._.find(constants.styles, function (o) {
+      return o.name === selectedBasemap;
+    });
+    if (!thisStyle) {
+      alert("thisStyle from Basemap not exist");
+    }
+    map.setStyle(thisStyle.uri);
+    for (const i of constants.unwantedMapboxLayers) {
+      if (map.getLayer(i)) {
+        map.removeLayer(i);
+      }
+    }
+
+    //when done, update: firstSymbolId, basemapLabels
+    map.once("idle", function () {
+      let layers = map.getStyle().layers;
+      //get first symbol layer for insertion of layer under
+      for (var i = 0; i < layers.length; i++) {
+        if (layers[i].type === "symbol") {
+          globals.firstSymbolId = layers[i].id;
+          break;
+        }
+      }
+      for (var x in layers) {
+        if (layers[x].type === "symbol" || layers[x].type === "line") {
+          globals.basemapLabels.push(layers[x]);
+        }
+      }
+
+      console.log(`firstSymbolId: ${globals.firstSymbolId}`);
+      console.log(`basemapLabels: ${globals.basemapLables}`);
+
+      //addHexSource(); //oldcode, would add all the sources like admin1 etc to the map as sources, then add the allsids layer in orange under the firstSymbolId
+      self._addVectorSources();
+      let currentSource = Vue._.find(globals.sourceData, function (o) {
+        return o.name === globals.currentLayerState.hexSize;
+      });
+      if (!(globals.currentLayerState.hexSize === "ocean")) {
+        let cls = globals.currentLayerState;
+        map.addLayer(
+          {
+            id: cls.hexSize,
+            type: "fill",
+            source: cls.hexSize,
+            "source-layer": currentSource.layer,
+            layout: {
+              visibility: "visible",
+            },
+            paint: {
+              "fill-opacity": 0.8,
+              "fill-color": [
+                "interpolate",
+                ["linear"],
+                ["get", cls.dataLayer],
+                cls.breaks[0],
+                cls.color[0],
+                cls.breaks[1],
+                cls.color[1],
+                cls.breaks[2],
+                cls.color[2],
+                cls.breaks[3],
+                cls.color[3],
+                cls.breaks[4],
+                cls.color[4],
+              ],
+            },
+          },
+          globals.firstSymbolId
+        );
+
+        map.setFilter(cls.hexSize, [">=", cls.dataLayer, 0]);
+        map.moveLayer("allsids", globals.firstSymbolId); //ensure allsids outline ontop
+      } else {
+        console.log("currentLayerState.hexSize = ocean; not adding layer");
+      }
     });
   }
 
@@ -933,14 +1027,14 @@ export default class Map {
 
     //Histogram in addLegend
     //old code, adapted;
-    /*     console.log("myHistogram data: ");
+    console.log("myHistogram data: ");
     console.log(data);
     console.log("myHistogram options: ");
     console.log(option);
     console.log("myHistogram canvas: ");
-    console.log(canvas); */
-    console.log("in updateHistogram");
-    console.log("creating myHistogram");
+    console.log(canvas);
+    // console.log("in updateHistogram");
+    console.log("in updateHistogram creating myHistogram");
     globals.myHistogram = Chart.Bar(canvas, {
       data: data,
       options: option,
