@@ -268,8 +268,8 @@ export default class Map {
     console.log(`${currentBasemap} -> ${selectedBasemap}`);
 
     //get the uri from the store of styles uri's, and set it
-    let thisStyle = Vue._.find(constants.styles, function (o) {
-      return o.name === selectedBasemap;
+    let thisStyle = Vue._.find(constants.styles, function (style) {
+      return style.name === selectedBasemap;
     });
     if (!thisStyle) {
       alert("thisStyle from Basemap not exist");
@@ -473,7 +473,7 @@ export default class Map {
     console.log(
       `changeDataOnMap(Field_Name: ${Field_Name}, 
         activeDataset?.name: ${activeDataset?.name}, 
-        activeLayer?.Description: ${activeLayer?.Description})`
+        activeLayer?.Description: ${activeLayer?.Description}`
     );
 
     globals.currentLayerState.dataLayer = Field_Name; //update global to reflect selected datalayer
@@ -643,6 +643,7 @@ export default class Map {
   }
 
   recolorBasedOnWhatsOnPage() {
+    console.log(`recolorBasedOnWhatsOnPage()`);
     let map = this.map;
     var features = map.queryRenderedFeatures({
       layers: [globals.currentLayerState.hexSize],
@@ -1139,6 +1140,7 @@ export default class Map {
     //for debugging
     console.log(this.map.style.sourceCaches);
     console.log(this.map.style._layers);
+    console.log(globals);
   }
 
   _initOnClickControl() {
