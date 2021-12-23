@@ -25,6 +25,7 @@ Vue.use(VueLodash, { name: "custom", lodash: lodash });
 import mapboxgl from "@/gis/mapboxgl";
 // eslint-disable-next-line no-unused-vars
 import mapboxMinimap from "mapbox.minimap";
+// import map from "core-js/fn/array/map";
 
 export default class Map {
   constructor(container) {
@@ -344,6 +345,19 @@ export default class Map {
         console.log("currentLayerState.hexSize = ocean; not adding layer");
       }
     });
+  }
+  changeOpacity(opacityObject) {
+    let map = this.map;
+    let sliderValue = opacityObject.opacity;
+    map.setPaintProperty(
+      globals.currentLayerState.hexSize,
+      "fill-opacity",
+      sliderValue * 0.02
+    );
+    if (map.getLayer("ocean")) {
+      // console.log(`adjusting "ocean" layer opacity`);
+      map.setPaintProperty("ocean", "fill-opacity", sliderValue * 0.02);
+    }
   }
 
   addOcean(activeDataset, activeLayer) {

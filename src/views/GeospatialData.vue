@@ -13,6 +13,7 @@
       @select-boundary-layer="addBoundaryLayer($event)"
       @select-resolution="changeResolution($event)"
       @select-basemap="changeBasemap($event)"
+      @change-opacity="changeOpacity($event)"
       :active_dataset="activeDatasetName"
       :active_layer="activeLayerName"
       @toggle-legend="toggleLegend()"
@@ -85,6 +86,12 @@ export default {
       //oldcode goes in here; calling on mapclass methods
       //call
       this.map.changeBasemap(object);
+    },
+    changeOpacity(object) {
+      console.log("changeOpacity(object) object is:");
+      console.log(object);
+
+      this.map.changeOpacity(object);
     },
 
     addBoundaryLayer(object) {

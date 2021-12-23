@@ -746,13 +746,14 @@
                       class="opacity-slider"
                       id="opacity"
                       name="opacity"
-                      min="-50"
+                      min="0"
                       max="50"
                       @input="
-                        handleGisMenuChange({ opacity: $event.target.value })
+                        handleGisMenuChange('change-opacity', {
+                          opacity: $event.target.value,
+                        })
                       "
                     />
-                    <!-- <input type="range" class="opacity-slider" id="opacity" name="opacity" min="-50" max="50" oninput="handleGisMenuChange({'opacity':this.value})"> -->
                   </div>
                 </div>
               </div>
@@ -823,11 +824,11 @@ export default {
     },
     handleGisMenuChange(change_type, object) {
       //determine type of menuchange based on eventType
+      console.log(`change_type: ${change_type}`);
       console.log("handleGisMenuChange: object passed:");
       console.log(object);
 
       if (change_type === "select-country") {
-        console.log(`change_type: ${change_type}`);
         //value will be country name; returning the names.js object of sids info
         let name = object.text;
         let flag = object.flag;
@@ -857,6 +858,10 @@ export default {
         let icon = object.icon;
         let basemapObject = { name: basemap, icon: icon };
         this.$emit(change_type, basemapObject); //custom event for parent to hear
+      } else if (change_type === "change-opacity") {
+        let opacity = object.opacity;
+        let opacityObject = { opacity: opacity };
+        this.$emit(change_type, opacityObject);
       } else {
         console.log(`${change_type} not yet handled by handleGisMenuChange`);
       }
