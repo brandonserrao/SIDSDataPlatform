@@ -370,7 +370,7 @@
                       "
                       @click="toggleColorMenu()"
                     >
-                      <div>Viridis</div>
+                      <div>Palettes</div>
                       <div
                         class="menu-icon color-icon-1"
                         style="margin-right: 30px"
@@ -380,7 +380,7 @@
                     <div
                       class="col-flex color-options display-none options-drop"
                     >
-                      <div
+                      <!-- <div
                         class="
                           row-flex
                           space-between
@@ -426,6 +426,80 @@
                         @click="handleColorChange('C', 'color-icon-1')"
                       >
                         <div>C</div>
+                        <div class="menu-option-icon color-icon-1"></div>
+                      </div> -->
+                      <div
+                        class="
+                          row-flex
+                          space-between
+                          color-option
+                          align-items-center
+                        "
+                        @click="handleColorChange('original', 'color-icon-2')"
+                      >
+                        <div>Default</div>
+                        <div class="menu-option-icon color-icon-2"></div>
+                      </div>
+                      <div
+                        class="
+                          row-flex
+                          space-between
+                          color-option
+                          align-items-center
+                        "
+                        @click="handleColorChange('invert', 'color-icon-1')"
+                      >
+                        <div>Invert Current</div>
+                        <div class="menu-option-icon color-icon-1"></div>
+                      </div>
+                      <div
+                        class="
+                          row-flex
+                          space-between
+                          color-option
+                          align-items-center
+                        "
+                        @click="handleColorChange('red', 'color-icon-2')"
+                      >
+                        <div>Reds</div>
+                        <div class="menu-option-icon color-icon-2"></div>
+                      </div>
+                      <div
+                        class="
+                          row-flex
+                          space-between
+                          color-option
+                          align-items-center
+                        "
+                        @click="handleColorChange('purple', 'color-icon-1')"
+                      >
+                        <div>Purples</div>
+                        <div class="menu-option-icon color-icon-1"></div>
+                      </div>
+                      <div
+                        class="
+                          row-flex
+                          space-between
+                          color-option
+                          align-items-center
+                        "
+                        @click="handleColorChange('blue', 'color-icon-1')"
+                      >
+                        <div>Blues</div>
+                        <div class="menu-option-icon color-icon-1"></div>
+                      </div>
+                      <div
+                        class="
+                          row-flex
+                          space-between
+                          color-option
+                          align-items-center
+                        "
+                        @click="
+                          handleColorChange('colorblind-safe', 'color-icon-1')
+                        "
+                      >
+                        <div>Colorblind Safe</div>
                         <div class="menu-option-icon color-icon-1"></div>
                       </div>
                     </div>
@@ -852,16 +926,20 @@ export default {
       } else if (change_type === "select-resolution") {
         let resolution = object.resolution;
         let resolutionObject = { resolution: resolution };
-        this.$emit(change_type, resolutionObject); //custom event for parent to hear
+        this.$emit(change_type, resolutionObject);
       } else if (change_type === "select-basemap") {
         let basemap = object.name;
         let icon = object.icon;
         let basemapObject = { name: basemap, icon: icon };
-        this.$emit(change_type, basemapObject); //custom event for parent to hear
+        this.$emit(change_type, basemapObject);
       } else if (change_type === "change-opacity") {
         let opacity = object.opacity;
         let opacityObject = { opacity: opacity };
         this.$emit(change_type, opacityObject);
+      } else if (change_type === "select-color") {
+        let color = object.color;
+        let colorObject = { color: color };
+        this.$emit(change_type, colorObject);
       } else {
         console.log(`${change_type} not yet handled by handleGisMenuChange`);
       }
@@ -1515,7 +1593,7 @@ export default {
       document.getElementsByClassName("color-icon")[0].className =
         "icon color-icon " + image;
       console.log("handleColorChange->handleGisMenuChange");
-      this.handleGisMenuChange({ Color: text });
+      this.handleGisMenuChange("select-color", { color: text });
     },
 
     toggleBasemapMenu() {

@@ -359,6 +359,113 @@ export default class Map {
       map.setPaintProperty("ocean", "fill-opacity", sliderValue * 0.02);
     }
   }
+  changeColor(colorObject) {
+    let map = this.map;
+    let selectedColor = colorObject.color;
+    let currentColor = globals.currentLayerState.color;
+
+    if (selectedColor === "original") {
+      if (globals.currentLayerState.dataLayer === "depth") {
+        globals.currentLayerState.color = colors.colorSeq["ocean"];
+      } else if (globals.currentLayerState.dataLayer.substring(0, 2) === "1a") {
+        globals.currentLayerState.color = colors.colorDiv.gdpColor;
+      } else if (globals.currentLayerState.dataLayer.substring(0, 2) === "1c") {
+        globals.currentLayerState.color = colors.colorSeq["pop"];
+      } else if (globals.currentLayerState.dataLayer === "7d10") {
+        globals.currentLayerState.color = colors.colorSeq["combo"];
+      } else if (globals.currentLayerState.dataLayer === "7d5") {
+        globals.currentLayerState.color = colors.colorSeq["minty"];
+      } else if (globals.currentLayerState.dataLayer === "7d7") {
+        globals.currentLayerState.color = colors.colorSeq["blues"];
+      } else if (globals.currentLayerState.dataLayer === "7d4") {
+        globals.currentLayerState.color = colors.colorSeq["pinkish"];
+      } else if (globals.currentLayerState.dataLayer === "7d8") {
+        globals.currentLayerState.color = colors.colorSeq["silvers"];
+      } else if (globals.currentLayerState.dataLayer === "d") {
+        //breaks = [-4841, -3805, -2608, -1090, 1322];
+        globals.currentLayerState.color = colors.colorSeq["ocean"];
+      } else {
+        globals.currentLayerState.color = colors.colorSeq["yellow-blue"];
+      }
+    }
+
+    if (selectedColor === "invert") {
+      var reverse = currentColor.reverse();
+      globals.currentLayerState.color = reverse;
+    } else if (selectedColor === "red") {
+      globals.currentLayerState.color = colors.colorSeq["pinkish"];
+    } else if (selectedColor === "purple") {
+      globals.currentLayerState.color = colors.colorSeq["purple"];
+    } else if (selectedColor === "blue") {
+      globals.currentLayerState.color = colors.colorSeq["blues"];
+    } else if (selectedColor === "colorblind-safe") {
+      globals.currentLayerState.color = colors.colorSeq["colorBlindGreen"];
+    }
+
+    console.log(globals.currentLayerState.breaks);
+
+    map.setPaintProperty(globals.currentLayerState.hexSize, "fill-color", [
+      "interpolate",
+      ["linear"],
+      ["get", globals.currentLayerState.dataLayer],
+      globals.currentLayerState.breaks[0],
+      globals.currentLayerState.color[0],
+      globals.currentLayerState.breaks[1],
+      globals.currentLayerState.color[1],
+      globals.currentLayerState.breaks[2],
+      globals.currentLayerState.color[2],
+      globals.currentLayerState.breaks[3],
+      globals.currentLayerState.color[3],
+      globals.currentLayerState.breaks[4],
+      globals.currentLayerState.color[4],
+    ]);
+
+    var allColorz = document.getElementsByClassName("population-per-km-img"); //get the hexagons shown in the legend/histogram
+    for (var x in allColorz) {
+      if (typeof allColorz[x] === "object") {
+        allColorz[x].style.backgroundColor = globals.currentLayerState.color[x];
+      }
+    }
+
+    var features = map.queryRenderedFeatures({
+      layers: [globals.currentLayerState.hexSize],
+    });
+
+    var selectedData = features.map(
+      (x) => x.properties[globals.currentLayerState.dataLayer]
+    );
+
+    //recreated histogram
+    var nGroup = 200;
+    var breaks_histogram = chroma.limits(selectedData, "e", nGroup);
+    var break_index = 0;
+    var histogram_break_count = Array(4).fill(0);
+    for (let i = 0; i < nGroup; i++) {
+      if (
+        breaks_histogram[i] > globals.currentLayerState.breaks[break_index + 1]
+      )
+        break_index += 1;
+      histogram_break_count[break_index] += 1;
+    }
+    let colorRampNew = [];
+
+    for (var i = 0; i < 4; i++) {
+      // colorRampPart = chroma //from in oldcode, appears to never be explicitly assigned to var/let, so appears to have been made an implict global variable; will attempt to implement using let
+      let colorRampPart = chroma
+        .scale([
+          globals.currentLayerState.color[i],
+          globals.currentLayerState.color[i + 1],
+        ])
+        .mode("lch")
+        .colors(histogram_break_count[i]);
+      // colorRampNew = colorRampNew.concat(colorRampPart); //from in oldcode, appears to never be explicitly assigned to var/let, so appears to have been made an implict global variable; will attempt to implement using let
+      colorRampNew = colorRampNew.concat(colorRampPart);
+      //console.log(colorRampNew);
+    }
+    //update the chart with new color ramp
+    globals.myHistogram.data.datasets[0].backgroundColor = colorRampNew;
+    globals.myHistogram.update();
+  }
 
   addOcean(activeDataset, activeLayer) {
     if (!(activeDataset.name === "Ocean Data")) {
