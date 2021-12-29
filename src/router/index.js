@@ -71,18 +71,29 @@ const routes = [
     ]
   },
   {
-    path: '/development-indicators',
+    path: '/development-indicators/:indicator?/:chartType?',
     link: '/development-indicators',
     name: 'Development Indicators',
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
-    props: () => ({
-      view: 'indicators',
-    }),
     beforeEnter: async (to, from, next) => {
+
+      if(!to.params.chartType) {
+        next({ path: `/development-indicators/region/choro`})
+      }
+      if(!to.params.indicator) {
+        next({ path: `/development-indicators/region/choro`})
+      }
       await store.dispatch('indicators/getCategories');
       await store.dispatch('indicators/getMeta');
+      await store.dispatch('indicators/getProfileData');
       next()
     },
+    props: (to) => (
+      {
+        chartType: to.params.chartType,
+        indicator: to.params.indicator
+      }
+    ),
   },
   {
     path: '/vulnerability',
