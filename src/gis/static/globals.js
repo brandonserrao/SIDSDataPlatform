@@ -6,6 +6,13 @@ const globals = {
   firstSymbolId: "tunnel-oneway-arrow-blue",
   basemapLabels: [], //current basemap labels, for use in addLabels -> the toggling of the labels of a current basemap style
   //current layer state manager
+  precision: null, //modified in changeDataOnMap and recolor etc; TODO deglobalize this
+  myHistogram: null,
+  lastActive: { dataset: null, layer: null },
+  /* //were unused; obsoleted by passing these through emits when required
+  activeDataset: null,
+  activeLayer: null, */
+  allLayers: [], //from old code; should be obsoleted by filteredDatasets/datasets made in MapDataController.vue;
   currentLayerState: {
     color: null,
     breaks: null,
@@ -109,9 +116,5 @@ const globals = {
       data: null,
     },
   },
-  myHistogram: null,
-  activeDataset: null,
-  activeLayer: null,
-  allLayers: [], //from old code; should be obsoleted by filteredDatasets/datasets made in MapDataController.vue;
 };
 export default globals;

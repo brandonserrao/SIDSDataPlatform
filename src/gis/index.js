@@ -47,6 +47,7 @@ export default class Map {
 
       this._bindMapClickListeners(this); //attempt to pass class into this function, to allow access to class when mapbox map level events are called that can't see the class functions normally
       //========================================================================
+      this._bindRecolorListeners(this); //using this convention from _bindMapClickListeners; TODO review and rewrite these functions
       //----------------------------------------------------------------------------
 
       this._addPointSources();
@@ -92,7 +93,15 @@ export default class Map {
       },
       pitch: 0,
     });
+
+    //contextual recolor hexes
+    this.map.once("idle", function () {
+      if (!this.map.getLayer("ocean")) {
+        this.recolorBasedOnWhatsOnPage();
+      }
+    });
   }
+  /* //obsoleted by zoomToCountry
   zoomTo(selection) {
     var v2 = new mapboxgl.LngLatBounds([selection[0], selection[1]]);
     console.log(`zoomTo(${selection}) calling map.fitBounds`);
@@ -107,7 +116,7 @@ export default class Map {
       pitch: 0,
     });
   }
-
+ */
   _createMiniMap() {
     this.minimap = new mapboxgl.Minimap({
       center: this.map.getCenter(),
@@ -621,7 +630,7 @@ export default class Map {
       }
     }, 600);
 
-    this.addLegend();
+    this.addLegend(); //TODO doesnt this need the extra params that I added to the addLegend function?
   }
 
   changeDataOnMap(activeDataset, activeLayer) {
@@ -737,14 +746,16 @@ export default class Map {
 
         var breaks = chroma.limits(selectedData, "q", 4);
         var breaks_new = [];
-        var precision = 1;
+        globals.precision = 1;
         do {
-          precision++;
+          globals.precision++;
           for (let i = 0; i < 5; i++) {
-            breaks_new[i] = parseFloat(breaks[i].toPrecision(precision));
+            breaks_new[i] = parseFloat(
+              breaks[i].toPrecision(globals.precision)
+            );
           }
           //console.log(breaks_new);
-        } while (this.checkForDuplicates(breaks_new) && precision < 10);
+        } while (this.checkForDuplicates(breaks_new) && globals.precision < 10);
         breaks = breaks_new;
 
         var colorRamp = colors.colorSeq["yellow-blue"];
@@ -819,7 +830,7 @@ export default class Map {
           this.addLegend(
             colorRamp,
             breaks,
-            precision,
+            globals.precision, //
             activeLayer,
             selectedData
           );
@@ -921,6 +932,13 @@ export default class Map {
         }, 400);
       }
     }
+    /*     this.addLegend(
+      colors,
+      breaks,
+      undefined, //should be undefined here but default value in addLegend should handle it
+      undefined, //should be undefined here but default value in addLegend should handle it
+      selectedData
+    ); */
   }
 
   remove3d() {
@@ -972,8 +990,8 @@ export default class Map {
   addLegend(
     colors,
     breaks,
-    precision,
-    activeLayer, //should eliminate need for id etc
+    precision = globals.precision, //default added to mirror oldcode behaviour of global set/modified precision value
+    activeLayer = globals.lastActive.layer, //should eliminate need for id etc; default value added as fallback to cope with call from recolor function
     selectedData //i believe this is input from updatingMap based on whats features/data on screen
   ) {
     // let activeLayer = activeLayer; //activeLayer is oldcode variable of the active layer from allLayers globalvariable
@@ -1543,6 +1561,27 @@ export default class Map {
       clickDiv.style.display = "none";
       clickDiv.innerHTML = ""; */
     });
+  }
+
+  _bindRecolorListeners(mapClassInstance) {
+    let instance = mapClassInstance;
+    console.log(instance);
+    //this. out here ref the mapClass instance calling this method
+    //TODO: review and rewrite
+
+    for (const eventType of ["zoomend", "dragend"]) {
+      console.log(`binding RecolorListener: ${eventType}`);
+      this.map.on(eventType, function (e, mapClassInstance = instance) {
+        //this. in here would ref the mapboxmap and not our mapClass which has the recolor method
+        console.log("_bindRecolorListeners");
+        console.log("event is:");
+        console.log(e);
+        console.log("instance is:");
+        console.log(instance);
+
+        mapClassInstance.recolorBasedOnWhatsOnPage();
+      });
+    }
   }
 
   onDataClick(clicked) {

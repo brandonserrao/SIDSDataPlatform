@@ -12,4 +12,7 @@ dateEntered,id,bugDescription,solutionIdea,comments,dateFixed
 23.12.21,11,mapbox satellite option in basemap switcher is conjested inside its container,,,
 28.12.21,12, 3D layer not readded when,,,
 28.12.22,13,opacity slider doesn’t affect extruded hexagons,,,
-28.12.21,14,3D mode still allows clickthrough to the 2D hexes underneath,disable onclick;,check docs for mapbox has 3D/occlusion sensitive query functionality,
+28.12.21,14,3D mode still allows clickthrough to the 2D hexes underneath,disable onclick,,check docs for mapbox has 3D/occlusion sensitive query functionality
+29.12.21,15,legend doesn’t regen when recoloring of hexes occurs,,,
+29.12.21,16,dem does not regen/match the recoloring when it occurs,,,
+29.12.21,17,recolor slow for denser/more data,disable for dense data/far zoom levels/small hex resolutions; add more nuances logic for regen at those levels,,

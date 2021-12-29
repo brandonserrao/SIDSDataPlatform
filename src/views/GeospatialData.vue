@@ -361,6 +361,12 @@ export default {
           }
         }
       }
+
+      //TODO: reevaluate this
+      //workaround!!! implemented for recoloring code
+      //, setting a global variable instead of passing it through, i
+      globals.lastActive.layer = activeLayer;
+      globals.lastActive.dataset = activeDataset;
     },
   },
   mounted() {
