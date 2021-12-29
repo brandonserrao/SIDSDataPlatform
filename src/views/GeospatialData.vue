@@ -18,6 +18,7 @@
       :active_dataset="activeDatasetName"
       :active_layer="activeLayerName"
       @toggle-legend="toggleLegend()"
+      @toggle-3D="toggle3D()"
     />
     <div id="map"></div>
   </div>
@@ -62,6 +63,10 @@ export default {
       this.map.logSources();
     },
 
+    toggle3D() {
+      console.log(`toggling 3D !!! currently indev`);
+      this.map.add3D();
+    },
     toggleLegend() {
       console.log(`toggling Legend: displayLegend= ${this.displayLegend}`);
       this.displayLegend = !this.displayLegend;

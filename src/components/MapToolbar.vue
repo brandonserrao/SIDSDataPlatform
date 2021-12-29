@@ -800,7 +800,22 @@
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>
               </div>
-
+              <!-- 
+              <div class="menu row-flex">
+                <div
+                  class="icon threeD-icon"
+                  @click="handleHeightChange('toggle-3D', 'twoD')"
+                ></div>
+                <div
+                  class="icon twoD-icon display-none"
+                  @click="handleHeightChange('toggle-3D', 'threeD')"
+                ></div>
+                <div class="description hover">3D 2D</div>
+                <div
+                  class="menu-drop row-flex align-items-center display-none"
+                ></div>
+              </div>
+ -->
               <!-- Opacity Select Menu -->
               <div class="menu row-flex">
                 <div class="icon opacity-icon" @click="toggleMenu(6)"></div>
@@ -902,6 +917,7 @@ export default {
       console.log("handleGisMenuChange: object passed:");
       console.log(object);
 
+      //CANDO: extract object packaging and emit to own line outside of typecheck
       if (change_type === "select-country") {
         //value will be country name; returning the names.js object of sids info
         let name = object.text;
@@ -940,6 +956,11 @@ export default {
         let color = object.color;
         let colorObject = { color: color };
         this.$emit(change_type, colorObject);
+      } else if (change_type === "toggle-3D") {
+        //obj.value = "2D" or "3D"
+        let threeD = object.value;
+        let threeDObject = { threeD: threeD };
+        this.$emit(change_type, threeDObject);
       } else {
         console.log(`${change_type} not yet handled by handleGisMenuChange`);
       }
@@ -1481,7 +1502,7 @@ export default {
 
       object["height"] = value;
       console.log("handleHeightChange->handleGisMenuChange");
-      this.handleGisMenuChange(object);
+      this.handleGisMenuChange("toggle-3D", object);
     },
 
     handleLabelsChange(first, second) {

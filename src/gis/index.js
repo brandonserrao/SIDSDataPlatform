@@ -467,6 +467,81 @@ export default class Map {
     globals.myHistogram.update();
   }
 
+  add3D() {
+    let map = this.map;
+    let id = globals.currentLayerState.hexSize + "-3d";
+    //preemptive check for if 3D layer exists already before adding fill-extrusion layer
+    if (map.getLayer(id)) {
+      map
+        .easeTo({
+          center: map.getCenter(),
+          pitch: 0,
+        })
+        .removeLayer(id);
+    }
+
+    //add fill-extrusion layer
+    else {
+      let current = Vue._.find(globals.sourceData, function (o) {
+        return o.name === globals.currentLayerState.hexSize;
+      });
+
+      map.addLayer(
+        {
+          id: id,
+          type: "fill-extrusion",
+          source: globals.currentLayerState.hexSize,
+          "source-layer": current.layer,
+          layout: {
+            visibility: "visible",
+          },
+
+          paint: {
+            "fill-extrusion-color": [
+              "interpolate",
+              ["linear"],
+              ["get", globals.currentLayerState.dataLayer],
+              globals.currentLayerState.breaks[0],
+              globals.currentLayerState.color[0],
+              globals.currentLayerState.breaks[1],
+              globals.currentLayerState.color[1],
+              globals.currentLayerState.breaks[2],
+              globals.currentLayerState.color[2],
+              globals.currentLayerState.breaks[3],
+              globals.currentLayerState.color[3],
+              globals.currentLayerState.breaks[4],
+              globals.currentLayerState.color[4],
+            ],
+            "fill-extrusion-height": [
+              "interpolate",
+              ["linear"],
+              ["get", globals.currentLayerState.dataLayer],
+              globals.currentLayerState.breaks[0],
+              0,
+              globals.currentLayerState.breaks[1],
+              500,
+              globals.currentLayerState.breaks[2],
+              5000,
+              globals.currentLayerState.breaks[3],
+              11000,
+              globals.currentLayerState.breaks[4],
+              50000,
+            ],
+
+            //'fill-opacity': 0.8,
+          },
+        },
+        globals.firstSymbolId
+      );
+
+      map.setFilter(id, [">=", globals.currentLayerState.dataLayer, 0]);
+      map.easeTo({
+        center: map.getCenter(),
+        pitch: 55,
+      });
+    }
+  }
+
   addOcean(activeDataset, activeLayer) {
     if (!(activeDataset.name === "Ocean Data")) {
       alert("addOcean called with non-Ocean Data activeDataset!!!");
