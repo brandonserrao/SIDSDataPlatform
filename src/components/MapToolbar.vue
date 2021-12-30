@@ -263,12 +263,13 @@
                           <div class="resolution-sub-icon Square10"></div>
                         </div>
                       </div>
+
                       <div
                         class="row-flex align-items-center"
                         style="margin-left: 10px; height: 50px"
                       >
                         <div style="margin-right: 15px">Admin Regions</div>
-                        <div
+                        <!-- <div
                           class="row-flex resolution-option align-items-center"
                           @click="handleResolutionChange(6, 'adminRegion1')"
                         >
@@ -285,7 +286,7 @@
                             Level 2
                           </div>
                           <div class="resolution-sub-icon adminRegion2"></div>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
 
@@ -895,7 +896,7 @@ import names from "@/gis/static/names";
 import CountrySelectorOption from "@/components/CountrySelectorOption";
 
 export default {
-  props: ["active_dataset", "active_layer"], //to receive from MapDatasetController
+  //props: ["active_dataset", "active_layer"],//never used //to receive from MapDatasetController
   name: "MapToolbar",
   components: {
     CountrySelectorOption,

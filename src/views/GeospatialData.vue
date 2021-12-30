@@ -82,7 +82,16 @@ export default {
 
       //oldcode goes in here; calling on mapclass methods
       //call changeHexagonSize/changeResolution
-      this.map.changeHexagonSize(object); //oldcode expec: object = {Resolution: string}; newcode gives: {resolution: string}
+      if (!(this.activeDatasetName === "Ocean Data")) {
+        console.log(`activeDatasetName: ${this.activeDatasetName}`);
+        this.map.changeHexagonSize(object); //oldcode expec: object = {Resolution: string}; newcode gives: {resolution: string}
+      } else {
+        console.log(
+          `activeDatasetName: ${this.activeDatasetName}; doing nothing;`
+        );
+        //TODO: implement a more explicitly blocking version where it stops the clicking in the toolbar itself
+        return;
+      }
     },
 
     changeBasemap(object) {
@@ -333,6 +342,11 @@ export default {
         activeDataset = null;
         activeLayer = null;
       } else {
+        //TODO: reevaluate this ratch
+        //update this vue's state
+        this.activeDatasetName = activeDataset.name;
+        this.activeLayerName = activeLayer.Name; //should be identical to activeDatasetName
+
         //check for recognized dataset.type
         switch (activeDataset.type) {
           case "single": //only contains one layer; pull it from dataset
