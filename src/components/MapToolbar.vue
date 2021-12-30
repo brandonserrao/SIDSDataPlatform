@@ -896,7 +896,7 @@ import names from "@/gis/static/names";
 import CountrySelectorOption from "@/components/CountrySelectorOption";
 
 export default {
-  //props: ["active_dataset", "active_layer"],//never used //to receive from MapDatasetController
+  props: ["active_dataset", "active_layer"], //to receive from MapDatasetController via GeospatialData
   name: "MapToolbar",
   components: {
     CountrySelectorOption,
@@ -968,7 +968,12 @@ export default {
     },
 
     handleResolutionChange(index, resolution) {
+      if (this.active_dataset === "Ocean Data") {
+        console.log(`active_dataset: ${this.active_dataset}; do nothing`);
+        return;
+      }
       console.log("handleResolutionChange");
+      console.log(`active_dataset: ${this.active_dataset};`);
       var resolutionOptions =
         document.getElementsByClassName("resolution-option");
 

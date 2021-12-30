@@ -344,8 +344,7 @@ export default {
       } else {
         //TODO: reevaluate this ratch
         //update this vue's state
-        this.activeDatasetName = activeDataset.name;
-        this.activeLayerName = activeLayer.Name; //should be identical to activeDatasetName
+        this.activeDatasetName = activeDataset.name; //should be identical to activeLayerName
 
         //check for recognized dataset.type
         switch (activeDataset.type) {
@@ -363,6 +362,9 @@ export default {
         }
         //
         if (activeLayer) {
+          //TODO: reevaluate this ratch
+          //update this vue's state
+          this.activeLayerName = activeLayer.Name; //should be identical to activeDatasetName
           console.log(`activeLayer: ${activeLayer.Field_Name}`);
           //if there's a layer chosen -> changeDataOnMap
           if (activeLayer.Field_Name === "depth") {
