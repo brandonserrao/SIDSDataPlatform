@@ -85,6 +85,11 @@ export default class Choro {
       .attr("height", vizContainerHeight);
     console.log(this.choro_legend_svg, legendContainerSelector)
   }
+  updateVizType (vizType) {
+    this.indiSelections.viz = vizType;
+    console.log(this.indiSelections.viz, vizType)
+    this.updateVizEngine(this.indicatorCodeInitial)
+  }
 }
 Choro.prototype.initVizEngine = initVizEngine;
 Choro.prototype.initCountrySvgs = initCountrySvgs;

@@ -55,6 +55,9 @@ export default {
   watch:{
     indicatorCode() {
       this.choro.updateVizEngine(this.indicatorCode);
+    },
+    chartType() {
+      this.choro.updateVizType(this.chartType);
     }
   }
 }

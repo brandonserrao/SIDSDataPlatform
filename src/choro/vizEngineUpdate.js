@@ -20,6 +20,7 @@ import {
 
 export function updateVizEngine(indicatorCode) {
   console.log('upd', indicatorCode)
+  this.indicatorCodeInitial = indicatorCode;
   this.indicatorCode = indicatorCode;
 //
 //      //process code
@@ -112,8 +113,8 @@ export function updateVizEngine(indicatorCode) {
 // //    updateCountryLines(vizElementAttributes);
     // updateChoroTooltips(indicatorData, indiSelections);
       this.updateChoroLegend(quantize);
-//     updateBarAxis(indicatorData, indiSelections);
-//     updateYAxis(indicatorData, indiSelections);
+    // updateBarAxis(indicatorData, indiSelections);
+    // updateYAxis(indicatorData, indiSelections);
 //     if (indiSelections["viz"] == "Time Series") {
 //         ///this should pass in data directly or else it won't update based on the customMvi
 //         dataset = parse(dat);
