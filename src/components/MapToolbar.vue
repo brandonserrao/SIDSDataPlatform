@@ -198,12 +198,7 @@
                       >
                         <div style="margin-right: 15px">Hexbins</div>
                         <div
-                          class="
-                            row-flex
-                            resolution-option
-                            border-blue
-                            align-items-center
-                          "
+                          class="row-flex resolution-option align-items-center"
                           @click="handleResolutionChange(0, 'hex1')"
                         >
                           <div style="font-weight: bold; margin-left: 4px">
@@ -212,7 +207,12 @@
                           <div class="resolution-sub-icon hex1"></div>
                         </div>
                         <div
-                          class="row-flex resolution-option align-items-center"
+                          class="
+                            row-flex
+                            border-blue
+                            resolution-option
+                            align-items-center
+                          "
                           @click="handleResolutionChange(1, 'hex5')"
                         >
                           <div style="font-weight: bold; margin-left: 4px">
@@ -967,31 +967,59 @@ export default {
       }
     },
 
-    handleResolutionChange(index, resolution) {
-      if (this.active_dataset === "Ocean Data") {
-        console.log(`active_dataset: ${this.active_dataset}; do nothing`);
-        return;
-      }
+    handleResolutionChange(index = 1, resolution = "hex5") {
+      //index=1, resolution='hex5' are the desired default state
       console.log("handleResolutionChange");
-      console.log(`active_dataset: ${this.active_dataset};`);
+
+      //case: empty arguments; shouldn't happen due to default arguements
+      /*       if (!index || !resolution) {
+        //handle empty args as a reset event and raise higher level log
+        alert(`handleResolutionChange called with: ${index} and ${resolution}`);
+        console.log("empty handleResolutionChange called: doing nothing");
+        return;
+      } */
+
       var resolutionOptions =
         document.getElementsByClassName("resolution-option");
 
-      for (let i = 0; i < resolutionOptions.length; i++) {
-        if (index === i) {
-          resolutionOptions[i].classList.add("border-blue");
-        } else {
-          resolutionOptions[i].classList.remove("border-blue");
+      if (this.active_dataset === "Ocean Data") {
+        //handle if called while ocean dataset active
+        console.log(
+          `active_dataset: ${this.active_dataset}; set resolution selector to 10, do nothing`
+        );
+
+        for (let i = 0; i < resolutionOptions.length; i++) {
+          if (i === 2) {
+            //i = 2 is the hardcoded index for the 10km selector
+            resolutionOptions[i].classList.add("border-blue");
+          } else {
+            resolutionOptions[i].classList.remove("border-blue");
+          }
         }
+      } else {
+        //handle if non-ocean dataset active
+        console.log(
+          `active_dataset: ${this.active_dataset}; switching resolution`
+        );
+        /* 
+        var resolutionOptions = document.getElementsByClassName("resolution-option");
+ */
+        for (let i = 0; i < resolutionOptions.length; i++) {
+          if (index === i) {
+            resolutionOptions[i].classList.add("border-blue");
+          } else {
+            resolutionOptions[i].classList.remove("border-blue");
+          }
+        }
+
+        document.getElementsByClassName("resolution-icon")[0].className =
+          "icon resolution-icon " + resolution;
+
+        let eventData = { index: index, resolution: resolution };
+        // this.handleGisMenuChange({ Resolution: text });
+        console.log("passing eventData to handleGisMenuChange");
+        this.handleGisMenuChange("select-resolution", eventData); //text needs renaming to a better variable name
       }
-
-      document.getElementsByClassName("resolution-icon")[0].className =
-        "icon resolution-icon " + resolution;
-
-      let eventData = { index: index, resolution: resolution };
-      // this.handleGisMenuChange({ Resolution: text });
-      console.log("passing eventData to handleGisMenuChange");
-      this.handleGisMenuChange("select-resolution", eventData); //text needs renaming to a better variable name
     },
 
     //my version: handleBoundariesChange
