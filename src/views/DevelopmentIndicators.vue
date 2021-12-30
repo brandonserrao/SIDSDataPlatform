@@ -22,7 +22,7 @@
       </v-row>
       <v-row>
         <v-col cols='12'>
-          <indicators-choro-chart/>
+          <indicators-choro-chart :chartType="chartType" :indicatorCode="indicator"/>
         </v-col>
       </v-row>
     </v-col>

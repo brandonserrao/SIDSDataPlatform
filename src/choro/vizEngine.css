@@ -1,67 +1,3 @@
-<template>
-  <div class="choro">
-    <div id="choro_legend_container">
-
-    </div>
-    <div id="choro_map_container">
-
-    </div>
-  </div>
-</template>
-
-<script>
-import service from '@/services'
-import { mapState } from 'vuex';
-import Choro from '@/choro';
-
-export default {
-  name: 'IndicatorsChoroChart',
-  data: function () {
-    return {
-      choro:null
-    }
-  },
-  props:['indicatorCode', 'chartType'],
-  computed: {
-    ...mapState({
-      profileData: state => state.indicators.profileData,
-      indicatorMeta: state => state.indicators.indicatorsMeta
-    })
-  },
-  methods:{
-    async initChart() {
-      let sidsXML = await service.loadSidsSVG();
-      let mapLocations = await service.loadMapLocations();
-      this.choro = new Choro({
-        viz:this.chartType,
-        year:'recentValue',
-        sidsXML,
-        mapLocations,
-        indicatorMeta:this.indicatorMeta,
-        profileData: this.profileData,
-        vizContainerWidth:'800',
-        vizContainerHeight:'580',
-        mapContainerSelector: '#choro_map_container',
-        legendContainerSelector:'#choro_legend_container'
-      })
-    },
-    handleIndicatorSelect() {
-      console.log(this.indicatorCode)
-    },
-  },
-  async mounted() {
-    await this.initChart()
-  },
-  watch:{
-    indicatorCode() {
-      this.choro.updateVizEngine(this.indicatorCode);
-    }
-  }
-}
-</script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
 /* style.css */
 .allSids {
   fill: #fee391;
@@ -207,6 +143,7 @@ export default {
 
 #choro_legend_container {
   margin: 0;
+  margin-top: 20px;
   padding: 0;
 }
 
@@ -387,12 +324,12 @@ export default {
 }
 
 #choro_legend_container {
-  height: 57px;
+  height: 0px;
   width: 90%;
   overflow: visible;
 }
 
-#choro-legend_region {
+#regionLegend {
   height: 42px;
   margin-left: 120px;
   margin-top: 5px;
@@ -401,6 +338,10 @@ export default {
 
 #countryDataPanel h2 {
   padding-top: 40px;
+}
+
+.regionTitle {
+  cursor: pointer;
 }
 
 .timeSeriesTooltip {
@@ -413,5 +354,3 @@ export default {
 }
 
 /*# sourceMappingURL=vizEngine.css.map */
-
-</style>
