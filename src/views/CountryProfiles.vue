@@ -2,29 +2,45 @@
   <div class="mt-5">
     <v-row justify="center">
       <v-col offset="3" cols="3">
-        <h2 class="country-profile-header">Country profile</h2>
+        <h2 class="page-header country-profile-header">Country profile</h2>
       </v-col>
       <v-col cols="3">
         <v-select
+          rounded
           class="country-select"
           :value="country"
           @change="setCountry"
           :items="filteredCountries"
-          label="Country"
+          hide-selected
+          menu-props='{auto:false}'
           item-text="Country"
           item-value="id"
           outlined
           hide-details
-        ></v-select>
+        >
+          <template  slot="item" slot-scope="data">
+            <div>
+              <i
+                class="flag-icon select_icon"
+                :class="'flag-icon-' + data.item.code"
+              ></i>
+              {{ data.item.Country }}
+            </div>
+          <div></div>
+          </template>
+        </v-select>
       </v-col>
       <v-col class="ml-auto" cols="2">
-        <v-select
-          dense
-          v-model="region"
-          :items="regions"
-          label="Region"
-          outlined
-        ></v-select>
+        <div class="select">
+          <v-select
+            rounded
+            dense
+            @change="changeRegion(region)"
+            v-model="region"
+            :items="regions"
+            outlined
+          ></v-select>
+        </div>
       </v-col>
     </v-row>
   <v-row justify="center">
@@ -36,18 +52,42 @@
   </v-row>
   <v-row justify="center">
     <v-col cols="6">
-      <v-select
-        :value="compare"
-        :items="filteredCountries"
-        item-text="Country"
-        item-value="id"
-        label="Overlay countries to compare indicator rank among SIDS"
-        @change="setCompareCountries"
-        outlined
-        multiple
-        dense
-        hide-details
-      ></v-select>
+      <div class="select">
+        <label class="input-label">Overlay countries to compare indicator rank among SIDS</label>
+        <v-select
+          rounded
+          :value="compare"
+          :items="filteredCountries"
+          item-text="Country"
+          item-value="id"
+          placeholder="Select countries"
+          @change="setCompareCountries"
+          chips
+          outlined
+          hide-selected
+          multiple
+          dense
+          hide-details
+        >
+          <template #selection="{ item, index }">
+            <v-chip
+              class="muliselect-chip"
+              close
+              @click:close="removeCountry(item.id)"
+              :style="getChipStyle(index)"
+              :color="getColor(index)">
+              {{item.Country}}
+            </v-chip>
+          </template>
+          <template slot="item" slot-scope="data">
+          <i
+            class="flag-icon select_icon"
+            :class="'flag-icon-' + data.item.code"
+          ></i>
+          {{ data.item.Country }}
+          </template>
+        </v-select>
+      </div>
     </v-col>
   </v-row>
     <v-row justify="center">
@@ -87,6 +127,7 @@
     <v-row justify="center">
       <v-col cols="2">
         <v-btn
+          rounded
           class="ma-2"
           @click="exportCSV"
           color="primary"
@@ -117,6 +158,8 @@ export default {
     activeCountry:null,
     region:'All SIDS',
     regions:["All SIDS", "Caribbean", "AIS", "Pacific"],
+    colorScheme: ["#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"],
+    rgbaColorScheme:['rgba(237, 201, 81, 0.4)','rgba(204, 51, 63, 0.4)','rgba(0, 160, 176, 0.4)','rgba(255, 255, 255, 0.4)'],
     graphOptions:{
       Climate: {
         w: 200,
@@ -169,13 +212,37 @@ export default {
       return this.countries.find(country => country.id === this.country);
     },
     graphCountriesProfiles() {
-      return Array.from(new Set(this.compare.concat([this.country])));
+      return Array.from(new Set([this.country].concat(this.compare)));
     },
     filteredCountries() {
       if(this.region === this.regions[0]) {
-        return this.countries
+        return this.countries.map(country => {
+          country.disabled = false
+          return country
+        });
       }
-      return this.countries.filter(country => country['Region'] === this.region );
+      let filter = this.countries.map(country => {
+        country.disabled = country['Region'] !== this.region
+        return country
+      });
+
+      filter = filter.sort((country1, country2) => {
+        if(!country1.disabled && country2.disabled) {
+          return -1;
+        }
+        if(country1.disabled && !country2.disabled) {
+          return 1;
+        }
+        if (country1.Country > country2.Country) {
+          return 1;
+        }
+        if (country1.Country > country2.Country) {
+          return -1;
+        }
+        return 0;
+      })
+      console.log(filter)
+      return filter
     },
     ...mapState({
       countries: state => state.sids.countryList,
@@ -283,6 +350,15 @@ export default {
           compare: value.toString()
         }
       })
+    },
+    removeCountry(countryId) {
+      this.setCompareCountries(this.compare.filter(compareCountryId => compareCountryId !== countryId))
+    },
+    getColor(index) {
+      return this.colorScheme[index%4];
+    },
+    getChipStyle(index) {
+      return `background-color:${this.rgbaColorScheme[index%4]}`;
     }
   },
   created() {
@@ -295,10 +371,24 @@ export default {
 <style media="screen">
   .country-profile-header {
     text-align: right;
-    padding-top: 10px;
     margin-right: 10px;
   }
   .country-select {
+    font-size: 18px !important;
     font-weight: bold;
+  }
+  .v-list-item--disabled {
+    display: none !important;
+  }
+  .country-select .v-input__append-inner{
+    margin-top: 12px !important;
+  }
+  .select_icon {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .muliselect-chip {
+    border-style: solid;
+    border-width: 2px;
   }
 </style>

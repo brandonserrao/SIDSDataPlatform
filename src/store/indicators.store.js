@@ -18,14 +18,12 @@ export default {
     async getCategories({ state, commit }) {
       if(!state.keyMetadata){
         const categories = await service.loadIndicatorsCategories();
-        console.log(categories)
         commit("setCategories", categories);
       }
     },
     async getMeta({ state, commit }) {
       if(!state.allKeyData){
         const meta = await service.loadIndicatorsMeta();
-        console.log(meta)
         commit("setMeta", meta);
       }
     }

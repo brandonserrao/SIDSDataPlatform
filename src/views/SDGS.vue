@@ -1,24 +1,24 @@
 <template>
   <v-row justify="center">
-  <div class="">
-    <v-row class="mb-0 svg-row" justify="center">
-      <div id="svg-container">
+    <div>
+      <v-row class="mb-0 svg-row" justify="center">
+        <div id="svg-container">
+        </div>
+      </v-row>
+      <v-row class="mt-0 bars-container" justify="center">
+        <div class="sdg-goal" v-for="(goal, index) in sdgs" :key="goal">
+          <img
+            :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${parseGoalNumber(index)}.png`"
+            height="56"
+            width="56"
+            >
+        </div>
+      </v-row>
+      <div class="d-none" v-for="(goal, index) in sdgs" :id="'SDGtooltip'+ index" :key="index">
+        <portfolio-tooltip :header="goal" :data="getSDGSTooltipData(goal)"/>
       </div>
-    </v-row>
-    <v-row class="mt-0 bars-container" justify="center">
-      <div class="sdg-goal" v-for="(goal, index) in sdgs" :key="goal">
-        <img
-          :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${parseGoalNumber(index)}.png`"
-          height="56"
-          width="56"
-          >
-      </div>
-    </v-row>
-    <div class="d-none" v-for="(goal, index) in sdgs" :id="'SDGtooltip'+ index" :key="index">
-      <portfolio-tooltip :header="goal" :data="getSDGSTooltipData(goal)"/>
     </div>
-  </div>
-</v-row>
+  </v-row>
 </template>
 <script>
 
@@ -167,6 +167,7 @@ export default {
               },
               theme: 'light',
               interactive: true,
+              maxWidth:420,
               allowHTML: true,
               appendTo: () => document.body
             });
@@ -394,7 +395,9 @@ export default {
     flex-wrap: nowrap;
     max-width: 100%;
     margin: 0px;
-
+  }
+  .svg-row {
+    height: 160px;
   }
   .sdg-goal {
     height: 62px;
@@ -403,9 +406,6 @@ export default {
   }
   .sdg-goal img {
     width: 100%;
-  }
-  .svg-row {
-    max-height: 160px;
   }
   .barsLabels {
     font-family: sans-serif;

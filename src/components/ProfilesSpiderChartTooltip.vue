@@ -1,6 +1,6 @@
 <template>
   <div class="tooltip-root">
-    <h4>{{header}}</h4>
+    <h4 class="block-subheader">{{header}}</h4>
     <v-list dense class="indicators-list">
       <v-list-item-group>
         <v-list-item class="p-0">
@@ -42,7 +42,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .tooltip-root {
-  max-width: 320px;
+  max-width: 400px;
 }
 .indicators-list {
   padding-bottom: 0;

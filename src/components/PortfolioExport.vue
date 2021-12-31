@@ -4,6 +4,7 @@
       <v-btn
         color="primary"
         dark
+        rounded
         v-bind="attrs"
         v-on="on"
       >

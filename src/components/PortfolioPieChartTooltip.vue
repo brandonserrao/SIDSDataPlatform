@@ -1,6 +1,6 @@
 <template>
   <div class="tooltip-root">
-    <h4>{{header}}</h4>
+    <h4 class="block-subheader">{{header}}</h4>
     <v-list dense class="indicators-list">
       <v-list-item-group>
         <v-list-item class="p-0">

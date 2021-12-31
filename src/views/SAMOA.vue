@@ -358,6 +358,16 @@ export default {
 }
 </script>
 <style media="screen">
+  .bars-container{
+    display: flex;
+    flex: 1 0 auto;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    margin: 0px;
+  }
+  .svg-row {
+    height: 160px;
+  }
   .samoa-goal {
     width: 62px;
     height: 62px;
@@ -365,9 +375,6 @@ export default {
   }
   .samoa-goal img {
     max-width: 100%;
-  }
-  .svg-row {
-    max-height: 160px;
   }
   .barsLabels {
     font-family: sans-serif;

@@ -1,28 +1,28 @@
 <template>
   <div class="">
     <v-row>
-      <portfolio-map
-        :region="region"
-        @updateRegion="changeFilter({type:'region'})"
-        :projects="filteredProjects"
-      ></portfolio-map>
+      <v-col cols="12">
+        <portfolio-map
+          :region="region"
+          @updateRegion="changeFilter({type:'region'})"
+          :projects="filteredProjects"
+        ></portfolio-map>
+      </v-col>
     </v-row>
     <router-view class="mb-3 mt-negative"></router-view>
     <v-row justify="center">
-      <v-col cols="10">
+      <v-col class="margin-wrap-right"></v-col>
+      <v-col class="tabs-column">
         <v-row justify="center">
-          <v-col cols="7">
-            <v-btn-toggle dense :value="activePage">
-              <v-btn value="samoa" @click="transitionTo('samoa')">
-                SAMOA Pathway
-              </v-btn>
-              <v-btn value="sdgs" @click="transitionTo('sdgs')">
-                Sustainable Development Goals
-              </v-btn>
-              <v-btn value="signature-solutions" @click="transitionTo('signature-solutions')">
-                Signature Solutions
-              </v-btn>
-            </v-btn-toggle>
+          <v-col cols="12">
+              <v-tabs
+                class="tabs prtfolio-slider"
+                v-model="activePage"
+              >
+                <v-tab @change="transitionTo('samoa')">SAMOA Pathway</v-tab>
+                <v-tab @change="transitionTo('sdgs')">Sustainable Development Goals</v-tab>
+                <v-tab @change="transitionTo('signature-solutions')">Signature Solutions</v-tab>
+              </v-tabs>
           </v-col>
         </v-row>
         <v-row justify="center">
@@ -44,33 +44,43 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="2">
-        <v-select
-          dense
-          :value="year"
-          @change="setYear"
-          :items="years"
-          label="Years"
-          outlined
-        ></v-select>
-        <v-select
-          dense
-          :value="fundingCategory"
-          @change="setCategory"
-          :items="fundingCategoriesTypes"
-          label="Funding categories"
-          outlined
-        ></v-select>
-        <v-select
-          dense
-          :value="fundingSource"
-          @change="setSource"
-          :items="fundingCategoriesFiltered"
-          label="Funding sources"
-          item-text="name"
-          item-value="name"
-          outlined
-        ></v-select>
+      <v-col class="margin-wrap-right">
+        <div class="select">
+          <label class="input-label">Years</label>
+          <v-select
+            rounded
+            dense
+            :value="year"
+            @change="setYear"
+            :items="years"
+            outlined
+          ></v-select>
+        </div>
+        <v-divider class="mb-6"></v-divider>
+        <div class="select">
+          <label class="input-label">Funding categories</label>
+          <v-select
+            rounded
+            dense
+            :value="fundingCategory"
+            @change="setCategory"
+            :items="fundingCategoriesTypes"
+            outlined
+          ></v-select>
+        </div>
+        <div class="select">
+          <label class="input-label">Funding sources</label>
+          <v-select
+            rounded
+            dense
+            :value="fundingSource"
+            @change="setSource"
+            :items="fundingCategoriesFiltered"
+            item-text="name"
+            item-value="name"
+            outlined
+            ></v-select>
+        </div>
         <portfolio-export
           :region="region"
           :year="year"
@@ -103,60 +113,62 @@ export default {
   },
   props:['year', 'fundingCategory', 'fundingSource', 'region'],
   mixins:[sidsdata],
-  data:()=>({
-    goalType:'Sustainable Development Goals',
-    activePage:'sdgs',
-    fundingCategoriesTypes:['All',"European Union", "Donor Countries", "Programme Countries", "UN Agencies", "UN Pooled Funds", "Vertical Funds", "Other"],
-    years:[
-      {
-        text:'2012 to 2021',
-        value: 'all',
-      },{
-        text:'2021',
-        value: '2021',
-      },{
-        text:'2020',
-        value: '2020',
-      },{
-        text:'2019',
-        value: '2019',
-      },{
-        text:'2018',
-        value: '2018',
-      },{
-        text:'2017',
-        value: '2017',
-      },{
-        text:'2016',
-        value: '2016',
-      },{
-        text:'2015',
-        value: '2015',
-      },{
-        text:'2014',
-        value: '2014',
-      },{
-        text:'2013',
-        value: '2013',
-      },{
-        text:'2012',
-        value: '2012',
-      }
-    ],
-    sidsList: ["Antigua and Barbuda", "Aruba",
-        "Bahrain", "Barbados", "Belize", "Cape Verde", "Comoros", "Cook Islands", "Cuba", "Dominica", "Dominican Republic",
-        "Grenada", "Guinea-Bissau", "Guyana", "Haiti", "Jamaica", "Kiribati", "Maldives", "Marshall Islands",
-        "Mauritius", "Micronesia", "Nauru", "Republic of Palau", "Papua New Guinea", "Samoa", "Sao Tome and Principe", "Seychelles",
-        "Solomon Islands", "St. Kitts and Nevis", "St. Vincent and the Grenadines", "Saint Lucia", "Suriname", "Timor-Leste",
-        "Trinidad and Tobago", "Tokelau", "Niue", "Tonga", "Puerto Rico", "Palau", "Tuvalu", "Vanuatu", "Cuba", "Bahamas", "Fiji", "Bermuda"],
-    regions: ["Caribbean", "AIS", "Pacific"],
-    regionColors: d3.scaleOrdinal()
-      .domain(["Caribbean", "AIS", "Pacific"])
-      .range(["#008080", "#97002B", "#F0A500"]),
-    sourcesColor: d3.scaleOrdinal()
-      .domain(["Vertical Funds", "Donor Countries", "Programme Countries", "UN Pooled Funds", "UN Agencies", "European Union", "Other"])
-      .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00", "#ac4f5f"])
-  }),
+  data: function () {
+    return {
+      goalType:'Sustainable Development Goals',
+      activePage:['samoa', 'sdgs', 'signature-solutions'].indexOf(this.$route.path.split('/')[2]),
+      fundingCategoriesTypes:['All',"European Union", "Donor Countries", "Programme Countries", "UN Agencies", "UN Pooled Funds", "Vertical Funds", "Other"],
+      years:[
+        {
+          text:'2012 to 2021',
+          value: 'all',
+        },{
+          text:'2021',
+          value: '2021',
+        },{
+          text:'2020',
+          value: '2020',
+        },{
+          text:'2019',
+          value: '2019',
+        },{
+          text:'2018',
+          value: '2018',
+        },{
+          text:'2017',
+          value: '2017',
+        },{
+          text:'2016',
+          value: '2016',
+        },{
+          text:'2015',
+          value: '2015',
+        },{
+          text:'2014',
+          value: '2014',
+        },{
+          text:'2013',
+          value: '2013',
+        },{
+          text:'2012',
+          value: '2012',
+        }
+      ],
+      sidsList: ["Antigua and Barbuda", "Aruba",
+          "Bahrain", "Barbados", "Belize", "Cape Verde", "Comoros", "Cook Islands", "Cuba", "Dominica", "Dominican Republic",
+          "Grenada", "Guinea-Bissau", "Guyana", "Haiti", "Jamaica", "Kiribati", "Maldives", "Marshall Islands",
+          "Mauritius", "Micronesia", "Nauru", "Republic of Palau", "Papua New Guinea", "Samoa", "Sao Tome and Principe", "Seychelles",
+          "Solomon Islands", "St. Kitts and Nevis", "St. Vincent and the Grenadines", "Saint Lucia", "Suriname", "Timor-Leste",
+          "Trinidad and Tobago", "Tokelau", "Niue", "Tonga", "Puerto Rico", "Palau", "Tuvalu", "Vanuatu", "Cuba", "Bahamas", "Fiji", "Bermuda"],
+      regions: ["Caribbean", "AIS", "Pacific"],
+      regionColors: d3.scaleOrdinal()
+        .domain(["Caribbean", "AIS", "Pacific"])
+        .range(["#008080", "#97002B", "#F0A500"]),
+      sourcesColor: d3.scaleOrdinal()
+        .domain(["Vertical Funds", "Donor Countries", "Programme Countries", "UN Pooled Funds", "UN Agencies", "European Union", "Other"])
+        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00", "#ac4f5f"])
+    }
+  },
   computed:{
     ...mapState({
       countries: state => state.sids.countryList,
@@ -285,14 +297,35 @@ export default {
       }
     },
     transitionTo(to) {
-      this.activePage = to;
       this.$router.push({path:`/portfolio/${to}`, query: this.$route.query})
     }
   }
 }
 </script>
 <style media="screen">
+  .prtfolio-slider {
+    max-width: 792px;
+    margin-left: auto;
+    margin-top: -22px;
+  }
   .mt-negative{
+    height: 215px;
     margin-top: -205px !important;
+  }
+  .tabs-column {
+    min-width: 900px;
+  }
+  .tabs {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .margin-wrap-right {
+    width: 200px;
+    max-width: 200px;
+    margin-left: auto;
+  }
+  .margin-wrap-right {
+    max-width: 200px;
+    margin-right: auto;
   }
 </style>

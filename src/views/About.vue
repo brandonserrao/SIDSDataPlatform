@@ -1,9 +1,13 @@
 <template>
-  <v-row justify="center">
-    <v-col cols="6">
-      <v-card>
-        <v-card-title>About the SIDS Data Visualization Platform</v-card-title>
-        <v-expansion-panels accordion>
+  <div class="mt-5">
+    <v-row justify="center">
+      <v-col cols="12">
+        <h2 class="page-header">About the SIDS Data Visualization Platform</h2>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="6">
+        <v-expansion-panels flat accordion>
           <v-expansion-panel>
             <v-expansion-panel-header>What are Small Island Developing States?</v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -78,7 +82,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-      </v-card>
-    </v-col>
-  </v-row>
+      </v-col>
+    </v-row>
+  </div>
 </template>

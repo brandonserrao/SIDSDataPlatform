@@ -1,6 +1,6 @@
 <template>
   <div class="graph-container">
-      <h4 class="text-center"
+      <h4 class="block-subheader text-center"
         :style="{color: graphOptions.textColor}">
         {{headerText}}
       </h4>
@@ -220,7 +220,6 @@ export default {
       }
 
       //Create the straight lines radiating outward from the center
-      console.log(allAxis)
       let axis = axisGrid.selectAll(".axis")
         .data(allAxis)
         .enter()
@@ -257,6 +256,7 @@ export default {
                 return template.innerHTML;
               },
               theme: 'light',
+              maxWidth:400,
               interactive: true,
               allowHTML: true,
               appendTo: () => document.body
@@ -325,7 +325,7 @@ export default {
             .attr("class", "radarStroke")
             .attr("d", function (d) { return radarLine(d.axes); })
             .style("stroke-width", this.fullGraphOptions.strokeWidth + "px")
-            .style("stroke", (d, i) => this.fullGraphOptions.color(i))
+            .style("stroke", (d, i) => {console.log(d, i, 'id'); return this.fullGraphOptions.color(i)})
             .style("fill", "none")
             .style("filter", "url(#glow)")
             .style("pointer-events","none");

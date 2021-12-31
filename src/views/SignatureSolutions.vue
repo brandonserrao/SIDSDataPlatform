@@ -9,6 +9,7 @@
         <div class="ss-goal" v-for="(goal, index) in ss" :key="goal">
           <img
           height="56"
+          width="144"
           :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SSicons/1x/${imageNames[index]}SS.png`">
         </div>
       </v-row>
@@ -35,8 +36,8 @@ export default {
         "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8"
       ],
       ss: ["Keeping people out of poverty", "Strengthen effective, inclusive and accountable governance", "Enhance national prevention and recovery capacities for resilient societies", "Promote nature-based solutions for a sustainable planet", "Close the energy gap", "Strengthen gender equality and the empowerment of women and girls"],
-      barsMargin: { top: 60, right: 0, bottom: 0, left: 0 },
-      svgWidth: 900,
+      barsMargin: { top: 60, right: 10, bottom: 0, left: 10 },
+      svgWidth: 880,
       svgHeight: 160,
       y1: null,
       y2: null,
@@ -347,15 +348,23 @@ export default {
 }
 </script>
 <style media="screen">
+  .bars-container{
+    display: flex;
+    flex: 1 0 auto;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    margin: 0px;
+  }
+  .svg-row {
+    height: 160px;
+  }
   .ss-goal {
     height: 62px;
+    max-width: 144px;
     padding: 3px;
   }
   .ss-goal img {
     max-width: 100%;
-  }
-  .ss-row {
-    max-height: 160px;
   }
   .barsLabels {
     font-family: sans-serif;

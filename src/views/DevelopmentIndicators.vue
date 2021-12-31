@@ -1,6 +1,10 @@
 <template>
-  <div class="">
-  <h2 class="transition" :class="{'left' : view === 'indicators', 'no-left'  :view != 'indicators'}">Development Indicators</h2>
+  <div class="mt-5">
+  <v-row>
+    <v-col cols='12'>
+      <h2 class="page-header">{{view === 'indicators' ? 'Development Indicators' : 'Towards a Multidimensional Vulnerability Index'}}</h2>
+    </v-col>
+  </v-row>
   <v-row>
     <v-col cols='3'>
       <indicators-nav/>

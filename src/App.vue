@@ -28,8 +28,15 @@ export default {
 </script>
 <style>
 @import './assets/styles/RootStyles.css';
+@import './assets/styles/buttons.css';
+@import './assets/styles/text.css';
+@import './assets/styles/forms.css';
+
+
+
 #app{
   padding: 0;
+  background-color: #F4F5F8;
 }
 #content{
   min-height: calc(100vh - 100px);
@@ -40,4 +47,7 @@ export default {
 :focus {
   outline: none;
 }
+body, .v-application {
+   font-family: 'Proxima Nova', sans-serif !important;
+ }
 </style>

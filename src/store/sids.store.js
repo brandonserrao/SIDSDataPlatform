@@ -1,4 +1,6 @@
 import service from '@/services'
+import codes from '@/assets/countryCodes'
+
 
 export default {
   namespaced: true,
@@ -34,14 +36,12 @@ export default {
     async getMetaData({ state, commit }) {
       if(!state.keyMetadata){
         const metaData = await service.loadMetaData();
-        console.log(metaData)
         commit("setMetaData", metaData);
       }
     },
     async getAllKeyData({ dispatch, state, commit }) {
       if(!state.allKeyData){
         const allKeyData = await service.loadAllKeyData();
-        console.log(allKeyData)
         commit("setKeyData", allKeyData);
         dispatch('generateCountryList', allKeyData)
       }
@@ -54,7 +54,7 @@ export default {
             return source.donors && source.donors.includes(category.name)
           })
         })
-        console.log(filteredData)
+        console.log(filteredData);
         commit("setFundingCategories", filteredData);
         dispatch('setFullDonorsInfo');
       }
@@ -73,6 +73,7 @@ export default {
         profile.id = country;
         profile.map = `${'https://sids-dashboard.github.io/SIDSDataPlatform/maps/relief/' + profile.id + 'Relief.png'}`;
         profile.photo = `${'https://sids-dashboard.github.io/SIDSDataPlatform/images/countryPhotos/' + profile.id + '.jpg'}`;
+        profile.code = codes[country]
         countryList.push(profile);
       }
       commit("setCountryList", countryList);
