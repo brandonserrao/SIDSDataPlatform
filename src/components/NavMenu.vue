@@ -1,17 +1,41 @@
 <template>
-  <v-list class="main-menu" dense>
-      <v-list-item
-        v-for="route in routes"
-        :key="route.link"
-        :to="route.link"
-      >
-        <v-list-item-content>
-          <v-list-item-title
-            v-text="route.name">
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-  </v-list>
+  <div class="navigation-container">
+
+    <v-navigation-drawer
+      class="d-none d-xs-flex d-sm-flex"
+      v-model="drawer"
+      absolute
+    >
+      <v-list class="main-menu" dense>
+          <v-list-item
+            v-for="route in routes"
+            :key="route.link"
+            :to="route.link"
+          >
+            <v-list-item-content>
+              <v-list-item-title
+                v-text="route.name">
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-list
+      class="d-none d-md-flex d-lg-flex d-xl-flex"
+      class="main-menu" dense>
+        <v-list-item
+          v-for="route in routes"
+          :key="route.link"
+          :to="route.link"
+        >
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="route.name">
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+    </v-list>
+  </div>
 </template>
 
 <script>
@@ -64,5 +88,8 @@ export default {
 .mdl-tabs__tab:hover {
     background: rgba(158, 158, 158, 0.34);
     color: black;
+}
+.navigation-container {
+  position: relative;
 }
 </style>
