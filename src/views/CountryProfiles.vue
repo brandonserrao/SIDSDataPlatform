@@ -1,10 +1,10 @@
 <template>
   <div class="mt-5">
-    <v-row justify="center">
-      <v-col offset="3" cols="3">
+    <v-row class="profile-header-row" :style="isMobile ? {'background-image': `url(${activeCountryProfile.photo})`} : {}" no-gutters justify="center">
+      <v-col cols="12" md-offset="3" md="3">
         <h2 class="page-header country-profile-header">Country profile</h2>
       </v-col>
-      <v-col cols="3">
+      <v-col  cols="12" md="3">
         <v-select
           rounded
           class="country-select"
@@ -30,7 +30,7 @@
           </template>
         </v-select>
       </v-col>
-      <v-col class="ml-auto" cols="2">
+      <v-col class="ml-auto d-none d-md-block" md="2">
         <div class="select">
           <v-select
             rounded
@@ -244,6 +244,9 @@ export default {
       console.log(filter)
       return filter
     },
+    isMobile() {
+      return this.$vuetify.breakpoint.name === 'xs' || this.$vuetify.breakpoint.name === 'sm'
+    },
     ...mapState({
       countries: state => state.sids.countryList,
       keyMetadata: state => state.sids.keyMetadata,
@@ -391,4 +394,17 @@ export default {
     border-style: solid;
     border-width: 2px;
   }
+  .profile-header-row{
+    background-size: cover;
+  }
+ @media all and (max-width:600px) {
+   .page-header {
+     margin: 70px auto 50px;
+    color: #F2F2F3 !important;
+    text-align: center;
+   }
+   .menu-col {
+     width: 0 !important;
+   }
+ }
 </style>
