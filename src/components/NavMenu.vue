@@ -5,7 +5,7 @@
       @click="drawer = !drawer"
       >
       <v-icon
-         large
+         size="48"
          color="blue darken-2"
        >
          mdi-menu

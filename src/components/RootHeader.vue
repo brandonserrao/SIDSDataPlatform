@@ -3,7 +3,7 @@
   <video class="header_video" autoplay muted loop>
     <source src="@/assets/blue economy_1_3.mp4" type="video/mp4">
   </video>
-    <div class="header-bar">
+    <div class="d-none d-md-block d-lg-block d-xl-block header-bar">
       <a href="https://data.undp.org/" target="_blank">
         <img
           class="header-bar_logo"
@@ -15,14 +15,18 @@
         <h1 class="header-text_header header-text_header-big">Data Visualization Platform</h1>
         <h2 class="header-text_header header-text_header-small">for the</h2>
         <h1 class="header-text_header header-text_header-big">SMALL ISLAND DEVELOPING STATES </h1>
-        <hr class="header-text_divider">
-        <p class="header-text_description">UNDP’s integrated approach supports Small Island Developing States to accelerate
+        <hr class="d-none d-md-block d-lg-block d-xl-block header-text_divider">
+        <p class="d-none d-md-block d-lg-block d-xl-block header-text_description">UNDP’s integrated approach supports Small Island Developing States to accelerate
           transformative
           development based on three pillars: Climate Action, Blue Economy, and Digital Transformation. </p>
     </main>
-    <a class="header_button-down" href="#content">
+    <a class="header_button-down d-none d-md-block" href="#content">
       <img alt="Arrow Down Icon" src="https://raw.githubusercontent.com/solodev/scroll-down-anchor/master/images/arrow-down-1.png">
     </a>
+    <img
+      class="d-block d-md-none header-bar_logo-mobile"
+      src="@/assets/RFSIDS.png"
+      alt="Rising Up For Small Islands Developing States Logo"/>
   </header>
 </template>
 
@@ -80,6 +84,10 @@ export default {
   -o-animation: fadein 2s;
   animation: fadein 2s;
 }
+
+.header-text_header-big {
+  font-size: 36px;
+}
 .header-text_header-small {
   font-size: 36px;
   -webkit-animation: fadein 3s;
@@ -115,5 +123,21 @@ export default {
   z-index: 3;
   margin-top: 0px;
   margin-bottom: 50px;
+}
+@media all and (max-width:600px) {
+  .header-text_header-big {
+    font-size: 36px;
+    margin-bottom: .6em;
+  }
+  .header-text_header-small {
+    font-size: 24px;
+    margin-bottom: .6em;
+  }
+}
+.header-bar_logo-mobile {
+  position: relative;
+  z-index: 5;
+  width: 70%;
+  margin: 1em auto 1em;
 }
 </style>
