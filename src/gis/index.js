@@ -552,6 +552,8 @@ export default class Map {
   }
 
   addOcean(activeDataset, activeLayer) {
+    console.log("activeDataset: " + activeDataset.name);
+    console.log("activeLayer: " + activeLayer.Description);
     if (!(activeDataset.name === "Ocean Data")) {
       alert("addOcean called with non-Ocean Data activeDataset!!!");
     }
@@ -646,13 +648,14 @@ export default class Map {
       console.log("ocean layer exists...");
 
       if (!Field_Name.includes("fl")) {
+        //
         //if fl inside of the Field_Name (i.e. it's a fishing/ocean related layer)
         console.log(
-          `activeLayer ${Field_Name} is not fishing/ocean related; removing ocean layer and adding hex5 layer`
+          `activeLayer ${activeLayer.Field_Name} is not fishing/ocean related; removing ocean layer and adding hex5 layer`
         );
         map.removeLayer("ocean");
 
-        globals.currentLayerState.hexSize = "hex5";
+        globals.currentLayerState.hexSize = "hex5"; //default to hex5 since leaving ocean data (which is a fixed 10km hexsize)
 
         map.addLayer({
           id: "hex5",
@@ -668,6 +671,37 @@ export default class Map {
           },
         });
       }
+    } else if (
+      activeLayer.Name === "Ocean Data" &&
+      !(activeLayer.Field_Name === "depths")
+    ) {
+      //adding hexSize: 'ocean' to allow non-depth Ocean Data
+      console.log(
+        `ocean data (non-depth) added; creating empty 'ocean' id layer;`
+      );
+      globals.currentLayerState.hexSize = "ocean"; //set to ocean
+
+      //clear out all userLayers
+      console.log(`removing all userLayers`);
+      for (var layer in constants.userLayers) {
+        if (this.map.getLayer(constants.userLayers[layer])) {
+          this.map.removeLayer(constants.userLayers[layer]);
+        }
+      }
+
+      map.addLayer({
+        id: "ocean",
+        type: "fill",
+        source: "ocean",
+        "source-layer": "oceans",
+        layout: {
+          visibility: "visible",
+        },
+        paint: {
+          "fill-color": "blue",
+          "fill-opacity": 0.0,
+        },
+      });
     } else {
       console.log("map has no 'ocean' layer");
     }
@@ -694,6 +728,7 @@ export default class Map {
     //------------------------------------------
 
     //unsure the need for this, pay attention if obsolete
+    console.log("current hexSize: " + globals.currentLayerState.hexSize);
     if (!map.getLayer(globals.currentLayerState.hexSize)) {
       console.log(
         `MAP LACKING LAYER for ${globals.currentLayerState.hexSize}; adding layer;`
@@ -703,6 +738,9 @@ export default class Map {
         return source.name === globals.currentLayerState.hexSize;
       });
 
+      console.log(
+        `addLayer using ${globals.currentLayerState.hexSize} ${globals.currentLayerState.hexSize} ${currentSourceData.layer}`
+      );
       map.addLayer({
         id: globals.currentLayerState.hexSize,
         type: "fill",

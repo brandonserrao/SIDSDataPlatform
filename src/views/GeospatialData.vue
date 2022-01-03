@@ -365,14 +365,25 @@ export default {
           //TODO: reevaluate this ratch
           //update this vue's state
           this.activeLayerName = activeLayer.Name; //should be identical to activeDatasetName
-          console.log(`activeLayer: ${activeLayer.Field_Name}`);
+          console.log(
+            `activeLayer: ${activeLayer.Field_Name} ${activeLayer.Description}`
+          );
           //if there's a layer chosen -> changeDataOnMap
           if (activeLayer.Field_Name === "depth") {
-            console.log("updateMap w/ Ocean Data-Depths:");
-            console.log(activeLayer.Description);
+            console.log(
+              "updateMap w/ Ocean Data-Depths: " + activeLayer.Description
+            );
             this.map.addOcean(activeDataset, activeLayer);
+          } else if (activeLayer.Name === "Ocean Data") {
+            console.log("updateMap w/ Ocean Data: " + activeLayer.Description);
+            this.map.changeDataOnMap(activeDataset, activeLayer);
           } else {
-            console.log("updateMap w/ changeDataOnMap");
+            console.log(
+              "updateMap w/ changeDataOnMap: " +
+                activeDataset.name +
+                " " +
+                activeLayer.Description
+            );
             this.map.changeDataOnMap(activeDataset, activeLayer);
           }
         }
