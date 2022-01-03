@@ -941,8 +941,14 @@ export default class Map {
         console.log("recoloring calliing addNoDataLegend()");
         this.addNoDataLegend();
       } else {
+        let filterCondition =
+          globals.currentLayerState.dataLayer === "depth" ? "<" : ">=";
+        console.log(
+          `currentLayerState.dataLayer:  ${globals.currentLayerState.dataLayer}; filterCondition ${filterCondition}`
+        );
         map.setFilter(globals.currentLayerState.hexSize, [
-          ">=",
+          //">=",
+          filterCondition,
           globals.currentLayerState.dataLayer,
           0,
         ]);
