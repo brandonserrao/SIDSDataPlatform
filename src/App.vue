@@ -54,7 +54,7 @@ body, .v-application {
 
  @media all and (max-width:600px) {
    .root-router {
-     padding: 0;
+     padding: 0 0 4em;
    }
    .menu-col {
      width: 0 !important;
