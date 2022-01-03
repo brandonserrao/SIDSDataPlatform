@@ -1,10 +1,16 @@
 <template>
   <div class="navigation-container">
-
+    <button @click="drawer = !drawer" class="navigation-menu-button" type="button" name="button">
+      <v-icon
+         large
+         color="blue darken-2"
+       >
+         mdi-menu
+       </v-icon>
+    </button>
     <v-navigation-drawer
-      class="d-none d-xs-flex d-sm-flex"
       v-model="drawer"
-      absolute
+      fixed
     >
       <v-list class="main-menu" dense>
           <v-list-item
@@ -21,8 +27,8 @@
       </v-list>
     </v-navigation-drawer>
     <v-list
-      class="d-none d-md-flex d-lg-flex d-xl-flex"
-      class="main-menu" dense>
+      class="main-menu d-none d-md-flex d-lg-flex d-xl-flex"
+      dense>
         <v-list-item
           v-for="route in routes"
           :key="route.link"
@@ -42,7 +48,15 @@
 
 export default {
   name: 'NavMenu',
+  data(){
+    return {
+      drawer: true
+    }
+  },
   computed: {
+    isMobile() {
+      return this.$vuetify.breakpoint.name === 'xs' || this.$vuetify.breakpoint.name === 'sm'
+    },
     routes () { return this.$router.options.routes.filter( route => route.path!=='*' )}
   },
   props: {
@@ -91,5 +105,9 @@ export default {
 }
 .navigation-container {
   position: relative;
+}
+.navigation-menu-button {
+  z-index: 51;
+  position:absolute;
 }
 </style>
