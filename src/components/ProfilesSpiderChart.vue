@@ -14,7 +14,7 @@
           :link="keyMetadata[axis.axis].sourceLink"
         />
       </div>
-    <div :id="`graph${pillarName}`">
+    <div :id="`graph${pillarName}${postfix}`">
     </div>
   </div>
 </template>
@@ -40,6 +40,10 @@ export default {
     pillarName: {
       type: String,
       default: 'Climate'
+    },
+    postfix: {
+      type: String,
+      default: ''
     },
     graphOptions: {
       type: Object,
@@ -161,7 +165,7 @@ export default {
           .domain([this.maxAxisValue, 1]);
       }
 
-      const parent = d3.select(`#graph${this.pillarName}`);
+      const parent = d3.select(`#graph${this.pillarName}${this.postfix}`);
 
       //Remove whatever chart with the same id/class was present before
       parent.select("svg").remove();

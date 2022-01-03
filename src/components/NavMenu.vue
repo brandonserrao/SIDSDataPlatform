@@ -110,6 +110,7 @@ export default {
 }
 .navigation-container {
   position: relative;
+    height: 100%;
 }
 .navigation-menu-drawer {
   height: 100vh !important;
