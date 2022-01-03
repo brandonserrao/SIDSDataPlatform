@@ -1,10 +1,10 @@
 <template>
-  <div class="mt-5">
+  <div class="mt-xs-0 mt-sm-0 mt-mb-5 mt-lg-5 mt-xl-5">
     <v-row class="profile-header-row" :style="isMobile ? {'background-image': `url(${activeCountryProfile.photo})`} : {}" no-gutters justify="center">
       <v-col cols="12" md-offset="3" md="3">
         <h2 class="page-header country-profile-header">Country profile</h2>
       </v-col>
-      <v-col  cols="12" md="3">
+      <v-col cols="10" md="3" class="select-column">
         <v-select
           rounded
           class="country-select"
@@ -43,54 +43,54 @@
         </div>
       </v-col>
     </v-row>
-  <v-row justify="center">
-    <v-col cols="12">
-      <country-info-bar
-        :country="activeCountryProfile"
-      />
-    </v-col>
-  </v-row>
-  <v-row justify="center">
-    <v-col cols="6">
-      <div class="select">
-        <label class="input-label">Overlay countries to compare indicator rank among SIDS</label>
-        <v-select
-          rounded
-          :value="compare"
-          :items="filteredCountries"
-          item-text="Country"
-          item-value="id"
-          placeholder="Select countries"
-          @change="setCompareCountries"
-          chips
-          outlined
-          hide-selected
-          multiple
-          dense
-          hide-details
-        >
-          <template #selection="{ item, index }">
-            <v-chip
-              class="muliselect-chip"
-              close
-              @click:close="removeCountry(item.id)"
-              :style="getChipStyle(index)"
-              :color="getColor(index)">
-              {{item.Country}}
-            </v-chip>
-          </template>
-          <template slot="item" slot-scope="data">
-          <i
-            class="flag-icon select_icon"
-            :class="'flag-icon-' + data.item.code"
-          ></i>
-          {{ data.item.Country }}
-          </template>
-        </v-select>
-      </div>
-    </v-col>
-  </v-row>
-    <v-row justify="center">
+    <v-row class="mt-xs-0 mt-sm-0" justify="center" dense>
+      <v-col class="pt-xs-0 pt-sm-0" cols="12">
+        <country-info-bar
+          :country="activeCountryProfile"
+        />
+      </v-col>
+    </v-row>
+    <v-row class="d-none d-md-flex" justify="center">
+      <v-col cols="11" md="6">
+        <div class="select">
+          <label class="input-label">Overlay countries to compare indicator rank among SIDS</label>
+          <v-select
+            rounded
+            :value="compare"
+            :items="filteredCountries"
+            item-text="Country"
+            item-value="id"
+            placeholder="Select countries"
+            @change="setCompareCountries"
+            chips
+            outlined
+            hide-selected
+            multiple
+            dense
+            hide-details
+          >
+            <template #selection="{ item, index }">
+              <v-chip
+                class="muliselect-chip"
+                close
+                @click:close="removeCountry(item.id)"
+                :style="getChipStyle(index)"
+                :color="getColor(index)">
+                {{item.Country}}
+              </v-chip>
+            </template>
+            <template slot="item" slot-scope="data">
+            <i
+              class="flag-icon select_icon"
+              :class="'flag-icon-' + data.item.code"
+            ></i>
+            {{ data.item.Country }}
+            </template>
+          </v-select>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row class="d-none d-md-flex" justify="center">
       <v-col cols="4">
         <profiles-spider-chart
           headerText="Climate Action"
@@ -124,7 +124,99 @@
           :countryId="country"/>
       </v-col>
     </v-row>
-    <v-row justify="center">
+    <v-row justify="center" class="d-md-none">
+      <v-col cols="11">
+        <v-tabs
+          v-model="tab"
+          show-arrows
+          center-active
+          grow>
+          <v-tab v-for="tab in tabs" :key="tab">
+            {{ tab }}
+          </v-tab>
+        </v-tabs>
+        <v-tabs-items class="mt-4 graph-tabs" v-model="tab">
+          <v-tab-item>
+            <profiles-spider-chart
+              headerText="Climate Action"
+              :graphOptions="graphOptions.Climate"
+              pillarName="Climate"
+              postfix="mobile"
+              :activeCountries="graphCountriesProfiles"/>
+          </v-tab-item>
+          <v-tab-item>
+            <profiles-spider-chart
+              headerText="Blue Economy"
+              :graphOptions="graphOptions.Blue"
+              pillarName="Blue"
+              postfix="mobile"
+              :activeCountries="graphCountriesProfiles"/>
+          </v-tab-item>
+          <v-tab-item>
+            <profiles-spider-chart
+              headerText="Digital Transformation"
+              :graphOptions="graphOptions.Digital"
+              pillarName="Digital"
+              postfix="mobile"
+              :activeCountries="graphCountriesProfiles"/>
+          </v-tab-item>
+          <v-tab-item>
+            <profiles-spider-chart
+              headerText="Multidimensional Vulnerability"
+              :graphOptions="graphOptions.MVI2"
+              pillarName="MVI2"
+              postfix="mobile"
+              :activeCountries="graphCountriesProfiles"/>
+          </v-tab-item>
+          <v-tab-item>
+              <profiles-finance
+                :countryId="country"/>
+          </v-tab-item>
+        </v-tabs-items>
+
+      </v-col>
+    </v-row>
+    <v-row class="d-flex d-md-none" justify="center">
+      <v-col cols="11" md="6">
+        <div class="select">
+          <label class="input-label">Overlay countries to compare indicator rank among SIDS</label>
+          <v-select
+            rounded
+            :value="compare"
+            :items="filteredCountries"
+            item-text="Country"
+            item-value="id"
+            placeholder="Select countries"
+            @change="setCompareCountries"
+            chips
+            outlined
+            hide-selected
+            multiple
+            dense
+            hide-details
+          >
+            <template #selection="{ item, index }">
+              <v-chip
+                class="muliselect-chip"
+                close
+                @click:close="removeCountry(item.id)"
+                :style="getChipStyle(index)"
+                :color="getColor(index)">
+                {{item.Country}}
+              </v-chip>
+            </template>
+            <template slot="item" slot-scope="data">
+            <i
+              class="flag-icon select_icon"
+              :class="'flag-icon-' + data.item.code"
+            ></i>
+            {{ data.item.Country }}
+            </template>
+          </v-select>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row class="d-none d-md-flex" justify="center">
       <v-col cols="2">
         <v-btn
           rounded
@@ -159,6 +251,8 @@ export default {
     region:'All SIDS',
     regions:["All SIDS", "Caribbean", "AIS", "Pacific"],
     colorScheme: ["#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"],
+    tab:'Climate',
+    tabs:['Climate','Blue Economy','Digital Transformation','Vulnerability','Finance'],
     rgbaColorScheme:['rgba(237, 201, 81, 0.4)','rgba(204, 51, 63, 0.4)','rgba(0, 160, 176, 0.4)','rgba(255, 255, 255, 0.4)'],
     graphOptions:{
       Climate: {
@@ -397,14 +491,20 @@ export default {
   .profile-header-row{
     background-size: cover;
   }
+  .graph-tabs {
+    background-color: transparent !important;
+  }
  @media all and (max-width:600px) {
    .page-header {
-     margin: 70px auto 50px;
+    margin: 0px auto 130px;
     color: #F2F2F3 !important;
     text-align: center;
    }
    .menu-col {
      width: 0 !important;
+   }
+   .select-column {
+     margin-bottom: 15px;
    }
  }
 </style>

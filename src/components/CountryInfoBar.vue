@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="overflow">
     <v-row dense>
-      <v-col cols="6" md="4">
+      <v-col cols="7" md="4">
       <v-subheader class="d-none d-md-block info-bar_header block-header">{{country.Country}}</v-subheader>
         <v-list dense class="indicators-list"
         >
@@ -52,13 +52,13 @@
           </v-list-item>
         </v-list>
       </v-col>
-      <v-col class="p-0 d-flex align-center" md="3" cols="6">
+      <v-col class="p-0 d-flex align-center" md="3" cols="5">
         <img
           class="info-bar_map"
           :src="country.map"
         />
       </v-col>
-      <v-col class="p-0 align-center d-none d-md-block" md="5" cols="6">
+      <v-col class="p-0 align-center d-none d-md-block" cols="5">
         <v-img
           cover
           max-height="250"
