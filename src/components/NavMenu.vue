@@ -1,6 +1,9 @@
 <template>
   <div class="navigation-container">
-    <button @click="drawer = !drawer" class="navigation-menu-button" type="button" name="button">
+    <button
+      class="navigation-menu-button d-md-none"
+      @click="drawer = !drawer"
+      >
       <v-icon
          large
          color="blue darken-2"
@@ -9,6 +12,8 @@
        </v-icon>
     </button>
     <v-navigation-drawer
+
+      class="navigation-menu-drawer d-md-none"
       v-model="drawer"
       fixed
     >
@@ -27,7 +32,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-list
-      class="main-menu d-none d-md-flex d-lg-flex d-xl-flex"
+      class="main-menu d-none d-md-block"
       dense>
         <v-list-item
           v-for="route in routes"
@@ -106,8 +111,11 @@ export default {
 .navigation-container {
   position: relative;
 }
+.navigation-menu-drawer {
+  height: 100vh !important;
+}
 .navigation-menu-button {
   z-index: 51;
-  position:absolute;
+  position: absolute;
 }
 </style>

@@ -2,10 +2,10 @@
   <v-container data-app class="v-application v-application--is-ltr" id="app" fluid>
     <root-header/>
     <v-row no-gutters id="content">
-      <v-col>
+      <v-col cols="0" md="2">
         <nav-menu/>
       </v-col>
-      <v-col cols="10" xs="12" sm="12">
+      <v-col cols="12" md="10">
         <router-view class="root-router"/>
       </v-col>
     </v-row>

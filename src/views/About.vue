@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-col cols="6" xs="12" sm="12">
+      <v-col md="6" xs="12" sm="12">
         <v-expansion-panels flat accordion>
           <v-expansion-panel>
             <v-expansion-panel-header>What are Small Island Developing States?</v-expansion-panel-header>
