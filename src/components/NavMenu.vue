@@ -55,7 +55,7 @@ export default {
   name: 'NavMenu',
   data(){
     return {
-      drawer: true
+      drawer: false
     }
   },
   computed: {
@@ -115,7 +115,9 @@ export default {
   height: 100vh !important;
 }
 .navigation-menu-button {
-  z-index: 51;
-  position: absolute;
+  z-index: 80;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 </style>
