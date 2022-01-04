@@ -967,8 +967,7 @@ export default {
         let threeD = object.value;
         let threeDObject = { threeD: threeD };
         this.$emit(change_type, threeDObject);
-      }
-      if (change_type === "toggle-labels") {
+      } else if (change_type === "toggle-labels") {
         let label = object.label;
         let labelObject = { label: label };
         this.$emit(change_type, labelObject);

@@ -176,6 +176,11 @@ export default class Map {
       `changeHexagonSize( ${resolution} ); currentHexSize: ${globals.currentLayerState.hexSize}`
     );
 
+    if (map.getLayer("clickedone")) {
+      console.log(`removing highlight`);
+      map.removeLayer("clickedone");
+    }
+
     if (map.getLayer("ocean")) {
       // $(".hexsize").toggle();
       let ele_display = document.querySelector(".hexsize")[0].style.display;
@@ -306,8 +311,11 @@ export default class Map {
     });
     if (!thisStyle) {
       alert("thisStyle from Basemap not exist");
+      return;
+    } else {
+      console.log(`setting style: ${thisStyle.name}`);
+      map.setStyle(thisStyle.uri);
     }
-    map.setStyle(thisStyle.uri);
 
     for (const i of constants.unwantedMapboxLayers) {
       if (map.getLayer(i)) {
@@ -359,6 +367,7 @@ export default class Map {
 
       let filterString = cls.dataLayer === "depth" ? "<=" : ">=";
       map.setFilter(cls.hexSize, [filterString, cls.dataLayer, 0]);
+
       map.moveLayer("allsids", globals.firstSymbolId); //ensure allsids outline ontop
     });
   }
@@ -486,6 +495,12 @@ export default class Map {
 
   add3D() {
     let map = this.map;
+
+    if (map.getLayer("clickedone")) {
+      console.log(`removing highlight`);
+      map.removeLayer("clickedone");
+    }
+
     let id = globals.currentLayerState.hexSize + "-3d";
     //preemptive check for if 3D layer exists already before adding fill-extrusion layer
     if (map.getLayer(id)) {
@@ -589,6 +604,11 @@ export default class Map {
   }
 
   addOcean(activeDataset, activeLayer) {
+    if (this.map.getLayer("clickedone")) {
+      console.log(`removing highlight`);
+      this.map.removeLayer("clickedone");
+    }
+
     console.log("activeDataset: " + activeDataset.name);
     console.log("activeLayer: " + activeLayer.Description);
     if (!(activeDataset.name === "Ocean Data")) {
@@ -677,6 +697,11 @@ export default class Map {
     console.log(`changeDataOnMap fired: ${Field_Name}, activeLayer:`);
     console.log(activeLayer);
     let map = this.map;
+
+    if (map.getLayer("clickedone")) {
+      console.log(`removing highlight`);
+      map.removeLayer("clickedone");
+    }
 
     //TAKEN FROM OLDCODE changeDataOnMap
 
@@ -1024,6 +1049,10 @@ export default class Map {
 
   remove3d() {
     let map = this.map;
+    if (map.getLayer("clickedone")) {
+      console.log(`removing highlight`);
+      map.removeLayer("clickedone");
+    }
     //taken directly from old code
     console.log("removing 3d");
 
@@ -1463,13 +1492,8 @@ export default class Map {
       }
  */
     //compressed version of oldcode
-    if (
-      //this.map.
-      mapClassInstance.getLayer("iso")
-    ) {
+    if (mapClassInstance.getLayer("iso")) {
       console.log('removing existing source and layer for "iso"');
-      /*         this.map.removeLayer("iso");
-        this.map.removeSource("iso"); */
       mapClassInstance.removeLayer("iso");
       mapClassInstance.removeSource("iso");
     }
@@ -1479,8 +1503,6 @@ export default class Map {
         //this.map.
         mapClassInstance.getSource(id)
       ) {
-        /*           this.map.removeLayer(id);
-          this.map.removeSource(id); */
         mapClassInstance.removeLayer(id);
         mapClassInstance.removeSource(id);
       }
