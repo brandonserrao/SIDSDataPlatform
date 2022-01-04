@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <div>
+    <div class="d-none d-md-block">
       <v-row class="mb-0 svg-row" justify="center">
         <div id="svg-container">
         </div>
@@ -15,6 +15,12 @@
         </div>
       </v-row>
     </div>
+    <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
+      {{projectCount[goalNumber]}} projects
+    </v-col>
+    <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
+      {{nFormatter(budgetCount[goalNumber])}} budget
+    </v-col>
   </v-row>
 </template>
 <script type="text/javascript">
@@ -45,7 +51,7 @@ export default {
       prevHeight: 0
     }
   },
-  props:['year', 'fundingCategory', 'fundingSource', 'region'],
+  props:['year', 'fundingCategory', 'fundingSource', 'region', 'goalNumber'],
   mixins:[sidsdata, format],
   computed: {
     barsHeight(){ return this.svgHeight - this.barsMargin.top - this.barsMargin.bottom },

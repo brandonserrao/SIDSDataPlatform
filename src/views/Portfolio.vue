@@ -9,10 +9,10 @@
         ></portfolio-map>
       </v-col>
     </v-row>
-    <router-view class="mb-3 mt-negative"></router-view>
+    <router-view class="d-none d-md-block mb-3 mt-negative"></router-view>
     <v-row justify="center">
-      <v-col class="margin-wrap-right"></v-col>
-      <v-col class="tabs-column">
+      <v-col class="d-none d-md-block margin-wrap-right"></v-col>
+      <v-col class="d-none d-md-block tabs-column">
         <v-row justify="center">
           <v-col cols="12">
               <v-tabs
@@ -25,7 +25,7 @@
               </v-tabs>
           </v-col>
         </v-row>
-        <v-row justify="center">
+        <v-row class="d-none d-md-flex" justify="center">
           <v-col cols="6">
             <portfolio-pie-chart
               @changeFilter="changeFilter"
@@ -45,50 +45,112 @@
         </v-row>
       </v-col>
       <v-col class="margin-wrap-right">
-        <div class="select">
-          <label class="input-label">Years</label>
-          <v-select
-            rounded
-            dense
-            :value="year"
-            @change="setYear"
-            :items="years"
-            outlined
-          ></v-select>
-        </div>
-        <v-divider class="mb-6"></v-divider>
-        <div class="select">
-          <label class="input-label">Funding categories</label>
-          <v-select
-            rounded
-            dense
-            :value="fundingCategory"
-            @change="setCategory"
-            :items="fundingCategoriesTypes"
-            outlined
-          ></v-select>
-        </div>
-        <div class="select">
-          <label class="input-label">Funding sources</label>
-          <v-select
-            rounded
-            dense
-            :value="fundingSource"
-            @change="setSource"
-            :items="fundingCategoriesFiltered"
-            item-text="name"
-            item-value="name"
-            outlined
+        <v-row dense justify="center">
+          <v-col cols='5' md="12">
+            <div class="select">
+            <label class="input-label">Years</label>
+            <v-select
+              rounded
+              dense
+              hide-details
+              :value="year"
+              @change="setYear"
+              :items="years"
+              outlined
             ></v-select>
-        </div>
-        <portfolio-export
-          :region="region"
-          :year="year"
-          :funding="fundingCategory"
-          :projects="filteredProjects"
-          :data="fundingCategoriesFiltered"
-          :categories="fundingCategoriesTypes"
-        />
+            </div>
+          </v-col>
+            <v-col cols='5' md="12">
+              <div class="select">
+              <label class="input-label">Region</label>
+              <v-select
+                rounded
+                hide-details
+                dense
+                :value="region"
+                @change="updateRegion"
+                :items="regionsToSelect"
+                outlined
+              ></v-select>
+              </div>
+            </v-col>
+          </v-row>
+          <v-row justify="center">
+            <v-col cols="10" class="d-block d-md-none">
+
+                <portfolio-pie-chart
+                  @changeFilter="changeFilter"
+                  :data="regionFunding"
+                  chartName="region"
+                  postfix="1"
+                  :colorScheme="regionColors"
+                ></portfolio-pie-chart>
+            </v-col>
+          </v-row>
+        <v-divider class="d-none d-md-block mb-6"></v-divider>
+        <v-row dense justify="center">
+          <v-col cols='5' md="12">
+            <div class="select">
+              <label class="input-label">Funding categories</label>
+              <v-select
+                rounded
+                hide-details
+                dense
+                :value="fundingCategory"
+                @change="setCategory"
+                :items="fundingCategoriesTypes"
+                outlined
+              ></v-select>
+            </div>
+          </v-col>
+          <v-col cols='5' md="12">
+            <div class="select">
+              <label class="input-label">Funding sources</label>
+              <v-select
+                rounded
+                hide-details
+                dense
+                :value="fundingSource"
+                @change="setSource"
+                :items="fundingCategoriesFiltered"
+                item-text="name"
+                item-value="name"
+                outlined
+                ></v-select>
+            </div>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col cols="10" class="d-block d-md-none">
+            <portfolio-pie-chart
+              @changeFilter="changeFilter"
+              :data="sourcesFunding"
+              chartName="sources"
+              postfix="1"
+              :colorScheme="sourcesColor"
+            ></portfolio-pie-chart>
+          </v-col>
+        </v-row>
+        <v-row class="d-none d-md-block">
+          <v-col>
+            <portfolio-export
+              :region="region"
+              :year="year"
+              :funding="fundingCategory"
+              :projects="filteredProjects"
+              :data="fundingCategoriesFiltered"
+              :categories="fundingCategoriesTypes"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-card flat>
+          <goals-selector @changeType="updateTypeData" @changeGoal="updateGoalData" :activeGoalType="pages[activePage]"/>
+          <router-view class="d-block d-md-none"></router-view>
+        </v-card>
       </v-col>
     </v-row>
   </div>
@@ -100,6 +162,7 @@ import * as d3 from 'd3';
 import PortfolioMap from '@/components/PortfolioMap';
 import PortfolioExport from '@/components/PortfolioExport';
 import PortfolioPieChart from '@/components/PortfolioPieChart';
+import GoalsSelector from '@/components/GoalsSelector';
 import { mapState } from 'vuex';
 import sidsdata from '@/mixins/SIDSData.mixin'
 
@@ -109,13 +172,16 @@ export default {
   components: {
     PortfolioMap,
     PortfolioPieChart,
-    PortfolioExport
+    PortfolioExport,
+    GoalsSelector
   },
   props:['year', 'fundingCategory', 'fundingSource', 'region'],
   mixins:[sidsdata],
   data: function () {
     return {
       goalType:'Sustainable Development Goals',
+      selectedGoal: 1,
+      pages:['samoa', 'sdgs', 'signature-solutions'],
       activePage:['samoa', 'sdgs', 'signature-solutions'].indexOf(this.$route.path.split('/')[2]),
       fundingCategoriesTypes:['All',"European Union", "Donor Countries", "Programme Countries", "UN Agencies", "UN Pooled Funds", "Vertical Funds", "Other"],
       years:[
@@ -153,6 +219,12 @@ export default {
           text:'2012',
           value: '2012',
         }
+      ],
+      regionsToSelect: [
+        {value: "Caribbean", text:'Caribbean'},
+        {value: "AIS", text:'AIS'},
+        {value: "Pacific", text:'Pacific'},
+        {value: "All", text:'All SIDS'},
       ],
       sidsList: ["Antigua and Barbuda", "Aruba",
           "Bahrain", "Barbados", "Belize", "Cape Verde", "Comoros", "Cook Islands", "Cuba", "Dominica", "Dominican Republic",
@@ -297,7 +369,20 @@ export default {
       }
     },
     transitionTo(to) {
+      this.activePage = ['samoa', 'sdgs', 'signature-solutions'].indexOf(to);
       this.$router.push({path:`/portfolio/${to}`, query: this.$route.query})
+    },
+    updateTypeData(e) {
+      this.selectedGoal = 1;
+      this.activePage = ['samoa', 'sdgs', 'signature-solutions'].indexOf(e.type);
+      this.$router.push({path:`/portfolio/${e.type}`, query: Object.assign({}, this.$route.query, {
+        goalNumber : 1})})
+    },
+    updateGoalData(e) {
+      this.selectedGoal = e;
+      console.log(this.activePage, 'goal');
+      this.$router.push({path:`/portfolio/${this.activePage}`, query: Object.assign({}, this.$route.query, {
+        goalNumber : e.activeGoal})})
     }
   }
 }
@@ -319,7 +404,7 @@ export default {
     margin-left: auto;
     margin-right: auto;
   }
-  .margin-wrap-right {
+  .margin-wrap-left {
     width: 200px;
     max-width: 200px;
     margin-left: auto;
@@ -327,5 +412,10 @@ export default {
   .margin-wrap-right {
     max-width: 200px;
     margin-right: auto;
+  }
+  @media all and (max-width:600px) {
+    .margin-wrap-right {
+      max-width: none;
+    }
   }
 </style>

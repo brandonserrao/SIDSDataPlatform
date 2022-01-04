@@ -495,7 +495,7 @@ export default {
     background-color: transparent !important;
   }
  @media all and (max-width:600px) {
-   .page-header {
+   .country-profile-header {
     margin: 0px auto 130px;
     color: #F2F2F3 !important;
     text-align: center;
