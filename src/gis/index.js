@@ -52,6 +52,7 @@ export default class Map {
 
       this._addPointSources();
       this._addVectorSources();
+      this.getBasemapLabels();
     });
   }
 
@@ -262,6 +263,28 @@ export default class Map {
       map.moveLayer(resolution, "allsids");
     });
   }
+
+  getBasemapLabels() {
+    let map = this.map;
+
+    globals.basemapLabels = [];
+    let layers = map.getStyle().layers;
+    //get first symbol layer for insertion of layer under
+    for (var i = 0; i < layers.length; i++) {
+      if (layers[i].type === "symbol") {
+        globals.firstSymbolId = layers[i].id;
+        break;
+      }
+    }
+    for (var x in layers) {
+      if (layers[x].type === "symbol" || layers[x].type === "line") {
+        globals.basemapLabels.push(layers[x]);
+      }
+    }
+
+    console.log(`getBasemapLabels: ${globals.basemapLables.length}`);
+  }
+
   changeBasemap(selectionObject) {
     let self = this;
     let map = this.map;
@@ -548,6 +571,35 @@ export default class Map {
         center: map.getCenter(),
         pitch: 55,
       });
+    }
+  }
+
+  addLabels(labelObject) {
+    let map = this.map;
+
+    //adapted from oldcode
+    // var sel = Object.values(object)[0];
+    let label = labelObject.label;
+    console.log(globals.basemapLabels);
+
+    if (label == true) {
+      globals.basemapLabels.forEach(function (x) {
+        //console.log(x);
+        map.addLayer(x);
+        if (x.type === "line") {
+          if (map.getLayer(globals.currentLayerState.hexSize)) {
+            map.moveLayer(x.id, globals.currentLayerState.hexSize);
+          }
+        }
+      });
+      //$('#addLabels').toggle();
+      //$('#addLabels')[0].innerText = 'Remove Labels'
+    } else {
+      globals.basemapLabels.forEach(function (x) {
+        map.removeLayer(x.id);
+      });
+
+      //$('#addLabels')[0].innerText = 'Add Labels'
     }
   }
 

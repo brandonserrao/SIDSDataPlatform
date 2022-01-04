@@ -854,12 +854,17 @@
 
               -->
               <div class="menu row-flex">
+                <!-- 
                 <div
                   class="icon aminus-icon"
                   @click="emit_toggle_legend()"
+                ></div> -->
+                <div
+                  class="icon aminus-icon display-none"
+                  @click="handleLabelsChange('aminus', 'aplus')"
                 ></div>
                 <div
-                  class="icon aplus-icon display-none"
+                  class="icon aplus-icon"
                   @click="handleLabelsChange('aplus', 'aminus')"
                 ></div>
                 <div class="description hover">A- A+</div>
@@ -962,6 +967,11 @@ export default {
         let threeD = object.value;
         let threeDObject = { threeD: threeD };
         this.$emit(change_type, threeDObject);
+      }
+      if (change_type === "toggle-labels") {
+        let label = object.label;
+        let labelObject = { label: label };
+        this.$emit(change_type, labelObject);
       } else {
         console.log(`${change_type} not yet handled by handleGisMenuChange`);
       }
@@ -1001,7 +1011,7 @@ export default {
         console.log(
           `active_dataset: ${this.active_dataset}; switching resolution`
         );
-        /* 
+        /*
         var resolutionOptions = document.getElementsByClassName("resolution-option");
  */
         for (let i = 0; i < resolutionOptions.length; i++) {
@@ -1540,6 +1550,7 @@ export default {
     },
 
     handleLabelsChange(first, second) {
+      //TODO: simplify this oldcode logic
       var curr = document.getElementsByClassName(first + "-icon")[0];
       var reqd = document.getElementsByClassName(second + "-icon")[0];
 
@@ -1554,7 +1565,7 @@ export default {
       setTimeout(() => {
         reqd.classList.remove("flip2");
       }, 280);
-
+      /* ///oldcode
       var value;
       var object = {};
 
@@ -1565,8 +1576,12 @@ export default {
       }
 
       object["Label"] = value;
+       */
+
+      let object = { label: first === "aminus" ? true : false };
+
       console.log("handleLabelsChange->handleGisMenuChange");
-      this.handleGisMenuChange(object);
+      this.handleGisMenuChange("toggle-labels", object);
     },
 
     handleBivariateMode() {

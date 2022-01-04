@@ -19,6 +19,7 @@
       :active_layer="activeLayerName"
       @toggle-legend="toggleLegend()"
       @toggle-3D="toggle3D()"
+      @toggle-labels="toggleLabels($event)"
     />
     <div id="map"></div>
   </div>
@@ -66,6 +67,10 @@ export default {
     toggle3D() {
       console.log(`toggling 3D !!! currently indev`);
       this.map.add3D();
+    },
+    toggleLabels(labelObject) {
+      console.log(`toggling labels: ${labelObject.label}`);
+      this.map.addLabels(labelObject);
     },
     toggleLegend() {
       console.log(`toggling Legend: displayLegend= ${this.displayLegend}`);

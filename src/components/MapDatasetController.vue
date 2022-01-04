@@ -134,7 +134,8 @@
     </v-card>
 
     <!-- New Legend/Histogram -->
-    <v-card v-if="displayLegend" class="histogram_frame">
+    <!-- <v-card v-if="displayLegend" class="histogram_frame"> -->
+    <v-card v-show="displayLegend" class="histogram_frame">
       <div id="histogram_frame" class="pic app-body population-per-km col-flex">
         <div class="row-flex space-evenly" id="legendTitle"></div>
         <div class="row-flex space-evenly" id="updateLegend"></div>
