@@ -1002,13 +1002,13 @@ export default class Map {
           globals.currentLayerState.dataLayer,
           0,
         ]);
-        console.log(`recoloring calling addLegend with: `);
+
         console.log(
-          `currentLayerState.color: ${globals.currentLayerState.color}`
-        );
-        console.log(`breaks: ${breaks}`);
-        console.log(
-          `currentLayerState.dataLayer: ${globals.currentLayerState.dataLayer}`
+          `recoloring calling addLegend with: 
+          currentLayerState.color: ${globals.currentLayerState.color} 
+          breaks: ${breaks} 
+          currentLayerState.dataLayer: ${globals.currentLayerState.dataLayer}
+          `
         );
         // this.addLegend(
         //   //!! I added extra params to addLegend, so needs more i think
@@ -1016,7 +1016,16 @@ export default class Map {
         //   breaks,
         //   globals.currentLayerState.dataLayer
         // );
-        // this.addLegend()
+
+        console.log(`recolor addLegend`);
+        this.addLegend(
+          undefined,
+          breaks,
+          undefined, //should be undefined here but default value in addLegend should handle it
+          undefined, //should be undefined here but default value in addLegend should handle it
+          selectedData
+        );
+
         setTimeout(() => {
           map.setPaintProperty(
             globals.currentLayerState.hexSize,
@@ -1025,6 +1034,9 @@ export default class Map {
           );
         }, 400);
       }
+    } else {
+      console.log(`no data features on map; creating noDataLegend`);
+      this.addNoDataLegend();
     }
     /*     this.addLegend(
       colors,
@@ -1079,12 +1091,14 @@ export default class Map {
       histogram_frame.appendChild(canvasNode);
       console.log("new canvasNode added to histogramFrame: ");
       console.log(canvasNode);
+
+      legendTitle.innerHTML = "No Data for this Region";
     }
   }
 
   addLegend(
-    colors,
-    breaks,
+    colors = globals.currentLayerState.color,
+    breaks = globals.currentLayerState.breaks,
     precision = globals.precision, //default added to mirror oldcode behaviour of global set/modified precision value
     activeLayer = globals.lastActive.layer, //should eliminate need for id etc; default value added as fallback to cope with call from recolor function
     selectedData //i believe this is input from updatingMap based on whats features/data on screen
@@ -1140,6 +1154,13 @@ export default class Map {
     precision,
     activeLayer,
     selectedData //i believe this is input from updatingMap based on whats features/data on screen
+
+    /* colors = globals.currentLayerState.colors,
+    breaks = globals.currentLayerState.breaks,
+    precision = globals.precision, //default added to mirror oldcode behaviour of global set/modified precision value
+    activeLayer = globals.lastActive.layer, //should eliminate need for id etc; default value added as fallback to cope with call from recolor function
+    selectedData //i believe this is input from updatingMap based on whats features/data on screen
+     */
   ) {
     console.log("updateHistogram params passed are:");
     console.log("colors:");
