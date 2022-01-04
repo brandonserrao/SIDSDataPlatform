@@ -282,7 +282,7 @@ export default class Map {
       }
     }
 
-    console.log(`getBasemapLabels: ${globals.basemapLables.length}`);
+    console.log(`getBasemapLabels: ${globals.basemapLabels.length} layers`);
   }
 
   changeBasemap(selectionObject) {
@@ -308,6 +308,7 @@ export default class Map {
       alert("thisStyle from Basemap not exist");
     }
     map.setStyle(thisStyle.uri);
+
     for (const i of constants.unwantedMapboxLayers) {
       if (map.getLayer(i)) {
         map.removeLayer(i);
@@ -316,68 +317,52 @@ export default class Map {
 
     //when done, update: firstSymbolId, basemapLabels
     map.once("idle", function () {
-      let layers = map.getStyle().layers;
-      //get first symbol layer for insertion of layer under
-      for (var i = 0; i < layers.length; i++) {
-        if (layers[i].type === "symbol") {
-          globals.firstSymbolId = layers[i].id;
-          break;
-        }
-      }
-      for (var x in layers) {
-        if (layers[x].type === "symbol" || layers[x].type === "line") {
-          globals.basemapLabels.push(layers[x]);
-        }
-      }
+      self.getBasemapLabels();
 
-      console.log(`firstSymbolId: ${globals.firstSymbolId}`);
-      console.log(`basemapLabels: ${globals.basemapLables}`);
-
-      //addHexSource(); //oldcode, would add all the sources like admin1 etc to the map as sources, then add the allsids layer in orange under the firstSymbolId
+      //unnecessary: why should the layers be removed if the basemap is switching??
       self._addVectorSources();
       let currentSource = Vue._.find(globals.sourceData, function (o) {
         return o.name === globals.currentLayerState.hexSize;
       });
-      if (!(globals.currentLayerState.hexSize === "ocean")) {
-        let cls = globals.currentLayerState;
-        map.addLayer(
-          {
-            id: cls.hexSize,
-            type: "fill",
-            source: cls.hexSize,
-            "source-layer": currentSource.layer,
-            layout: {
-              visibility: "visible",
-            },
-            paint: {
-              "fill-opacity": 0.8,
-              "fill-color": [
-                "interpolate",
-                ["linear"],
-                ["get", cls.dataLayer],
-                cls.breaks[0],
-                cls.color[0],
-                cls.breaks[1],
-                cls.color[1],
-                cls.breaks[2],
-                cls.color[2],
-                cls.breaks[3],
-                cls.color[3],
-                cls.breaks[4],
-                cls.color[4],
-              ],
-            },
+      //re-add the current layer, with appropriate filtering
+      let cls = globals.currentLayerState;
+      map.addLayer(
+        {
+          id: cls.hexSize,
+          type: "fill",
+          source: cls.hexSize,
+          "source-layer": currentSource.layer,
+          layout: {
+            visibility: "visible",
           },
-          globals.firstSymbolId
-        );
+          paint: {
+            "fill-opacity": 0.8,
+            "fill-color": [
+              "interpolate",
+              ["linear"],
+              ["get", cls.dataLayer],
+              cls.breaks[0],
+              cls.color[0],
+              cls.breaks[1],
+              cls.color[1],
+              cls.breaks[2],
+              cls.color[2],
+              cls.breaks[3],
+              cls.color[3],
+              cls.breaks[4],
+              cls.color[4],
+            ],
+          },
+        },
+        globals.firstSymbolId
+      );
 
-        map.setFilter(cls.hexSize, [">=", cls.dataLayer, 0]);
-        map.moveLayer("allsids", globals.firstSymbolId); //ensure allsids outline ontop
-      } else {
-        console.log("currentLayerState.hexSize = ocean; not adding layer");
-      }
+      let filterString = cls.dataLayer === "depth" ? "<=" : ">=";
+      map.setFilter(cls.hexSize, [filterString, cls.dataLayer, 0]);
+      map.moveLayer("allsids", globals.firstSymbolId); //ensure allsids outline ontop
     });
   }
+
   changeOpacity(opacityObject) {
     let map = this.map;
     let sliderValue = opacityObject.opacity;
