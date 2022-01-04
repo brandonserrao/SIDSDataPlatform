@@ -9,8 +9,8 @@ import colors from "@/gis/static/colors.js";
 
 import * as d3 from "d3";
 import chroma from "chroma-js";
-import Chart from "chart.js"; //testing replacement with older version used from CDN
-// import Chart from "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js";
+import Chart from "chart.js";
+// import { Chart } from "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js";
 
 import { featureCollection } from "@turf/helpers";
 import dissolve from "@turf/dissolve";
