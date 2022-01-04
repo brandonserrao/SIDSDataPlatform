@@ -176,10 +176,7 @@ export default class Map {
       `changeHexagonSize( ${resolution} ); currentHexSize: ${globals.currentLayerState.hexSize}`
     );
 
-    if (map.getLayer("clickedone")) {
-      console.log(`removing highlight`);
-      map.removeLayer("clickedone");
-    }
+    this.clearHexHighlight();
 
     if (map.getLayer("ocean")) {
       // $(".hexsize").toggle();
@@ -496,10 +493,7 @@ export default class Map {
   add3D() {
     let map = this.map;
 
-    if (map.getLayer("clickedone")) {
-      console.log(`removing highlight`);
-      map.removeLayer("clickedone");
-    }
+    this.clearHexHighlight();
 
     let id = globals.currentLayerState.hexSize + "-3d";
     //preemptive check for if 3D layer exists already before adding fill-extrusion layer
@@ -604,10 +598,7 @@ export default class Map {
   }
 
   addOcean(activeDataset, activeLayer) {
-    if (this.map.getLayer("clickedone")) {
-      console.log(`removing highlight`);
-      this.map.removeLayer("clickedone");
-    }
+    this.clearHexHighlight();
 
     console.log("activeDataset: " + activeDataset.name);
     console.log("activeLayer: " + activeLayer.Description);
@@ -698,10 +689,7 @@ export default class Map {
     console.log(activeLayer);
     let map = this.map;
 
-    if (map.getLayer("clickedone")) {
-      console.log(`removing highlight`);
-      map.removeLayer("clickedone");
-    }
+    this.clearHexHighlight();
 
     //TAKEN FROM OLDCODE changeDataOnMap
 
@@ -1049,10 +1037,7 @@ export default class Map {
 
   remove3d() {
     let map = this.map;
-    if (map.getLayer("clickedone")) {
-      console.log(`removing highlight`);
-      map.removeLayer("clickedone");
-    }
+    this.clearHexHighlight();
     //taken directly from old code
     console.log("removing 3d");
 
@@ -1474,7 +1459,7 @@ export default class Map {
   }
 
   ///onClickControl.js code for onclick querying of hexes
-  clearOnClickQuery(mapClassInstance) {
+  clearOnClickQuery(mapClassInstance = this.map) {
     console.log("clearOnClickQuery");
     console.log("this is:");
     console.log(this);
@@ -1512,6 +1497,15 @@ export default class Map {
     var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     clickDiv.style.display = "none";
     clickDiv.innerHTML = "";
+  }
+
+  clearHexHighlight() {
+    if (this.map.getLayer("clickedone")) {
+      console.log(`removing highlight`);
+      this.map.removeLayer("clickedone");
+
+      this.clearOnClickQuery(); //to remove the onClickQuery div
+    }
   }
 
   _bindMapClickListeners(mapClassInstance) {
@@ -1578,6 +1572,20 @@ export default class Map {
         mapClassInstance.onDataClick(e);
       }
     );
+
+    this.map.on("click", "ocean", function (e, mapClassInstance = instance) {
+      console.log("map.on.click.ocean");
+      console.log("this is:");
+      console.log(this);
+      console.log("mapClassInstance is:");
+      console.log(mapClassInstance);
+
+      //clear old selections presents
+      mapClassInstance.clearOnClickQuery(mapClassInstance);
+
+      // this.onDataClick(e);
+      mapClassInstance.onDataClick(e);
+    });
 
     this.map.on("click", "admin1", function (e, mapClassInstance = instance) {
       console.log("map.on.click.admin1");
@@ -1688,7 +1696,7 @@ export default class Map {
   }
 
   onDataClick(clicked) {
-    console.log(`onDataClick:`);
+    console.log(`onDataClick clicked object:`);
     console.log(clicked);
 
     var clickDiv = document.getElementsByClassName("my-custom-control")[0];
@@ -1721,14 +1729,17 @@ export default class Map {
       this.map.removeSource("clickedone");
     }
 
-    var currId = clicked.features[0].id;
+    // console.log(clicked.features);
+    // var currId = clicked.features[0].id; //works for non-oceanbased (ocean-data seems to not have id stored)
+    var currId = clicked.features[0].properties.hexid;
+    console.log(`highlighted hex currId: ${currId}`);
 
     var feats = this.map.queryRenderedFeatures({
       layers: [globals.currentLayerState.hexSize],
       filter: ["==", "hexid", currId],
     });
 
-    console.log("queryRenderedFeatures ret:");
+    console.log("queryRenderedFeatures return:");
     console.log(feats);
 
     //var testAdmin = map.querySourceFeatures()
