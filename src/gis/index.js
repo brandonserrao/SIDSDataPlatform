@@ -82,23 +82,34 @@ export default class Map {
   }
 
   zoomToCountry(country) {
+    let self = this;
     var v2 = new mapboxgl.LngLatBounds(country.bb);
     console.log(`zoomTo(${country.NAME_0}) calling map.fitBounds on .bb`);
     this.map.fitBounds(v2, {
       linear: true,
       padding: {
-        top: 10,
-        bottom: 25,
-        left: 15,
-        right: 5,
+        top: 50,
+        bottom: 50,
+        left: 50,
+        right: 50,
       },
       pitch: 0,
     });
 
+    this.remove3d();
+
     //contextual recolor hexes
     this.map.once("idle", function () {
-      if (!this.map.getLayer("ocean")) {
-        this.recolorBasedOnWhatsOnPage();
+      console.log("map idle; recoloring non-ocean data");
+      if (
+        !self.map.getLayer("ocean")
+        // !this.map.getLayer("ocean")
+      ) {
+        // this.recolorBasedOnWhatsOnPage();
+        setTimeout(() => {
+          // this.recolorBasedOnWhatsOnPage()
+          self.recolorBasedOnWhatsOnPage(), 1000;
+        }); //timeout added to allow data to load in before triggering recolor+legend update
       }
     });
   }
@@ -158,11 +169,21 @@ export default class Map {
   }
 
   showSpinner() {
-    document.querySelector(".loader-gis").style.display = "block";
+    // document.querySelector(".loader-gis").style.display = "block";
+
+    //show loader spinner
+    console.log("show loading spinner");
+    let spinner = document.getElementsByClassName("loader-gis")[0];
+    spinner.classList.remove("display-none");
   }
 
   hideSpinner() {
-    document.querySelector(".loader-gis").style.display = "none";
+    // document.querySelector(".loader-gis").style.display = "none";
+
+    //hide loader spinner
+    console.log("hide loading spinner");
+    let spinner = document.getElementsByClassName("loader-gis")[0];
+    spinner.classList.add("display-none");
   }
 
   //taken from old code
@@ -233,12 +254,12 @@ export default class Map {
     if (resolution === "hex1") {
       //showing loader in expectation of hex1 taking longer to display
       // $(".loader-gis").show();
-      // console.log("handling spinner for hex1 loading");
-      // this.showSpinner();
+      console.log("handling spinner for hex1 loading");
+      this.showSpinner();
 
       map.once("idle", () => {
         // $(".loader-gis").hide();
-        // this.hideSpinner();
+        this.hideSpinner();
       });
     }
 
@@ -263,6 +284,8 @@ export default class Map {
       //console.log('change bins');
       //map.setPaintProperty(globals.currentLayerState.hexSize, 'fill-opacity', 0.7)
       map.moveLayer(resolution, "allsids");
+
+      this.hideSpinner();
     });
   }
 
@@ -366,6 +389,8 @@ export default class Map {
       map.setFilter(cls.hexSize, [filterString, cls.dataLayer, 0]);
 
       map.moveLayer("allsids", globals.firstSymbolId); //ensure allsids outline ontop
+
+      self.hideSpinner();
     });
   }
 
@@ -566,6 +591,8 @@ export default class Map {
         pitch: 55,
       });
     }
+
+    this.hideSpinner();
   }
 
   addLabels(labelObject) {
@@ -595,6 +622,8 @@ export default class Map {
 
       //$('#addLabels')[0].innerText = 'Add Labels'
     }
+
+    this.hideSpinner();
   }
 
   addOcean(activeDataset, activeLayer) {
@@ -681,6 +710,8 @@ export default class Map {
     }, 600);
 
     // this.addLegend(); //TODO doesnt this need the extra params that I added to the addLegend function?
+
+    this.hideSpinner();
   }
 
   changeDataOnMap(activeDataset, activeLayer) {
@@ -935,6 +966,8 @@ export default class Map {
 
     map.moveLayer("allsids", globals.firstSymbolId);
     //END------------------------------------------
+
+    this.hideSpinner();
   }
 
   recolorBasedOnWhatsOnPage() {
@@ -1045,6 +1078,8 @@ export default class Map {
       undefined, //should be undefined here but default value in addLegend should handle it
       selectedData
     ); */
+
+    this.hideSpinner();
   }
 
   remove3d() {
@@ -1130,6 +1165,10 @@ export default class Map {
   ) {
     // let activeLayer = activeLayer; //activeLayer is oldcode variable of the active layer from allLayers globalvariable
 
+    if (!activeLayer) {
+      alert(`activeLayer ${activeLayer} is not valid for addLegend`);
+      return;
+    }
     //Debugging logs--------------------------------------
     console.log("addLegend called with: ");
     console.log("in addLegend activeLayer");
@@ -1489,6 +1528,7 @@ export default class Map {
 
     //finished loading in so hide spinner
     // hideSpinner();//TODO: REIMPLEMENT SPINNER
+    this.hideSpinner();
   }
 
   logSources() {

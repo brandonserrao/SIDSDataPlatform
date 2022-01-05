@@ -924,6 +924,15 @@ export default {
       console.log("handleGisMenuChange: object passed:");
       console.log(object);
 
+      //display loader spinner
+      if (!(change_type === "change-opacity")) {
+        console.log("showing loading spinner");
+        let spinner = document.getElementsByClassName("loader-gis")[0];
+        console.log(spinner);
+        spinner.classList.remove("display-none");
+        console.log(spinner);
+      }
+
       //CANDO: extract object packaging and emit to own line outside of typecheck
       if (change_type === "select-country") {
         //value will be country name; returning the names.js object of sids info
@@ -936,15 +945,6 @@ export default {
 
         this.$emit(change_type, countryObject); //custom event for parent to hear
 
-        //update .country-name selection bar
-        /*
-        //TODO: MAKE THIS WORK REACTIVELY
-        console.log(`this.currentCountry = ${this.currentCountry}`);
-        this.currentCountry = name;
-        console.log(
-          `this.currentCountry ${this.currentCountry} reassigned to name ${name}`
-        );
-        */
         document.getElementsByClassName("country-name")[0].textContent = name;
       } else if (change_type === "select-resolution") {
         let resolution = object.resolution;

@@ -21,7 +21,14 @@
       @toggle-3D="toggle3D()"
       @toggle-labels="toggleLabels($event)"
     />
-    <div id="map"></div>
+    <div id="map">
+      <grid-loader
+        class="loader-gis display-none"
+        :loading="gisLoader.loading"
+        :color="gisLoader.color"
+        :size="gisLoader.size"
+      ></grid-loader>
+    </div>
   </div>
 </template>
 
@@ -37,6 +44,9 @@ import GIS from "@/gis"; //gets and loads the index.js file from this directory,
 import MapDatasetController from "@/components/MapDatasetController";
 import MapToolbar from "@/components/MapToolbar"; //my attempt at adapting Ben's Form of new sidebar
 
+// import PulseLoader from "vue-spinner/src/PulseLoader.vue";
+import GridLoader from "vue-spinner/src/GridLoader.vue";
+
 // import MapToolbar from "@/components/oldMapToolbar";//my old sidebar implementation, before Ben's
 
 // @ is an alias to /src
@@ -51,11 +61,14 @@ export default {
       activeDatasetName: null,
       activeLayerName: null,
       displayLegend: true,
+      gisLoader: { loading: true, color: "purple", size: "50px" },
     };
   },
   components: {
     MapDatasetController,
     MapToolbar,
+    // PulseLoader,
+    GridLoader,
   },
   methods: {
     _logSources() {
@@ -367,6 +380,13 @@ export default {
         }
         //
         if (activeLayer) {
+          //display loader spinner
+          console.log("showing loading spinner");
+          let spinner = document.getElementsByClassName("loader-gis")[0];
+          console.log(spinner);
+          spinner.classList.remove("display-none");
+          console.log(spinner);
+
           //TODO: reevaluate this ratch
           //update this vue's state
           this.activeLayerName = activeLayer.Name; //should be identical to activeDatasetName
@@ -407,6 +427,20 @@ export default {
 };
 </script>
 <style media="screen">
+.loader-gis {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* margin: 0 auto; */
+  opacity: 0.75;
+  z-index: 100000;
+}
+
+.display-none {
+  display: none;
+}
+
 #map {
   height: 100vh;
   width: 100%;
