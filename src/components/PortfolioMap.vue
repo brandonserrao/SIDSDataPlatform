@@ -1,35 +1,33 @@
 <template>
   <div class="map d-flex" :class="regionClass" :style="backgroundData">
-    <h2 class="prtfolio-header mt-10 mb-2">UNDP Portfolio in Small Island Developing States</h2>
-    <v-row justify="center">
-      <v-chip
-        class="ma-2"
-        color="primary"
+    <h2 class="page-header prtfolio-header mt-md-5 mb-2">UNDP Portfolio in Small Island Developing States</h2>
+    <v-row class="justify-md-end justify-center" >
+      <v-card
+        class="ma-2 portfolio-chip"
       >
-        {{projectsNumber}} SIDS with UNDP Projects
-      </v-chip>
-      <v-chip
-        class="ma-2"
-        color="primary"
+        <v-card-title class="custom-chip_header">{{projectsNumber}}</v-card-title>
+        <v-card-text class="custom-chip_text">SIDS with UNDP Projects</v-card-text>
+      </v-card>
+      <v-card
+        class="ma-2 portfolio-chip"
       >
-        {{memberStates}} UN Member States
-      </v-chip>
-      <v-chip
-        class="ma-2"
-        color="primary"
+        <v-card-title class="custom-chip_header">{{memberStates}}</v-card-title>
+        <v-card-text class="custom-chip_text">UN Member States</v-card-text>
+      </v-card>
+      <v-card
+        class="ma-2 portfolio-chip"
       >
-        {{UNDPprojectsNumber}} UNDP Projects
-      </v-chip>
-      <v-chip
-        class="ma-2"
-        color="primary"
+        <v-card-title class="custom-chip_header">{{UNDPprojectsNumber}}</v-card-title>
+        <v-card-text class="custom-chip_text">UNDP Projects</v-card-text>
+      </v-card>
+      <v-card
+        class="ma-2 portfolio-chip"
       >
-        {{projectsFundning}} Total Project Funding
-      </v-chip>
+        <v-card-title class="custom-chip_header">{{projectsFundning}}</v-card-title>
+        <v-card-text class="custom-chip_text">Total Project Funding</v-card-text>
+      </v-card>
     </v-row>
-
-
-    <v-row class="map_zones">
+    <v-row class="map_zones d-none d-md-flex">
       <v-col cols="10">
         <v-row class="map_zones">
           <v-col cols="4" @click="regionChange(1)">
@@ -131,12 +129,8 @@ export default {
     },
     projectsFundning() {
       let funding = 0;
-      let distinctProjects = [];
       this.projects.map(project => {
-          if (!distinctProjects.includes(project.title)) {
-            distinctProjects.push(project.title)
-            funding = funding + parseInt(project.budget);
-          }
+        funding = funding + parseInt(project.budget);
       })
       return this.nFormatter(funding)
     }
@@ -148,23 +142,35 @@ export default {
       this.$router.push({query: Object.assign({}, this.$route.query, {region : this.mapClicks[this.region][clickIndex]})})
     },
     updateBackground(clickIndex) {
-      let rootThis = this;
-      let region = this.mapClicks[this.region][clickIndex]
+      let region = this.mapClicks[this.region][clickIndex];
+      this.updateMapImage(region);
+    },
+    updateMapImage(region) {
+      let regionToSet = region,
+      rootThis = this;
       if(region === 'All') {
-        region = '';
+        regionToSet = '';
       }
-      let img = 'https://sids-dashboard.github.io/SIDSDataPlatform/graphics/sidsMapNewest' + region + '-01.png'
+      let img = 'https://sids-dashboard.github.io/SIDSDataPlatform/graphics/sidsMapNewest' + regionToSet + '-01.png'
       var img_tag = new Image();
       // when preload is complete, apply the image to the div
       img_tag.onload = function () {
           rootThis.backgroundData = {
             'background-image': `url(${img})`
           }
-          rootThis.regionClass = `map-${region}`
+          rootThis.regionClass = `map-${rootThis.region}`
       }
       // setting 'src' actually starts the preload
       img_tag.src = img;
     }
+  },
+  watch: {
+    region() {
+      this.updateMapImage(this.region);
+    }
+  },
+  mounted() {
+    this.updateMapImage(this.region);
   }
 }
 </script>
@@ -173,7 +179,8 @@ export default {
 .map {
   cursor: pointer;
   flex-direction: column;
-  min-height: 80vh;
+  height: 80vh;
+  max-height: 720px;
   background-size: 95%;
   width: 100%;
   background-position: 50% -10px;
@@ -199,5 +206,34 @@ export default {
 }
 .prtfolio-header {
   text-align: center;
+}
+.custom-chip_header {
+  justify-content: center;
+  padding: 0.1em;
+}
+.custom-chip_text {
+  justify-content: center;
+  padding: 0.4em;
+  max-width: 120px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1;
+}
+.map_info {
+  flex-grow: 0;
+}
+
+@media all and (max-width:600px) {
+  .map {
+    background-image:none !important;
+    height: auto;
+    max-height: 720px;
+  }
+  .prtfolio-header {
+    padding: 0 40px 0 40px;
+  }
+  .portfolio-chip {
+    min-width: 30%;
+  }
 }
 </style>

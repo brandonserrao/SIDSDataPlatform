@@ -1,6 +1,6 @@
 <template>
   <div class="graph-container">
-      <h4 class="text-center"
+      <h4 class="block-subheader text-center"
         :style="{color: graphOptions.textColor}">
         {{headerText}}
       </h4>
@@ -14,7 +14,7 @@
           :link="keyMetadata[axis.axis].sourceLink"
         />
       </div>
-    <div :id="`graph${pillarName}`">
+    <div :id="`graph${pillarName}${postfix}`">
     </div>
   </div>
 </template>
@@ -40,6 +40,10 @@ export default {
     pillarName: {
       type: String,
       default: 'Climate'
+    },
+    postfix: {
+      type: String,
+      default: ''
     },
     graphOptions: {
       type: Object,
@@ -161,7 +165,7 @@ export default {
           .domain([this.maxAxisValue, 1]);
       }
 
-      const parent = d3.select(`#graph${this.pillarName}`);
+      const parent = d3.select(`#graph${this.pillarName}${this.postfix}`);
 
       //Remove whatever chart with the same id/class was present before
       parent.select("svg").remove();
@@ -220,7 +224,6 @@ export default {
       }
 
       //Create the straight lines radiating outward from the center
-      console.log(allAxis)
       let axis = axisGrid.selectAll(".axis")
         .data(allAxis)
         .enter()
@@ -257,6 +260,7 @@ export default {
                 return template.innerHTML;
               },
               theme: 'light',
+              maxWidth:400,
               interactive: true,
               allowHTML: true,
               appendTo: () => document.body
@@ -325,7 +329,7 @@ export default {
             .attr("class", "radarStroke")
             .attr("d", function (d) { return radarLine(d.axes); })
             .style("stroke-width", this.fullGraphOptions.strokeWidth + "px")
-            .style("stroke", (d, i) => this.fullGraphOptions.color(i))
+            .style("stroke", (d, i) => {console.log(d, i, 'id'); return this.fullGraphOptions.color(i)})
             .style("fill", "none")
             .style("filter", "url(#glow)")
             .style("pointer-events","none");

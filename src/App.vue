@@ -7,10 +7,10 @@
   >
     <root-header />
     <v-row no-gutters id="content">
-      <v-col cols="2">
+      <v-col class="menu-col" cols="0" md="2">
         <nav-menu />
       </v-col>
-      <v-col cols="10">
+      <v-col cols="12" md="10">
         <router-view class="root-router" />
       </v-col>
     </v-row>
@@ -33,16 +33,35 @@ export default {
 </script>
 <style>
 @import "./assets/styles/RootStyles.css";
+@import "./assets/styles/buttons.css";
+@import "./assets/styles/text.css";
+@import "./assets/styles/forms.css";
+
 #app {
   padding: 0;
+  background-color: #f4f5f8;
 }
 #content {
   min-height: calc(100vh - 100px);
+  overflow: hidden;
 }
 .root-router {
   padding: 0 2em 4em;
 }
 :focus {
   outline: none;
+}
+body,
+.v-application {
+  font-family: "Proxima Nova", sans-serif !important;
+}
+
+@media all and (max-width: 600px) {
+  .root-router {
+    padding: 0 0 4em;
+  }
+  .menu-col {
+    width: 0 !important;
+  }
 }
 </style>

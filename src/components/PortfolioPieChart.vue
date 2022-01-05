@@ -1,8 +1,8 @@
 <template>
   <div class="">
-    <div class="pie-chart" :id="chartName">
+    <div class="pie-chart" :id="chartName + postfix">
     </div>
-    <div class="d-none" v-for="(axis, index) in data" :id="chartName +'tooltip'+ index" :key="index">
+    <div class="d-none" v-for="(axis, index) in data" :id="chartName + postfix +'tooltip'+ index" :key="index">
       <portfolio-pieChart-tooltip :header="axis.category" :budget="axis.value" :finance="nFormatter(axis.value)" :percetage="data"/>
     </div>
   </div>
@@ -25,6 +25,10 @@ export default {
       type: String,
       default: 'region'
     },
+    postfix: {
+      type: String,
+      default: ''
+    },
     colorScheme: {
       type: Function,
       default: ()=>(()=>({}))
@@ -41,18 +45,21 @@ export default {
       arc: null,
       outerArc: null,
       makePie: null,
-      radius: 64
+      radius: this.$vuetify.breakpoint.name === 'xs' || this.$vuetify.breakpoint.name === 'sm' ?
+      38 : 64
     }
   },
   methods: {
     initChart() {
-      this.pie = d3.select(`#${this.chartName}`).append("svg").append("g");
+      this.pie = d3.select(`#${this.chartName}${this.postfix}`).append("svg").append("g");
+      let translate = this.$vuetify.breakpoint.name === 'xs' || this.$vuetify.breakpoint.name === 'sm' ?
+      `translate(160, 40)` : `translate(180, 75)`
       this.pie.append("g")
-        .attr("class", "slices").attr("transform", `translate(220, 75)`);
+        .attr("class", "slices").attr("transform", translate);
       this.pie.append("g")
-        .attr("class", "labels").attr("transform", `translate(220, 75)`);
+        .attr("class", "labels").attr("transform", translate);
       this.pie.append("g")
-        .attr("class", "lines").attr("transform", `translate(220, 75)`);
+        .attr("class", "lines").attr("transform", translate);
 
       this.arc = d3.arc()
         .outerRadius(this.radius * 0.8)
@@ -100,7 +107,7 @@ export default {
         newTooltips.push(
           tippy(list[index], {
             content() {
-              const template = document.getElementById(`${rootThis.chartName}tooltip${index}`);
+              const template = document.getElementById(`${rootThis.chartName}${rootThis.postfix}tooltip${index}`);
               return template.innerHTML;
             },
             theme: 'light',
@@ -225,5 +232,13 @@ export default {
 }
 .slices:hover .slice:hover {
     opacity: 1;
+}
+@media all and (max-width:600px) {
+  .pie-chart svg {
+    max-width: 310px;
+    margin: auto;
+    height: 90px;
+    min-height: 90px;
+  }
 }
 </style>

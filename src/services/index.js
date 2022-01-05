@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 
 
 const API_URL = 'https://raw.githubusercontent.com/Ben-Keller/smallislands/main/data';
-
+const NEW_ALI_UPR = 'https://raw.githubusercontent.com/SIDS-Dashboard/SIDSDataPlatform/main/data'
 export default {
   loadAllKeyData,
   loadMetaData,
@@ -31,14 +31,14 @@ async function loadFundingCategories () {
   return result
 }
 async function loadSIDSData () {
-  const resp = await axios.get(`${API_URL}/sids_db.csv`)
+  const resp = await axios.get(`${NEW_ALI_UPR}/exports/sids_db.csv`)
   return d3.csvParse(resp.data)
 }
 async function loadIndicatorsCategories () {
-  const resp = await axios.get(`/SIDSDataPlatform/static/indicatorCategories.json`)
+  const resp = await axios.get(`/static/indicatorCategories.json`)
   return resp.data
 }
 async function loadIndicatorsMeta () {
-  const resp = await axios.get(`/SIDSDataPlatform/static/indicatorMeta.json`)
+  const resp = await axios.get(`/static/indicatorMeta.json`)
   return resp.data
 }

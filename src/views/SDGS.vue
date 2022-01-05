@@ -1,29 +1,36 @@
 <template>
-  <v-row justify="center">
-  <div class="">
-    <v-row class="mb-0 svg-row" justify="center">
-      <div id="svg-container">
+  <v-row :id="'tab'+id" justify="center">
+    <div class="d-none d-md-block">
+      <v-row class="mb-0 svg-row" justify="center">
+        <div class="svg-container">
+        </div>
+      </v-row>
+      <v-row class="mt-0 bars-container" justify="center">
+        <div class="sdg-goal" v-for="(goal, index) in sdgs" :key="goal">
+          <img
+            :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${parseGoalNumber(index)}.png`"
+            height="56"
+            width="56"
+            >
+        </div>
+      </v-row>
+      <div class="d-none" v-for="(goal, index) in sdgs" :id="'SDGtooltip'+ index" :key="index">
+        <portfolio-tooltip :header="goal" :data="getSDGSTooltipData(goal)"/>
       </div>
-    </v-row>
-    <v-row class="mt-0 bars-container" justify="center">
-      <div class="sdg-goal" v-for="(goal, index) in sdgs" :key="goal">
-        <img
-          :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${parseGoalNumber(index)}.png`"
-          height="56"
-          width="56"
-          >
-      </div>
-    </v-row>
-    <div class="d-none" v-for="(goal, index) in sdgs" :id="'SDGtooltip'+ index" :key="index">
-      <portfolio-tooltip :header="goal" :data="getSDGSTooltipData(goal)"/>
     </div>
-  </div>
-</v-row>
+    <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
+      {{projectCount[activeGoal]}} projects
+    </v-col>
+    <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
+      {{nFormatter(budgetCount[activeGoal])}} budget
+    </v-col>
+  </v-row>
 </template>
 <script>
 
 import sidsdata from '@/mixins/SIDSData.mixin'
 import format from '@/mixins/format.mixin'
+import { mapState } from 'vuex';
 import * as d3 from 'd3';
 import PortfolioTooltip from '@/components/PortfolioSDGSTooltip'
 import tippy from 'tippy.js';
@@ -35,6 +42,7 @@ export default {
   },
   data() {
     return {
+      id: this._uid,
       svg:null,
       svgContainer: null,
       sdgs: ["No poverty", "Zero hunger", "Good health and well-being", "Quality education", "Gender equality", "Clean water and sanitation", "Affordable and clean energy", "Decent work and economic growth", "Industry, innovation and infrastructure", "Reduced inequalities", "Sustainable cities and communities", "Responsible consumption and production", "Climate action", "Life below water", "Life on Land", "Peace, justice, and strong institutions", "Partnerships for the goals"],
@@ -53,6 +61,9 @@ export default {
   props:['year', 'fundingCategory', 'fundingSource', 'region'],
   mixins:[sidsdata, format],
   computed: {
+    ...mapState({
+      activeGoal: state => state.goals.activeGoal
+    }),
     barsHeight(){ return this.svgHeight - this.barsMargin.top - this.barsMargin.bottom },
     barsWidth(){ return this.svgWidth - this.barsMargin.left - this.barsMargin.right },
     projectNamesObject () {
@@ -93,7 +104,7 @@ export default {
   },
   methods: {
     initBars() {
-      this.svg = d3.select("#svg-container").append("svg");
+      this.svg = d3.select(`#tab${this.id} .svg-container`).append("svg");
       this.svg.attr('height', this.svgHeight)
           .attr('width', this.svgWidth);
 
@@ -167,6 +178,7 @@ export default {
               },
               theme: 'light',
               interactive: true,
+              maxWidth:420,
               allowHTML: true,
               appendTo: () => document.body
             });
@@ -394,7 +406,9 @@ export default {
     flex-wrap: nowrap;
     max-width: 100%;
     margin: 0px;
-
+  }
+  .svg-row {
+    height: 160px;
   }
   .sdg-goal {
     height: 62px;
@@ -403,9 +417,6 @@ export default {
   }
   .sdg-goal img {
     width: 100%;
-  }
-  .svg-row {
-    max-height: 160px;
   }
   .barsLabels {
     font-family: sans-serif;

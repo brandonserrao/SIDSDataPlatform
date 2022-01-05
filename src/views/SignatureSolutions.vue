@@ -1,23 +1,31 @@
 <template>
-  <v-row justify="center">
-    <div>
+  <v-row :id="'tab'+id" justify="center">
+    <div class="d-none d-md-block">
       <v-row class="mb-0 svg-row" justify="center">
-        <div id="svg-container">
+        <div class="svg-container">
         </div>
       </v-row>
       <v-row class="mt-0 bars-container" justify="center">
         <div class="ss-goal" v-for="(goal, index) in ss" :key="goal">
           <img
           height="56"
+          width="144"
           :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SSicons/1x/${imageNames[index]}SS.png`">
         </div>
       </v-row>
     </div>
+    <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
+      {{projectCount[activeGoal]}} projects
+    </v-col>
+    <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
+      {{nFormatter(budgetCount[activeGoal])}} budget
+    </v-col>
   </v-row>
 </template>
 <script type="text/javascript">
 
 import sidsdata from '@/mixins/SIDSData.mixin'
+import { mapState } from 'vuex';
 import format from '@/mixins/format.mixin'
 import * as d3 from 'd3';
 
@@ -28,6 +36,7 @@ export default {
   mixins:[sidsdata, format],
   data() {
     return {
+      id: this._uid,
       imageNames:['poverty', 'governance', 'resilience', 'environment', 'energy', 'gender'],
       svgContainer: null,
       colors: ["#E3253C", "#0076B0", "#F26A2C", "#417F45", "#FAB715",
@@ -35,8 +44,8 @@ export default {
         "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8"
       ],
       ss: ["Keeping people out of poverty", "Strengthen effective, inclusive and accountable governance", "Enhance national prevention and recovery capacities for resilient societies", "Promote nature-based solutions for a sustainable planet", "Close the energy gap", "Strengthen gender equality and the empowerment of women and girls"],
-      barsMargin: { top: 60, right: 0, bottom: 0, left: 0 },
-      svgWidth: 900,
+      barsMargin: { top: 60, right: 10, bottom: 0, left: 10 },
+      svgWidth: 880,
       svgHeight: 160,
       y1: null,
       y2: null,
@@ -44,6 +53,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      activeGoal: state => state.goals.activeGoal
+    }),
     barsHeight(){ return this.svgHeight - this.barsMargin.top - this.barsMargin.bottom },
     barsWidth(){ return this.svgWidth - this.barsMargin.left - this.barsMargin.right },
     projectNamesObject () {
@@ -84,7 +96,7 @@ export default {
   },
   methods: {
     initBars() {
-      let svg = d3.select("#svg-container").append("svg");
+      let svg = d3.select(`#tab${this.id} .svg-container`).append("svg");
       svg.attr('height', this.svgHeight)
           .attr('width', this.svgWidth);
 
@@ -336,6 +348,7 @@ export default {
     }
   },
   mounted() {
+    this.id = this._uid;
     this.initBars();
     this.$nextTick(this.drawBars);
   },
@@ -347,15 +360,23 @@ export default {
 }
 </script>
 <style media="screen">
+  .bars-container{
+    display: flex;
+    flex: 1 0 auto;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    margin: 0px;
+  }
+  .svg-row {
+    height: 160px;
+  }
   .ss-goal {
     height: 62px;
+    max-width: 144px;
     padding: 3px;
   }
   .ss-goal img {
     max-width: 100%;
-  }
-  .ss-row {
-    max-height: 160px;
   }
   .barsLabels {
     font-family: sans-serif;
