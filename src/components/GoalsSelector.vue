@@ -49,7 +49,6 @@
         :class="{'goals-slider-ss': activeGoalType === 'signature-solutions'}"
         @click:next="goalUpdateNext($event)"
         @click:prev="goalUpdatePrev($event)"
-        @change="emitGoalChange"
         show-arrows
         ref="slider"
       >
@@ -114,11 +113,13 @@
 </template>
 
 <script>
+
+import store from '@/store'
+
 export default {
   name: "GoualsSelector",
   data() {
     return {
-      activeGoal: 1,
       goalTypes: [
         {
           name: "SAMOA Pathway",
@@ -139,7 +140,7 @@ export default {
           // description: 'UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.'
         },
       ],
-      activePillar: 1,
+      activeGoal: 1,
       'signature-solutions': [
         'Poverty',
         'Governance',
@@ -376,23 +377,22 @@ export default {
       }
     },
     goalUpdateNext() {
-      this.activeGoal = this.activeGoal + 1;
-      this.emitGoalChange(this.activeGoal)
+      this.activeGoal = this.activeGoal + 1
+      this.$store.commit('goals/setActiveGoal', this.activeGoal)
     },
     goalUpdatePrev() {
-      this.activeGoal = this.activeGoal - 1;
-      this.emitGoalChange(this.activeGoal)
+      this.activeGoal = this.activeGoal - 1
+      this.$store.commit('goals/setActiveGoal', this.activeGoal)
     },
     selectGoal(goalNumber) {
-      this.activeGoal = goalNumber;
+      this.activeGoal = goalNumber
+      this.$store.commit('goals/setActiveGoal', this.activeGoal)
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
       this.$refs.slider.scrollOffset = (this.activeGoalType === 'signature-solutions' ? 138 : 56) * (goalNumber - 1);
     },
     emitTypeChange(type) {
+    this.$store.commit('goals/setActiveGoal', 1)
         this.$emit('changeType', {activeGoal: this.activeGoal, type:type})
-    },
-    emitGoalChange() {
-        this.$emit('changeGoal', {activeGoal: this.activeGoal})
     },
     resetGoalModel() {
       this.$nextTick(()=> {

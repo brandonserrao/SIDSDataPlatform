@@ -1,8 +1,8 @@
 <template>
-  <v-row justify="center">
+  <v-row :id="'tab'+id" justify="center">
     <div class="d-none d-md-block">
       <v-row class="mb-0 svg-row" justify="center">
-        <div id="svg-container">
+        <div class="svg-container">
         </div>
       </v-row>
       <v-row class="mt-0 bars-container" justify="center">
@@ -15,26 +15,28 @@
       </v-row>
     </div>
     <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
-      {{projectCount[goalNumber]}} projects
+      {{projectCount[activeGoal]}} projects
     </v-col>
     <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
-      {{nFormatter(budgetCount[goalNumber])}} budget
+      {{nFormatter(budgetCount[activeGoal])}} budget
     </v-col>
   </v-row>
 </template>
 <script type="text/javascript">
 
 import sidsdata from '@/mixins/SIDSData.mixin'
+import { mapState } from 'vuex';
 import format from '@/mixins/format.mixin'
 import * as d3 from 'd3';
 
 
 export default {
   name: 'SDGS',
-  props:['year', 'fundingCategory', 'fundingSource', 'region', 'goalNumber'],
+  props:['year', 'fundingCategory', 'fundingSource', 'region'],
   mixins:[sidsdata, format],
   data() {
     return {
+      id: this._uid,
       imageNames:['poverty', 'governance', 'resilience', 'environment', 'energy', 'gender'],
       svgContainer: null,
       colors: ["#E3253C", "#0076B0", "#F26A2C", "#417F45", "#FAB715",
@@ -51,6 +53,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      activeGoal: state => state.goals.activeGoal
+    }),
     barsHeight(){ return this.svgHeight - this.barsMargin.top - this.barsMargin.bottom },
     barsWidth(){ return this.svgWidth - this.barsMargin.left - this.barsMargin.right },
     projectNamesObject () {
@@ -91,7 +96,7 @@ export default {
   },
   methods: {
     initBars() {
-      let svg = d3.select("#svg-container").append("svg");
+      let svg = d3.select(`#tab${this.id} .svg-container`).append("svg");
       svg.attr('height', this.svgHeight)
           .attr('width', this.svgWidth);
 
@@ -343,6 +348,7 @@ export default {
     }
   },
   mounted() {
+    this.id = this._uid;
     this.initBars();
     this.$nextTick(this.drawBars);
   },

@@ -148,7 +148,7 @@
     <v-row>
       <v-col>
         <v-card flat>
-          <goals-selector @changeType="updateTypeData" @changeGoal="updateGoalData" :activeGoalType="pages[activePage]"/>
+          <goals-selector class="d-flex d-md-none" @changeType="updateTypeData" :activeGoalType="pages[activePage]" />
           <router-view class="d-block d-md-none"></router-view>
         </v-card>
       </v-col>
@@ -373,16 +373,8 @@ export default {
       this.$router.push({path:`/portfolio/${to}`, query: this.$route.query})
     },
     updateTypeData(e) {
-      this.selectedGoal = 1;
-      this.activePage = ['samoa', 'sdgs', 'signature-solutions'].indexOf(e.type);
-      this.$router.push({path:`/portfolio/${e.type}`, query: Object.assign({}, this.$route.query, {
-        goalNumber : 1})})
-    },
-    updateGoalData(e) {
-      this.selectedGoal = e;
-      console.log(this.activePage, 'goal');
-      this.$router.push({path:`/portfolio/${this.activePage}`, query: Object.assign({}, this.$route.query, {
-        goalNumber : e.activeGoal})})
+      this.activePage = this.pages.indexOf(e.type);
+      this.$router.push({path:`/portfolio/${e.type}`, query: this.$route.query})
     }
   }
 }

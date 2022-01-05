@@ -35,8 +35,7 @@ const routes = [
           region: route.query.region || 'All',
           year: route.query.year || 'all',
           fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
-          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources'),
-          goalNumber: parseInt(route.query.goalNumber) || 1
+          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
         }),
       },
       {
@@ -47,8 +46,7 @@ const routes = [
           region: route.query.region || 'All',
           year: route.query.year || 'all',
           fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
-          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources'),
-          goalNumber: parseInt(route.query.goalNumber) || 1
+          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
         }),
       },
       {
@@ -59,8 +57,7 @@ const routes = [
           region: route.query.region || 'All',
           year: route.query.year || 'all',
           fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
-          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources'),
-          goalNumber: parseInt(route.query.goalNumber) || 1
+          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
         }),
       },
       {
