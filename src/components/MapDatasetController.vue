@@ -1,6 +1,9 @@
 <template>
   <div class="">
     <v-card class="mb-4">
+      <!--       <button class="printout debug" @click="">
+        Printout Datasets to Console
+      </button> -->
       <v-row>
         <v-col cols="6">
           <v-list dense>
@@ -169,6 +172,7 @@
             item-text="name"
             item-value="name"
             label="Dataset"
+            @input="emitUpdate"
             outlined
           ></v-select>
         </v-col>
@@ -184,6 +188,7 @@
             item-value="Description"
             :items="activeDataset.layers"
             label="Layer"
+            @input="emitUpdate"
             outlined
           ></v-select>
         </v-col>
@@ -201,29 +206,55 @@
             step="1"
             ticks="always"
             tick-size="4"
+            @input="emitUpdate"
           ></v-slider>
         </v-col>
       </v-row>
     </v-card>
     <v-card v-if="activeLayer">
       <v-card-subtitle>
-        <b>{{activeLayer.Description}}
-        {{activeDataset.type === 'temporal' ? activeLayer.Temporal : ''}}</b>
+        <b
+          >{{ activeLayer.Description }}
+          {{ activeDataset.type === "temporal" ? activeLayer.Temporal : "" }}</b
+        >
       </v-card-subtitle>
       <v-card-text>
-        {{activeLayer.Desc_long}}<br/>
-          <b>Reference</b> {{activeLayer.Source_Name}} <br/>
-          <a :href="activeLayer.Source_Link" target="_blank"> {{activeLayer.Source_Link}} </a>
+        {{ activeLayer.Desc_long }}<br />
+        <b>Reference</b> {{ activeLayer.Source_Name }} <br />
+        <a :href="activeLayer.Source_Link" target="_blank">
+          {{ activeLayer.Source_Link }}
+        </a>
       </v-card-text>
+    </v-card>
+
+    <!-- New Legend/Histogram -->
+    <!-- <v-card v-if="displayLegend" class="histogram_frame"> -->
+    <v-card v-show="displayLegend" class="histogram_frame">
+      <div id="histogram_frame" class="pic app-body population-per-km col-flex">
+        <div class="row-flex space-evenly" id="legendTitle"></div>
+        <div class="row-flex space-evenly" id="updateLegend"></div>
+        <canvas
+          ref="canvas_histogram"
+          id="histogram"
+          width="320"
+          height="115"
+        ></canvas>
+      </div>
     </v-card>
   </div>
 </template>
 
 <script>
 import datasets from "@/gis/static/layers";
+// import globals from "@/gis/static/globals";
+/* 
+import * as d3 from "d3";
+import chroma from "chroma-js"; */
+// import Chart from "chart.js";
 
 export default {
   name: "MapDatasetController",
+  props: ["displayLegend", "map"],
   data() {
     return {
       activeGoal: 1,
@@ -494,6 +525,15 @@ export default {
     },
   },
   methods: {
+    /**
+     *passes current dataset+layer selection upwards
+     */
+    emitUpdate() {
+      // console.log(`emitUpdate of activeDataset and activeLayer`);
+      let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
+      this.$emit("update", active);
+    },
+
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
         let goalNmber = (index + 1).toString();
@@ -539,6 +579,20 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+/*Brandon additions*/
+
+.row-flex {
+  display: flex;
+  flex-direction: row;
+  /* margin-top: 3px; */
+  font-size: 11px;
+}
+
+.space-evenly {
+  justify-content: space-evenly;
+}
+/*End of Brandon additions*/
+
 .goals-slider {
   padding: 8px 0;
   width: 106px;

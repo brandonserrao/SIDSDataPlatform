@@ -1,4 +1,4 @@
-import service from '@/services'
+// import service from '@/services'
 
 export default {
   namespaced: true,
@@ -7,7 +7,7 @@ export default {
   },
   mutations: {
     setActiveGoal(state, goal) {
-      state.activeGoal = goal-1;
+      state.activeGoal = goal - 1;
     },
-  }
-}
+  },
+};
