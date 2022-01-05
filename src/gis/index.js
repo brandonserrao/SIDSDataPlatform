@@ -680,13 +680,13 @@ export default class Map {
       }
     }, 600);
 
-    this.addLegend(); //TODO doesnt this need the extra params that I added to the addLegend function?
+    // this.addLegend(); //TODO doesnt this need the extra params that I added to the addLegend function?
   }
 
   changeDataOnMap(activeDataset, activeLayer) {
     let Field_Name = activeLayer.Field_Name; //get the selected layer's Field_Name
     console.log(`changeDataOnMap fired: ${Field_Name}, activeLayer:`);
-    console.log(activeLayer);
+    console.log();
     let map = this.map;
 
     this.clearHexHighlight();

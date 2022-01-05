@@ -1,6 +1,6 @@
 <template>
   <div class="map-container">
-    <button class="debug" @click="_logSources()">Debug logger</button>
+    <!-- <button class="debug" @click="_logSources()">Debug logger</button> -->
     <map-dataset-controller
       class="data-controller"
       :map="map"
