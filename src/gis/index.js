@@ -1585,8 +1585,14 @@ export default class Map {
         //this.map.
         mapClassInstance.getSource(id)
       ) {
-        mapClassInstance.removeLayer(id);
-        mapClassInstance.removeSource(id);
+        if (id === "highlightS") {
+          //special case for naming convention
+          mapClassInstance.removeLayer("highlight");
+          mapClassInstance.removeSource(id);
+        } else {
+          mapClassInstance.removeLayer(id);
+          mapClassInstance.removeSource(id);
+        }
       }
     }
 
@@ -1691,7 +1697,7 @@ export default class Map {
       mapClassInstance.clearOnClickQuery(mapClassInstance);
 
       // this.onDataClick(e);
-      mapClassInstance.addAdminClick(e);
+      mapClassInstance.addAdminClick(e, "admin1");
     });
 
     this.map.on("click", "admin2", function (e, mapClassInstance = instance) {
@@ -1701,7 +1707,7 @@ export default class Map {
       mapClassInstance.clearOnClickQuery(mapClassInstance);
 
       // this.onDataClick(e);
-      mapClassInstance.addAdminClick(e);
+      mapClassInstance.addAdminClick(e, "admin2");
     });
 
     this.map.on("click", function () /* e, mapClassInstance = instance */ {
@@ -1863,7 +1869,7 @@ export default class Map {
     });
   }
 
-  addAdminClick(e) {
+  addAdminClick(e, adminLayerId) {
     var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     clickDiv.style.display = "block";
     clickDiv.style.height = "100px";
@@ -1873,7 +1879,8 @@ export default class Map {
 
     //map.on('click', currentGeojsonLayers.hexSize, function (e) {
 
-    console.log(e.features[0].properties.GID_1);
+    console.log(`clicked feature GID_1: ${e.features[0].properties.GID_1}
+    clicked feature GID_2: ${e.features[0].properties.GID_2}`);
     //console.log(e.features[0].geometry);
 
     /*var feats = map.queryRenderedFeatures({
@@ -1883,7 +1890,8 @@ export default class Map {
         }) */
 
     var rendered = this.map.queryRenderedFeatures({
-      layers: ["admin1"],
+      // layers: ["admin1"],
+      layers: [adminLayerId],
     });
 
     var feats;
