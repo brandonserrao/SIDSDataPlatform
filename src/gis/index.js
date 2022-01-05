@@ -1065,6 +1065,31 @@ export default class Map {
         pitch: 0,
       });
     }
+
+    //animate the button back to 2D icon; taken from handleHeightChange
+    let threeDIcon = document.getElementsByClassName("threeD" + "-icon")[0];
+    let twoDIcon = document.getElementsByClassName("twoD" + "-icon")[0];
+
+    if (
+      !twoDIcon.classList.contains("display-none") &&
+      threeDIcon.classList.contains("display-none")
+    ) {
+      console.log("3D icon visible; flip animate to 2D");
+
+      //animation triggering of the button
+      twoDIcon.classList.add("flip1");
+      setTimeout(() => {
+        threeDIcon.classList.remove("display-none");
+        threeDIcon.classList.add("flip2");
+        twoDIcon.classList.add("display-none");
+        twoDIcon.classList.remove("flip1");
+      }, 140);
+      setTimeout(() => {
+        threeDIcon.classList.remove("flip2");
+      }, 280);
+    } else {
+      console.log(`2D icon visible; no flip animate`);
+    }
   }
 
   //adapted from oldcode

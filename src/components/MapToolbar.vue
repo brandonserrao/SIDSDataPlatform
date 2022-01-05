@@ -230,8 +230,9 @@
                           <div class="resolution-sub-icon hex10"></div>
                         </div>
                       </div>
+                      <!-- !!DISABLED UNTIL SQUARE DATA GRIDS ARE AVAILABLE~~ -->
                       <div
-                        class="row-flex align-items-center"
+                        class="row-flex align-items-center display-none"
                         style="margin-left: 10px; height: 50px"
                       >
                         <div style="margin-right: 15px">Squares</div>
@@ -269,24 +270,24 @@
                         style="margin-left: 10px; height: 50px"
                       >
                         <div style="margin-right: 15px">Admin Regions</div>
-                        <!-- <div
+                        <div
                           class="row-flex resolution-option align-items-center"
-                          @click="handleResolutionChange(6, 'adminRegion1')"
+                          @click="handleResolutionChange(6, 'admin1')"
                         >
                           <div style="font-weight: bold; margin-left: 4px">
                             Level 1
                           </div>
-                          <div class="resolution-sub-icon adminRegion1"></div>
+                          <div class="resolution-sub-icon admin1"></div>
                         </div>
                         <div
                           class="row-flex resolution-option align-items-center"
-                          @click="handleResolutionChange(7, 'adminRegion2')"
+                          @click="handleResolutionChange(7, 'admin2')"
                         >
                           <div style="font-weight: bold; margin-left: 4px">
                             Level 2
                           </div>
-                          <div class="resolution-sub-icon adminRegion2"></div>
-                        </div> -->
+                          <div class="resolution-sub-icon admin2"></div>
+                        </div>
                       </div>
                     </div>
 
@@ -1523,6 +1524,8 @@ export default {
       var reqd = document.getElementsByClassName(second + "-icon")[0];
 
       this.closeAllMenu();
+
+      //animation triggering of the button
       curr.classList.add("flip1");
       setTimeout(() => {
         reqd.classList.remove("display-none");
@@ -1534,6 +1537,7 @@ export default {
         reqd.classList.remove("flip2");
       }, 280);
 
+      //packaging info object to pass on
       var value;
       var object = {};
 
@@ -1868,11 +1872,11 @@ body {
   background: url("../assets/gis/sidebar/Square10.png");
 }
 
-.adminRegion1 {
+.admin1 {
   background: url("../assets/gis/sidebar/admin1.png");
 }
 
-.adminRegion2 {
+.admin2 {
   background: url("../assets/gis/sidebar/admin2.png");
 }
 

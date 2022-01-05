@@ -396,7 +396,7 @@ export default {
 
       //TODO: reevaluate this
       //workaround!!! implemented for recoloring code
-      //, setting a global variable instead of passing it through, i
+      //, setting a global variable instead of passing it through;
       globals.lastActive.layer = activeLayer;
       globals.lastActive.dataset = activeDataset;
     },
