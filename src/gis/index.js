@@ -513,6 +513,8 @@ export default class Map {
     //update the chart with new color ramp
     globals.myHistogram.data.datasets[0].backgroundColor = colorRampNew;
     globals.myHistogram.update();
+
+    this.hideSpinner();
   }
 
   add3D() {
@@ -876,6 +878,15 @@ export default class Map {
           //console.log(breaks_new);
         } while (this.checkForDuplicates(breaks_new) && globals.precision < 10);
         breaks = breaks_new;
+
+        console.log("globals.currentLayerState.color:");
+        console.log(globals.currentLayerState.color);
+        /* if (!globals.currentLayerState.color) {
+          //triggering if the color palette stored has been reset to null (intended to be triggered by change in active dataset)
+          console.log(
+            `currentLayerState.color: ${globals.currentLayerState.color}; determining default palette`
+          );
+        } */
 
         var colorRamp = colors.colorSeq["yellow-blue"];
 

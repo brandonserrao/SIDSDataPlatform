@@ -351,6 +351,14 @@ export default {
     },
 
     updateMap(activeDataset, activeLayer) {
+      if (!(activeDataset === globals.lastActive.dataset)) {
+        console.log(
+          `dataset changing from ${globals.lastActive.dataset?.name} -> ${activeDataset.name}; resetting color palette;`
+        );
+        globals.lastActive.dataset = activeDataset;
+        globals.currentLayerState.color = null;
+      }
+
       //if there isn't a dataset selected and updatecalls;
       //reset actives (can serve as trigger to reset selection)
       if (!activeDataset) {
