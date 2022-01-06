@@ -246,7 +246,7 @@
 <script>
 import datasets from "@/gis/static/layers";
 // import globals from "@/gis/static/globals";
-/* 
+/*
 import * as d3 from "d3";
 import chroma from "chroma-js"; */
 // import Chart from "chart.js";
@@ -266,7 +266,9 @@ export default {
           name: "SIDS offer Pillars",
           value: "pillars",
           headerImg:
-            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png",
+            // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png",
+            // "https://sids-dashboard.github.io/SIDSDataPlatform/src/assets/gis/icons/sidsOfferPillars.png",
+            "../assets/gis/icons/sidsOfferPillars.png",
           description:
             "UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.",
         },
@@ -274,7 +276,9 @@ export default {
           name: "SDGs",
           value: "sdgs",
           headerImg:
-            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png",
+            // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png",
+            // "https://sids-dashboard.github.io/SIDSDataPlatform/src/assets/gis/icons/SDGs.png",
+            "../assets/gis/icons/SDGs.png",
           description:
             "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
         },
@@ -282,7 +286,8 @@ export default {
           name: "SAMOA Pathway",
           value: "samoaPriorities",
           headerImg:
-            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png",
+            // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png",
+            "../assets/gis/icons/samoaPathway.png",
           description:
             "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
         },
@@ -292,21 +297,24 @@ export default {
         {
           name: "Blue Economy",
           value: "blue",
-          icon: "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/blueEconomy.png",
+          // icon: "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/blueEconomy.png",
+          icon: "../assets/gis/icons/pillars/blueEconomy.png",
           description:
             "Harnessing the blue economy through an integrated approach rooted in sustainable finance and development.",
         },
         {
           name: "Climate Action",
           value: "climate",
-          icon: "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/climateAction.png",
+          // icon: "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/climateAction.png",
+          icon: "../assets/gis/icons/pillars/climateAction.png",
           description:
             "Promoting decarbonized and resilient societies through scaled up climate action and enhanced efforts to mobilize climate finance.",
         },
         {
           name: "Digital transformation",
           value: "digital",
-          icon: "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/digitalTransformation.png",
+          // icon: "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/digitalTransformation.png",
+          icon: "../assets/gis/icons/pillars/digitalTransformation.png",
           description:
             "Accelerating digital transformation through a whole-of-society approach that puts people at the centre for inclusive societies and resilient economies.",
         },
@@ -581,11 +589,25 @@ export default {
         if (goalNmber.length < 2) {
           goalNmber = "0" + goalNmber;
         }
-        return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNmber}.png`;
+        // let output = `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNmber}.png`;
+        let output = `../assets/gis/icons/SDG_Icons_2019_WEB/E-WEB-Goal-${goalNmber}.png`;
+        // console.log(output);
+        // return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNmber}.png`;
+        return output;
       } else if (this.activeGoalType === "samoaPriorities") {
-        return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${
+        /*         let output = `https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${
+          index + 1
+        }samoaIcons.png`; */
+        let output = `../assets/gis/icons/samoaIcons/100w/Asset_${
           index + 1
         }samoaIcons.png`;
+        /* return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${
+          index + 1
+        }samoaIcons.png`; */
+        /* return `../assets/gis/icons/samoaIcons/100w/Asset%20${
+          index + 1
+        }samoaIcons.png`; */
+        return output;
       }
     },
     goalUpdateNext() {
