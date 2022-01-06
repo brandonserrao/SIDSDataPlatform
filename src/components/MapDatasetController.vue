@@ -664,7 +664,7 @@ export default {
 @media (orientation: landscape) {
   .data-controller {
     /* display: none; */
-    max-height: 90vh;
+    max-height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -673,7 +673,7 @@ export default {
   .data-controller {
     /* display: none; */
     max-width: 50vw;
-    max-height: 90vh;
+    max-height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
   }

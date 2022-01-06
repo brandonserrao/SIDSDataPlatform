@@ -495,6 +495,12 @@ export default {
 };
 </script>
 <style media="screen">
+/* to keep the nav drawer above the geospatial data components */
+.v-navigation-drawer,
+.navigation-container {
+  z-index: 3000;
+}
+
 .landscape-enforcer {
   display: block;
   position: fixed;
@@ -591,12 +597,13 @@ export default {
 }
 
 .population-per-km {
-  max-width: 350px;
+  /* max-width: 350px; */
   /*margin-top: 12px; */
   background-color: #dddddd;
   /*border-radius: 10px; */
-  padding: 10px;
-  margin-left: 30px;
+  /* padding: 10px; */
+  padding: 5px;
+  /* margin-left: 30px; */
   /*sebastian added */
   position: relative;
   z-index: 1;
