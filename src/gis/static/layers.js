@@ -527,7 +527,7 @@ const datasets = [
         samoa_pathway: "3,5,14,15",
         pillars: "1,2",
         Name: "Ocean Data",
-        Unit: "m<sup>2</sup>",
+        Unit: "m",
         Desc_long:
           "Gridded Bathymetry Data in 10km Hexbins. These hexbins roughly extend 200km from each Small Island Developing State shown on the map.",
         Source_Name: "GEBCO Compilation Group (2021) ",

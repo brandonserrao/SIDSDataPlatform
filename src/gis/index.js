@@ -581,13 +581,25 @@ export default class Map {
               50000,
             ],
 
+            "fill-extrusion-base": !(
+              globals.currentLayerState.dataLayer === "depth"
+            )
+              ? 0
+              : 0,
             "fill-extrusion-opacity": 1,
           },
         },
         globals.firstSymbolId
       );
 
-      map.setFilter(id, [">=", globals.currentLayerState.dataLayer, 0]);
+      let filterString =
+        globals.currentLayerState.dataLayer === "depth" ? "<" : ">=";
+
+      map.setFilter(id, [
+        filterString, // ">="
+        globals.currentLayerState.dataLayer,
+        0,
+      ]);
       map.easeTo({
         center: map.getCenter(),
         pitch: 55,
