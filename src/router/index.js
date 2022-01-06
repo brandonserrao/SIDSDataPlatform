@@ -71,27 +71,55 @@ const routes = [
     ]
   },
   {
-    path: '/development-indicators',
+    path: '/development-indicators/:indicator?/:chartType?',
     link: '/development-indicators',
     name: 'Development Indicators',
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
-    props: () => ({
-      view: 'indicators',
-    }),
     beforeEnter: async (to, from, next) => {
+
+      if(!to.params.chartType) {
+        next({ path: `/development-indicators/region/choro`})
+      }
+      if(!to.params.indicator) {
+        next({ path: `/development-indicators/region/choro`})
+      }
       await store.dispatch('indicators/getCategories');
       await store.dispatch('indicators/getMeta');
+      await store.dispatch('indicators/getProfileData');
       next()
     },
+    props: (to) => (
+      {
+        chartType: to.params.chartType,
+        indicator: to.params.indicator,
+        page: 'devIdictors'
+      }
+    ),
   },
   {
-    path: '/vulnerability',
+    path: '/vulnerability/:indicator?/:chartType?',
     link: '/vulnerability',
     name: 'Vulnerability',
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
-    props: () => ({
-      view: 'vulnerability',
-    }),
+    beforeEnter: async (to, from, next) => {
+      if(!to.params.chartType) {
+        next({ path: `/vulnerability/region/spider`})
+      }
+      if(!to.params.indicator) {
+        next({ path: `/vulnerability/region/spider`})
+      }
+      await store.dispatch('indicators/getCategories');
+      await store.dispatch('indicators/getMeta');
+      await store.dispatch('indicators/getProfileData');
+      next()
+    },
+    props: (to) => (
+      {
+        chartType: to.params.chartType,
+        indicator: to.params.indicator,
+        page: 'mvi'
+      }
+    ),
   },
   {
     path: '/country-profiles/:country?',
