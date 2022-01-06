@@ -1,29 +1,27 @@
 const constants = {
   sourceURLs: {
-    hex1:
-      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/hex5clipped/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
-      "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/hex1/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
-    hex5:
-      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/hex5clipped/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
-      "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/hex5/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
+    // hex1: "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/hex5clipped/{z}/{x}/{y}.pbf?sv=2020-08-04&st=2022-01-06T07%3A39%3A53Z&se=2023-01-07T07%3A39%3A00Z&sr=c&sp=racwl&sig=uN7Z2aqOpU9upKl2zP4hEh1VfgMVwYixgml8uS216g8%3D",
+    hex1: "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/hex1/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
+    // hex5: "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/hex5clipped/{z}/{x}/{y}.pbf?sv=2020-08-04&st=2022-01-06T07%3A39%3A53Z&se=2023-01-07T07%3A39%3A00Z&sr=c&sp=racwl&sig=uN7Z2aqOpU9upKl2zP4hEh1VfgMVwYixgml8uS216g8%3D",
+    hex5: "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/hex5/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
     hex10:
-      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/hex5clipped/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
+      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/hex5clipped/{z}/{x}/{y}.pbf?sv=2020-08-04&st=2022-01-06T07%3A39%3A53Z&se=2023-01-07T07%3A39%3A00Z&sr=c&sp=racwl&sig=uN7Z2aqOpU9upKl2zP4hEh1VfgMVwYixgml8uS216g8%3D",
       "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/hex10/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
     hex5clipped:
-      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/hex5clipped/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
+      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/hex5clipped/{z}/{x}/{y}.pbf?sv=2020-08-04&st=2022-01-06T07%3A39%3A53Z&se=2023-01-07T07%3A39%3A00Z&sr=c&sp=racwl&sig=uN7Z2aqOpU9upKl2zP4hEh1VfgMVwYixgml8uS216g8%3D",
       "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/hex5clipped/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
     admin1:
-      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/admin1/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
+      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/admin1/{z}/{x}/{y}.pbf?sv=2020-08-04&st=2022-01-06T07%3A39%3A53Z&se=2023-01-07T07%3A39%3A00Z&sr=c&sp=racwl&sig=uN7Z2aqOpU9upKl2zP4hEh1VfgMVwYixgml8uS216g8%3D",
       "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/admin1/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
     // "https://sebastian-ch.github.io/sidsDataTest/data/admin1/{z}/{x}/{y}.pbf",
     admin2:
-      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/admin2/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
+      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/admin2/{z}/{x}/{y}.pbf?sv=2020-08-04&st=2022-01-06T07%3A39%3A53Z&se=2023-01-07T07%3A39%3A00Z&sr=c&sp=racwl&sig=uN7Z2aqOpU9upKl2zP4hEh1VfgMVwYixgml8uS216g8%3D",
       "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/admin2/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
     ocean:
-      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/oceans/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
+      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/oceans/{z}/{x}/{y}.pbf?sv=2020-08-04&st=2022-01-06T07%3A39%3A53Z&se=2023-01-07T07%3A39%3A00Z&sr=c&sp=racwl&sig=uN7Z2aqOpU9upKl2zP4hEh1VfgMVwYixgml8uS216g8%3D",
       "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/oceans/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
     allSids:
-      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/oceans/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
+      // "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/oceans/{z}/{x}/{y}.pbf?sv=2020-08-04&st=2022-01-06T07%3A39%3A53Z&se=2023-01-07T07%3A39%3A00Z&sr=c&sp=racwl&sig=uN7Z2aqOpU9upKl2zP4hEh1VfgMVwYixgml8uS216g8%3D",
       "https://undpngddlsgeohubdev01.blob.core.windows.net/vectortiles/SIDS/tiles/allsids/{z}/{x}/{y}.pbf?sp=r&st=2021-12-20T19:56:41Z&se=2025-12-21T03:56:41Z&spr=https&sv=2020-08-04&sr=c&sig=YDP%2B60KZ%2FThM%2FM4Po1H8nnx8fhNmbH%2FoKqO6chWcKnE%3D",
   },
   /* sourceURLs: {

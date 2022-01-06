@@ -42,7 +42,7 @@ export default class Map {
     this.map.on("load", () => {
       this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
       this._removeUnusedLayers();
-      this._createMiniMap();
+      // this._createMiniMap();
       this._initOnClickControl();
 
       this._bindMapClickListeners(this); //attempt to pass class into this function, to allow access to class when mapbox map level events are called that can't see the class functions normally
@@ -1824,7 +1824,8 @@ export default class Map {
 
     var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     clickDiv.style.display = "block";
-    clickDiv.style.height = "100px";
+    // clickDiv.style.height = "100px";
+    clickDiv.style.height = "auto";
     clickDiv.style.width = "200px";
 
     clickDiv.innerHTML =
@@ -1892,7 +1893,8 @@ export default class Map {
   addAdminClick(e, adminLayerId) {
     var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     clickDiv.style.display = "block";
-    clickDiv.style.height = "100px";
+    clickDiv.style.height = "auto";
+    // clickDiv.style.height = "100px";
     clickDiv.style.width = "200px";
 
     console.log(e.features[0].properties);

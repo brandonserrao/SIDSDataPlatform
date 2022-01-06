@@ -1,5 +1,21 @@
 <template>
   <div class="map-container">
+    <div class="landscape-enforcer">
+      <p>
+        THE GEOSPATIAL DATA FUNCTIONALITY REQUIRES YOUR DEVICE TO BE IN
+        LANDSCAPE ORIENTATION
+      </p>
+    </div>
+    <!-- 
+    <div
+      v-show="!(screenOrientation === 'landscape-primary')"
+      class="landscape-enforcer"
+    >
+      <p>
+        THE GEOSPATIAL DATA FUNCTIONALITY REQUIRES YOUR DEVICE TO BE IN
+        LANDSCAPE ORIENTATION
+      </p>
+    </div> -->
     <!-- <button class="debug" @click="_logSources()">Debug logger</button> -->
     <map-dataset-controller
       class="data-controller"
@@ -62,6 +78,7 @@ export default {
       activeLayerName: null,
       displayLegend: true,
       gisLoader: { loading: true, color: "purple", size: "50px" },
+      screenOrientation: window.screen.orientation.type,
     };
   },
   components: {
@@ -478,6 +495,43 @@ export default {
 };
 </script>
 <style media="screen">
+.landscape-enforcer {
+  display: block;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: black;
+  color: white;
+  opacity: 0.98;
+  z-index: 2000;
+}
+.landscape-enforcer p {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30vh 10vw;
+}
+/* portrait devices smaller than tablets */
+@media (orientation: portrait) and (max-width: 750px) {
+  .landscape-enforcer {
+    display: block;
+  }
+}
+/* portrait devices as big as tablets */
+@media (orientation: portrait) and (min-width: 750px) {
+  .landscape-enforcer {
+    display: none;
+  }
+}
+/*  */
+@media (orientation: landscape) {
+  .landscape-enforcer {
+    display: none;
+  }
+}
 .loader-gis {
   position: relative;
   top: 50%;
@@ -485,7 +539,7 @@ export default {
   transform: translate(-50%, -50%);
   /* margin: 0 auto; */
   opacity: 0.75;
-  z-index: 100000;
+  z-index: 1500;
 }
 
 .display-none {
