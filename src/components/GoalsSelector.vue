@@ -114,8 +114,6 @@
 
 <script>
 
-import store from '@/store'
-
 export default {
   name: "GoualsSelector",
   data() {
