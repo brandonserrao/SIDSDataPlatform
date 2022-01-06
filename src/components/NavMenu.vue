@@ -1,24 +1,67 @@
 <template>
-  <v-list class="main-menu" dense>
-      <v-list-item
-        v-for="route in routes"
-        :key="route.link"
-        :to="route.link"
+  <div class="navigation-container">
+    <button
+      class="navigation-menu-button d-md-none"
+      @click="drawer = !drawer"
       >
-        <v-list-item-content>
-          <v-list-item-title
-            v-text="route.name">
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-  </v-list>
+      <v-icon
+         size="48"
+         color="blue darken-2"
+       >
+         mdi-menu
+       </v-icon>
+    </button>
+    <v-navigation-drawer
+
+      class="navigation-menu-drawer d-md-none"
+      v-model="drawer"
+      fixed
+    >
+      <v-list class="main-menu" dense>
+          <v-list-item
+            v-for="route in routes"
+            :key="route.link"
+            :to="route.link"
+          >
+            <v-list-item-content>
+              <v-list-item-title
+                v-text="route.name">
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-list
+      class="main-menu d-none d-md-block"
+      dense>
+        <v-list-item
+          v-for="route in routes"
+          :key="route.link"
+          :to="route.link"
+        >
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="route.name">
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+    </v-list>
+  </div>
 </template>
 
 <script>
 
 export default {
   name: 'NavMenu',
+  data(){
+    return {
+      drawer: false
+    }
+  },
   computed: {
+    isMobile() {
+      return this.$vuetify.breakpoint.name === 'xs' || this.$vuetify.breakpoint.name === 'sm'
+    },
     routes () { return this.$router.options.routes.filter( route => route.path!=='*' )}
   },
   props: {
@@ -64,5 +107,18 @@ export default {
 .mdl-tabs__tab:hover {
     background: rgba(158, 158, 158, 0.34);
     color: black;
+}
+.navigation-container {
+  position: relative;
+    height: 100%;
+}
+.navigation-menu-drawer {
+  height: 100vh !important;
+}
+.navigation-menu-button {
+  z-index: 80;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 </style>

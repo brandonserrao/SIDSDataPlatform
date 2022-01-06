@@ -1,33 +1,33 @@
 <template>
   <div class="map d-flex" :class="regionClass" :style="backgroundData">
-    <h2 class="page-header prtfolio-header mt-5 mb-2">UNDP Portfolio in Small Island Developing States</h2>
-    <v-row justify="end">
+    <h2 class="page-header prtfolio-header mt-md-5 mb-2">UNDP Portfolio in Small Island Developing States</h2>
+    <v-row class="justify-md-end justify-center" >
       <v-card
-        class="ma-2"
+        class="ma-2 portfolio-chip"
       >
         <v-card-title class="custom-chip_header">{{projectsNumber}}</v-card-title>
         <v-card-text class="custom-chip_text">SIDS with UNDP Projects</v-card-text>
       </v-card>
       <v-card
-        class="ma-2"
+        class="ma-2 portfolio-chip"
       >
         <v-card-title class="custom-chip_header">{{memberStates}}</v-card-title>
         <v-card-text class="custom-chip_text">UN Member States</v-card-text>
       </v-card>
       <v-card
-        class="ma-2"
+        class="ma-2 portfolio-chip"
       >
         <v-card-title class="custom-chip_header">{{UNDPprojectsNumber}}</v-card-title>
         <v-card-text class="custom-chip_text">UNDP Projects</v-card-text>
       </v-card>
       <v-card
-        class="ma-2"
+        class="ma-2 portfolio-chip"
       >
         <v-card-title class="custom-chip_header">{{projectsFundning}}</v-card-title>
         <v-card-text class="custom-chip_text">Total Project Funding</v-card-text>
       </v-card>
     </v-row>
-    <v-row class="map_zones">
+    <v-row class="map_zones d-none d-md-flex">
       <v-col cols="10">
         <v-row class="map_zones">
           <v-col cols="4" @click="regionChange(1)">
@@ -221,5 +221,19 @@ export default {
 }
 .map_info {
   flex-grow: 0;
+}
+
+@media all and (max-width:600px) {
+  .map {
+    background-image:none !important;
+    height: auto;
+    max-height: 720px;
+  }
+  .prtfolio-header {
+    padding: 0 40px 0 40px;
+  }
+  .portfolio-chip {
+    min-width: 30%;
+  }
 }
 </style>

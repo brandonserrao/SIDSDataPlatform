@@ -14,3 +14,11 @@
   font-size: 18px !important;
   font-weight: 600 !important;
 }
+@media all and (max-width:600px) {
+  .page-header {
+    font-size: 24px !important;
+  }
+}
+.text-center {
+  text-align: center;
+}

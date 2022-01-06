@@ -2,10 +2,10 @@
   <v-container data-app class="v-application v-application--is-ltr" id="app" fluid>
     <root-header/>
     <v-row no-gutters id="content">
-      <v-col cols="2">
+      <v-col class="menu-col" cols="0" md="2">
         <nav-menu/>
       </v-col>
-      <v-col cols="10">
+      <v-col cols="12" md="10">
         <router-view class="root-router"/>
       </v-col>
     </v-row>
@@ -41,6 +41,7 @@ export default {
 }
 #content{
   min-height: calc(100vh - 100px);
+  overflow: hidden;
 }
 .root-router {
   padding: 0 2em 4em;
@@ -50,5 +51,14 @@ export default {
 }
 body, .v-application {
    font-family: 'Proxima Nova', sans-serif !important;
+ }
+
+ @media all and (max-width:600px) {
+   .root-router {
+     padding: 0 0 4em;
+   }
+   .menu-col {
+     width: 0 !important;
+   }
  }
 </style>
