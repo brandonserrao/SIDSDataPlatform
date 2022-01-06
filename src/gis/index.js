@@ -42,7 +42,7 @@ export default class Map {
     this.map.on("load", () => {
       this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
       this._removeUnusedLayers();
-      this._createMiniMap();
+      // this._createMiniMap();
       this._initOnClickControl();
 
       this._bindMapClickListeners(this); //attempt to pass class into this function, to allow access to class when mapbox map level events are called that can't see the class functions normally
@@ -581,13 +581,25 @@ export default class Map {
               50000,
             ],
 
-            //'fill-opacity': 0.8,
+            "fill-extrusion-base": !(
+              globals.currentLayerState.dataLayer === "depth"
+            )
+              ? 0
+              : 0,
+            "fill-extrusion-opacity": 1,
           },
         },
         globals.firstSymbolId
       );
 
-      map.setFilter(id, [">=", globals.currentLayerState.dataLayer, 0]);
+      let filterString =
+        globals.currentLayerState.dataLayer === "depth" ? "<" : ">=";
+
+      map.setFilter(id, [
+        filterString, // ">="
+        globals.currentLayerState.dataLayer,
+        0,
+      ]);
       map.easeTo({
         center: map.getCenter(),
         pitch: 55,
@@ -630,6 +642,7 @@ export default class Map {
 
   addOcean(activeDataset, activeLayer) {
     this.clearHexHighlight();
+    this.remove3d();
 
     console.log("activeDataset: " + activeDataset.name);
     console.log("activeLayer: " + activeLayer.Description);
@@ -740,19 +753,22 @@ export default class Map {
 
         globals.currentLayerState.hexSize = "hex5"; //default to hex5 since leaving ocean data (which is a fixed 10km hexsize)
 
-        map.addLayer({
-          id: "hex5",
-          type: "fill",
-          source: "hex5",
-          "source-layer": "hex5",
-          layout: {
-            visibility: "visible",
+        map.addLayer(
+          {
+            id: "hex5",
+            type: "fill",
+            source: "hex5",
+            "source-layer": "hex5",
+            layout: {
+              visibility: "visible",
+            },
+            paint: {
+              "fill-color": "blue",
+              "fill-opacity": 0.0,
+            },
           },
-          paint: {
-            "fill-color": "blue",
-            "fill-opacity": 0.0,
-          },
-        });
+          globals.firstSymbolId
+        );
       }
     } else if (
       activeLayer.Name === "Ocean Data" &&
@@ -772,19 +788,22 @@ export default class Map {
         }
       }
 
-      map.addLayer({
-        id: "ocean",
-        type: "fill",
-        source: "ocean",
-        "source-layer": "oceans",
-        layout: {
-          visibility: "visible",
+      map.addLayer(
+        {
+          id: "ocean",
+          type: "fill",
+          source: "ocean",
+          "source-layer": "oceans",
+          layout: {
+            visibility: "visible",
+          },
+          paint: {
+            "fill-color": "blue",
+            "fill-opacity": 0.0,
+          },
         },
-        paint: {
-          "fill-color": "blue",
-          "fill-opacity": 0.0,
-        },
-      });
+        globals.firstSymbolId
+      );
     } else {
       console.log("map has no 'ocean' layer");
     }
@@ -1381,6 +1400,7 @@ export default class Map {
               max: maxY,
               //min: 1,
 
+              //toread https://www.chartjs.org/docs/2.9.4/axes/labelling.html?h=callback%3A
               callback: function (value, index, values) {
                 if (index || values) {
                   console.log(
@@ -1804,7 +1824,8 @@ export default class Map {
 
     var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     clickDiv.style.display = "block";
-    clickDiv.style.height = "100px";
+    // clickDiv.style.height = "100px";
+    clickDiv.style.height = "auto";
     clickDiv.style.width = "200px";
 
     clickDiv.innerHTML =
@@ -1872,7 +1893,8 @@ export default class Map {
   addAdminClick(e, adminLayerId) {
     var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     clickDiv.style.display = "block";
-    clickDiv.style.height = "100px";
+    clickDiv.style.height = "auto";
+    // clickDiv.style.height = "100px";
     clickDiv.style.width = "200px";
 
     console.log(e.features[0].properties);
