@@ -14,11 +14,12 @@ export function sort_object(obj) {
         return second[1] - first[1];
     });
     let sorted_obj = {}
-    items.each((k, v) => {
-        let use_key = v[0]
-        let use_value = k;//v[1]
-        sorted_obj[use_key] = use_value
-    })
+    items.map(function(value, index) {
+        var use_key = value[0];
+        let use_value = index;//v[1]
+        sorted_obj[use_key] = use_value;
+    });
+    
     return (sorted_obj)
 
 }

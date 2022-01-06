@@ -10,19 +10,31 @@
           <h2 class="page-header">Development Indicators</h2>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols='12'>
+      <v-row jusify="center">
+        <v-col cols='12' md="7" xl="7">
           <v-tabs
+            v-if="indicator!=='region'"
             :value="activeTab"
             class="tabs indicators-slider"
           >
-            <v-tab v-for="tab in menuBar" :key="tab.name" @change="transitionTo(tab.chartType)">{{tab.name}}</v-tab>
+            <v-tab v-for="tab in menuBar[page]" :key="tab.name" @change="transitionTo(tab.chartType)">{{tab.name}}</v-tab>
+          </v-tabs>
+        </v-col>
+      </v-row>
+      <v-row jusify="end">
+        <v-col v-if="chartType === 'bars'" cols='12' md='6' lg='4'>
+          <v-tabs
+            v-model="sorting"
+            class="tabs tabs-slider"
+          >
+            <v-tab key="rank" value="rank">Rank</v-tab>
+            <v-tab key="region" value="region">Region</v-tab>
           </v-tabs>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols='12'>
-          <indicators-choro-chart :chartType="chartType" :indicatorCode="indicator"/>
+          <indicators-choro-chart :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
         </v-col>
       </v-row>
     </v-col>
@@ -38,22 +50,43 @@ import IndicatorsChoroChart from '@/components/IndicatorsChoroChart.vue'
 
 export default {
   name: 'DevelopmentIndicators',
-  props:['chartType', 'indicator'],
+  props:['chartType', 'indicator', 'page'],
   data: function() {
     return {
-      menuBar:[{
-        name:'Choropleth',
-        chartType:'choro'
-      },{
-        name:'Bar chart',
-        chartType:'bars'
-      },{
-        name:'Global view',
-        chartType:'global'
-      },{
-        name:'Time series',
-        chartType:'series'
-      }]
+      sorting:'rank',
+      menuBar:{
+        devIdictors: [{
+          name:'Choropleth',
+          chartType:'choro'
+        },{
+          name:'Bar chart',
+          chartType:'bars'
+        },{
+          name:'Global view',
+          chartType:'global'
+        },
+        // {
+        //   name:'Time series',
+        //   chartType:'series'
+        // }
+      ],
+        mvi: [{
+          name:'Info',
+          chartType:'info'
+        },{
+          name:'Spider',
+          chartType:'spider'
+        },{
+          name:'Bar chart',
+          chartType:'bars'
+        },{
+          name:'Global view',
+          chartType:'global'
+        },{
+          name:'Time series',
+          chartType:'series'
+        }]
+      }
     }
   },
   components: {
@@ -61,13 +94,25 @@ export default {
     IndicatorsChoroChart
   },
   computed: {
+    sortingName() {
+      if(this.sorting === 0) {
+        return 'Rank'
+      } else {
+        return 'Region'
+      }
+    },
     activeTab() {
-      return this.menuBar.findIndex(menuItem => menuItem.chartType === this.chartType)
+      return this.menuBar[this.page].findIndex(menuItem => menuItem.chartType === this.chartType)
     },
   },
   methods: {
     transitionTo(chartType) {
-      this.$router.push({path:`/development-indicators/${this.indicator}/${chartType}`})
+      if(this.page === 'mvi'){
+        this.$router.push({path:`/vulnerability/${this.indicator}/${chartType}`})
+      }
+      else {
+        this.$router.push({path:`/development-indicators/${this.indicator}/${chartType}`})
+      }
     },
     indicatorUpdate(indicator) {
       this.$router.push({path:`/development-indicators/${indicator['Indicator Code']}/${this.chartType}`})

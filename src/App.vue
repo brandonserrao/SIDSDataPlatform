@@ -31,6 +31,7 @@ export default {
 @import './assets/styles/buttons.css';
 @import './assets/styles/text.css';
 @import './assets/styles/forms.css';
+@import './choro/vizEngine.css';
 
 
 

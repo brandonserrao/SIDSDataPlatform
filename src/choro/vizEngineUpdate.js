@@ -3,14 +3,16 @@ import * as d3 from 'd3';
 import {
   indexCodes,
   indexDict,
-  hues
+  hues,
+  // mviDimensionList
 } from './vizEngineGlobals';
 
 import {
   regionColors,
   getRandomInt,
   getIsoByName,
-  nFormatter
+  nFormatter,
+  getBoundingBox
 } from './vizEngineHelperFunctions';
 
 ///////////////////////
@@ -25,14 +27,12 @@ export function updateVizEngine(indicatorCode) {
 //
 //      //process code
 //      selectedPage = $(".selectedPage").attr("id");
-//   if(selectedPage=="mviTab"){
-//   indicatorCode = "mvi";
-//   }else{
-//       indicatorGlobal=indicatorCode
-//   }
-//   if (indicatorCode == "Region") {
-//     indicatorCode = "hdr137506-compositeIndices";///temp so has something to attach to data
-//   }
+  if(this.page=="mvi"){
+    this.indicatorCode = "mvi";
+  }
+  if (this.indicatorCode == "region") {
+    this.indicatorCode = "hdr137506-compositeIndices";///temp so has something to attach to data
+  }
 //   //choose index or indicator mode
   if (indexCodes.includes(this.indicatorCode)) {
     this.vizMode = "index";
@@ -71,17 +71,9 @@ export function updateVizEngine(indicatorCode) {
 //
     this.indicatorData = dat[this.indicatorCode];
 //
-    // if(vizMode=="index"){
-    //    console.log("Index Mode")
-    //    indexData=dat
-    //   console.log("japa")
-    //
-    //   subindexWeights=mviDimensions
-    //   subindexList=mviDimensionList
-    //
-    //
-    //   orderedCountryList=getIndexCountryList(indiSelections,subindexList)
-    //   indiSelections["countryOrder"]=orderedCountryList
+    // if(this.vizMode=="index"){
+    //   let orderedCountryList=getIndexCountryList(indiSelections, mviDimensionList)
+    //   this.indiSelections["countryOrder"] = orderedCountryList
     //
     //   spiderData=processSpiderData(indexData,subindexWeights,indiSelections,orderedCountryList)
     //
@@ -93,38 +85,38 @@ export function updateVizEngine(indicatorCode) {
       let quantize = quantizeData(this.indicatorData,this.indiSelections),
       noData = this.countriesWithNoData();
 //
-    // if(firstIndicatorInit==0){
-    console.log(quantize)
+    if(!this.firstIndicatorInit){
       this.initChoroLegend(quantize);// require data to be loaded
-      // initXAxis()//messes chorolegend if it is too soon
-    // firstIndicatorInit=1; }
+      this.initXAxis()//messes chorolegend if it is too soon
+    this.firstIndicatorInit=1; }
 //
 //     //main update functions////
       let vizElementAttributes = this.processVizElementAttributes();
 //     ///////////
 //
+      console.log(vizElementAttributes, noData , 'values')
       this.updateCountrySvgColors(quantize);//currently color data is computed here (quantize)
       this.updateCountryPositions(vizElementAttributes);
       this.updateCountryTitles(vizElementAttributes, noData);
       this.updateRectangles(vizElementAttributes);
-//     updateIndexRectangles(indiSelections,indicatorData)
+      this.updateIndexRectangles()
       this.updateLabels(vizElementAttributes, noData); //selectedPage, selectedViz, selectedYear,selectedSortby, indicatorData, noData)
       this.updateCircles(vizElementAttributes);
 // //    updateCountryLines(vizElementAttributes);
     // updateChoroTooltips(indicatorData, indiSelections);
       this.updateChoroLegend(quantize);
-    // updateBarAxis(indicatorData, indiSelections);
-    // updateYAxis(indicatorData, indiSelections);
-//     if (indiSelections["viz"] == "Time Series") {
-//         ///this should pass in data directly or else it won't update based on the customMvi
-//         dataset = parse(dat);
-//         optionSelected = {
-//           countryGroupOption: tempTimeChartSelection,
-//           datasetOption: indicatorCode,
-//         };
-//         console.log({ dataset, optionSelected });
-//         updateTimeChart({ dataset, optionSelected });
-//       }
+      this.updateBarAxis();
+      this.updateYAxis();
+    // if (this.indiSelections["viz"] == "series") {
+    //     ///this should pass in data directly or else it won't update based on the customMvi
+    //     dataset = parse(dat);
+    //     optionSelected = {
+    //       countryGroupOption: tempTimeChartSelection,
+    //       datasetOption: indicatorCode,
+    //     };
+    //     console.log({ dataset, optionSelected });
+    //     updateTimeChart({ dataset, optionSelected });
+    //   }
 //
 //       updateVizSliders()//again, just for fun
   });
@@ -150,7 +142,6 @@ function quantizeData(indicatorData,indiSelections){
       // Math.min(...Object.values(indicatorData).filter(function (el) { return !isNaN(parseFloat(el)) && isFinite(el);  }))
 
       //quantize is the scale used for the choropleth and the legend
-    console.log(quantize)
     let quantize = d3
       .scaleQuantize()
       .domain([min, max])
@@ -160,7 +151,6 @@ function quantizeData(indicatorData,indiSelections){
         })
       );
 
-      console.log(quantize)
    return quantize
 }
 //
@@ -176,7 +166,7 @@ export function countriesWithNoData() {
         let iso = this.id;
         ////need to update this to indiSelections["year"] variable
         rootThis.indiSelections["year"] = "recentValue";
-        let value = rootThis.profileData["data"][rootThis.indiSelections["year"]][iso];
+        let value = rootThis.indicatorData["data"][rootThis.indiSelections["year"]][iso];
         //console.log(value)
         if (value == "No Data" || typeof value != "number") {
           noData.push(iso);
@@ -334,7 +324,7 @@ export function updateCountrySvgColors(quantize) {
            if (
               rootThis.indiSelections["viz"] == "Multi-indicator" ||
               rootThis.indiSelections["viz"] == "bars" ||
-              rootThis.indiSelections["viz"] == "Spider" ||
+              rootThis.indiSelections["viz"] == "spider" ||
               rootThis.indiSelections["viz"] == "global" ||
               rootThis.indicatorCode == "Region"
             ) {
@@ -445,39 +435,39 @@ export function updateCountryTitles(
     .style("pointer-events", "none");
 
   if (this.indiSelections["viz"] == "global") {
-    d3.selectAll('.choroText').style({'fill-opacity': 0})
-    d3.selectAll('.choroText2').style({'fill-opacity': 0})
-    d3.selectAll('.choroText3').style({'fill-opacity': 1})
+    d3.selectAll('.choroText').attr('fill-opacity', 0)
+    d3.selectAll('.choroText2').attr('fill-opacity', 0)
+    d3.selectAll('.choroText3').attr('fill-opacity', 1)
   } else {
-    d3.selectAll('.choroText2').style({'fill-opacity': 0})
-    d3.selectAll('.choroText3').style({'fill-opacity': 0})
+    d3.selectAll('.choroText2').attr('fill-opacity', 0)
+    d3.selectAll('.choroText3').attr('fill-opacity', 0)
   }
 
-  // if (indiSelections["page"] == "mviTab"){
-
-  //     $(".choroText").each(function (d) {
+  // if (this.indiSelections["page"] == "mvi"){
+  //
+  //     d3.selectAll(".choroText").each(function () {
   //         //which is this only mviCountryListSpider? it doesn't check which tab is selected
   //         ///console.log(indicator, indiSelections["page"], indiSelections["viz"])
   //         if(noData.includes(country)) {
-  //             $(this).css("fill-opacity", 0)
+  //             d3.select(this).attr("fill-opacity", 0)
   //         }
   //         else {
-  //             $(this).css("fill-opacity", 1)
+  //             d3.select(this).attr("fill-opacity", 1)
   //         }
   //     })
-
-  //     $(".choroText2").each(function (d) {
-  //         $(this).css("fill-opacity", 0)
+  //
+  //     d3.selectAll(".choroText2").each(function (d) {
+  //         d3.selectAll(this).attr("fill-opacity", 0)
   //     })
-  //     $(".choroText3").each(function (d) {
-
-  //         $(this).css("fill-opacity", 0)
+  //     d3.selectAll(".choroText3").each(function (d) {
+  //
+  //         d3.selectAll(this).attr("fill-opacity", 0)
   //     })
-
+  //
   // }
 
     if (this.indiSelections["viz"] == "series") {
-      d3.selectAll('.choroText').style({'fill-opacity': 0})
+      d3.selectAll('.choroText').attr('fill-opacity', 0)
     } else {
       d3.selectAll('.choroText').each(function () {
         let country = getIsoByName(this.innerHTML);
@@ -486,18 +476,18 @@ export function updateCountryTitles(
           rootThis.indicatorCode == "Region" &&
           rootThis.indiSelections["viz"] == "choro"
         ) {
-          d3.select(this).style({'fill-opacity': 1});
+          d3.select(this).attr('fill-opacity', 1);
         } else {
           if (
             noData.includes(country) ||
             rootThis.indiSelections["viz"] == "global"
           ) {
             let scale
-            d3.select(this).style({'fill-opacity': 0});
-            if (rootThis.indiSelections["viz"] == "Bar Chart") {
+            d3.select(this).attr('fill-opacity', 0);
+            if (rootThis.indiSelections["viz"] == "bars") {
               scale = 1;
             } //.05
-            else if (rootThis.indiSelections["viz"] == "Choropleth") {
+            else if (rootThis.indiSelections["viz"] == "choro") {
               scale = 1;
             }
             d3.select(this)
@@ -505,7 +495,7 @@ export function updateCountryTitles(
               .duration(1200)
               .attr("transform", "scale(" + scale + "," + scale + ")");
           } else {
-            d3.select(this).style({"fill-opacity": 1});
+            d3.select(this).attr("fill-opacity", 1);
           }
         }
       });
@@ -641,28 +631,29 @@ export function updateRectangles(vizElementAttributes) {
     });
 }
 //
-// function updateIndexRectangles() {
-//
-// if(this.indiSelections["page"]=="countryDataTab"){
-//     let rectTransformData = {}
-//
-//     $(".choroRectMvi").each(function () {
-//         var country = this.parentNode.id
-//         var bBox = getBoundingBox(d3.select(this.parentNode).select("path"))
-//         dat = rectTransform( country, bBox, indicatorData, indiSelections )
-//         rectTransformData[country] = dat
-//     });
-//
-//     d3.select(sidsMaps).selectAll(".choroRectMvi")
-//         .transition()
-//         .duration(1200)
-//         .attr("x", function () { return rectTransformData[this.parentNode.id]["x"] })
-//         .attr("y", function () { return rectTransformData[this.parentNode.id]["y"] })
-//         .attr("width", 0)
-//         .attr("height", function () { return rectTransformData[this.parentNode.id]["height"] })
-//
-//   }
-//
+export function updateIndexRectangles() {
+  let rootThis = this;
+if(this.indiSelections["page"]=="countryDataTab"){
+    let rectTransformData = {},
+    rectList = document.querySelectorAll(".choroRectMvi");
+
+    [...rectList].each(function () {
+        let country = this.parentNode.id,
+        bBox = getBoundingBox(d3.select(this.parentNode).select("path")),
+        dat = rootThis.rectTransform( country, bBox, rootThis.indicatorData, rootThis.indiSelections )
+        rectTransformData[country] = dat
+    });
+
+    d3.select(this.sidsMaps).selectAll(".choroRectMvi")
+        .transition()
+        .duration(1200)
+        .attr("x", function () { return rectTransformData[this.parentNode.id]["x"] })
+        .attr("y", function () { return rectTransformData[this.parentNode.id]["y"] })
+        .attr("width", 0)
+        .attr("height", function () { return rectTransformData[this.parentNode.id]["height"] })
+
+  }
+
 // else if(indiSelections["page"]="mviTab"){
 //
 //
@@ -707,9 +698,9 @@ export function updateRectangles(vizElementAttributes) {
 //         .attr("width", function () {     return rectTransformData[  this.parentNode.id   ]["width"];   })
 //         .attr("height", function () {   return rectTransformData[  this.parentNode.id    ]["height"];    });
 //     }
-//     }
-//
-// }
+    // }
+
+}
 export function updateCircles(vizElementAttributes) {
   d3.select(this.sidsMaps)
     .selectAll(".choroCircle")
@@ -762,57 +753,56 @@ export function updateLinesAndMap() {
     });
 }
 //
-// function updateBarAxis(indicatorData, indiSelections) {
-//   indicatorDataYear = indicatorData["data"][indiSelections["year"]];
-// console.log(indicatorDataYear)
-//   barAxis = d3.select(".barAxis");
-//   const x = d3.scaleLinear();
-//   var margin = { left: 160, right: 5 };
-//   var xAxis = d3.axisTop(x);
-//   var width = 440;
-//   var height = 90;
-//
-//   max = Math.max(
-//     ...Object.values(indicatorDataYear).filter(function (el) {
-//       return !isNaN(parseFloat(el)) && isFinite(el);
-//     })
-//   );
-//   min = 0;
-//
-//   if (indiSelections["viz"] == "Multi-indicator") {
-//     margin.left = 60;
-//     width = 440;
-//     min = Math.min(
-//       ...Object.values(indicatorDataYear).filter(function (el) {
-//         return !isNaN(parseFloat(el)) && isFinite(el);
-//       })
-//     );
-//   }
-//
-//   xAxis.tickFormat(d3.format(".2s"));
-//   x.domain([min, max]).range([0, width]);
-//
-//   if (
-//     indiSelections["viz"] == "Choropleth" ||
-//     indiSelections["viz"] == "Global View" ||
-//     indiSelections["viz"] == "Spider" ||
-//     indiSelections["viz"] == "Info" ||
-//     indiSelections["viz"] == "Time Series"
-//   ) {
-//     x.range([0, 0]);
-//     setTimeout(function () {
-//       barAxis.attr("visibility", "hidden");
-//     }, 1100);
-//   } else if (indiSelections["viz"] == "Bar Chart"||indiSelections["viz"] == "Multi-indicator") {
-//     barAxis.attr("visibility", "visible");
-//   }
-//
-//   barAxis
-//     .transition()
-//     .duration(1200)
-//     .attr("transform", `translate(${margin.left}, ${height / 2})`)
-//     .call(xAxis);
-// }
+export function updateBarAxis() {
+  let indicatorDataYear = this.indicatorData["data"][this.indiSelections["year"]],
+  barAxis = d3.select(".barAxis");
+  const x = d3.scaleLinear();
+  var margin = { left: 160, right: 5 };
+  var xAxis = d3.axisTop(x);
+  var width = 440;
+  var height = 90;
+
+  let max = Math.max(
+    ...Object.values(indicatorDataYear).filter(function (el) {
+      return !isNaN(parseFloat(el)) && isFinite(el);
+    })
+  ),
+  min = 0;
+
+  if (this.indiSelections["viz"] == "Multi-indicator") {
+    margin.left = 60;
+    width = 440;
+    min = Math.min(
+      ...Object.values(indicatorDataYear).filter(function (el) {
+        return !isNaN(parseFloat(el)) && isFinite(el);
+      })
+    );
+  }
+
+  xAxis.tickFormat(d3.format(".2s"));
+  x.domain([min, max]).range([0, width]);
+
+  if (
+    this.indiSelections["viz"] == "choro" ||
+    this.indiSelections["viz"] == "global" ||
+    this.indiSelections["viz"] == "Spider" ||
+    this.indiSelections["viz"] == "Info" ||
+    this.indiSelections["viz"] == "series"
+  ) {
+    x.range([0, 0]);
+    setTimeout(function () {
+      barAxis.attr("visibility", "hidden");
+    }, 1100);
+  } else if (this.indiSelections["viz"] == "bars"||this.indiSelections["viz"] == "Multi-indicator") {
+    barAxis.attr("visibility", "visible");
+  }
+
+  barAxis
+    .transition()
+    .duration(1200)
+    .attr("transform", `translate(${margin.left}, ${height / 2})`)
+    .call(xAxis);
+}
 //
 // // function updateMviBarAxis(pillarData,indiSelections) {
 //
@@ -858,82 +848,83 @@ export function updateLinesAndMap() {
 // //         .call(xAxis);
 // // }
 //
-// function updateYAxis(indicatorData, indiSelections) {
-//   indicatorDataYear = indicatorData["data"][indiSelections["year"]];
-//
-//   yAxisContainer = d3.select(".multiYAxis");
-//   const yScale = d3.scaleLinear();
-//   var yAxis = d3.axisLeft(yScale);
-//   yAxis.tickFormat(d3.format(".2s"));
-//
-//   var margin = { left: 45, right: 5, top: 245 };
-//
-//   if (
-//     indiSelections["viz"] == "Choropleth" ||
-//     indiSelections["viz"] == "Bar Chart" ||
-//     indiSelections["viz"] == "Spider" ||
-//     indiSelections["viz"] == "Time Series"
-//   ) {
-//     yScale.range([0, 0]);
-//     //setTimeout(function(){
-//     yAxisContainer.attr("visibility", "hidden");
-//     //},900)
-//   } else if (indiSelections["viz"] == "Global View") {
-//     var height = 180;
-//     var margin = { left: 45, right: 5, top: 245 };
-//
-//     // indicatorData2 = wdiFull[indicator2]["data"]//[indiSelections["year"]]
-//
-//     max = Math.max(
-//       ...Object.values(indicatorDataYear).filter(function (el) {
-//         return !isNaN(parseFloat(el)) && isFinite(el);
-//       })
-//     );
-//     // min = Math.min(...Object.values(indicatorData2).filter(function (el) { return !isNaN(parseFloat(el)) && isFinite(el); }))
-//     min = 0;
-//
-//     yScale.domain([min, max]).range([height, 0]);
-//
-//     yAxisContainer.attr("visibility", "visible");
-//     // }
-//     // else {
-//     //   yScale.range([0, 0]);
-//     //   //setTimeout(function(){
-//     //   yAxisContainer.attr("visibility", "hidden")
-//     // }
-//   }
-//   //else if (indiSelections["viz"] == "Multi-indicator") {
-//   //     var margin = { left: 45, right: 5, top: 10 };
-//   //     var height = 460
-//   //     try {
-//   //         indicator2 = $(".indiActive2")[0].id
-//   //     }
-//   //     catch (error) { indicator2 = "HumanDevelopmentIndex" }
-//   //     indicatorData2 = wdiFull[indicator2]["data"]//[indiSelections["year"]]
-//
-//   //     max = Math.max(...Object.values(indicatorData2).filter(function (el) {
-//   //         return !isNaN(parseFloat(el)) && isFinite(el);
-//   //     }))
-//   //     min = Math.min(...Object.values(indicatorData2).filter(function (el) { return !isNaN(parseFloat(el)) && isFinite(el); }))
-//
-//   //     yScale
-//   //         .domain([min, max])
-//   //         .range([height, 0]);
-//
-//   //     yAxisContainer.attr("visibility", "visible")
-//   // }
-//
-//   yAxisContainer
-//     .transition()
-//     .duration(1200)
-//     .call(yAxis)
-//     .attr("transform", `translate(${margin.left}, ${margin.top})`);
-//
-//   // main_chart_svg.selectAll(".yAxisTitle")
-//   //     .text(function (d, i) {
-//   //         return wdiMeta[indicator2]["Indicator Name"]//["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " +
-//   //     })
-// }
+export function updateYAxis() {
+  let indicatorDataYear = this.indicatorData["data"][this.indiSelections["year"]],
+
+  yAxisContainer = d3.select(".multiYAxis");
+  const yScale = d3.scaleLinear();
+  var yAxis = d3.axisLeft(yScale);
+  yAxis.tickFormat(d3.format(".2s"));
+
+  var margin = { left: 45, right: 5, top: 245 },
+  height;
+
+  if (
+    this.indiSelections["viz"] == "choro" ||
+    this.indiSelections["viz"] == "bars" ||
+    this.indiSelections["viz"] == "spider" ||
+    this.indiSelections["viz"] == "series"
+  ) {
+    yScale.range([0, 0]);
+    //setTimeout(function(){
+    yAxisContainer.attr("visibility", "hidden");
+    //},900)
+  } else if (this.indiSelections["viz"] == "global") {
+    height = 180;
+    margin = { left: 45, right: 5, top: 245 };
+
+    // indicatorData2 = wdiFull[indicator2]["data"]//[indiSelections["year"]]
+
+    let max = Math.max(
+      ...Object.values(indicatorDataYear).filter(function (el) {
+        return !isNaN(parseFloat(el)) && isFinite(el);
+      })
+    ),
+    // min = Math.min(...Object.values(indicatorData2).filter(function (el) { return !isNaN(parseFloat(el)) && isFinite(el); }))
+    min = 0;
+
+    yScale.domain([min, max]).range([height, 0]);
+
+    yAxisContainer.attr("visibility", "visible");
+    // }
+    // else {
+    //   yScale.range([0, 0]);
+    //   //setTimeout(function(){
+    //   yAxisContainer.attr("visibility", "hidden")
+    // }
+  }
+  //else if (indiSelections["viz"] == "Multi-indicator") {
+  //     var margin = { left: 45, right: 5, top: 10 };
+  //     var height = 460
+  //     try {
+  //         indicator2 = $(".indiActive2")[0].id
+  //     }
+  //     catch (error) { indicator2 = "HumanDevelopmentIndex" }
+  //     indicatorData2 = wdiFull[indicator2]["data"]//[indiSelections["year"]]
+
+  //     max = Math.max(...Object.values(indicatorData2).filter(function (el) {
+  //         return !isNaN(parseFloat(el)) && isFinite(el);
+  //     }))
+  //     min = Math.min(...Object.values(indicatorData2).filter(function (el) { return !isNaN(parseFloat(el)) && isFinite(el); }))
+
+  //     yScale
+  //         .domain([min, max])
+  //         .range([height, 0]);
+
+  //     yAxisContainer.attr("visibility", "visible")
+  // }
+
+  yAxisContainer
+    .transition()
+    .duration(1200)
+    .call(yAxis)
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+  // main_chart_svg.selectAll(".yAxisTitle")
+  //     .text(function (d, i) {
+  //         return wdiMeta[indicator2]["Indicator Name"]//["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " +
+  //     })
+}
 //
 export function updateChoroLegend(quantize) {
 
@@ -960,7 +951,6 @@ export function updateChoroLegend(quantize) {
       //     return "Multidimensional Vulnerability Index"
       // }
       // else {
-      console.log(this.indicatorCode);
 
       return this.indicatorMeta[this.indicatorCode]["Indicator"]; //["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " +
 
@@ -975,25 +965,25 @@ export function updateChoroLegend(quantize) {
     if (this.indiSelections["viz"] == "choro" ) {
       this.showChoroLegend(choroLegend, quantize);
     } else if (
-      this.indiSelections["viz"] == "Bar Chart" ||
+      this.indiSelections["viz"] == "bars" ||
       this.indiSelections["viz"] == "Multi-indicator" ||
       this.indiSelections["viz"] == "Info" ||
       this.indiSelections["viz"] == "Time Series" ||
-      this.indiSelections["viz"] == "Spider" ||
-      this.indiSelections["viz"] == "Global View"
+      this.indiSelections["viz"] == "spider" ||
+      this.indiSelections["viz"] == "global"
     ) {
       this.hideChoroLegend(choroLegend, quantize);//only hide rectangles and labels
     }
     if (
       this.indiSelections["viz"] == "Info" ||
-      this.indiSelections["viz"] == "Global View"
+      this.indiSelections["viz"] == "global"
     ) {
-        this.choro_legend_container
+        this.choro_legend_svg
         .selectAll(".choroLegendTitle")
         .transition().duration(1200)
         .attr("fill-opacity", 0);
     } else {
-        this.choro_legend_container
+        this.choro_legend_svg
         .selectAll(".choroLegendTitle")
         .transition().duration(1200)
         .attr("fill-opacity", 1);

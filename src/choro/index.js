@@ -11,6 +11,7 @@ import {
   appendCountryCircles,
   initYAxis,
   initChoroLegend,
+  initXAxis,
   hideChoroLegend,
   showChoroLegend} from './vizEngineInit'
 
@@ -24,7 +25,10 @@ import {
   updateRectangles,
   updateLabels,
   updateCircles,
-  updateChoroLegend
+  updateChoroLegend,
+  updateIndexRectangles,
+  updateBarAxis,
+  updateYAxis
 } from './vizEngineUpdate';
 
   import {
@@ -44,14 +48,16 @@ import {
     // <script src="scripts/vizEngineInit.js"></script>
     // <script src="scripts/processIndexData.js"></script>
 export default class Choro {
-  constructor({viz, year, indicatorMeta, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
-    this.initState({viz, year, indicatorMeta,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
+  constructor({viz, year, indicatorCode, page, indicatorMeta, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
+    this.initState({viz, year, indicatorCode, page, indicatorMeta,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
     this.initVizEngine({sidsXML})
   }
   initState({
     viz,
     year,
+    page,
     indicatorMeta,
+    indicatorCode,
     mapLocations,
     mapContainerSelector,
     legendContainerSelector,
@@ -61,8 +67,10 @@ export default class Choro {
     this.mapLocations = mapLocations;
     this.indiSelections = {
       viz,
-      // sortby
+      sortby: 'Rank',
       year,
+      page,
+      mviPreset:'mviLi'
       //   indiSelections["viz"] = $(".selectedViz")[0].children[0].innerHTML;
       //   indiSelections["page"] = $(".selectedPage").attr("id");
       //   indiSelections["sortby"] = $(".selectedSortby")[0].children[0].innerHTML;
@@ -83,11 +91,21 @@ export default class Choro {
       .append("svg")
       .attr("width", vizContainerWidth)
       .attr("height", vizContainerHeight);
-    console.log(this.choro_legend_svg, legendContainerSelector)
+    if(indicatorCode!=='region'){
+      this.updateVizEngine(indicatorCode)
+    }
   }
   updateVizType (vizType) {
     this.indiSelections.viz = vizType;
-    console.log(this.indiSelections.viz, vizType)
+    this.updateVizEngine(this.indicatorCodeInitial)
+  }
+  updatePageType ({page, chartType}) {
+    this.indiSelections.page = page;
+    this.indiSelections.viz = chartType;
+    this.updateVizEngine(this.indicatorCodeInitial)
+  }
+  updateSortingType (sorting) {
+    this.indiSelections.sortby = sorting;
     this.updateVizEngine(this.indicatorCodeInitial)
   }
 }
@@ -119,3 +137,7 @@ Choro.prototype.updateCircles = updateCircles;
 Choro.prototype.updateChoroLegend = updateChoroLegend;
 Choro.prototype.hideChoroLegend = hideChoroLegend;
 Choro.prototype.showChoroLegend = showChoroLegend;
+Choro.prototype.updateIndexRectangles = updateIndexRectangles
+Choro.prototype.updateBarAxis = updateBarAxis;
+Choro.prototype.initXAxis = initXAxis;
+Choro.prototype.updateYAxis = updateYAxis;

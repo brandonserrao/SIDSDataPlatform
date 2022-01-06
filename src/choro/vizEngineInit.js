@@ -69,7 +69,7 @@ export function appendAllElements(){
 //
 export function initChoroLegend(quantize) {
 //   $("#indicatorExport").show();
-  // $("#regionLegend").hide();
+  d3.select("#regionLegend").style('display','none');
 
   //console.log("init legend", quantize.range());
   console.log(this.legendContainerSelector, d3.select(this.legendContainerSelector), quantize, '!!!!!')
@@ -111,8 +111,8 @@ export function initChoroLegend(quantize) {
     .attr("x", 400)
     .attr("y", 14)
     .attr("text-anchor", "middle")
-    .transition()
-    .duration(1200)
+    // .transition()
+    // .duration(1200)
     .attr("fill-opacity", 1);
 }
 
@@ -121,8 +121,8 @@ export function hideChoroLegend(choroLegend) {
 
   choroLegend
     .selectAll(".textNum")
-    .transition()
-    .duration(1200)
+    // .transition()
+    // .duration(1200)
     .attr("fill-opacity", 0);
 
   // choroLegend
@@ -132,7 +132,9 @@ export function hideChoroLegend(choroLegend) {
 }
 
 export function showChoroLegend(choroLegend, quantize) {
-  choroLegend.selectAll("rect").transition().duration(1200).attr("opacity", 1);
+  choroLegend.selectAll("rect")
+  // .transition().duration(1200)
+  .attr("opacity", 1);
 
   choroLegend
     .selectAll(".textNum")
@@ -141,8 +143,8 @@ export function showChoroLegend(choroLegend, quantize) {
       //extent will be a two-element array, format it however you want:
       return nFormatter(extent[1], 2); //extent[0].toFixed(2) + " - " +
     })
-    .transition()
-    .duration(1200)
+    // .transition()
+    // .duration(1200)
     .attr("fill-opacity", 1);
 
   // choroLegend
@@ -230,12 +232,11 @@ function appendLinesMapAndRegions() {
       .attr("class", "regionTitle");
   }
 //
-// export function initXAxis() {
-//   //initialize the x-axis
-//   this.
-//   d3.select("#choro_legend_container").select("svg").append("g").attr("class", "barAxis").attr("visibility", "hidden");
-//
-// }
+export function initXAxis() {
+  //initialize the x-axis
+  d3.select("#choro_legend_container").select("svg").append("g").attr("class", "barAxis").attr("visibility", "hidden");
+
+}
 
 export function initYAxis() {
   this.main_chart_svg

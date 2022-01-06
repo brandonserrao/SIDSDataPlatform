@@ -20,10 +20,10 @@ export function processVizElementAttributes() {
         rootThis.bboxDict[this.id] = bbox;
       });
 
-    // $(".choroText").each(function () {
-    //   let textBBox = this.getBBox();
-    //   this.textBBoxDict[this.parentNode.id] = textBBox;
-    // });
+    [...document.querySelectorAll(".choroText")].forEach((item) => {
+        let textBBox = item.getBBox();
+        rootThis.textBBoxDict[item.parentNode.id] = textBBox;
+    });
     this.bboxInit = 1;
   }
   ////////////////////
@@ -68,9 +68,9 @@ export function processVizElementAttributes() {
 export function circleTransform(country, bBox, indicatorDataObj, indiSelections) {
   let VT = this.vizTransform(country, bBox, indicatorDataObj, indiSelections);
 
-  if (indiSelections["viz"] == "choro") {
+  if (this.indiSelections["viz"] == "choro") {
     return { x: bBox[4], y: bBox[5], r: 0 };
-  } else if (indiSelections["viz"] == "global") {
+  } else if (this.indiSelections["viz"] == "global") {
     //  console.log(VT,bBox,country)
     let r;
     if (this.mapLocations[country]["countryWidth"] == "no") {
@@ -83,19 +83,19 @@ export function circleTransform(country, bBox, indicatorDataObj, indiSelections)
       y: (VT["y"] + bBox[5]) * VT["scale"],
       r: r,
     };
-  } else if (indiSelections["viz"] == "bars") {
+  } else if (this.indiSelections["viz"] == "bars") {
     return { x: 0, y: 0, r: 0 };
-  } else if (indiSelections["viz"] == "Multi-indicator") {
+  } else if (this.indiSelections["viz"] == "Multi-indicator") {
     //the 2.7 must come from the scale factor on the choropleth?
     return { x: (VT["x"] + bBox[4]) / 2.7, y: (VT["y"] + bBox[5]) / 2.7, r: 0 };
-  } else if (indiSelections["viz"] == "Spider") {
+  } else if (this.indiSelections["viz"] == "spider") {
     //the 2.7 must come from the scale factor on the choropleth?
     return {
       x: (VT["x"] + bBox[4]) / 1.85,
       y: (VT["y"] + bBox[5]) / 1.85,
       r: 0,
     };
-  } else if (indiSelections["viz"] == "series") {
+  } else if (this.indiSelections["viz"] == "series") {
     return { x: bBox[4], y: bBox[5], r: 0 };
   }
   //&& typeof val == "number"){
@@ -110,7 +110,7 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
   cy = bBox[5],
   output;
 
-  if (indiSelections["viz"] == "bars") {
+  if (this.indiSelections["viz"] == "bars") {
     //if on mvi page, width should be zero but other vars can be same as bar chart
 
     // if (indiSelections["page"] == "mviTab") {
@@ -132,11 +132,11 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
         //           console.log(sortedData)
         let rank,
         totalVals;
-        if (indiSelections["sortby"] == "Rank") {
+        if (this.indiSelections["sortby"] == "Rank") {
           //this filter removes any empty elements
           rank = sortedData[country];
           totalVals = indicatorValues.length;
-        } else if (indiSelections["sortby"] == "Region") {
+        } else if (this.indiSelections["sortby"] == "Region") {
           let countryOrder = Object.keys(sortedData);
           let pacificListSort = countryOrder.filter((item) =>
             regionCountries["pacific"].includes(item)
@@ -189,7 +189,7 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
     }
 
     // }
-  } else if (indiSelections["viz"] == "global") {
+  } else if (this.indiSelections["viz"] == "global") {
     let leftMargin = 60,
 
     margin = 2;
@@ -248,11 +248,11 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
         output = columnBase;
       }
     }
-  } else if (indiSelections["viz"] == "choro") {
+  } else if (this.indiSelections["viz"] == "choro") {
     output = { x: cx, y: cy, width: 0, height: 5 };
   } else if (
-    indiSelections["viz"] == "Multi-indicator" ||
-    indiSelections["viz"] == "Spider"
+    this.indiSelections["viz"] == "Multi-indicator" ||
+    this.indiSelections["viz"] == "spider"
   ) {
     let VTr = this.vizTransform(country, bBox, indicatorDataObj, indiSelections);
     output = {
@@ -261,7 +261,7 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
       width: 0,
       height: 5,
     };
-  } else if (indiSelections["viz"] == "series") {
+  } else if (this.indiSelections["viz"] == "series") {
     output = { x: 160, y: 300, width: 0, height: 0 };
   }
   if (output["width"] < 0) {
@@ -278,8 +278,7 @@ export function textTransform(
   country,
   bBox,
   textBBox,
-  indicatorDataObj,
-  indiSelections
+  indicatorDataObj
 ) {
   let textX = bBox[4],
   textY = bBox[2] - 11,
@@ -293,10 +292,10 @@ export function textTransform(
     }
   }
 
-  if (indiSelections["viz"] == "choro") {
+  if (this.indiSelections["viz"] == "choro") {
     return "scale(1,1) translate(0,0)";
-  } else if (indiSelections["viz"] == "bars") {
-    let RTo = rectTransform(country, bBox, indicatorDataObj, indiSelections),
+  } else if (this.indiSelections["viz"] == "bars") {
+    let RTo = this.rectTransform(country, bBox, indicatorDataObj),
     // console.log(RTo,totalVals,textY)
     output =
       "scale(1,1) translate(" +
@@ -306,7 +305,7 @@ export function textTransform(
       ")";
 
     return output;
-  } else if (indiSelections["viz"] == "global") {
+  } else if (this.indiSelections["viz"] == "global") {
     //console.log(country)
     try {
       //VT = vizTransform(country, bBox, indicatorData,indiSelections);
@@ -323,8 +322,8 @@ export function textTransform(
       console.log(country);
       return ""; //scale(0.001,0.001)"
     }
-  } else if (indiSelections["viz"] == "Spider") {
-    let mviRank = indiSelections["countryOrder"].indexOf(country),
+  } else if (this.indiSelections["viz"] == "spider") {
+    let mviRank = this.indiSelections["countryOrder"].indexOf(country),
     scale;
     if (mviRank == -1) {
         scale = 1//0.001;
@@ -339,7 +338,7 @@ export function textTransform(
     // y = 0;
 
     return "scale(" + scale + "," + scale + ") translate(" + x + "," + y + ")";
-  } else if (indiSelections["viz"] == "series") {
+  } else if (this.indiSelections["viz"] == "series") {
     return ""; //scale(1,1) translate(0,0)";
   }
   // else if (indiSelections["viz"] == "Multi-indicator") {
@@ -378,13 +377,13 @@ export function textTransform(
   // }
 }
 
-export function labelTransform(country, bBox, indicatorDataObj, indiSelections) {
-  let RTl = this.rectTransform(country, bBox, indicatorDataObj, indiSelections);
+export function labelTransform(country, bBox, indicatorDataObj) {
+  let RTl = this.rectTransform(country, bBox, indicatorDataObj);
   //txt = indicatorData[country]
   return { x: RTl.width, y: RTl.y + RTl.height / 2 + 4 };
 }
 //
-export function vizTransform(country, bBox, indicatorDataObj, indiSelections) {
+export function vizTransform(country, bBox, indicatorDataObj) {
   //console.log(country, bBox, indiSelections["viz"], indicatorData, indicatorData2)
   let cx = bBox[4],
   cy = bBox[5],
@@ -394,18 +393,18 @@ export function vizTransform(country, bBox, indicatorDataObj, indiSelections) {
   valX,
   valY;
 
-  if (indiSelections["viz"] == "choro") {
+  if (this.indiSelections["viz"] == "choro") {
     scale = 1;
     x = 0;
     y = 0;
-  } else if (indiSelections["viz"] == "Bar Chart") {
-    let rect = rectTransform(country, bBox, indicatorDataObj, indiSelections);
+  } else if (this.indiSelections["viz"] == "bars") {
+    let rect = this.rectTransform(country, bBox, indicatorDataObj);
     scale = 0.01;
     x = (rect.width / 2 + 160) / scale - cx;
     y = (rect.y + 2) / scale - cy;
 
     //return "scale(" + scale + ")translate(" + (-cx) + "," + (-cy + normValue * 1200) + ")";
-  } else if (indiSelections["viz"] == "global") {
+  } else if (this.indiSelections["viz"] == "global") {
     try {
       valX = this.mapLocations[country]["countryX"] * 2;
       valY = this.mapLocations[country]["countryY"] * 2;
@@ -426,7 +425,7 @@ export function vizTransform(country, bBox, indicatorDataObj, indiSelections) {
     x = -cx + valX / scale / 1.41;
     y = -cy + valY / scale / 1.41 - 154 / scale;
     scale = scale / 1.41;
-  } else if (indiSelections["viz"] == "Spider") {
+  } else if (this.indiSelections["viz"] == "spider") {
     //   orderedCountryList=indiSelections["countryOrder"]
     // mviRank = orderedCountryList.indexOf(country)
     //
@@ -443,7 +442,7 @@ export function vizTransform(country, bBox, indicatorDataObj, indiSelections) {
     // // x = 0;
     // // y = 0;
     // // scale = 0.8;
-  } else if (indiSelections["viz"] == "series") {
+  } else if (this.indiSelections["viz"] == "series") {
     scale = 0.01;
     x = ((1 - scale) * cx) / scale;
     y = ((1 - scale) * cy) / scale;

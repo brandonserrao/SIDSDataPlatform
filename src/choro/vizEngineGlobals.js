@@ -140,25 +140,25 @@ export const sidsDict = {"ATG":"Antigua and Barbuda", "ABW":"Aruba","BHS":"The B
 //
 export const indexDict = {"mvi":"mvi-index-index"};
 //
-//   mviDimensionColors = {
-//       Financial: "#0DB14B",
-//       Economic: "#f0db3a",
-//       Geographic: "#CC333F",
-//       Environmental: "#00A0B0",
-//     };
+export const mviDimensionColors = {
+  Financial: "#0DB14B",
+  Economic: "#f0db3a",
+  Geographic: "#CC333F",
+  Environmental: "#00A0B0",
+};
 //
 //
 // mviRecodeDict={
 //
 // }
 //
-const mviDimensions = {
+export const mviDimensions = {
     Financial: ["tourism", "remit", "fdi"],
     Economic: ["agrInst", "expConc", "expInst"],
     Geographic: ["popLECZ", "remote"], //"popDry",
     Environmental: ["victims", "agrGDP"],
   };
-  export const mviDimensionList = Object.keys(mviDimensions);
+export const mviDimensionList = Object.keys(mviDimensions);
 //
 //   //should compute this automatically
 //   mviCountryListSpider = [

@@ -1,7 +1,7 @@
 <template>
   <div class="choro">
     <div id="choro_legend_container">
-
+      <img id="regionLegend" src="https://sids-dashboard.github.io/SIDSDataPlatform/images/tempChoroLegend.jpg" style="margin-top:-15">
     </div>
     <div id="choro_map_container">
 
@@ -21,7 +21,7 @@ export default {
       choro:null
     }
   },
-  props:['indicatorCode', 'chartType'],
+  props:['indicatorCode', 'chartType', 'sorting'],
   computed: {
     ...mapState({
       profileData: state => state.indicators.profileData,
@@ -37,8 +37,10 @@ export default {
         year:'recentValue',
         sidsXML,
         mapLocations,
+        indicatorCode:this.indicatorCode,
         indicatorMeta:this.indicatorMeta,
         profileData: this.profileData,
+        page:this.page,
         vizContainerWidth:'800',
         vizContainerHeight:'580',
         mapContainerSelector: '#choro_map_container',
@@ -58,6 +60,15 @@ export default {
     },
     chartType() {
       this.choro.updateVizType(this.chartType);
+    },
+    page() {
+      this.choro.updatePageType({
+        page: this.page,
+        chartType: this.chartType
+      });
+    },
+    sorting() {
+      this.choro && this.choro.updateSortingType(this.sorting);
     }
   }
 }
