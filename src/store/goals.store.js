@@ -5,7 +5,7 @@ export default {
   },
   mutations: {
     setActiveGoal(state, goal) {
-      state.activeGoal = goal-1;
+      state.activeGoal = goal - 1;
     },
-  }
-}
+  },
+};

@@ -4,6 +4,21 @@ import constants from "@/gis/static/constants.js";
 
 const globals = {
   firstSymbolId: "tunnel-oneway-arrow-blue",
+  basemapLabels: [], //current basemap labels, for use in addLabels -> the toggling of the labels of a current basemap style
+  //current layer state manager
+  precision: null, //modified in changeDataOnMap and recolor etc; TODO deglobalize this
+  myHistogram: null,
+  lastActive: { dataset: null, layer: null },
+  /* //were unused; obsoleted by passing these through emits when required
+  activeDataset: null,
+  activeLayer: null, */
+  allLayers: [], //from old code; should be obsoleted by filteredDatasets/datasets made in MapDataController.vue;
+  currentLayerState: {
+    color: null,
+    breaks: null,
+    dataLayer: null,
+    hexSize: "hex5",
+  },
   sources: {
     //{...ID:{SOURCE OBJECT}} USED WHEN ADDING LAYERSOURCES
     hex1: {
@@ -90,7 +105,8 @@ const globals = {
     oceanSource: {
       name: "ocean",
       layer: "oceans",
-      mainId: null,
+      // mainId: null,
+      mainId: "ocean",
       data: null,
     },
     hex5clippedSource: {

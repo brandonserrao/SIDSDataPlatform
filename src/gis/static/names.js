@@ -28,7 +28,8 @@ const names = [
       [-17.8, -26.4],
       [94.8, 30.1],
     ],
-    GID_0: "KNA",
+    // GID_0: "KNA", //duplicate; believed to be error
+    GID_0: "AIS",
   },
   {
     NAME_0: "Aruba",
