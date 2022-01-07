@@ -1,5 +1,3 @@
-// import service from '@/services'
-
 export default {
   namespaced: true,
   state: {

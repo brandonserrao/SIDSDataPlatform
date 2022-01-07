@@ -3,14 +3,17 @@ import * as d3 from 'd3';
 
 
 const API_URL = 'https://raw.githubusercontent.com/Ben-Keller/smallislands/main/data';
-const NEW_ALI_UPR = 'https://raw.githubusercontent.com/SIDS-Dashboard/SIDSDataPlatform/main/data'
+const NEW_ALI_UPR = 'https://raw.githubusercontent.com/SIDS-Dashboard/SIDSDataPlatform/main'
 export default {
   loadAllKeyData,
   loadMetaData,
   loadFundingCategories,
   loadSIDSData,
   loadIndicatorsCategories,
-  loadIndicatorsMeta
+  loadIndicatorsMeta,
+  loadProfileData,
+  loadSidsSVG,
+  loadMapLocations
 }
 
 
@@ -31,14 +34,26 @@ async function loadFundingCategories () {
   return result
 }
 async function loadSIDSData () {
-  const resp = await axios.get(`${NEW_ALI_UPR}/exports/sids_db.csv`)
+  const resp = await axios.get(`${NEW_ALI_UPR}/data/exports/sids_db.csv`)
   return d3.csvParse(resp.data)
 }
 async function loadIndicatorsCategories () {
-  const resp = await axios.get(`/static/indicatorCategories.json`)
+  const resp = await axios.get(`/SIDSDataPlatform/static/indicatorCategories.json`)
   return resp.data
 }
 async function loadIndicatorsMeta () {
-  const resp = await axios.get(`/static/indicatorMeta.json`)
+  const resp = await axios.get(`/SIDSDataPlatform/static/indicatorMeta.json`)
+  return resp.data
+}
+async function loadProfileData () {
+  const resp = await axios.get(`${NEW_ALI_UPR}/data/profileData.json`)
+  return resp.data
+}
+async function loadSidsSVG () {
+  const resp = await d3.xml(`${NEW_ALI_UPR}/maps/sidsSVG8.svg`)
+  return resp
+}
+async function loadMapLocations () {
+  const resp = await axios.get(`${NEW_ALI_UPR}/data/exports/mapLocations.json`)
   return resp.data
 }
