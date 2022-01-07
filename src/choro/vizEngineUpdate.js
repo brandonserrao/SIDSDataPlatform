@@ -4,7 +4,9 @@ import {
   indexCodes,
   indexDict,
   hues,
-  // mviDimensionList
+  mviDimensions,
+  mviDimensionList,
+  mviCountryListLongitude
 } from './vizEngineGlobals';
 
 import {
@@ -71,15 +73,15 @@ export function updateVizEngine(indicatorCode) {
 //
     this.indicatorData = dat[this.indicatorCode];
 //
-    // if(this.vizMode=="index"){
-    //   let orderedCountryList=getIndexCountryList(indiSelections, mviDimensionList)
-    //   this.indiSelections["countryOrder"] = orderedCountryList
-    //
-    //   spiderData=processSpiderData(indexData,subindexWeights,indiSelections,orderedCountryList)
-    //
-    //   indiSelections["spiderData"]=spiderData
-    //   drawIndexSpider(spiderData,subindexList)
-    // }
+    if(this.vizMode=="index"){
+      let orderedCountryList=this.getIndexCountryList(this.indiSelections, mviDimensionList)
+      this.indiSelections["countryOrder"] = orderedCountryList
+
+      let spiderData = this.processSpiderData(this.indicatorData,mviDimensions,this.indiSelections,orderedCountryList)
+
+      this.indiSelections["spiderData"]=spiderData
+      this.drawIndexSpider(spiderData,mviDimensionList, this.indicatorData)
+    }
 //
 //    console.log(indicatorData)
       let quantize = quantizeData(this.indicatorData,this.indiSelections),
@@ -654,51 +656,51 @@ if(this.indiSelections["page"]=="countryDataTab"){
 
   }
 
-// else if(indiSelections["page"]="mviTab"){
-//
-//
-//         for (i = 1; i < mviDimensionList.length+1; i++) {
-//             rectTransformData = {};//get for index!
-//
-//             if (selectedViz == "Spider"||selectedViz=="Time Series") {
-//                 $(".choroRect" + i).each(function () {
-//                 var country = this.parentNode.id;
-//                 var bBox = bboxDict[country]// getBoundingBox(d3.select(this.parentNode).select("path"));
-//                 dat = rectTransform( country, bBox, indicatorData, indiSelections );
-//                 dat["width"]=0
-//                 rectTransformData[country] = dat;
-//                 });
-//             }
-//
-//             else if (selectedViz == "Global View") {
-//                     $(".choroRect" + i).each(function () {
-//                     var country = this.parentNode.id;
-//                     dat = mviColumnChart( country, indiSelections,  indiSelections["spiderData"],  mviCountryListLongitude,   i );
-//                     rectTransformData[country] = dat;
-//                 });
-//             }
-//
-//             else if (selectedViz == "Bar Chart") {
-//                 rectTransformData = {};
-//                 $(".choroRect" + i).each(function () {
-//                     var country = this.parentNode.id;
-//                     dat = mviBarChart(  country, indiSelections, indiSelections["spiderData"],  chosenCountryListMVI,  i );
-//                     rectTransformData[country] = dat;
-//                 });
-//             }
-//
-//     console.log(i)
-//         d3.select(sidsMaps)
-//         .selectAll(".choroRect"+i)
-//
-//         .transition()
-//         .duration(1200)
-//         .attr("x", function () { console.log("sfdg"); return rectTransformData[  this.parentNode.id]["x"]; })
-//         .attr("y", function () {    return rectTransformData[  this.parentNode.id      ]["y"];    })
-//         .attr("width", function () {     return rectTransformData[  this.parentNode.id   ]["width"];   })
-//         .attr("height", function () {   return rectTransformData[  this.parentNode.id    ]["height"];    });
-//     }
-    // }
+else {
+
+
+        for (let i = 1; i < mviDimensionList.length+1; i++) {
+            let rectTransformData = {};//get for index!
+
+            if (this.indiSelections.viz == "spider"||this.indiSelections=="Time Series") {
+                d3.selectAll(".choroRect" + i).each(function () {
+                var country = this.parentNode.id;
+                var bBox = rootThis.bboxDict[country]// getBoundingBox(d3.select(this.parentNode).select("path"));
+                let dat = rootThis.rectTransform( country, bBox, rootThis.indicatorData, rootThis.indicatorData );
+                dat["width"]=0
+                rectTransformData[country] = dat;
+                });
+            }
+
+            else if (this.indiSelections.viz == "global") {
+                    d3.selectAll(".choroRect" + i).each(function () {
+                    var country = this.parentNode.id;
+                    let dat = rootThis.mviColumnChart( country, rootThis.indicatorData,  rootThis.indiSelections["spiderData"],  mviCountryListLongitude,   i );
+                    rectTransformData[country] = dat;
+                });
+            }
+
+            else if (this.indiSelections.viz == "bars") {
+                rectTransformData = {};
+                d3.selectAll(".choroRect" + i).each(function () {
+                    var country = this.parentNode.id;
+                    let dat = rootThis.mviBarChart(  country, rootThis.indiSelections, rootThis.indiSelections["spiderData"],  chosenCountryListMVI,  i );
+                    rectTransformData[country] = dat;
+                });
+            }
+
+    console.log(i)
+        d3.select(this.sidsMaps)
+        .selectAll(".choroRect"+i)
+
+        .transition()
+        .duration(1200)
+        .attr("x", function () { console.log("sfdg"); return rectTransformData[  this.parentNode.id]["x"]; })
+        .attr("y", function () {    return rectTransformData[  this.parentNode.id      ]["y"];    })
+        .attr("width", function () {     return rectTransformData[  this.parentNode.id   ]["width"];   })
+        .attr("height", function () {   return rectTransformData[  this.parentNode.id    ]["height"];    });
+    }
+    }
 
 }
 export function updateCircles(vizElementAttributes) {

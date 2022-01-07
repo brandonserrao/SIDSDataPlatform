@@ -1,8 +1,11 @@
 <template>
   <div class="mt-5">
   <v-row>
-    <v-col cols='3'>
+    <v-col v-if="page==='devIdictors'" cols='3'>
       <indicators-nav :activeIndicatorCode="indicator" @indicatorChange="indicatorUpdate"/>
+    </v-col>
+    <v-col v-else cols='3'>
+      <mvi-indicators-nav @MviIndicatorsChange="MVIindicatorUpdate"/>
     </v-col>
     <v-col cols='9'>
       <v-row>
@@ -11,9 +14,9 @@
         </v-col>
       </v-row>
       <v-row jusify="center">
-        <v-col cols='12' md="7" xl="7">
+        <v-col cols='12' md="12" xl="12">
           <v-tabs
-            v-if="indicator!=='region'"
+            v-if="indicator!=='region' || page==='mvi'"
             :value="activeTab"
             class="tabs indicators-slider"
           >
@@ -34,7 +37,7 @@
       </v-row>
       <v-row>
         <v-col cols='12'>
-          <indicators-choro-chart :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
+          <indicators-choro-chart :mviCodes="mviCodes" :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
         </v-col>
       </v-row>
     </v-col>
@@ -46,6 +49,7 @@
 // @ is an alias to /src
 
 import IndicatorsNav from '@/components/IndicatorsNav.vue'
+import MVIIndicatorsNav from '@/components/MVIIndicatorsNav.vue'
 import IndicatorsChoroChart from '@/components/IndicatorsChoroChart.vue'
 
 export default {
@@ -53,6 +57,7 @@ export default {
   props:['chartType', 'indicator', 'page'],
   data: function() {
     return {
+      mviCodes:[],
       sorting:'rank',
       menuBar:{
         devIdictors: [{
@@ -91,7 +96,8 @@ export default {
   },
   components: {
     IndicatorsNav,
-    IndicatorsChoroChart
+    IndicatorsChoroChart,
+    MviIndicatorsNav:MVIIndicatorsNav
   },
   computed: {
     sortingName() {
@@ -116,6 +122,9 @@ export default {
     },
     indicatorUpdate(indicator) {
       this.$router.push({path:`/development-indicators/${indicator['Indicator Code']}/${this.chartType}`})
+    },
+    MVIindicatorUpdate(mviCodes){
+      this.mviCodes = mviCodes;
     }
   }
 }

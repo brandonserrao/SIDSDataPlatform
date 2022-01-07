@@ -103,10 +103,10 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
     beforeEnter: async (to, from, next) => {
       if(!to.params.chartType) {
-        next({ path: `/vulnerability/region/spider`})
+        next({ path: `/vulnerability/mvi/spider`})
       }
       if(!to.params.indicator) {
-        next({ path: `/vulnerability/region/spider`})
+        next({ path: `/vulnerability/mvi/spider`})
       }
       await store.dispatch('indicators/getCategories');
       await store.dispatch('indicators/getMeta');
@@ -116,7 +116,7 @@ const routes = [
     props: (to) => (
       {
         chartType: to.params.chartType,
-        indicator: to.params.indicator,
+        indicator: 'mvi',
         page: 'mvi'
       }
     ),

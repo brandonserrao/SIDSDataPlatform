@@ -3,6 +3,9 @@
     <div id="choro_legend_container">
       <img id="regionLegend" src="https://sids-dashboard.github.io/SIDSDataPlatform/images/tempChoroLegend.jpg" style="margin-top:-15">
     </div>
+    <div class="spiderbox" style="height:0;margin:0;">
+      <div id="indexSpider" class="radarChart" style="text-align:center;height:0"></div>
+    </div>
     <div id="choro_map_container">
 
     </div>
@@ -21,7 +24,7 @@ export default {
       choro:null
     }
   },
-  props:['indicatorCode', 'chartType', 'sorting'],
+  props:['indicatorCode', 'chartType', 'sorting', 'mviCodes'],
   computed: {
     ...mapState({
       profileData: state => state.indicators.profileData,
@@ -41,6 +44,7 @@ export default {
         indicatorMeta:this.indicatorMeta,
         profileData: this.profileData,
         page:this.page,
+        selectedIndis:this.mviCodes,
         vizContainerWidth:'800',
         vizContainerHeight:'580',
         mapContainerSelector: '#choro_map_container',
@@ -69,7 +73,10 @@ export default {
     },
     sorting() {
       this.choro && this.choro.updateSortingType(this.sorting);
-    }
+    },
+    mviCodes () {
+      this.choro && this.choro.updateMviCodes(this.mviCodes);
+    },
   }
 }
 </script>

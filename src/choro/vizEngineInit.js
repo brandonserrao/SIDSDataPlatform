@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 import {regionColors, getBoundingBox, nFormatter} from './vizEngineHelperFunctions'
-import {countryListLongitude} from './vizEngineGlobals'
+import {countryListLongitude, mviDimensionColors, subindexWeights} from './vizEngineGlobals'
 //runs this right away (it works, for some reason it doesn't draw the titles if executed on click )
 ///////////////////////////////////
 
@@ -34,6 +34,7 @@ export function initVizEngine({sidsXML}) {
         .appendChild(svgMap); /* island of sidsMaps map */
   //
   //
+      appendMultiRectangles()
       this.initCountrySvgs();
       this.appendAllElements();
   //   initVizEngineTooltips(); // requires maps to be loaded
@@ -615,3 +616,47 @@ export function appendCountryRectangles() {
 //       }
 //     });
 //   }
+
+export function appendMultiRectangles() {
+    d3.select("#allSids")
+      .selectAll("g")
+      .append("rect")
+      .style("fill", mviDimensionColors["Environmental"])
+      .attr("x", 160)
+      .attr("y", 300)
+      .attr("width", 0)
+      .attr("height", 0)
+      .classed("choroRect1 choroRectMvi", true);
+
+    d3.select("#allSids")
+      .selectAll("g")
+      .append("rect")
+      .style("fill", mviDimensionColors["Geographic"])
+      .attr("x", 160)
+      .attr("y", 300)
+      .attr("width", 0)
+      .attr("height", 0)
+      .classed("choroRect2 choroRectMvi", true);
+
+    d3.select("#allSids")
+      .selectAll("g")
+      .append("rect")
+      .style("fill", mviDimensionColors["Economic"])
+      .attr("x", 160)
+      .attr("y", 300)
+      .attr("width", 0)
+      .attr("height", 0)
+      .classed("choroRect3 choroRectMvi", true);
+
+    d3.select("#allSids")
+      .selectAll("g")
+      .append("rect")
+      .style("fill", mviDimensionColors["Financial"])
+      .attr("x", 160)
+      .attr("y", 300)
+      .attr("width", 0)
+      .attr("height", 0)
+      .classed("choroRect4 choroRectMvi", true);
+
+    //  console.log("rect12")
+  }

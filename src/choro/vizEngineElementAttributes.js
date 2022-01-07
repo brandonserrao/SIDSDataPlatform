@@ -426,22 +426,22 @@ export function vizTransform(country, bBox, indicatorDataObj) {
     y = -cy + valY / scale / 1.41 - 154 / scale;
     scale = scale / 1.41;
   } else if (this.indiSelections["viz"] == "spider") {
-    //   orderedCountryList=indiSelections["countryOrder"]
-    // mviRank = orderedCountryList.indexOf(country)
-    //
-    // if (mviRank == -1) {
-    //     scale = 0
-    // }
-    // else {
-    //     scale = .54;
-    // }
-    // x = 460 * Math.sin(mviRank / 34 * 2 * 3.14) - cx + 690
-    // y = -460 * Math.cos(mviRank / 34 * 2 * 3.14) - cy + 450
-    //
-    // // //temp
-    // // x = 0;
-    // // y = 0;
-    // // scale = 0.8;
+      let orderedCountryList=this.indiSelections["countryOrder"],
+      mviRank = orderedCountryList.indexOf(country);
+
+      if (mviRank == -1) {
+          scale = 0
+      }
+      else {
+          scale = .54;
+      }
+      x = 460 * Math.sin(mviRank / 34 * 2 * 3.14) - cx + 690
+      y = -460 * Math.cos(mviRank / 34 * 2 * 3.14) - cy + 450
+
+    // //temp
+    // x = 0;
+    // y = 0;
+    // scale = 0.8;
   } else if (this.indiSelections["viz"] == "series") {
     scale = 0.01;
     x = ((1 - scale) * cx) / scale;

@@ -1,4 +1,10 @@
+import {mviCountryListSpider, mviDimensionList, mviDimensions, mviIndicatorsDict}  from './vizEngineGlobals';
+import {RadarChart} from './radar';
+import {
+  sort_object
+} from './vizEngineHelperFunctions';
 
+import * as d3 from 'd3';
 
 // function getIndexValues(indexObj,indicatorCode){
 //     subindexList= Object.keys(subindexWeights)
@@ -16,81 +22,36 @@
 // }
 
 
-  function getCustomIndicatorSelection(){
-    const checkboxes = document.querySelectorAll('input[name="mviIndicator"]:checked');
-    selectedIndis = []
-    checkboxes.forEach((el) => { selectedIndis.push(el.id) })
-    return selectedIndis
+export function processSpiderData(indexData, indexWeights, indiSelections, orderedCountryList) {
+  let subindexList=Object.keys(indexWeights),
+  spiderData = [];
+  for (let i = 0; i < subindexList.length; i++) {
+      let spiderAxes = [];
+      for(let countryIndex in orderedCountryList){
+        let country=orderedCountryList[countryIndex],
+        newCountryData = {};
+        newCountryData["axis"] = country;
+        let val=0;
+      for(let j=subindexList.length-1;j>=i;j=j-1){
+        val += indexData[subindexList[j]]["data"]["recentValue"][country];
+      }
+     newCountryData["value"] =val
+     spiderAxes.push(newCountryData);
+    }
+    spiderData.push({ name: subindexList[i], axes: spiderAxes });
   }
 
-function processSpiderData(indexData,subindexWeights,indiSelections,orderedCountryList) {
-    selectedIndis=getCustomIndicatorSelection()
-console.log(selectedIndis)
-    spiderData=[]
-    for (i = 0; i < mviDimensionList.length; i++) {
-        //	console.log(countryList[i])
-        //	console.log(allKeyData[countryList[i]])
-        ////need to convert countryList[i] to code
-
-        spiderAxes = []
-        for (index in orderedCountryList) {
-
-            newCountryData = {}
-            country = orderedCountryList[index]
-
-
-            val = 0
-            for (j = 3; j >= i; j = j - 1) {
-                dimVal = 0
-                indiCount = 0
-                for (indi in mviDimensions[mviDimensionList[j]]) {
-                    indi = mviDimensions[mviDimensionList[j]][indi]
-                                        if (selectedIndis.includes(indi)) {
-                        try {
-                            //countryName = allKeyData[country].Profile.Country
-                            newVal = indexData[mviIndicatorsDict[indi]]["data"][indiSelections["year"]][country]
-                            //console.log( newVal)
-                            if (typeof newVal == 'number') {
-                                dimVal += newVal
-                                indiCount += 1
-                            }
-                        }
-                        //errors
-                        catch (error) {
-                            //outputting errors
-                            //console.log(error,indi)
-                        }
-                    }
-                    //)
-                    //add all checked indicaotr standardized values in this dimension to value
-
-                }
-                if (indiCount > 0) {
-                    val += dimVal / indiCount / 4
-
-                }
-
-            }
-            // console.log(country,val)
-            newCountryData['axis'] = country
-            newCountryData['value'] = val
-            spiderAxes.push(newCountryData)
-
-        }
-        spiderData.push({ name: mviDimensionList[i], axes: spiderAxes })
-    }
-    console.log(spiderData)
-return spiderData
+  return spiderData;
 }
 
-function drawIndexSpider(spiderData,subindexList){
-    
-  var margin = { top: 85, right: 45, bottom: 0, left: 0 },
-  width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
-  height = Math.min(
-    width,
-    window.innerHeight - margin.top - margin.bottom - 20
-  );
+export function drawIndexSpider(spiderData,subindexList){
+
+  var margin = { top: 85, right: 45, bottom: 0, left: 0 };
+  // width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right;
+  // height = Math.min(
+  //   width,
+  //   window.innerHeight - margin.top - margin.bottom - 20
+  // );
 
 var radarChartOptionsCustom = {
   w: 500,
@@ -100,16 +61,12 @@ var radarChartOptionsCustom = {
   levels: 6,
   spin: 0,
   roundStrokes: false,
-  color: d3.scale
-    .ordinal()
+  color: d3.scaleOrdinal()
     .range(["#0DB14B", "#f0db3a", "#CC333F", "#00A0B0", "#FFFFFF"]), //,
   //				legend: { title: 'Organization XYZ', translateX: 120, translateY: 140 },
 };
 
-
-spidderData = processSpiderData(indexData,subindexList,indiSelections)
-
-  svg_radar_5 = RadarChart( "#indexSpider", radarChartOptionsCustom,  subindexList, "customIndex", {customIndex: spiderData } );
+  RadarChart( "#indexSpider", radarChartOptionsCustom,  subindexList, "customIndex", {customIndex: spiderData } );
 
 
 }
@@ -122,7 +79,7 @@ spidderData = processSpiderData(indexData,subindexList,indiSelections)
 //   return MBC;
 // }
 
-function mviBarChart(country, indiSelections, mviData, chosenCountryListMVI, dim) {
+export function mviBarChart(country, indiSelections, mviData, chosenCountryListMVI, dim) {
     dat = mviData[dim - 1];
     dimensionName = dat.name;
     try {
@@ -136,20 +93,20 @@ function mviBarChart(country, indiSelections, mviData, chosenCountryListMVI, dim
       val = 0;
       maxVal = 0;
     }
-  
+
     rank = chosenCountryListMVI.indexOf(country);
-  
+
     totalVals = chosenCountryListMVI.length;
     totalHeight = 500;
     totalWidth = 440;
     selectedPage = indiSelections["page"]
-  
+
     if (rank == -1) {
       return { x: 160, y: 300, width: 0, height: 0 };
     } else {
       try {
         topMargin = 0;
-  
+
         margin = 4;
         values = [];
         for (key in mviData[0]["axes"]) {
@@ -162,7 +119,7 @@ function mviBarChart(country, indiSelections, mviData, chosenCountryListMVI, dim
         //console.log(country,normValue,rank,minn)
         if (selectedPage == "countryDataTab") {
           //console.log(val, typeof val)
-  
+
           return {
             x: 160,
             y: (totalHeight / totalVals) * rank + topMargin,
@@ -185,12 +142,13 @@ function mviBarChart(country, indiSelections, mviData, chosenCountryListMVI, dim
       }
     }
   }
-  
-  function mviColumnChart( country, indiSelections, mviData, chosenCountryListMVI, dim) {
-    
-    dat = mviData[dim - 1];
+
+  export function mviColumnChart( country, indiSelections, mviData, chosenCountryListMVI, dim) {
+
+    let dat = mviData[dim - 1],
 
     dimensionName = dat.name;
+    let val;
     try {
       val = dat["axes"].filter(function (el) {
         return el.axis == country;
@@ -198,35 +156,35 @@ function mviBarChart(country, indiSelections, mviData, chosenCountryListMVI, dim
     } catch (error) {
       val = 0;
     }
-    rank = chosenCountryListMVI.indexOf(country);
-  
-    totalHeight = 500;
-    totalWidth = 650;
+    let rank = chosenCountryListMVI.indexOf(country),
+
+    totalHeight = 500,
+    totalWidth = 650,
     selectedPage = indiSelections["page"]
-  
+
     if (rank == -1) {
       return { x: 160, y: 300, width: 0, height: 30 };
     } else {
       try {
-        leftMargin = 60;
-        totalVals = chosenCountryListMVI.length;
-        margin = 8;
-  
-        maxx = 70;
-        minn = 0; //Math.min(...indicatorValues)
+        let leftMargin = 60,
+        totalVals = chosenCountryListMVI.length,
+        margin = 8,
+
+        maxx = 70,
+        minn = 0, //Math.min(...indicatorValues)
         normValue = (val - minn) / (maxx - minn);
-  
+
         //console.log(country,normValue,rank,minn)
-        if (selectedPage == "countryDataTab") {
+        if (this.indiSelections.page == "countryDataTab") {
           //console.log(val, typeof val)
-  
+
           return {
             y: 160,
             x: (totalHeight / totalVals) * rank + leftMargin,
             height: 50,
             width: totalHeight / totalVals - margin,
           }; //,"color":color};
-        } else if (selectedPage == "mviTab") {
+        } else if (this.indiSelections.page == "mvi") {
           return {
             y: totalHeight * 0.85 - (normValue * totalHeight) / 2,
             x: (totalWidth / totalVals) * rank + leftMargin,
@@ -235,38 +193,38 @@ function mviBarChart(country, indiSelections, mviData, chosenCountryListMVI, dim
           }; //,"color":color};
         }
       } catch (error) {
-        console.log(error);
+        console.log(error, '!!!!!!!!');
         //console.log(error)
         //console.log(country,"no1");
-        return { x: 160, y: 300, width: 00, height: 10 };
+        return { x: 160, y: 300, width: 0, height: 10 };
       }
     }
   }
- 
 
 
 
-function getIndexCountryList(indiSelections,subindexList) {
-    selectedIndis=getCustomIndicatorSelection()
-    selectedSortby=indiSelections["sortby"]
+
+export function getIndexCountryList(indiSelections,subindexList) {
+    let selectedSortby=indiSelections["sortby"],
+    chosenCountryListMVI;
      if (selectedSortby == "Region") {
         chosenCountryListMVI = mviCountryListSpider;
       }
       else if (selectedSortby == "Rank") {
 
-        mviValues={}
+        let mviValues={}
 
-  for (index in mviCountryListSpider) {
-    newCountryData = {};
-    country = mviCountryListSpider[index];
+  for (let index in mviCountryListSpider) {
+    let newCountryData = {},
+    country = mviCountryListSpider[index],
 
     val = 0;
-    for (j = 3; j >= 0; j = j - 1) {
-      dimVal = 0;
+    for (let j = 3; j >= 0; j = j - 1) {
+      let dimVal = 0,
       indiCount = 0;
-      for (indi in mviDimensions[subindexList[j]]) {
+      for (let indi in mviDimensions[subindexList[j]]) {
         indi = mviDimensions[subindexList[j]][indi];
-        if (selectedIndis.includes(indi)) {
+        if (this.selectedIndis.includes(indi)) {
           try {
             //countryName = allKeyData[country].Profile.Country
             newVal = indexData[mviIndicatorsDict[indi]]["data"][indiSelections["year"]][country];///////////////////////////
@@ -288,13 +246,13 @@ function getIndexCountryList(indiSelections,subindexList) {
     mviValues[country] = val;
   }
 
-sortedMviData = sort_object(mviValues);
+let sortedMviData = sort_object(mviValues),
 sortedCountryList = Object.keys(sortedMviData);
 console.log(sortedMviData);
 
       //this filter removes any empty elements
       chosenCountryListMVI = sortedCountryList.filter((item) => item); //mviCountryList for regional, fixed value
-    } 
+    }
     return chosenCountryListMVI;
 }
 //   selectedPage = $(".selectedPage").attr("id");
@@ -360,7 +318,7 @@ console.log(sortedMviData);
 //         } else {
 //           return "nodata countrySvg";
 //         }
-//       });}  
+//       });}
 
 
 
