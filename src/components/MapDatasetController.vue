@@ -267,8 +267,8 @@ export default {
           value: "pillars",
           headerImg:
             // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png",
-            // "https://sids-dashboard.github.io/SIDSDataPlatform/src/assets/gis/icons/sidsOfferPillars.png",
-            "../assets/gis/icons/sidsOfferPillars.png",
+            "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sidsOfferPillars.png",
+          // "../assets/gis/icons/sidsOfferPillars.png", //working on local server
           description:
             "UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.",
         },
@@ -277,8 +277,8 @@ export default {
           value: "sdgs",
           headerImg:
             // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png",
-            // "https://sids-dashboard.github.io/SIDSDataPlatform/src/assets/gis/icons/SDGs.png",
-            "../assets/gis/icons/SDGs.png",
+            "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sdgs.png",
+          // "../assets/gis/icons/SDGs.png",
           description:
             "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
         },
@@ -287,7 +287,7 @@ export default {
           value: "samoaPriorities",
           headerImg:
             // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png",
-            "../assets/gis/icons/samoaPathway.png",
+            "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaPathway.png",
           description:
             "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
         },
@@ -298,7 +298,7 @@ export default {
           name: "Blue Economy",
           value: "blue",
           // icon: "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/blueEconomy.png",
-          icon: "../assets/gis/icons/pillars/blueEconomy.png",
+          icon: "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/pillars/blueEconomy.png",
           description:
             "Harnessing the blue economy through an integrated approach rooted in sustainable finance and development.",
         },
@@ -306,7 +306,7 @@ export default {
           name: "Climate Action",
           value: "climate",
           // icon: "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/climateAction.png",
-          icon: "../assets/gis/icons/pillars/climateAction.png",
+          icon: "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/pillars/climateAction.png",
           description:
             "Promoting decarbonized and resilient societies through scaled up climate action and enhanced efforts to mobilize climate finance.",
         },
@@ -314,7 +314,7 @@ export default {
           name: "Digital transformation",
           value: "digital",
           // icon: "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/digitalTransformation.png",
-          icon: "../assets/gis/icons/pillars/digitalTransformation.png",
+          icon: "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/pillars/digitalTransformation.png",
           description:
             "Accelerating digital transformation through a whole-of-society approach that puts people at the centre for inclusive societies and resilient economies.",
         },
@@ -590,17 +590,22 @@ export default {
           goalNmber = "0" + goalNmber;
         }
         // let output = `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNmber}.png`;
-        let output = `../assets/gis/icons/SDG_Icons_2019_WEB/E-WEB-Goal-${goalNmber}.png`;
+        let output = `https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/SDG_Icons_2019_WEB/E-WEB-Goal-${goalNmber}.png`;
+
+        // let output = `../assets/gis/icons/SDG_Icons_2019_WEB/E-WEB-Goal-${goalNmber}.png`;
         // console.log(output);
         // return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNmber}.png`;
         return output;
       } else if (this.activeGoalType === "samoaPriorities") {
-        /*         let output = `https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${
+        /* let output = `https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${
           index + 1
         }samoaIcons.png`; */
-        let output = `../assets/gis/icons/samoaIcons/100w/Asset_${
+        let output = `https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaIcons/100w/Asset_${
           index + 1
         }samoaIcons.png`;
+        /*         let output = `../assets/gis/icons/samoaIcons/100w/Asset_${
+          index + 1
+        }samoaIcons.png`; */
         /* return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${
           index + 1
         }samoaIcons.png`; */
@@ -667,16 +672,25 @@ export default {
     max-height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior: contain;
   }
 }
 @media (orientation: landscape) and (max-width: 750px) {
   .data-controller {
     /* display: none; */
     max-width: 50vw;
-    max-height: 100vh;
+    /* max-height: 100vh; */
     overflow-y: auto;
     overflow-x: hidden;
+    /* overscroll-behavior: contain; */
   }
+
+  /* to stop accidental moving out of the map area when scrolling on UI elements of the gis map section for thin devices in landscape */
+  /*   .data-controller,
+  .toolbar,
+  .menu-box {
+    overscroll-behavior: contain;
+  } */
 }
 /*End of Brandon additions*/
 
