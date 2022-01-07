@@ -672,16 +672,25 @@ export default {
     max-height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior: contain;
   }
 }
 @media (orientation: landscape) and (max-width: 750px) {
   .data-controller {
     /* display: none; */
     max-width: 50vw;
-    max-height: 100vh;
+    /* max-height: 100vh; */
     overflow-y: auto;
     overflow-x: hidden;
+    /* overscroll-behavior: contain; */
   }
+
+  /* to stop accidental moving out of the map area when scrolling on UI elements of the gis map section for thin devices in landscape */
+  /*   .data-controller,
+  .toolbar,
+  .menu-box {
+    overscroll-behavior: contain;
+  } */
 }
 /*End of Brandon additions*/
 
