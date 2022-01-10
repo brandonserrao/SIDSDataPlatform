@@ -30,7 +30,7 @@
              >
               <template v-slot:activator="{ on, attrs }">
                 <v-list-item
-                  class="inicator-item"
+                  class="inicator-item cursor-pointer"
                   inactive
                   v-bind="attrs"
                   v-on="on"
@@ -63,7 +63,7 @@
         <template v-for="(item, i) in datasets">
           <v-list-item
             inactive
-            class="list-scrollabe_item"
+            class="list-scrollabe_item cursor-pointer"
             v-if="!dataset || dataset === item.name"
             :key="i"
             @click="toggleDataset(item.name)"
@@ -118,7 +118,7 @@
            >
             <template v-slot:activator="{ on, attrs }">
               <v-list-item
-                class="inicator-item"
+                class="inicator-item cursor-pointer"
                 inactive
                 v-bind="attrs"
                 v-on="on"
@@ -495,5 +495,8 @@ export default {
 .dimensions-select{
   max-width: 60%;
   margin-right: 0;
+}
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>
