@@ -172,7 +172,7 @@ function appendLinesMapAndRegions() {
       .attr("y", -415)
       .attr("width", 879)
       .attr("height", 1000)
-      .attr("xlink:href", "/static/SIDS_map_clean-01.png")
+      .attr("xlink:href", "/SIDSDataPlatform/static/SIDS_map_clean-01.png")
       .attr("opacity", 0)
       .attr("class", "choroMap")
       .attr("z-index", -10);

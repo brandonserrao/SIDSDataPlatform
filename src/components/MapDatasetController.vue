@@ -237,7 +237,7 @@
           {{ activeLayer.Source_Link }}
         </a>
       </v-card-text>
-      <v-card-text v-else="activeLayer">
+      <v-card-text v-else>
         This map visualizes data for the SIDS at different resolutions. Select a dataset above or a country to view spatial data about that region.
       </v-card-text>
     </v-card>
