@@ -130,7 +130,7 @@ const routes = [
       await store.dispatch('sids/getMetaData');
       await store.dispatch('sids/getAllKeyData');
       if(!to.params.country) {
-        next({ path: `/country-profiles/${store.state.sids.countryList[0].id}`})
+        next({ path: `/country-profiles/caboVerde`})
       }
       next()
     },

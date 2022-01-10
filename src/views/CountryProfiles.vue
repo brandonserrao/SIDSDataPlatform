@@ -53,14 +53,13 @@
     <v-row class="d-none d-md-flex" justify="center">
       <v-col cols="11" md="6">
         <div class="select">
-          <label class="input-label">Overlay countries to compare indicator rank among SIDS</label>
           <v-select
             rounded
             :value="compare"
             :items="filteredCountries"
             item-text="Country"
             item-value="id"
-            placeholder="Select countries"
+            placeholder="Overlay countries to compare indicator rank among SIDS"
             @change="setCompareCountries"
             chips
             outlined
@@ -119,7 +118,7 @@
           pillarName="MVI2"
           :activeCountries="graphCountriesProfiles"/>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="4">
         <profiles-finance
           :countryId="country"/>
       </v-col>
@@ -179,14 +178,13 @@
     <v-row class="d-flex d-md-none" justify="center">
       <v-col cols="11" md="6">
         <div class="select">
-          <label class="input-label">Overlay countries to compare indicator rank among SIDS</label>
           <v-select
             rounded
             :value="compare"
             :items="filteredCountries"
             item-text="Country"
             item-value="id"
-            placeholder="Select countries"
+            placeholder="Overlay countries to compare indicator rank among SIDS"
             @change="setCompareCountries"
             chips
             outlined
@@ -494,17 +492,21 @@ export default {
   .graph-tabs {
     background-color: transparent !important;
   }
+
+  .background-grey {
+    background: #e4e1e1 !important;
+  }
  @media all and (max-width:600px) {
-   .country-profile-header {
+  .country-profile-header {
     margin: 0px auto 130px;
     color: #F2F2F3 !important;
     text-align: center;
-   }
-   .menu-col {
-     width: 0 !important;
-   }
-   .select-column {
-     margin-bottom: 15px;
-   }
+  }
+  .menu-col {
+    width: 0 !important;
+  }
+  .select-column {
+    margin-bottom: 15px;
+  }
  }
 </style>
