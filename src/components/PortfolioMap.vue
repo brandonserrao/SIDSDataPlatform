@@ -210,6 +210,7 @@ export default {
 .custom-chip_header {
   justify-content: center;
   padding: 0.1em;
+  font-weight: 700;
 }
 .custom-chip_text {
   justify-content: center;
@@ -218,6 +219,7 @@ export default {
   text-align: center;
   font-size: 12px;
   line-height: 1;
+  font-weight: 900;
 }
 .map_info {
   flex-grow: 0;

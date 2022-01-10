@@ -153,7 +153,7 @@ const routes = [
   },
   {
     path: '*',
-    redirect: '/about'
+    redirect: '/portfolio'
   }
 
 ]
