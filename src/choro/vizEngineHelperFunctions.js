@@ -19,7 +19,7 @@ export function sort_object(obj) {
         let use_value = index;//v[1]
         sorted_obj[use_key] = use_value;
     });
-    
+
     return (sorted_obj)
 
 }
@@ -151,4 +151,14 @@ export function nFormatter(num, digits) {
     }
   }
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+}
+
+export function normalizeIndex(val,min,max){
+    if(max>min){
+  normValue=(val-min)/(max-min)
+    }
+    else{
+        normValue=0
+    }
+    return normValue
 }

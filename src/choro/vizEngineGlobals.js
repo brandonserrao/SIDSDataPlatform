@@ -161,7 +161,7 @@ export const mviDimensions = {
 export const mviDimensionList = Object.keys(mviDimensions);
 //
 //   //should compute this automatically
-export const  mviCountryListSpider = [
+export const  countryListSpider = [
     "HTI",
     "DOM",
     "ATG",

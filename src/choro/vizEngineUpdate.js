@@ -1,7 +1,6 @@
 import * as d3 from 'd3';
 
 import {
-  indexCodes,
   indexDict,
   hues,
   mviDimensions,
@@ -17,6 +16,10 @@ import {
   getBoundingBox
 } from './vizEngineHelperFunctions';
 
+import {
+  indexCodes
+} from './index-data';
+
 ///////////////////////
 //////Main update function
 //////////////////////////////////////
@@ -24,22 +27,21 @@ import {
 
 export function updateVizEngine(indicatorCode) {
   console.log('upd', indicatorCode)
+
   this.indicatorCodeInitial = indicatorCode;
   this.indicatorCode = indicatorCode;
-//
-//      //process code
-//      selectedPage = $(".selectedPage").attr("id");
+
   if(this.page=="mvi"){
-    this.indicatorCode = "mvi";
+    this.indicatorCode = "mvi-index-index";
   }
+
   if (this.indicatorCode == "region") {
     this.indicatorCode = "hdr137506-compositeIndices";///temp so has something to attach to data
   }
-//   //choose index or indicator mode
+
   if (indexCodes.includes(this.indicatorCode)) {
     this.vizMode = "index";
-    this.apiCode="indexData-" + this.indicatorCode;
-    this.indicatorCode=indexDict[this.indicatorCode]
+    this.apiCode="indexData-" + indexCodes[this.indicatorCode];
   } else {
     this.vizMode = "indicator";
     let codeSplit = this.indicatorCode.split("-");
@@ -69,18 +71,19 @@ export function updateVizEngine(indicatorCode) {
   d3.json(
     "https://sids-dashboard.github.io/api/data/"+  this.apiCode + ".json"
   ).then((dat) => {
-//
-//
-    this.indicatorData = dat[this.indicatorCode];
-//
+    if(vizMode=="indicator"){
+      this.indicatorData = dat[this.indicatorCode];
+    }
     if(this.vizMode=="index"){
-      let orderedCountryList=this.getIndexCountryList(this.indiSelections, mviDimensionList)
-      this.indiSelections["countryOrder"] = orderedCountryList
+      this.indiexData = this.getIndexValues(dat)
+      this.indicatorData = this.indiexData["index"]
+      this.indexWeights = JSON.parse(JSON.stringify(indexWeightsDict[indexCode]));//deep copy
+      this.indiSelections["countryOrder"] = this.getIndexCountryList()
 
-      let spiderData = this.processSpiderData(this.indicatorData,mviDimensions,this.indiSelections,orderedCountryList)
+      let spiderData = this.processSpiderData()
 
       this.indiSelections["spiderData"]=spiderData
-      this.drawIndexSpider(spiderData,mviDimensionList, this.indicatorData)
+      this.drawIndexSpider()
     }
 //
 //    console.log(indicatorData)

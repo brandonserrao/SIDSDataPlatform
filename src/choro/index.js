@@ -42,11 +42,16 @@ import {
   } from './vizEngineElementAttributes'
 
 import {
-  getIndexCountryList,
-  drawIndexSpider,
+  getIndexValues,
+  preprocessIndexWeights,
+  getIndexDataYears,
+  getMinMaxObj,
+  computeSubindexValues,
+  computeIndexValues,
+  getCustomIndicatorSelection,
   processSpiderData,
-  mviBarChart,
-  mviColumnChart } from './processIndexData'
+  drawIndexSpider,
+  getIndexCountryList } from './processIndexData'
 
     // <script src="scripts/vizEngineUpdate.js"></script>
     // <script src="scripts/vizEngineElementAttributes.js"></script>
@@ -75,7 +80,7 @@ export default class Choro {
     this.mapLocations = mapLocations;
     this.indiSelections = {
       viz,
-      sortby: 'Rank',
+      sortby: 'rank',
       year,
       page,
       mviPreset:'mviLi'
@@ -164,3 +169,13 @@ Choro.prototype.processSpiderData = processSpiderData;
 Choro.prototype.mviBarChart = mviBarChart;
 Choro.prototype.mviColumnChart = mviColumnChart;
 Choro.prototype.appendMultiRectangles = appendMultiRectangles;
+Choro.prototype.getIndexValues = getIndexValues
+Choro.prototype.preprocessIndexWeights = preprocessIndexWeights
+Choro.prototype.getIndexDataYears = getIndexDataYears
+Choro.prototype.getMinMaxObj = getMinMaxObj
+Choro.prototype.computeSubindexValues = computeSubindexValues
+Choro.prototype.computeIndexValues = computeIndexValues
+Choro.prototype.getCustomIndicatorSelection = getCustomIndicatorSelection
+Choro.prototype.processSpiderData = processSpiderData
+Choro.prototype.drawIndexSpider = drawIndexSpider
+Choro.prototype.getIndexCountryList = getIndexCountryList
