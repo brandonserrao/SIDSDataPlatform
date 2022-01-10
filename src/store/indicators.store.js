@@ -4,7 +4,8 @@ export default {
   namespaced: true,
   state: {
     indicatorsCategories: null,
-    indicatorsMeta: null
+    indicatorsMeta: null,
+    profileData: null,
   },
   mutations: {
     setCategories(state, data) {
@@ -12,9 +13,18 @@ export default {
     },
     setMeta(state, data) {
       state.indicatorsMeta = data;
-    }
+    },
+    setProfileData(state, data) {
+      state.profileData = data;
+    },
   },
   actions: {
+    async getProfileData({ state, commit }) {
+      if(!state.profileData){
+        const profileData = await service.loadProfileData();
+        commit("setProfileData", profileData);
+      }
+    },
     async getCategories({ state, commit }) {
       if(!state.keyMetadata){
         const categories = await service.loadIndicatorsCategories();

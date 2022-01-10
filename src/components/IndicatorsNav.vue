@@ -1,22 +1,17 @@
 <template>
   <div class="indicators-nav">
-    <div>
-      <label class="input-label">
-        Search indicators
-        <v-text-field v-if="!dataset"
-          class="ml-2 mr-2"
-          rounded
-          outlined
-          dense
-          v-model="searchString"
-          @focus="showFullList"
-          @blur="hideFullList"
-          hide-details="auto"
-          @click:append="clearFullSearch"
-          append-icon="mdi-close"
-          prepend-icon="mdi-magnify"
-        ></v-text-field>
-      </label>
+    <v-card flat>
+      <v-text-field v-if="!dataset"
+        class="ml-2 mr-2"
+        dense
+        v-model="searchString"
+        @focus="showFullList"
+        @blur="hideFullList"
+        hide-details="auto"
+        @click:append="clearFullSearch"
+        append-icon="mdi-close"
+        prepend-icon="mdi-magnify"
+      ></v-text-field>
 
       <v-virtual-scroll
         v-if="activeSearch"
@@ -38,7 +33,7 @@
                   inactive
                   v-bind="attrs"
                   v-on="on"
-                  @click="setActiveIndicatorFromFullList(item)"
+                  @click="emitIndicatorChange(item)"
                 >
                   <v-list-item-title class="inicator-item_header mt-2">
                     {{item.Indicator}}
@@ -123,7 +118,7 @@
                   inactive
                   v-bind="attrs"
                   v-on="on"
-                  @click="setActiveIndicator(indicator)"
+                  @click="emitIndicatorChange(indicator)"
                 >
                   <v-list-item-title class="inicator-item_header mt-2">
                     {{indicator.Indicator}}
@@ -148,7 +143,7 @@
           </template>
         </v-list-item-group>
       </v-list>
-    </div>
+    </v-card>
     <v-card class="mt-2" v-if="activeIndicator">
       <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.Indicator}}</v-card-title>
       <v-card-text>
@@ -174,6 +169,7 @@ import { mapState } from 'vuex';
 
 export default {
   name: 'IndicatorsNav',
+  props:['activeIndicatorCode'],
   data() {
     return {
       activeSearch: false,
@@ -379,6 +375,11 @@ export default {
         this.dataset = name;
       }
     },
+    selectDataset(name) {
+      this.activeCategory = 'All categories';
+      this.activeSubCategory = 'All subcategories';
+      this.dataset = name;
+    },
     getSubcategoryIndicators(category, subCategory) {
       let indicatorsList = [];
       for(let indicator in this.activeDataset[category][subCategory]) {
@@ -389,9 +390,12 @@ export default {
     changeCategory() {
       this.activeSubCategory = ''
     },
+    emitIndicatorChange(indicator) {
+      this.$emit('indicatorChange', indicator)
+    },
     setActiveIndicator(indicator) {
       this.activeIndicator = indicator;
-      this.activeIndicatorDimension = indicator.Dimension
+      this.activeIndicatorDimension = indicator.Dimension;
     },
     showFullList() {
       this.activeSearch = true;
@@ -404,7 +408,7 @@ export default {
     setActiveIndicatorFromFullList(indicator) {
       this.searchString = '';
       this.activeSearch = false;
-      this.toggleDataset(indicator.Dataset);
+      this.selectDataset(indicator.Dataset);
       this.activeCategory = indicator.Category;
       this.activeSubCategory = indicator.Subcategory;
       this.setActiveIndicator(indicator);
@@ -415,6 +419,20 @@ export default {
     },
     clearDeepSearch() {
       this.deepSearch = '';
+    }
+  },
+  watch:{
+    activeIndicatorCode() {
+      let activeIndicator = this.allIndicators.find(indicator => indicator['Indicator Code'] === this.activeIndicatorCode)
+      if(activeIndicator) {
+        this.setActiveIndicatorFromFullList(activeIndicator)
+      }
+    }
+  },
+  mounted() {
+    let activeIndicator = this.allIndicators.find(indicator => indicator['Indicator Code'] === this.activeIndicatorCode)
+    if(activeIndicator) {
+      this.setActiveIndicatorFromFullList(activeIndicator)
     }
   }
 }

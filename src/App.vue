@@ -32,10 +32,13 @@ export default {
 };
 </script>
 <style>
-@import "./assets/styles/RootStyles.css";
-@import "./assets/styles/buttons.css";
-@import "./assets/styles/text.css";
-@import "./assets/styles/forms.css";
+@import './assets/styles/RootStyles.css';
+@import './assets/styles/buttons.css';
+@import './assets/styles/text.css';
+@import './assets/styles/forms.css';
+@import './choro/vizEngine.css';
+
+
 
 #app {
   padding: 0;

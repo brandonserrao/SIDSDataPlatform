@@ -55,7 +55,7 @@
                     </div>
 
                     <!-- Ben's original hardcoded country-options -->
-                    <!-- 
+                    <!--
                     <div
                       class="col-flex country-options display-none options-drop"
                     >
@@ -802,7 +802,7 @@
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>
               </div>
-              <!-- 
+              <!--
               <div class="menu row-flex">
                 <div
                   class="icon threeD-icon"
@@ -849,13 +849,13 @@
                 </div>
               </div>
 
-              <!-- Labels Select Menu 
-              
+              <!-- Labels Select Menu
+
               "handleLabelsChange('aminus', 'aplus')"
 
               -->
               <div class="menu row-flex">
-                <!-- 
+                <!--
                 <div
                   class="icon aminus-icon"
                   @click="emit_toggle_legend()"
@@ -879,7 +879,7 @@
       </div>
     </div>
     <!-- SPINNER LOADER -->
-    <!--     
+    <!--
     <div class="loader-gis">
       <svg
         version="1.1"
@@ -2025,7 +2025,7 @@ body {
   top: -4px;
   width: 48px;
   height: 48px;
-  background: url("../assets/gis/sidebar/Rectangle.png");
+  background: url("/assets/gis/sidebar/rectangle.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
