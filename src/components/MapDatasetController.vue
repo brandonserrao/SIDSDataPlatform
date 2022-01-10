@@ -13,9 +13,12 @@
                 v-for="(item, i) in goalTypes"
                 :key="i"
                 eager
+                transition="fade"
+                open-delay="200"
                 max-width="400"
-                nudge-right="106"
-                :nudge-top="20 + 40 * i"
+                nudge-right="516"
+                :nudge-top="18 + 40 * (i + 1)"
+                bottom
                 content-class="indicator-tooltip"
                 allow-overflow
               >
@@ -48,15 +51,19 @@
           </v-list>
         </v-col>
         <v-col cols="6">
-          <v-list class="background-transparent" v-if="activeGoalType === 'pillars'" dense>
+          <v-list class="background-none" v-if="activeGoalType === 'pillars'" dense>
             <v-list-item-group v-model="activePillar" mandatory>
               <v-tooltip
                 right
                 v-for="(item, i) in pillars"
                 :key="i"
                 eager
-                :nudge-top="-40 + 40 * i"
-                max-width="320"
+                open-delay="200"
+                transition="fade"
+                :nudge-top="18 + 40 * (i + 1)"
+                max-width="400"
+                bottom
+                :nudge-right="303"
                 content-class="indicator-tooltip"
                 allow-overflow
               >
@@ -110,16 +117,16 @@
               <v-menu
                 open-on-hover
                 bottom
-                :nudge-left="255"
-                :nudge-bottom="46"
+                :nudge-left="281"
+                :nudge-bottom="58"
                 content-class="sdg-menu"
               >
                 <template v-slot:activator="{ on }">
                   <img
                     v-on="on"
                     :src="getGoalImage(index)"
-                    height="56"
-                    width="56"
+                    height="66"
+                    width="66"
                   />
                 </template>
                 <div class="goals-tooltip-content">
@@ -128,7 +135,9 @@
                     v-for="(n, index) in activeGoalTypes"
                     :key="n"
                     eager
-                    :nudge-right="(5 - (index % 6)) * 56 || 6"
+                    transition="fade"
+                    open-delay="300"
+                    :nudge-right="(5 - (index % 6)) * 66 || 6"
                     :nudge-top="getGoalsTooltipNudgeTop(index)"
                     max-width="380"
                     content-class="indicator-tooltip"
@@ -141,8 +150,8 @@
                         @click="selectGoal(index + 1)"
                         :src="getGoalImage(index)"
                         class="tooltip-image"
-                        height="56"
-                        width="56"
+                        height="66"
+                        width="66"
                       />
                     </template>
                     <v-card>
@@ -641,13 +650,13 @@ export default {
     selectGoal(goalNumber) {
       this.activeGoal = goalNumber;
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
-      this.$refs.slider.scrollOffset = 56 * (goalNumber - 1);
+      this.$refs.slider.scrollOffset = 66 * (goalNumber - 1);
     },
     getGoalsTooltipNudgeTop(index) {
       if (index < 6) {
         return 6;
       } else if (index < 12) {
-        return 56;
+        return 66;
       }
       return 112;
     },
@@ -711,7 +720,7 @@ export default {
 }
 .goals-slider {
   padding: 8px 0;
-  width: 106px;
+  width: 116px;
   margin: auto;
 }
 .goals-slider .v-slide-group__next,
@@ -720,7 +729,7 @@ export default {
 }
 .goals-tooltip-content {
   display: flex;
-  max-width: 336px;
+  max-width: 400px;
   flex-wrap: wrap;
 }
 .tooltip-image {
