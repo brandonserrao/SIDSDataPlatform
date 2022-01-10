@@ -870,6 +870,8 @@ export default class Map {
       var features = map.queryRenderedFeatures({
         layers: [globals.currentLayerState.hexSize],
       });
+      // console.log(`features:`);
+      // console.log(features);
 
       if (features) {
         var uniFeatures;
@@ -880,11 +882,16 @@ export default class Map {
         } else {
           uniFeatures = this.getUniqueFeatures(features, "hexid");
         }
+        // console.log("uniFeatures");
+        // console.log(uniFeatures);
 
         //console.log(uniFeatures);
         var selectedData = uniFeatures.map((x) => x.properties[Field_Name]);
+        console.log("selectedData");
+        console.log(selectedData);
 
         var breaks = chroma.limits(selectedData, "q", 4);
+        console.log("breaks:", breaks);
         var breaks_new = [];
         globals.precision = 1;
         do {
@@ -894,12 +901,13 @@ export default class Map {
               breaks[i].toPrecision(globals.precision)
             );
           }
-          //console.log(breaks_new);
+          console.log("breaks_new:", breaks_new);
         } while (this.checkForDuplicates(breaks_new) && globals.precision < 10);
         breaks = breaks_new;
+        console.log("new breaks:", breaks);
 
-        console.log("globals.currentLayerState.color:");
-        console.log(globals.currentLayerState.color);
+        // console.log("globals.currentLayerState.color:");
+        // console.log(globals.currentLayerState.color);
         /* if (!globals.currentLayerState.color) {
           //triggering if the color palette stored has been reset to null (intended to be triggered by change in active dataset)
           console.log(
@@ -908,6 +916,7 @@ export default class Map {
         } */
 
         var colorRamp = colors.colorSeq["yellow-blue"];
+        console.log(colorRamp);
 
         if (Field_Name.substring(0, 2) === "1a") {
           colorRamp = colors.colorDiv.gdpColor;
@@ -1022,7 +1031,19 @@ export default class Map {
       );
       //console.log(selectedData);
       var breaks = chroma.limits(selectedData, "q", 4);
-      console.log(breaks);
+      console.log("breaks in recolor:", breaks);
+      var breaks_new = [];
+      globals.precision = 1;
+      do {
+        globals.precision++;
+        for (let i = 0; i < 5; i++) {
+          breaks_new[i] = parseFloat(breaks[i].toPrecision(globals.precision));
+        }
+        console.log("breaks_new:", breaks_new);
+      } while (this.checkForDuplicates(breaks_new) && globals.precision < 10);
+      breaks = breaks_new;
+      console.log("new breaks:", breaks);
+
       map.setPaintProperty(globals.currentLayerState.hexSize, "fill-color", [
         "interpolate",
         ["linear"],
@@ -1257,16 +1278,11 @@ export default class Map {
      */
   ) {
     console.log("updateHistogram params passed are:");
-    console.log("colors:");
-    console.log(colors);
-    console.log("breaks:");
-    console.log(breaks);
-    console.log("precision:");
-    console.log(precision);
-    console.log("activeLayer:");
-    console.log(activeLayer);
-    console.log("selectedData:");
-    console.log(selectedData);
+    console.log("colors:", colors);
+    console.log("breaks:", breaks);
+    console.log("precision:", precision);
+    console.log("activeLayer:", activeLayer);
+    console.log("selectedData:", selectedData);
 
     //old code
 
@@ -1343,7 +1359,8 @@ export default class Map {
       .mode("lch")
       .colors(nGroup); // yellow to dark-blue
  */
-    chroma.scale([colors[0], colors[4]]).mode("lch").colors(nGroup);
+
+    // chroma.scale([colors[0], colors[4]]).mode("lch").colors(nGroup);
 
     var data = {
       labels: breaks_precision.slice(0, -1),
@@ -1366,7 +1383,7 @@ export default class Map {
       tooltips: {
         enabled: false,
       },
-      updateLegend: {
+      legend: {
         display: false,
       },
       annotation: {
