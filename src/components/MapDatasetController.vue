@@ -1,12 +1,12 @@
 <template>
   <div class="">
-    <v-card class="mb-4">
+    <v-card class="mb-1 background-transparent">
       <!--       <button class="printout debug" @click="">
         Printout Datasets to Console
       </button> -->
       <v-row>
         <v-col cols="6">
-          <v-list dense>
+          <v-list class="background-none" dense>
             <v-list-item-group v-model="activeGoalType" mandatory>
               <v-tooltip
                 top
@@ -48,7 +48,7 @@
           </v-list>
         </v-col>
         <v-col cols="6">
-          <v-list v-if="activeGoalType === 'pillars'" dense>
+          <v-list class="background-transparent" v-if="activeGoalType === 'pillars'" dense>
             <v-list-item-group v-model="activePillar" mandatory>
               <v-tooltip
                 right
@@ -166,6 +166,7 @@
             rounded
             class="map-input"
             dense
+            hide-details
             v-model="activeDatasetName"
             :items="filteredDatasets"
             item-text="name"
@@ -176,11 +177,12 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row v-if="activeDataset && activeDataset.type === 'layers'" dense>
+      <v-row class="spacing-row" v-if="activeDataset && activeDataset.type === 'layers'" dense>
         <v-col>
           <v-select
             rounded
             dense
+            hide-details
             class="map-input"
             v-model="activeLayerName"
             item-text="Description"
@@ -192,10 +194,7 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row
-        v-else-if="activeDataset && activeDataset.type === 'temporal'"
-        dense
-      >
+      <v-row class="spacing-row" v-else-if="activeDataset && activeDataset.type === 'temporal'" dense >
         <v-col>
           <v-slider
             class="map-input"
@@ -209,27 +208,35 @@
           ></v-slider>
         </v-col>
       </v-row>
+      <v-row v-else class="spacing-row">
+      </v-row>
     </v-card>
-    <v-card v-if="activeLayer">
-      <v-card-subtitle>
+    <v-card class="mb-1 block-info background-grey" >
+      <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
           {{ activeDataset.type === "temporal" ? activeLayer.Temporal : "" }}</b
         >
       </v-card-subtitle>
-      <v-card-text>
+      <v-card-subtitle class="block-header" v-else>
+        SIDS Geospatial Platform
+      </v-card-subtitle>
+      <v-card-text v-if="activeLayer">
         {{ activeLayer.Desc_long }}<br />
         <b>Reference</b> {{ activeLayer.Source_Name }} <br />
         <a :href="activeLayer.Source_Link" target="_blank">
           {{ activeLayer.Source_Link }}
         </a>
       </v-card-text>
+      <v-card-text v-else="activeLayer">
+        This map visualizes data for the SIDS at different resolutions. Select a dataset above or a country to view spatial data about that region.
+      </v-card-text>
     </v-card>
 
     <!-- New Legend/Histogram -->
     <!-- <v-card v-if="displayLegend" class="histogram_frame"> -->
-    <v-card v-show="displayLegend" class="histogram_frame">
-      <div id="histogram_frame" class="pic app-body population-per-km col-flex">
+    <v-card v-show="displayLegend" class="background-grey histogram_frame">
+      <div v-show="activeLayer" id="histogram_frame" class="pic app-body population-per-km col-flex">
         <div class="row-flex space-evenly" id="legendTitle"></div>
         <div class="row-flex space-evenly" id="updateLegend"></div>
         <canvas
@@ -239,6 +246,9 @@
           height="115"
         ></canvas>
       </div>
+      <v-card-text class="histogram_placeholder" v-show="!activeLayer">
+        Select a Dataset and Layer to view data on the map.
+      </v-card-text>
     </v-card>
   </div>
 </template>
@@ -648,7 +658,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 /*Brandon additions*/
-
+.data-controller {
+  display: flex;
+  flex-direction: column;
+}
 .row-flex {
   display: flex;
   flex-direction: row;
@@ -693,7 +706,9 @@ export default {
   } */
 }
 /*End of Brandon additions*/
-
+.histogram_placeholder {
+  height: 200px;
+}
 .goals-slider {
   padding: 8px 0;
   width: 106px;
@@ -743,5 +758,19 @@ export default {
   word-break: keep-all !important;
   word-wrap: normal;
   /* white-space: nowrap */
+}
+.spacing-row {
+  height: 55px;
+}
+.background-none {
+  background: none !important;
+}
+.background-transparent {
+  background-color: rgba(221, 221, 221, 0.7) !important;
+}
+.block-info {
+  height: 200px;
+  overflow-y: scroll;
+
 }
 </style>

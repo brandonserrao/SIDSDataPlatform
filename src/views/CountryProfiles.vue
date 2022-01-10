@@ -492,10 +492,6 @@ export default {
   .graph-tabs {
     background-color: transparent !important;
   }
-
-  .background-grey {
-    background: #e4e1e1 !important;
-  }
  @media all and (max-width:600px) {
   .country-profile-header {
     margin: 0px auto 130px;
