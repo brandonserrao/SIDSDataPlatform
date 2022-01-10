@@ -148,7 +148,7 @@
       </v-list-item-group>
     </v-list>
   </v-card>
-    <v-card class="mt-2" v-if="activeIndicator">
+    <v-card flat class="mt-2" v-if="activeIndicator">
       <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.Indicator}}</v-card-title>
       <v-card-text>
         <div class="mb-1 d-flex">
