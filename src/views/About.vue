@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5">
+  <div class="mt-5 about-page">
     <v-row justify="center">
       <v-col cols="12">
         <h2 class="page-header">About the SIDS Data Visualization Platform</h2>
@@ -86,3 +86,8 @@
     </v-row>
   </div>
 </template>
+<style>
+   .about-page .v-expansion-panel::after {
+     border-top: 1px solid rgba(0, 0, 0, 0.12) !important;
+   }
+</style>
