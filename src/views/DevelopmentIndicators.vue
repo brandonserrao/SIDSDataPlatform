@@ -10,8 +10,7 @@
           <h2 class="page-header">Development Indicators</h2>
         </v-col>
       </v-row>
-      <v-row jusify="center">
-        <v-col cols='12' md="7" xl="7">
+      <v-row class="justify-center">
           <v-tabs
             v-if="indicator!=='region'"
             :value="activeTab"
@@ -19,13 +18,12 @@
           >
             <v-tab v-for="tab in menuBar[page]" :key="tab.name" @change="transitionTo(tab.chartType)">{{tab.name}}</v-tab>
           </v-tabs>
-        </v-col>
       </v-row>
       <v-row jusify="end">
-        <v-col v-if="chartType === 'bars'" cols='12' md='6' lg='4'>
+        <v-col v-if="chartType === 'bars'" class="sorting-row" cols='12'>
           <v-tabs
             v-model="sorting"
-            class="tabs tabs-slider"
+            class="tabs tabs-slider sorting-slider"
           >
             <v-tab key="rank" value="rank">Rank</v-tab>
             <v-tab key="region" value="region">Region</v-tab>
@@ -132,8 +130,16 @@ export default {
     margin-left: 0px;
   }
   .indicators-slider {
-    max-width: 637px;
+    max-width: 492px;
     margin-left: auto;
     margin-right: auto;
+  }
+  .sorting-row{
+    position: relative;
+  }
+  .sorting-slider{
+    position: absolute;
+    max-width: 224px;
+    left: calc(100% - 224px);
   }
 </style>
