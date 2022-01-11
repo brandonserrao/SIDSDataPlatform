@@ -330,14 +330,15 @@ export function textTransform(
     }
   } else if (this.indiSelections["viz"] == "spider") {
     let mviRank = this.countryOrder.indexOf(country),
-    scale;
+      numberOfCountries=this.countryOrder.length,
+      scale;
     if (mviRank == -1) {
         scale = 1//0.001;
     } else {
         scale = 1;
     }
-    x = 300 * Math.sin(mviRank / 34 * 2 * 3.14) - textX + 370
-    y = -280 * Math.cos(mviRank / 34 * 2 * 3.14) - textY + 250
+    x = 300 * Math.sin(mviRank / numberOfCountries * 2 * 3.14) - textX + 370
+    y = -280 * Math.cos(mviRank / numberOfCountries * 2 * 3.14) - textY + 250
 
     // scale = 1;
     // x = 0;
@@ -476,16 +477,16 @@ export function vizTransform(country, bBox, indicatorDataObj) {
     y = -cy + valY / scale / 1.41 - 154 / scale;
     scale = scale / 1.41;
   } else if (this.indiSelections["viz"] == "spider") {
-      let mviRank = this.countryOrder.indexOf(country);
-
+      let mviRank = this.countryOrder.indexOf(country),
+      numberOfCountries=this.countryOrder.length;
       if (mviRank == -1) {
           scale = 0
       }
       else {
           scale = .54;
       }
-      x = 460 * Math.sin(mviRank / 34 * 2 * 3.14) - cx + 690
-      y = -460 * Math.cos(mviRank / 34 * 2 * 3.14) - cy + 450
+      x = 460 * Math.sin(mviRank / numberOfCountries * 2 * 3.14) - cx + 690
+      y = -460 * Math.cos(mviRank / numberOfCountries * 2 * 3.14) - cy + 450
 
     // //temp
     // x = 0;

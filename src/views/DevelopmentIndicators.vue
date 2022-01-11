@@ -1,6 +1,6 @@
 <template>
   <div class="mt-5">
-  <v-row>
+  <v-row dense>
     <v-col v-if="page==='devIdictors'" cols='3'>
       <indicators-nav :activeIndicatorCode="indicator" @indicatorChange="indicatorUpdate"/>
     </v-col>
@@ -8,34 +8,84 @@
       <mvi-indicators-nav @MviIndicatorsChange="MVIindicatorUpdate"/>
     </v-col>
     <v-col cols='9'>
-      <v-row>
+      <v-row dense >
         <v-col cols='12'>
-          <h2 class="page-header">Development Indicators</h2>
+          <h2 v-if="page!=='mvi'" class="page-header">
+            Development Indicators
+          </h2>
+          <h2 v-else class="page-header">
+            Towards a Multidimensional Vulnerability Index
+          </h2>
         </v-col>
       </v-row>
-      <v-row class="justify-center">
+      <v-row dense class="nav-tabs-row justify-center">
           <v-tabs
             v-if="indicator!=='region' || page==='mvi'"
             :value="activeTab"
-            class="tabs indicators-slider"
+            :class="{
+              'indicators-tabs' : page!=='mvi',
+              'mvi-tabs' : page==='mvi'
+            }"
+            class="tabs tabs-small"
           >
-            <v-tab v-for="tab in menuBar[page]" :key="tab.name" @change="transitionTo(tab.chartType)">{{tab.name}}</v-tab>
+            <v-tab v-for="(tab, index) in menuBar[page]" :value="index" :key="index" @change="transitionTo(tab.chartType)">{{tab.name}}</v-tab>
           </v-tabs>
       </v-row>
-      <v-row jusify="end">
-        <v-col v-if="chartType === 'bars'" class="sorting-row" cols='12'>
+      <v-row dense jusify="end">
+        <div v-if="chartType === 'bars' || chartType === 'spider'" class="sorting-row">
           <v-tabs
             v-model="sorting"
-            class="tabs tabs-slider sorting-slider"
+            class="tabs tabs-small tabs-slider sorting-slider"
           >
             <v-tab key="rank" value="rank">Rank</v-tab>
             <v-tab key="region" value="region">Region</v-tab>
           </v-tabs>
+        </div>
+      </v-row>
+      <v-row dense v-if="chartType !== 'info'">
+        <v-col  v-if="chartType !== 'info'" cols='12'>
+          <indicators-choro-chart :mviCodes="mviCodes" :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols='12'>
-          <indicators-choro-chart :mviCodes="mviCodes" :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
+      <v-row  v-else class="justify-center" >
+        <v-col cols='10'>
+          <h3>About this page:</h3>
+          <p>
+            The data from this paper is presented in a parametric interface with a customizable version of the MVI, as well as multiple forms of visualizations that allow for an analysis of the contributions of each indicator towards SIDS vulnerability. This supports comparisons of indices between countries and regions, as well as between the MVI and the Environmental Vulnerability Index (EVI) which is currently used as part of the three criteria for inclusion in the Least Developed Countries (LDC) category.
+          </p>
+          <p>
+            The composite MVI is an average value of four dimensions of vulnerability: environmental, geographic, economic, and financial. Each of the dimensions is calculated as an average of the normalized indicators selected for that dimension. All data is from UNDESA and World Bank.
+          </p>
+          <h3>Background</h3>
+          <p>
+            In response to the unique context of SIDS and the acute lack of finance exacerbated by the COVID-19 pandemic, UNDP has developed a
+            <a target="_blank" href="https://www.undp.org/publications/towards-multidimensional-vulnerability-index">
+              <b>Multidimensional Vulnerability Index (MVI)</b>
+            </a>
+            to reflect traditional as well as emerging risks facing not only SIDS but all developing countries. The MVI responds to calls from SIDS for the reassessment the eligibility for concessional financing beyond income level to accurately capture the vulnerability SIDS face:
+          </p>
+          <ul>
+            <li>
+              In July and August 2020, the
+              <a target="_blank" href="https://www.aosis.org/">
+                <b>
+                  Alliance of Small Island States (AOSIS)
+                </b>
+              </a> sent two letters to the Executive Office of the Secretary-General requesting efforts be made on linking of vulnerability to access to financing and expanding eligibility criteria beyond income-based indicators.
+            </li>
+            <li>
+              In December, the
+              <a target="_blank" href="https://undocs.org/en/A/RES/75/215">
+                <b>SIDS Resolution (A/RES/75/215)</b>
+              </a> was passed by the GA, paragraph 8.a of the Resolution makes a direct mention of the multidimensional vulnerability index and requests the Secretary-General to report progress on the development and use of the index. A milestone in the efforts to advocate for the development of a new index, UNDP did a significant amount of advocacy work in the lead up to its adoption including through briefings to the 2nd committee and G77.
+            </li>
+          </ul>
+
+          <p>
+            Using the MVI, the analysis in the discussion paper shows clearly that the majority of SIDS are far more vulnerable their income level alone would suggest. Using 11 indicators for 128 countries (including 34 SIDS), the MVI demonstrates that all but five SIDS are far more vulnerable than their income level would suggest. Furthermore, a simulation comparing SIDS to LDCs demonstrates that, if the MVI were used as a financing criterion (rather than just income per capita), SIDS on average would save 1.5% of their GDP per annum in interest payments.
+
+
+          </p>
         </v-col>
       </v-row>
     </v-col>
@@ -95,10 +145,12 @@ export default {
         },{
           name:'Global view',
           chartType:'global'
-        },{
-          name:'Time series',
-          chartType:'series'
-        }]
+        },
+        // {
+        //   name:'Time series',
+        //   chartType:'series'
+        // }
+      ]
       }
     }
   },
@@ -148,17 +200,32 @@ export default {
     transition: 500ms;
     margin-left: 0px;
   }
-  .indicators-slider {
+  .indicators-tabs {
     max-width: 492px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .mvi-tabs {
+    max-width: 527px;
     margin-left: auto;
     margin-right: auto;
   }
   .sorting-row{
     position: relative;
+    width: 100%;
   }
   .sorting-slider{
     position: absolute;
     max-width: 224px;
     left: calc(100% - 224px);
+  }
+  .tabs-small .v-tab {
+    height: 24px !important;
+  }
+  .v-tabs-slider-wrapper {
+    height: 24px !important;
+  }
+  .nav-tabs-row {
+    min-height: 38px;
   }
 </style>

@@ -4,8 +4,8 @@
       <v-list dense v-for="indicatorCatery in catIndicators"
         :key="indicatorCatery.category"
         flat
-        >
-      <v-subheader class="block-subheader">{{indicatorCatery.category}}</v-subheader>
+      >
+      <v-subheader :style="'background-color:'+indicatorCatery.color" class="block-subheader">{{indicatorCatery.category}}</v-subheader>
       <v-list-item dense
         v-for="indicator in indicatorCatery.indicators"
         :key="indicator.name"
@@ -14,7 +14,7 @@
           <v-checkbox
             v-model="selectedIndicators"
             @change="updateValue()"
-            :value="indicator.id"
+            :value="indicator.code"
             :ripple="false"
           ></v-checkbox>
         </v-list-item-action>
@@ -34,65 +34,70 @@ export default {
   // props:['activeIndicatorCode'],
   data() {
     return {
-      selectedIndicators:["victims" ,"agrGDP" ,"remote" ,"popLECZ" ,"popDry" ,"expConc" ,"expInst" ,"agrInst" ,"tourism" ,"remit" ,"fdi"],
+      selectedIndicators:[
+        "mvi-ldc-VIC-Index-environmental" ,
+        "mvi-ldc-AFF-Index-environmental" ,
+        "mvi-ldc-DRY-Index-geographic" ,
+        "mvi-ldc-REM-Index-geographic" ,
+        "mvi-ldc-LECZ-Index-geographic",
+        "mvi-ldc-XCON-Index-economic",
+        "mvi-ldc-XIN-Index-economic",
+        "mvi-ldc-AIN-Index-economic",
+        "mvi-ST.INT.RCPT.XP.ZS-financial",
+        "mvi-BX.TRF.PWKR.DT.GD.ZS-financial",
+        "mvi-BX.KLT.DINV.WD.GD.ZS-financial"
+      ],
       catIndicators:[
         {
           category:'Environmental',
+          color:'#0DB14B',
           indicators:[{
             code:'mvi-ldc-VIC-Index-environmental',
-            name:'Victims of Disasters',
-            id:'victims'
+            name:'Victims of Disasters'
           },{
             code:'mvi-ldc-AFF-Index-environmental',
-            name:'Agriculture and Fishing (% of GDP)',
-            id:'agrGDP'
+            name:'Agriculture and Fishing (% of GDP)'
           }]
         },{
           category:'Geographic',
+          color:'#f0db3a',
           indicators:[{
             code:'mvi-ldc-DRY-Index-geographic',
-            name:'Remoteness',
-            id:'remote'
+            name:'Remoteness'
           },
           {
             code:'mvi-ldc-REM-Index-geographic',
             name:'Population in Drylands',
-            id:'popLECZ'
           },
           {
             code:'mvi-ldc-LECZ-Index-geographic',
-            name:'% Population in Coastal Zones',
-            id:'popDry'
+            name:'% Population in Coastal Zones'
           }]
         },{
           category:'Economic',
+          color:'#CC333F',
           indicators:[{
             code:'mvi-ldc-XCON-Index-economic',
-            name:'Export Concentration',
-            id:'expConc'
+            name:'Export Concentration'
           },{
             code:'mvi-ldc-XIN-Index-economic',
-            name:'Export Instability',
-            id:'expInst'
+            name:'Export Instability'
           },{
             code:'mvi-ldc-AIN-Index-economic',
-            name:'Agricultural Instability',
-            id:'agrInst'
+            name:'Agricultural Instability'
           }]
         },{
           category:'Financial',
+          color:'#00A0B0',
           indicators:[{
             code:'mvi-ST.INT.RCPT.XP.ZS-financial',
-            name:'Tourism Revenue (% of Exports)',
-            id:'tourism'
+            name:'Tourism Revenue (% of Exports)'
           },{
             code:'mvi-BX.TRF.PWKR.DT.GD.ZS-financial',
-            name:'Remittances (% of GDP)',
-            id:'remit'
+            name:'Remittances (% of GDP)'
           },{
             code:'mvi-BX.KLT.DINV.WD.GD.ZS-financial',
-            name:'FDI Inflowd (% of GDP)',
-            id:'fdi'
+            name:'FDI Inflowd (% of GDP)'
           }]
         }
       ]

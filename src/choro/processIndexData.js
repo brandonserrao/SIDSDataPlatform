@@ -42,7 +42,7 @@ export function preprocessIndexWeights(){
       let subindexWeight=0
       for (let subsubindexCode in indexWeights["subindices"][subindexCode]["subsubindices"]) {
 // TODO: include subindexList filter
-        if (!subindexWeight===0) {
+        if (!this.selectedIndis.includes(subsubindexCode)) {
           delete  indexWeights["subindices"][subindexCode]["subsubindices"][subsubindexCode];
         } else {
          // indexWeights[subindexCode]["subindices"][subsubindexCode] = 1;
@@ -194,17 +194,6 @@ export function computeIndexValues(allValues,indexWeights,indexYears){
   return indexValues;
 }
 
-export function getCustomIndicatorSelection() {
-  const checkboxes = document.querySelectorAll(
-    'input[name="mviIndicator"]:checked'
-  );
-  let selectedIndis = [];
-  checkboxes.forEach((el) => {
-    selectedIndis.push(el.id);
-  });
-  return selectedIndis;
-}
-
 export function processSpiderData() {
   let subindexList=Object.keys(this.indexWeights["subindices"]),
   spiderData = [];
@@ -229,7 +218,7 @@ export function processSpiderData() {
 
 export function drawIndexSpider() {
   let subindexList=Object.keys(this.indexWeights["subindices"]),
-  margin = { top: 85, right: 45, bottom: 0, left: 0 };
+  margin = { top: 50, right: 110, bottom: 0, left: 0 };
   // width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right;
   // height = Math.min(
   //   width,

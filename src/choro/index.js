@@ -50,7 +50,6 @@ import {
   getMinMaxObj,
   computeSubindexValues,
   computeIndexValues,
-  getCustomIndicatorSelection,
   processSpiderData,
   drawIndexSpider,
   getIndexCountryList } from './processIndexData'
@@ -79,12 +78,13 @@ export default class Choro {
     vizContainerWidth,
     vizContainerHeight,
     profileData}){
+      console.log(page, 'page')
     this.mapLocations = mapLocations;
+    this.page = page || 'mvi' ;
     this.indiSelections = {
       viz,
       sortby: 'rank',
       year,
-      page:page||'mvi',
       mviPreset:'mviLi'
       //   indiSelections["viz"] = $(".selectedViz")[0].children[0].innerHTML;
       //   indiSelections["page"] = $(".selectedPage").attr("id");
@@ -115,13 +115,15 @@ export default class Choro {
     this.indiSelections.viz = vizType;
     this.updateVizEngine(this.indicatorCodeInitial)
   }
-  updatePageType ({page, chartType, codes}) {
-    this.indiSelections.page = page;
+  updatePageType ({page, chartType, codes, code}) {
+    this.page = page;
     this.indiSelections.viz = chartType;
     if(codes) {
       this.selectedIndis = codes;
     }
-    this.updateVizEngine(this.indicatorCodeInitial)
+    if(code) {
+      this.updateVizEngine(code)
+    }
   }
   updateSortingType (sorting) {
     this.indiSelections.sortby = sorting;
@@ -177,7 +179,6 @@ Choro.prototype.getIndexDataYears = getIndexDataYears
 Choro.prototype.getMinMaxObj = getMinMaxObj
 Choro.prototype.computeSubindexValues = computeSubindexValues
 Choro.prototype.computeIndexValues = computeIndexValues
-Choro.prototype.getCustomIndicatorSelection = getCustomIndicatorSelection
 Choro.prototype.processSpiderData = processSpiderData
 Choro.prototype.drawIndexSpider = drawIndexSpider
 Choro.prototype.getIndexCountryList = getIndexCountryList

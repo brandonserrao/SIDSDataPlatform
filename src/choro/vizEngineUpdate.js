@@ -27,14 +27,14 @@ export function updateVizEngine(indicatorCode) {
   this.indicatorCodeInitial = indicatorCode;
   this.indicatorCode = indicatorCode;
 
-  if(this.indiSelections.page=="mvi"){
+  if(this.page=="mvi"){
     this.indicatorCode = "mvi-index-index";
   }
 
   if (this.indicatorCode == "region") {
     this.indicatorCode = "hdr137506-compositeIndices";///temp so has something to attach to data
   }
-
+  console.log(Object.keys(indexCodes).includes(this.indicatorCode), indexCodes, this.indicatorCode, '!!!!!!!!')
   if (Object.keys(indexCodes).includes(this.indicatorCode)) {
     this.vizMode = "index";
     this.apiCode="indexData-" + indexCodes[this.indicatorCode];
@@ -58,7 +58,6 @@ export function updateVizEngine(indicatorCode) {
 //
 //     ///update all and page elements
     this.updateVizBlocks();
-    this.updateLinesAndMap();
 //   ////////
 //   /////get indicator data,,proceed only once indicator data has been pulled
 //
@@ -67,8 +66,12 @@ export function updateVizEngine(indicatorCode) {
   d3.json(
     "https://sids-dashboard.github.io/api/data/"+  this.apiCode + ".json"
   ).then((dat) => {
+
+    this.updateLinesAndMap();
     if(this.vizMode=="indicator"){
       this.indicatorData = dat[this.indicatorCode];
+      this.indexData={};
+      this.indexWeights={"subindices":{},"normalization":false};
     }
     if(this.vizMode=="index"){
       this.indexData = this.getIndexValues(dat);
@@ -104,7 +107,7 @@ export function updateVizEngine(indicatorCode) {
       this.updateLabels(vizElementAttributes, noData); //selectedPage, selectedViz, selectedYear,selectedSortby, indicatorData, noData)
       this.updateCircles(vizElementAttributes);
 // //    updateCountryLines(vizElementAttributes);
-    // updateChoroTooltips(indicatorData, indiSelections);
+      this.updateChoroTooltips();
       this.updateChoroLegend(quantize);
       this.updateBarAxis();
       this.updateYAxis();
@@ -720,7 +723,7 @@ export function updateBarAxis() {
   if (
     this.indiSelections["viz"] == "choro" ||
     this.indiSelections["viz"] == "global" ||
-    this.indiSelections["viz"] == "Spider" ||
+    this.indiSelections["viz"] == "spider" ||
     this.indiSelections["viz"] == "Info" ||
     this.indiSelections["viz"] == "series"
   ) {
@@ -925,91 +928,92 @@ export function updateChoroLegend(quantize) {
     }
   }
 
-// function updateChoroTooltips(indicatorData, indiSelections) {
+// function updateChoroTooltips(noData) {
 //   const countryMaps = $("#allSids path, .regionTitle");
-//   regionAverages = {};
-//   regionRank = {};
-//   indicatorDataYear = indicatorData["data"][indiSelections["year"]];
-//
-// //   if (indiSelections["page"] == "countryDataTab") {
-//     indiMax = Math.max(
-//       ...Object.values(indicatorDataYear).filter(
-//         (val) => typeof val == "number"
-//       )
-//     );
-//     countryMaps.each(function (index) {
-//       if (countryMaps[index].id.includes("RegionTitle")) {
-//         region = countryMaps[index].id.replace("RegionTitle", "");
-//         regionTitles = {
-//           ais: "AIS",
-//           pacific: "Pacific",
-//           caribbean: "Caribbean",
-//         };
-//         regionLists = {
-//           ais: regionCountries["ais"],
-//           pacific: regionCountries["pacific"],
-//           caribbean: regionCountries["caribbean"],
-//         };
-//         tooltipTitle = regionTitles[region] + " Region";
-//         total = 0;
-//
-//         for (countryIndex in regionLists[region]) {
-//           val = indicatorDataYear[regionLists[region][countryIndex]];
-//           if (typeof val == "number") {
-//             total += val;
-//           }
-//         }
-//         regionColor = regionColor = regionColors(region, "Y").substring(1);
-//
-//         regionValuesLength = Object.values(
-//           filterObject(indicatorDataYear, regionLists[region])
-//         ).filter((val) => typeof val == "number").length;
-//         if (regionValuesLength == 0) {
-//           regionValuesLength = 1;
-//         }
-//         regionVal = total / regionValuesLength;
-//         regionRank[region] = 1;
-//         allVals = Object.values(indicatorDataYear).filter(
-//           (val) => typeof val == "number"
-//         );
-//         for (val in allVals) {
-//           //console.log(allVals[val],regionVal)
-//           if (allVals[val] > regionVal) {
-//             regionRank[region]++;
-//           }
-//         }
-//         // console.log(regionValuesLength)
-//         content = "Average: " + nFormatter(regionVal, 3);
-//         regionAverages[region] = regionVal;
-//       } else {
-//         iso = countryMaps[index].id;
-//         country = sidsDict[iso];
-//         tooltipTitle = country;
-//         try {
-//           secondLine = "Value: " + indicatorDataYear[iso].toFixed(2);
-//         } catch (error) {
-//           secondLine = "No Data";
-//         }
-//         if ((indiSelections["year"] = "recentValue")) {
-//           year = indicatorData["data"]["recentYear"][iso];
-//         } else {
-//           year = indiSelections["year"];
-//         }
-//         thirdLine = "Year: " + year;
-//         content = secondLine + "</h6><h6>" + thirdLine;
-//         regionColor = regionColors(countryJson[iso].Region, "Y").substring(1);
-//       }
-//       $("#tooltipChoro" + index.toString()).html(
-//         '<h4 style="color:#' +
-//           regionColor +
-//           '">' +
-//           tooltipTitle +
-//           "</h4><h6>" +
-//           content +
-//           "</h6></div>"
-//       ); //<div class="arrow" data-popper-arrow></div>
-//       // console.log(index+": yo");
-//     });
+//   indicatorDataYear = this.indicatorData["data"][this.indiSelections["year"]],
+//   allVals = Object.values(indicatorDataYear).filter(
+//     (val) => typeof val == "number"
+//   );
+
+//   if (indiSelections["page"] == "countryDataTab") {
+    // indiMax = Math.max(
+    //   ...Object.values(indicatorDataYear).filter(
+    //     (val) => typeof val == "number"
+    //   )
+    // );
+    // countryMaps.each(function (index) {
+    //   if (countryMaps[index].id.includes("RegionTitle")) {
+    //     region = countryMaps[index].id.replace("RegionTitle", "");
+    //     regionTitles = {
+    //       ais: "AIS",
+    //       pacific: "Pacific",
+    //       caribbean: "Caribbean",
+    //     };
+    //     regionLists = {
+    //       ais: regionCountries["ais"],
+    //       pacific: regionCountries["pacific"],
+    //       caribbean: regionCountries["caribbean"],
+    //     };
+    //     tooltipTitle = regionTitles[region] + " Region";
+    //     total = 0;
+    //
+    //     for (countryIndex in regionLists[region]) {
+    //       val = indicatorDataYear[regionLists[region][countryIndex]];
+    //       if (typeof val == "number") {
+    //         total += val;
+    //       }
+    //     }
+    //     regionColor = regionColor = regionColors(region, "Y").substring(1);
+    //
+    //     regionValuesLength = Object.values(
+    //       filterObject(indicatorDataYear, regionLists[region])
+    //     ).filter((val) => typeof val == "number").length;
+    //     if (regionValuesLength == 0) {
+    //       regionValuesLength = 1;
+    //     }
+    //     regionVal = total / regionValuesLength;
+    //     regionRank[region] = 1;
+    //     allVals = Object.values(indicatorDataYear).filter(
+    //       (val) => typeof val == "number"
+    //     );
+    //     for (val in allVals) {
+    //       //console.log(allVals[val],regionVal)
+    //       if (allVals[val] > regionVal) {
+    //         regionRank[region]++;
+    //       }
+    //     }
+    //     // console.log(regionValuesLength)
+    //     content = "Average: " + nFormatter(regionVal, 3);
+    //     regionAverages[region] = regionVal;
+    //   } else {
+    //     iso = countryMaps[index].id;
+    //     country = sidsDict[iso];
+    //     tooltipTitle = country;
+    //     try {
+    //       secondLine = "Value: " + indicatorDataYear[iso].toFixed(2);
+    //     } catch (error) {
+    //       secondLine = "No Data";
+    //     }
+    //     if ((indiSelections["year"] = "recentValue")) {
+    //       year = indicatorData["data"]["recentYear"][iso];
+    //     } else {
+    //       year = indiSelections["year"];
+    //     }
+    //     thirdLine = "Year: " + year;
+    //     content = secondLine + "</h6><h6>" + thirdLine;
+//     //     regionColor = regionColors(countryJson[iso].Region, "Y").substring(1);
+//     //   }
+//     //   $("#tooltipChoro" + index.toString()).html(
+//     //     '<h4 style="color:#' +
+//     //       regionColor +
+//     //       '">' +
+//     //       tooltipTitle +
+//     //       "</h4><h6>" +
+//     //       content +
+//     //       "</h6></div>"
+//     //   ); //<div class="arrow" data-popper-arrow></div>
+//     //   // console.log(index+": yo");
+//     // });
 // //   } else if ((indiSelections["page"] = "mviTab")) {
 // //     // indiMax = 1
 // //     // regionTitles = { "ais": "AIS", "pacific": "Pacific", "caribbean": "Caribbean" }
@@ -1049,10 +1053,10 @@ export function updateChoroLegend(quantize) {
 // //   }
 //
 //   //console.log(regionAverages, indiMax, regionRank, allVals.length)
-//
+//   let regionTitleVals = {};
 //   if (
-//     indiSelections["viz"] == "Choropleth" ||
-//     indiSelections["viz"] == "Time Series"
+//     this.indiSelections["viz"] == "choro" ||
+//     this.indiSelections["viz"] == "series"
 //   ) {
 //     regionTitleVals = {
 //       opacity: 1,
@@ -1064,10 +1068,10 @@ export function updateChoroLegend(quantize) {
 //       aisY: 335,
 //     };
 //   } else if (
-//     indiSelections["viz"] == "Bar Chart" ||
-//     indiSelections["viz"] == "Multi-indicator"
+//     this.indiSelections["viz"] == "bars" ||
+//     this.indiSelections["viz"] == "multi"
 //   ) {
-//     if (indiSelections["sortby"] == "Rank") {
+//     if (this.indiSelections["sortby"] == "rank") {
 //       regionTitleVals = {
 //         opacity: 1,
 //         pacificX: 775,
@@ -1077,7 +1081,7 @@ export function updateChoroLegend(quantize) {
 //         aisX: 785,
 //         aisY: 250,
 //       };
-//       regionTitleHeight = 400;
+//       regionTitleHeight = 400,
 //       // if(indiSelections["page"]=="mviTab"){
 //       //     countryListLength=34
 //       //     regionTitleVals = { "opacity": 1, "pacificX": 775, "pacificY": 330, "caribbeanX": 760, "caribbeanY": 170, "aisX": 785, "aisY": 250 }

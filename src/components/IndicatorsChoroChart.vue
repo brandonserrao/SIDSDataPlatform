@@ -24,7 +24,7 @@ export default {
       choro:null
     }
   },
-  props:['indicatorCode', 'chartType', 'sorting', 'mviCodes'],
+  props:['indicatorCode','page', 'chartType', 'sorting', 'mviCodes'],
   computed: {
     ...mapState({
       profileData: state => state.indicators.profileData,
@@ -59,22 +59,32 @@ export default {
     await this.initChart()
   },
   watch:{
-    indicatorCode() {
-      this.choro.updateVizEngine(this.indicatorCode);
-    },
-    chartType() {
-      this.choro.updateVizType(this.chartType);
-    },
     page() {
-      this.choro.updatePageType({
+      this.choro && this.choro.updatePageType({
         page: this.page,
-        chartType: this.chartType
+        chartType: this.chartType,
+        code: this.indicatorCode
       });
     },
+    chartType() {
+      if(this.choro && this.page === this.choro.page) {
+      this.choro.updateVizType(this.chartType);
+      }
+    },
+    indicatorCode() {
+      if(this.choro && this.page === this.choro.page) {
+        this.choro.updateVizEngine(this.indicatorCode);
+      }
+    },
     sorting() {
-      this.choro && this.choro.updateSortingType(this.sorting);
+      if(this.choro && this.page === this.choro.page) {
+        this.choro && this.choro.updateSortingType(this.sorting);
+      }
     },
     mviCodes () {
+      if(this.choro && this.page === this.choro.page) {
+        this.choro && this.choro.updateMviCodes(this.mviCodes);
+      }
       this.choro && this.choro.updateMviCodes(this.mviCodes);
     },
   }
