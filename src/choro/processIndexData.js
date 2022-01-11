@@ -233,7 +233,7 @@ export function drawIndexSpider() {
     spin: 0,
     roundStrokes: false,
     color: d3.scaleOrdinal()
-      .range(["#0DB14B", "#f0db3a", "#CC333F", "#00A0B0", "#FFFFFF"]), //,
+      .range(["#00A0B0", "#CC333F", "#f0db3a", "#0DB14B", "#FFFFFF"]), //,
     //				legend: { title: 'Organization XYZ', translateX: 120, translateY: 140 },
   };
 
