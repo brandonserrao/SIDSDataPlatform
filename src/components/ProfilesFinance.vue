@@ -107,6 +107,7 @@ export default {
 .finance-header {
   color: #0018a0;
   justify-content: center;
+  align-items: flex-start;
 }
 .one-line_subheader{
   flex-basis: auto;

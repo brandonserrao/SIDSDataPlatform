@@ -42,7 +42,7 @@
                       :src="item.headerImg"
                     ></v-img>
                   </v-card-title>
-                  <v-card-text>
+                  <v-card-text class="tooltip-card_text">
                     {{ item.description }}
                   </v-card-text>
                 </v-card>
@@ -117,16 +117,16 @@
               <v-menu
                 open-on-hover
                 bottom
-                :nudge-left="281"
-                :nudge-bottom="58"
+                :nudge-left="256"
+                :nudge-bottom="118"
                 content-class="sdg-menu"
               >
                 <template v-slot:activator="{ on }">
                   <img
                     v-on="on"
                     :src="getGoalImage(index)"
-                    height="66"
-                    width="66"
+                    height="120"
+                    width="120"
                   />
                 </template>
                 <div class="goals-tooltip-content">
@@ -137,9 +137,9 @@
                     eager
                     transition="fade"
                     open-delay="300"
-                    :nudge-right="(5 - (index % 6)) * 66 || 6"
+                    :nudge-right="(5 - (index % 6)) * 80 || 6"
                     :nudge-top="getGoalsTooltipNudgeTop(index)"
-                    max-width="380"
+                    max-width="400"
                     content-class="indicator-tooltip"
                     allow-overflow
                   >
@@ -150,8 +150,8 @@
                         @click="selectGoal(index + 1)"
                         :src="getGoalImage(index)"
                         class="tooltip-image"
-                        height="66"
-                        width="66"
+                        height="80"
+                        width="80"
                       />
                     </template>
                     <v-card>
@@ -285,8 +285,8 @@ export default {
           name: "SIDS offer Pillars",
           value: "pillars",
           headerImg:
-            // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png",
-            "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sidsOfferPillars.png",
+            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png",
+            // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sidsOfferPillars.png",
           // "../assets/gis/icons/sidsOfferPillars.png", //working on local server
           description:
             "UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.",
@@ -295,20 +295,21 @@ export default {
           name: "SDGs",
           value: "sdgs",
           headerImg:
-            // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png",
-            "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sdgs.png",
+            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png",
+            // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sdgs.png",
           // "../assets/gis/icons/SDGs.png",
           description:
-            "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
+          "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
+
         },
         {
           name: "SAMOA Pathway",
           value: "samoaPriorities",
           headerImg:
-            // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png",
-            "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaPathway.png",
+            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png",
+            // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaPathway.png",
           description:
-            "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
+          "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
         },
       ],
       activePillar: 1,
@@ -650,13 +651,13 @@ export default {
     selectGoal(goalNumber) {
       this.activeGoal = goalNumber;
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
-      this.$refs.slider.scrollOffset = 66 * (goalNumber - 1);
+      this.$refs.slider.scrollOffset = 120 * (goalNumber - 1);
     },
     getGoalsTooltipNudgeTop(index) {
       if (index < 6) {
         return 6;
       } else if (index < 12) {
-        return 66;
+        return 120;
       }
       return 112;
     },
@@ -719,8 +720,8 @@ export default {
   height: 200px;
 }
 .goals-slider {
-  padding: 8px 0;
-  width: 116px;
+  padding: 8px 0 0;
+  width: 170px;
   margin: auto;
 }
 .goals-slider .v-slide-group__next,
@@ -745,6 +746,9 @@ export default {
 }
 .tooltip-card_img {
   margin: auto;
+}
+.tooltip-card_text {
+  font-weight: 600;
 }
 .pillars_icon {
   margin-right: 5px !important;

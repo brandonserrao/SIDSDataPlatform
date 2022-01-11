@@ -180,10 +180,10 @@ export default {
   cursor: pointer;
   flex-direction: column;
   height: 75vh;
-  max-height: 720px;
+  max-height: 460px;
   background-size: 95%;
   width: 100%;
-  background-position: 50% -10px;
+  background-position: 50% -65px;
   transition: 700ms;
 }
 .map-AIS {
