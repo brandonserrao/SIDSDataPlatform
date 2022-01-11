@@ -107,7 +107,7 @@ export function updateVizEngine(indicatorCode) {
       this.updateLabels(vizElementAttributes, noData); //selectedPage, selectedViz, selectedYear,selectedSortby, indicatorData, noData)
       this.updateCircles(vizElementAttributes);
 // //    updateCountryLines(vizElementAttributes);
-      this.updateChoroTooltips();
+      // this.updateChoroTooltips();
       this.updateChoroLegend(quantize);
       this.updateBarAxis();
       this.updateYAxis();
