@@ -1,7 +1,8 @@
 import * as d3 from 'd3';
 
+import { indexColors } from './index-data'
 import {regionColors, getBoundingBox, nFormatter} from './vizEngineHelperFunctions'
-import {countryListLongitude, mviDimensionColors, subindexWeights} from './vizEngineGlobals'
+import {countryListLongitude} from './vizEngineGlobals'
 //runs this right away (it works, for some reason it doesn't draw the titles if executed on click )
 ///////////////////////////////////
 
@@ -618,45 +619,43 @@ export function appendCountryRectangles() {
 //   }
 
 export function appendMultiRectangles() {
-    d3.select("#allSids")
-      .selectAll("g")
-      .append("rect")
-      .style("fill", mviDimensionColors["Environmental"])
-      .attr("x", 160)
-      .attr("y", 300)
-      .attr("width", 0)
-      .attr("height", 0)
-      .classed("choroRect1 choroRectMvi", true);
+  d3.select("#allSids")
+  .selectAll("g")
+  .append("rect")
+  .style("fill", indexColors["mvi-index-index"]["Environmental"])
+  .attr("x", 160)
+  .attr("y", 100)
+  .attr("width", 0)
+  .attr("height", 0)
+  .classed("choroRect0 choroRectMvi", true);
 
-    d3.select("#allSids")
-      .selectAll("g")
-      .append("rect")
-      .style("fill", mviDimensionColors["Geographic"])
-      .attr("x", 160)
-      .attr("y", 300)
-      .attr("width", 0)
-      .attr("height", 0)
-      .classed("choroRect2 choroRectMvi", true);
+d3.select("#allSids")
+  .selectAll("g")
+  .append("rect")
+  .style("fill", indexColors["mvi-index-index"]["Geographic"])
+  .attr("x", 160)
+  .attr("y", 200)
+  .attr("width", 0)
+  .attr("height", 0)
+  .classed("choroRect1 choroRectMvi", true);
 
-    d3.select("#allSids")
-      .selectAll("g")
-      .append("rect")
-      .style("fill", mviDimensionColors["Economic"])
-      .attr("x", 160)
-      .attr("y", 300)
-      .attr("width", 0)
-      .attr("height", 0)
-      .classed("choroRect3 choroRectMvi", true);
+d3.select("#allSids")
+  .selectAll("g")
+  .append("rect")
+  .style("fill", indexColors["mvi-index-index"]["Economic"])
+  .attr("x", 160)
+  .attr("y", 300)
+  .attr("width", 0)
+  .attr("height", 0)
+  .classed("choroRect2 choroRectMvi", true);
 
-    d3.select("#allSids")
-      .selectAll("g")
-      .append("rect")
-      .style("fill", mviDimensionColors["Financial"])
-      .attr("x", 160)
-      .attr("y", 300)
-      .attr("width", 0)
-      .attr("height", 0)
-      .classed("choroRect4 choroRectMvi", true);
-
-    //  console.log("rect12")
+d3.select("#allSids")
+  .selectAll("g")
+  .append("rect")
+  .style("fill", indexColors["mvi-index-index"]["Financial"])
+  .attr("x", 160)
+  .attr("y", 400)
+  .attr("width", 0)
+  .attr("height", 0)
+  .classed("choroRect3 choroRectMvi", true);
   }

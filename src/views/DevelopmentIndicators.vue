@@ -57,7 +57,17 @@ export default {
   props:['chartType', 'indicator', 'page'],
   data: function() {
     return {
-      mviCodes:[],
+      mviCodes:["mvi-ldc-VIC-Index-environmental"
+,"mvi-ldc-AFF-Index-environmental"
+,"mvi-ldc-REM-Index-geographic"
+,"mvi-ldc-LECZ-Index-geographic"
+,"popDry"
+,"mvi-ldc-XCON-Index-economic"
+,"mvi-ldc-XIN-Index-economic"
+,"mvi-ldc-AIN-Index-economic"
+,"mvi-ST.INT.RCPT.XP.ZS-financial"
+,"mvi-BX.TRF.PWKR.DT.GD.ZS-financial"
+,"mvi-BX.KLT.DINV.WD.GD.ZS-financial"],
       sorting:'rank',
       menuBar:{
         devIdictors: [{
@@ -102,9 +112,9 @@ export default {
   computed: {
     sortingName() {
       if(this.sorting === 0) {
-        return 'Rank'
+        return 'rank'
       } else {
-        return 'Region'
+        return 'region'
       }
     },
     activeTab() {

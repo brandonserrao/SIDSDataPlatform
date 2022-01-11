@@ -9,12 +9,15 @@ import {
 
 import {
   normalizeIndex,
-  sort_object
+  sort_object,
+  isNumeric
 } from './vizEngineHelperFunctions';
 
 import {
   RadarChart
 } from './radar.js';
+
+import * as d3 from 'd3';
 
 
 export function getIndexValues(indexData) {
@@ -26,7 +29,7 @@ export function getIndexValues(indexData) {
 
   let allValues = this.computeSubindexValues(indexData, indexWeights, indexYears, minMaxObj)
 
-  allValues["index"] = { data: this.computeIndexValues(allValues,indexWeights,indexYears) };
+  allValues.index = { data: this.computeIndexValues(allValues,indexWeights,indexYears) };
   return allValues;
 }
 
@@ -38,8 +41,8 @@ export function preprocessIndexWeights(){
     for (let subindexCode in indexWeights["subindices"]) {
       let subindexWeight=0
       for (let subsubindexCode in indexWeights["subindices"][subindexCode]["subsubindices"]) {
-
-        if (!this.selectedIndis.includes(subsubindexCode)) {
+// TODO: include subindexList filter
+        if (!subindexWeight===0) {
           delete  indexWeights["subindices"][subindexCode]["subsubindices"][subsubindexCode];
         } else {
          // indexWeights[subindexCode]["subindices"][subsubindexCode] = 1;
@@ -60,7 +63,7 @@ export function preprocessIndexWeights(){
     indexWeightTotal += indexWeights["subindices"][subindexCode]["weight"]
     weightTotalObj[subindexCode]=subindexWeightTotal
   }
-  weightTotalObj["index"]=indexWeightTotal
+  weightTotalObj.index=indexWeightTotal
 
   for (let subindexCode in indexWeights["subindices"]) {
     for (let subsubindexCode in indexWeights["subindices"][subindexCode]["subsubindices"]) {
@@ -90,9 +93,8 @@ export function getIndexDataYears(indexData){
   return indexYears;
 }
 
-export function getMinMaxObj(indexData, indexWeights,indexYears){
-  let minMaxObj={},
-  subsubindexList=[];
+export function getMinMaxObj(indexData, indexWeights){
+  let minMaxObj={};
   for(let subindexCode in indexWeights["subindices"]){
     for(let subsubindexCode in indexWeights["subindices"][subindexCode]["subsubindices"]){
       let minn=9999999,
@@ -169,7 +171,7 @@ export function computeIndexValues(allValues,indexWeights,indexYears){
     year = indexYears[i],
     noData = [];
     for (let country in sidsDict) {
-      indexValue = 0;
+      let indexValue = 0;
       for (let subindexCode in indexWeights["subindices"]) {
         if (Object.keys(allValues[subindexCode]["data"]).includes(year)) {
           let subindexValue = allValues[subindexCode]["data"][year][country];
@@ -196,7 +198,7 @@ export function getCustomIndicatorSelection() {
   const checkboxes = document.querySelectorAll(
     'input[name="mviIndicator"]:checked'
   );
-  selectedIndis = [];
+  let selectedIndis = [];
   checkboxes.forEach((el) => {
     selectedIndis.push(el.id);
   });
@@ -206,10 +208,10 @@ export function getCustomIndicatorSelection() {
 export function processSpiderData() {
   let subindexList=Object.keys(this.indexWeights["subindices"]),
   spiderData = [];
-  for (i = 0; i < subindexList.length; i++) {
-      spiderAxes = [];
-      for(let countryIndex in this.indiSelections["countryOrder"]){
-        let country = this.indiSelections["countryOrder"][countryIndex],
+  for (let i = 0; i < subindexList.length; i++) {
+      let spiderAxes = [];
+      for(let countryIndex in this.countryOrder){
+        let country = this.countryOrder[countryIndex],
         newCountryData = {},
         val=0;
         newCountryData["axis"] = country;
@@ -227,12 +229,12 @@ export function processSpiderData() {
 
 export function drawIndexSpider() {
   let subindexList=Object.keys(this.indexWeights["subindices"]),
-  margin = { top: 85, right: 45, bottom: 0, left: 0 },
-  width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
-  height = Math.min(
-    width,
-    window.innerHeight - margin.top - margin.bottom - 20
-  );
+  margin = { top: 85, right: 45, bottom: 0, left: 0 };
+  // width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right;
+  // height = Math.min(
+  //   width,
+  //   window.innerHeight - margin.top - margin.bottom - 20
+  // );
   let radarChartOptionsCustom = {
     w: 500,
     h: 420,
@@ -241,8 +243,7 @@ export function drawIndexSpider() {
     levels: 6,
     spin: 0,
     roundStrokes: false,
-    color: d3.scale
-      .ordinal()
+    color: d3.scaleOrdinal()
       .range(["#0DB14B", "#f0db3a", "#CC333F", "#00A0B0", "#FFFFFF"]), //,
     //				legend: { title: 'Organization XYZ', translateX: 120, translateY: 140 },
   };
@@ -259,14 +260,14 @@ export function drawIndexSpider() {
 }
 
 export function getIndexCountryList() {
-  let subindexList=Object.keys(this.indexWeights["subindices"]),
-  selectedSortby = this.indiSelections["sortby"],
+  // let subindexList=Object.keys(this.indexWeights["subindices"]),
+  let selectedSortby = this.indiSelections["sortby"],
   chosenCountryList;
   if (selectedSortby == "region") {
     chosenCountryList = countryListSpider.filter(item => Object.keys(this.indexData["index"]["data"]["recentValue"]).includes(item))
   } else if (selectedSortby == "rank") {
-    let mviValues = this.indiexData["index"]["data"]["recentValue"],
-    sortedMviData = sort_object(mviValues);
+    let mviValues = this.indexData["index"]["data"]["recentValue"],
+    sortedMviData = sort_object(mviValues),
     sortedCountryList = Object.keys(sortedMviData);
 
     //this filter removes any empty elements

@@ -154,8 +154,9 @@ export function nFormatter(num, digits) {
 }
 
 export function normalizeIndex(val,min,max){
+    let normValue;
     if(max>min){
-  normValue=(val-min)/(max-min)
+      normValue=(val-min)/(max-min)
     }
     else{
         normValue=0

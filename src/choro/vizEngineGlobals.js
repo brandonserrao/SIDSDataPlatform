@@ -31,7 +31,7 @@ export const hues = ["b", "b", "b",]
 // var textBBoxDict = {};
 // var bboxInit=0;
 export const indexCodes = ["mvi"]//,egov,etc.]
-// export const subindexWeights={"mvi":{"Economic":1,"Geographic":1,"Environmental":1,"Financial":1}}
+export const subindexWeights={"mvi":{"Economic":1,"Geographic":1,"Environmental":1,"Financial":1}}
 // var vizMode;
 // d3.select(self.frameElement).style("height", "650px");
 /////
@@ -62,6 +62,7 @@ export const regionCountries = {
         , "BRB", "VCT", "GRD", "TTO", "GUY", "SUR"]
 }
 //
+export const totalIndexRectangles =4;
 export const sidsDict = {"ATG":"Antigua and Barbuda", "ABW":"Aruba","BHS":"The Bahamas","BMU":"Bermuda",
 "BHR":"Bahrain","BRB": "Barbados", "BLZ":"Belize","VGB": "British Virgin Islands","CPV":"Cabo Verde",
 "CYM":"Cayman Islands", "COM":"Comoros","CUB": "Cuba","CUW":"Curaçao","DMA":"Dominica","DOM": "Dominican Republic",

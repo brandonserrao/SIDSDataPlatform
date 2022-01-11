@@ -29,7 +29,8 @@ import {
   updateChoroLegend,
   updateIndexRectangles,
   updateBarAxis,
-  updateYAxis
+  updateYAxis,
+  updateVizBlocks
 } from './vizEngineUpdate';
 
   import {
@@ -38,7 +39,8 @@ import {
     rectTransform,
     labelTransform,
     circleTransform,
-    textTransform
+    textTransform,
+    multiRectTransform
   } from './vizEngineElementAttributes'
 
 import {
@@ -82,7 +84,7 @@ export default class Choro {
       viz,
       sortby: 'rank',
       year,
-      page,
+      page:page||'mvi',
       mviPreset:'mviLi'
       //   indiSelections["viz"] = $(".selectedViz")[0].children[0].innerHTML;
       //   indiSelections["page"] = $(".selectedPage").attr("id");
@@ -166,8 +168,8 @@ Choro.prototype.updateYAxis = updateYAxis;
 Choro.prototype.getIndexCountryList = getIndexCountryList;
 Choro.prototype.drawIndexSpider = drawIndexSpider;
 Choro.prototype.processSpiderData = processSpiderData;
-Choro.prototype.mviBarChart = mviBarChart;
-Choro.prototype.mviColumnChart = mviColumnChart;
+// Choro.prototype.mviBarChart = mviBarChart;
+// Choro.prototype.mviColumnChart = mviColumnChart;
 Choro.prototype.appendMultiRectangles = appendMultiRectangles;
 Choro.prototype.getIndexValues = getIndexValues
 Choro.prototype.preprocessIndexWeights = preprocessIndexWeights
@@ -179,3 +181,5 @@ Choro.prototype.getCustomIndicatorSelection = getCustomIndicatorSelection
 Choro.prototype.processSpiderData = processSpiderData
 Choro.prototype.drawIndexSpider = drawIndexSpider
 Choro.prototype.getIndexCountryList = getIndexCountryList
+Choro.prototype.multiRectTransform = multiRectTransform;
+Choro.prototype.updateVizBlocks = updateVizBlocks;
