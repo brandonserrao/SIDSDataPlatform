@@ -50,7 +50,7 @@ export default {
       catIndicators:[
         {
           category:'Environmental',
-          color:'#0DB14B',
+          color:'#00A0B0',
           indicators:[{
             code:'mvi-ldc-VIC-Index-environmental',
             name:'Victims of Disasters'
@@ -60,7 +60,7 @@ export default {
           }]
         },{
           category:'Geographic',
-          color:'#f0db3a',
+          color:'#CC333F',
           indicators:[{
             code:'mvi-ldc-DRY-Index-geographic',
             name:'Remoteness'
@@ -75,7 +75,7 @@ export default {
           }]
         },{
           category:'Economic',
-          color:'#CC333F',
+          color:'#f0db3a',
           indicators:[{
             code:'mvi-ldc-XCON-Index-economic',
             name:'Export Concentration'
@@ -88,7 +88,7 @@ export default {
           }]
         },{
           category:'Financial',
-          color:'#00A0B0',
+          color:'#0DB14B',
           indicators:[{
             code:'mvi-ST.INT.RCPT.XP.ZS-financial',
             name:'Tourism Revenue (% of Exports)'
