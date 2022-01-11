@@ -107,6 +107,7 @@
                         :key="name.GID_0"
                         :name="name.NAME_0"
                         :id="name.GID_0"
+                        :flagCode="name.flagCode"
                         @option-select="handleCountryChange($event)"
                       ></country-selector-option>
                     </div>
