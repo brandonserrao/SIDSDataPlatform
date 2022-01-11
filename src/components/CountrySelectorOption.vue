@@ -47,7 +47,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .row-flex {
   display: flex;
   flex-direction: row;

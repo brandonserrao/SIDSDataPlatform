@@ -20,7 +20,15 @@
                 <div class="description hover">
                   Map : Select country of your choice
                 </div>
-                <div class="menu-drop row-flex align-items-center display-none">
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    align-items-center
+                    display-none
+                    country-select-bar
+                  "
+                >
                   <div
                     class="col-flex space-evenly"
                     style="position: relative; height: 100%"
@@ -100,6 +108,7 @@
 
                     <!-- Brandon's component-based country-options-->
                     <div
+                      id="countryOptions"
                       class="col-flex country-options display-none options-drop"
                     >
                       <country-selector-option
@@ -127,16 +136,18 @@
                     "
                   >
                     <input
+                      id="country-search-input"
                       type="text"
                       class="search-input"
                       name="search-country"
                       placeholder="Search Country"
+                      @keyup="filterCountries"
                     />
                     <div class="search-icon"></div>
                   </div>
                   <div
                     class="search-icon first-icon"
-                    @click="toggleSearchBar()"
+                    @click="toggleSearchBar(true)"
                   ></div>
                 </div>
               </div>
@@ -1200,6 +1211,51 @@ export default {
         .getElementsByClassName("small-menu")[0]
         .classList.remove("display-none");
     },
+    filterCountries() {
+      this.toggleCountryMenu(true); //expand country menu to be visible if closed
+      console.log("filterCountries firing");
+      // Declare variables
+      var input, filter, list, options, country, i, txtValue;
+      input = document.getElementById("country-search-input");
+      filter = input.value.toUpperCase();
+      list = document.getElementById("countryOptions");
+      options = list.getElementsByClassName("country-option");
+
+      // Loop through all list items, and hide those who don't match the search query
+      for (i = 0; i < options.length; i++) {
+        country = options[i]; //.getElementsByTagName("a")[0];
+        txtValue = country.textContent || country.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          // options[i].style.display = "";
+          options[i].classList.remove("display-none");
+          // resultFound = true;
+        } else {
+          options[i].classList.add("display-none");
+        }
+      }
+      /*
+      let resultFound;
+      if (!resultFound) {
+        console.log("no result");
+        let div = document.createElement("div");
+        div.append("No matches found");
+        // div.id = "noMatches";
+        div.classList.add(
+          "no-matches",
+          "row-flex",
+          "country-option",
+          "align-items-center"
+        ); //match class formatting for other country-options
+        // list.append(div);
+        document.getElementsByClassName("country-select-bar")[0].append(div);
+      } else {
+        // let message = document.getElementById("noMatches");
+        let countrySelectBar =
+          document.getElementsByClassName("country-select-bar");
+        let message = countrySelectBar[0].getElementsByClassName("no-matches");
+        message?.remove();
+      } */
+    },
 
     //NEW--------------------------------------------
     toggleInputBlueColor(event) {
@@ -1683,9 +1739,13 @@ export default {
       }
     },
 
-    toggleCountryMenu() {
+    toggleCountryMenu(state = null) {
+      console.log("toggleCountryMenu firing");
       var countryMenu = document.getElementsByClassName("country-options")[0];
-      if (countryMenu.classList.contains("display-none")) {
+      if (
+        state == true ||
+        (state === null && countryMenu.classList.contains("display-none"))
+      ) {
         countryMenu.classList.remove("display-none");
       } else {
         countryMenu.classList.add("growUp");
