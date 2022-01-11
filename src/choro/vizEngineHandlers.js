@@ -6,11 +6,11 @@
 
 $("#mviTab,#countryDataTab").one("click", function () {
     if (sidsEngineInit == 0) {
-       
+
         setTimeout(() => {
-            appendAllElements()   
+            appendAllElements()
             ///this should be in initVizEngine, but it breaks for some reason
-           
+
 
         }, .001);
     }
@@ -34,7 +34,7 @@ $("#countryDataTab").on("click", function () {
 
     d3.select("#regionLegend").style("height", 42)
 
-if (indicatorGlobal=="Region"){
+if (indicatorGlobal=="region"){
 ///do this later
 }
 else{
@@ -62,7 +62,7 @@ $("#mviTab").on("click",function () {
 
     ///package selections and update viz engine
     updateVizEngine("mvi");//this doesn't actually matter what the argment is
-    
+
     // d3.select("#regionLegend").style("height", 0)///remove? and these next two lines
     // // d3.select("#regionLegend").transition().duration(1000).style("height",0)
     // // d3.select("#choro_legend_container").transition().duration(1000).style("height",0)
@@ -80,7 +80,7 @@ $('#vizSelect ul li').click(function () {
     $('.selectedViz').removeClass('selectedViz');
     $(this).addClass('selectedViz');
     updateVizEngine(indicatorGlobal);
- 
+
 });
 
 ///////////////////////////////////
@@ -102,16 +102,16 @@ $('#sortbySelect ul li').click(function () {
 
 $("#mviPresetSelect ul li").click(function () {
     var x = $(this);
-  
+
     $(".selectedMviPreset").removeClass("selectedMviPreset");
     $(this).addClass("selectedMviPreset");
     // console.log(this)
-  
+
     selectedMviPreset = this.id;
     console.log(selectedMviPreset);
-  
+
     const cbs = document.querySelectorAll('input[name="mviIndicator"]');
-  
+
     if (selectedMviPreset == "mviLi") {
       cbs.forEach((cb) => {
         cb.checked = true;
@@ -124,7 +124,7 @@ $("#mviPresetSelect ul li").click(function () {
         }
       });
     }
-  
+
     updateVizEngine("mvi") //same function as if you were to select an index
 
   });
@@ -146,7 +146,7 @@ $("#indicatorExport").change(function () {
 
     // $("#indicatorExport").val("export")
 
-}) 
+})
 
 ////setup devmode button
 $('#devMode').click(function() {
@@ -164,9 +164,9 @@ $('#devMode').click(function() {
    'border-bottom-color': '#fff'});
    $('#devMode').css({  'color': 'rgba(255, 255, 255, .5)',
    'border-bottom-color': 'rgba(255, 255, 255, .5)'});
-    
+
   });
-  
+
   $("#undpLogo").click(function(){
     console.log("bop");
   $("#verticalMenu").remove();

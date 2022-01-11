@@ -1,43 +1,43 @@
 import * as d3 from 'd3';
 
 import {
-  indexCodes,
-  indexDict,
   hues,
-  // mviDimensionList
+  totalIndexRectangles
 } from './vizEngineGlobals';
 
 import {
   regionColors,
   getRandomInt,
   getIsoByName,
-  nFormatter,
-  getBoundingBox
+  nFormatter
 } from './vizEngineHelperFunctions';
 
+import {
+  indexCodes,
+  indexWeightsDict
+} from './index-data';
 ///////////////////////
 //////Main update function
 //////////////////////////////////////
 
 
 export function updateVizEngine(indicatorCode) {
-  console.log('upd', indicatorCode)
+  console.log('upd', indicatorCode, indexCodes, Object.keys(indexCodes))
+
   this.indicatorCodeInitial = indicatorCode;
   this.indicatorCode = indicatorCode;
-//
-//      //process code
-//      selectedPage = $(".selectedPage").attr("id");
-  if(this.page=="mvi"){
-    this.indicatorCode = "mvi";
+
+  if(this.indiSelections.page=="mvi"){
+    this.indicatorCode = "mvi-index-index";
   }
+
   if (this.indicatorCode == "region") {
     this.indicatorCode = "hdr137506-compositeIndices";///temp so has something to attach to data
   }
-//   //choose index or indicator mode
-  if (indexCodes.includes(this.indicatorCode)) {
+
+  if (Object.keys(indexCodes).includes(this.indicatorCode)) {
     this.vizMode = "index";
-    this.apiCode="indexData-" + this.indicatorCode;
-    this.indicatorCode=indexDict[this.indicatorCode]
+    this.apiCode="indexData-" + indexCodes[this.indicatorCode];
   } else {
     this.vizMode = "indicator";
     let codeSplit = this.indicatorCode.split("-");
@@ -57,7 +57,7 @@ export function updateVizEngine(indicatorCode) {
 //   console.log(indiSelections,indicatorCode)
 //
 //     ///update all and page elements
-    // updateVizBlocks(indiSelections);
+    this.updateVizBlocks();
     this.updateLinesAndMap();
 //   ////////
 //   /////get indicator data,,proceed only once indicator data has been pulled
@@ -67,19 +67,20 @@ export function updateVizEngine(indicatorCode) {
   d3.json(
     "https://sids-dashboard.github.io/api/data/"+  this.apiCode + ".json"
   ).then((dat) => {
-//
-//
-    this.indicatorData = dat[this.indicatorCode];
-//
-    // if(this.vizMode=="index"){
-    //   let orderedCountryList=getIndexCountryList(indiSelections, mviDimensionList)
-    //   this.indiSelections["countryOrder"] = orderedCountryList
-    //
-    //   spiderData=processSpiderData(indexData,subindexWeights,indiSelections,orderedCountryList)
-    //
-    //   indiSelections["spiderData"]=spiderData
-    //   drawIndexSpider(spiderData,subindexList)
-    // }
+    if(this.vizMode=="indicator"){
+      this.indicatorData = dat[this.indicatorCode];
+    }
+    if(this.vizMode=="index"){
+      this.indexData = this.getIndexValues(dat);
+      this.indicatorData = this.indexData.index
+      this.indexWeights = JSON.parse(JSON.stringify(indexWeightsDict[this.indicatorCode]));//deep copy
+      this.countryOrder = this.getIndexCountryList()
+      console.log(this.indiSelections.viz, this.countryOrder)
+      let spiderData = this.processSpiderData()
+
+      this.spiderData=spiderData
+      this.drawIndexSpider()
+    }
 //
 //    console.log(indicatorData)
       let quantize = quantizeData(this.indicatorData,this.indiSelections),
@@ -99,7 +100,7 @@ export function updateVizEngine(indicatorCode) {
       this.updateCountryPositions(vizElementAttributes);
       this.updateCountryTitles(vizElementAttributes, noData);
       this.updateRectangles(vizElementAttributes);
-      this.updateIndexRectangles()
+      this.updateIndexRectangles(vizElementAttributes)
       this.updateLabels(vizElementAttributes, noData); //selectedPage, selectedViz, selectedYear,selectedSortby, indicatorData, noData)
       this.updateCircles(vizElementAttributes);
 // //    updateCountryLines(vizElementAttributes);
@@ -181,71 +182,35 @@ export function countriesWithNoData() {
 // //////////////////////////////////////
 // //
 //
-// function updateVizBlocks(indiSelections){
-//
-//     if (indiSelections["viz"] == "Spider") {
-//         $("#indexSpider").css("display", "block");
-//         console.log("show me the spider")
-//       } else {
-//         $("#indexSpider").css("display", "none");
-//         console.log("hidey spidey?")
-//       }
-//
-//       if (indiSelections["viz"] == "Time Series") {
-//         $("#timeSeriesContainer").css("display", "block");
-//       } else {
-//         $("#timeSeriesContainer").css("display", "none");
-//       }
-//
-//       if (indiSelections["page"] == "countryDataTab") {
-//         if (indiSelections["viz"] == "Multi-indicator") {
-//           //     $("#indicatorSelectBox2").css("display", "block");
-//           $("#choroInfoBox").css("display", "none");
-//         } else {
-//           //      $("#indicatorSelectBox2").css("display", "none");
-//           $("#choroInfoBox").css("display", "block");
-//         }
-//       } else {
-//         //    $("#indicatorSelectBox2").css("display", "none");////need to figure out to hide the new menu
-//         $("#choroInfoBox").css("display", "none");
-//       }
-//       if (
-//         indiSelections["viz"] == "Info" ||
-//         indiSelections["viz"] == "Time Series"
-//       ) {
-//         $("#choro_map_container").css("display", "none"); //"opacity", "0");
-//       } else {
-//         //opacity so it doesn't mess with the titles
-//         $("#choro_map_container").css("display", "block"); //("opacity", "1");
-//
-//         // $("#timeSeriesContainerPage").css("display", "none")
-//       }
-//       if (indiSelections["viz"] == "Info") {
-//         $("#mviInfoPage").show();
-//       } else {
-//         $("#mviInfoPage").hide();
-//       }
-//
-//         ///hide or show Sortby Select
-//   if (
-//     indiSelections["viz"] == "Bar Chart" ||
-//     indiSelections["viz"] == "Spider"
-//   ) {
-//     $("#sortbySelect").show();
-//   } else {
-//     $("#sortbySelect").hide();
-//   }
-//
-//    ///hide vizselect slider if in "Region" mode (need a way to reactivate this mode in key indicators)
-//    if (indicatorGlobal == "Region"&&indiSelections["page"]=="countryDataTab") {
-//     document.getElementById("vizSelect").style.visibility = "hidden";
-//   } else {
-//     document.getElementById("vizSelect").style.visibility = "visible";
-//       }
-//
-//
-//
-// }
+export function updateVizBlocks(){
+  if (this.indiSelections["viz"] == "spider") {
+    d3.select("#indexSpider").style("display", "block");
+  } else {
+    d3.select("#indexSpider").style("display", "none");
+  }
+  if (this.indiSelections["viz"] == "series") {
+    d3.select("#timeSeriesContainer").style("display", "block");
+  } else {
+    d3.select("#timeSeriesContainer").style("display", "none");
+  }
+  if (this.indiSelections["page"] == "countryDataTab") {
+    if (this.indiSelections["viz"] == "multi") {
+      d3.select("#choroInfoBox").style("display", "none");
+    } else {
+      d3.select("#choroInfoBox").style("display", "block");
+    }
+  } else {
+    d3.select("#choroInfoBox").style("display", "none");
+  }
+  if (
+    this.indiSelections["viz"] == "info" ||
+    this.indiSelections["viz"] == "series"
+  ) {
+    d3.select("#choro_map_container").style("display", "none"); //"opacity", "0");
+  } else {
+    d3.select("#choro_map_container").style("display", "block"); //("opacity", "1");
+  }
+}
 //
 // function updateVizSliders() {
 //
@@ -608,6 +573,7 @@ export function updateLabels(vizElementAttributes, noData) {
 }
 
 export function updateRectangles(vizElementAttributes) {
+  let rootThis = this;
   d3.select(this.sidsMaps)
     .selectAll(".choroRect")
     .transition()
@@ -619,87 +585,56 @@ export function updateRectangles(vizElementAttributes) {
       return vizElementAttributes[this.parentNode.id]["RT"]["y"];
     })
     .attr("width", function () {
-        // if(vizMode=="indicator"){
-      return vizElementAttributes[this.parentNode.id]["RT"]["width"];
-        // }
-        // if(vizMode=="index"){
-        //     return 0;
-        // }
+        if(rootThis.vizMode=="indicator"){
+          return vizElementAttributes[this.parentNode.id]["RT"]["width"];
+        }
+        if(rootThis.vizMode=="index"){
+            return 0;
+        }
     })
     .attr("height", function () {
       return vizElementAttributes[this.parentNode.id]["RT"]["height"];
     });
 }
 //
-export function updateIndexRectangles() {
-  let rootThis = this;
-if(this.indiSelections["page"]=="countryDataTab"){
-    let rectTransformData = {},
-    rectList = document.querySelectorAll(".choroRectMvi");
-
-    [...rectList].each(function () {
-        let country = this.parentNode.id,
-        bBox = getBoundingBox(d3.select(this.parentNode).select("path")),
-        dat = rootThis.rectTransform( country, bBox, rootThis.indicatorData, rootThis.indiSelections )
-        rectTransformData[country] = dat
-    });
-
-    d3.select(this.sidsMaps).selectAll(".choroRectMvi")
-        .transition()
-        .duration(1200)
-        .attr("x", function () { return rectTransformData[this.parentNode.id]["x"] })
-        .attr("y", function () { return rectTransformData[this.parentNode.id]["y"] })
-        .attr("width", 0)
-        .attr("height", function () { return rectTransformData[this.parentNode.id]["height"] })
-
+export function updateIndexRectangles(vizElementAttributes) {
+  let subindexList=Object.keys(this.indexWeights["subindices"])
+  for(let i=0;i<subindexList.length;i++){
+   d3.select(this.sidsMaps)
+      .selectAll(".choroRect"+(i))
+      .transition()
+      .duration(1200)
+      .attr("x", function () {
+        return vizElementAttributes[this.parentNode.id]["MRT"+(i)]["x"];
+      })
+      .attr("y", function () {
+        return vizElementAttributes[this.parentNode.id]["MRT"+(i)]["y"];
+      })
+      .attr("width", function () {
+              return vizElementAttributes[this.parentNode.id]["MRT"+(i)]["width"];
+      })
+      .attr("height", function () {
+        return vizElementAttributes[this.parentNode.id]["MRT"+(i)]["height"];
+      });
   }
-
-// else if(indiSelections["page"]="mviTab"){
-//
-//
-//         for (i = 1; i < mviDimensionList.length+1; i++) {
-//             rectTransformData = {};//get for index!
-//
-//             if (selectedViz == "Spider"||selectedViz=="Time Series") {
-//                 $(".choroRect" + i).each(function () {
-//                 var country = this.parentNode.id;
-//                 var bBox = bboxDict[country]// getBoundingBox(d3.select(this.parentNode).select("path"));
-//                 dat = rectTransform( country, bBox, indicatorData, indiSelections );
-//                 dat["width"]=0
-//                 rectTransformData[country] = dat;
-//                 });
-//             }
-//
-//             else if (selectedViz == "Global View") {
-//                     $(".choroRect" + i).each(function () {
-//                     var country = this.parentNode.id;
-//                     dat = mviColumnChart( country, indiSelections,  indiSelections["spiderData"],  mviCountryListLongitude,   i );
-//                     rectTransformData[country] = dat;
-//                 });
-//             }
-//
-//             else if (selectedViz == "Bar Chart") {
-//                 rectTransformData = {};
-//                 $(".choroRect" + i).each(function () {
-//                     var country = this.parentNode.id;
-//                     dat = mviBarChart(  country, indiSelections, indiSelections["spiderData"],  chosenCountryListMVI,  i );
-//                     rectTransformData[country] = dat;
-//                 });
-//             }
-//
-//     console.log(i)
-//         d3.select(sidsMaps)
-//         .selectAll(".choroRect"+i)
-//
-//         .transition()
-//         .duration(1200)
-//         .attr("x", function () { console.log("sfdg"); return rectTransformData[  this.parentNode.id]["x"]; })
-//         .attr("y", function () {    return rectTransformData[  this.parentNode.id      ]["y"];    })
-//         .attr("width", function () {     return rectTransformData[  this.parentNode.id   ]["width"];   })
-//         .attr("height", function () {   return rectTransformData[  this.parentNode.id    ]["height"];    });
-//     }
-    // }
-
+  for(let i=subindexList.length;i<totalIndexRectangles;i++){
+    d3.select(this.sidsMaps)
+       .selectAll(".choroRect"+(i))
+       .transition()
+       .duration(1200)
+       .attr("x", function () {
+         return vizElementAttributes[this.parentNode.id]["RT"]["x"];
+       })
+       .attr("y", function () {
+         return vizElementAttributes[this.parentNode.id]["RT"]["y"];
+       })
+       .attr("width", function () {
+               return vizElementAttributes[this.parentNode.id]["RT"]["width"];
+       })
+       .attr("height", function () {
+         return 0;
+       });
+  }
 }
 export function updateCircles(vizElementAttributes) {
   d3.select(this.sidsMaps)

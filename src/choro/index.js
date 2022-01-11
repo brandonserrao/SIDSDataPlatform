@@ -13,7 +13,8 @@ import {
   initChoroLegend,
   initXAxis,
   hideChoroLegend,
-  showChoroLegend} from './vizEngineInit'
+  showChoroLegend,
+  appendMultiRectangles} from './vizEngineInit'
 
 
   import { updateVizEngine,
@@ -28,7 +29,8 @@ import {
   updateChoroLegend,
   updateIndexRectangles,
   updateBarAxis,
-  updateYAxis
+  updateYAxis,
+  updateVizBlocks
 } from './vizEngineUpdate';
 
   import {
@@ -37,8 +39,21 @@ import {
     rectTransform,
     labelTransform,
     circleTransform,
-    textTransform
+    textTransform,
+    multiRectTransform
   } from './vizEngineElementAttributes'
+
+import {
+  getIndexValues,
+  preprocessIndexWeights,
+  getIndexDataYears,
+  getMinMaxObj,
+  computeSubindexValues,
+  computeIndexValues,
+  getCustomIndicatorSelection,
+  processSpiderData,
+  drawIndexSpider,
+  getIndexCountryList } from './processIndexData'
 
     // <script src="scripts/vizEngineUpdate.js"></script>
     // <script src="scripts/vizEngineElementAttributes.js"></script>
@@ -48,14 +63,14 @@ import {
     // <script src="scripts/vizEngineInit.js"></script>
     // <script src="scripts/processIndexData.js"></script>
 export default class Choro {
-  constructor({viz, year, indicatorCode, page, indicatorMeta, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
-    this.initState({viz, year, indicatorCode, page, indicatorMeta,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
+  constructor({viz, year, selectedIndis, indicatorCode, page, indicatorMeta, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
+    this.initState({viz, year, selectedIndis, indicatorCode, page, indicatorMeta,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
     this.initVizEngine({sidsXML})
   }
   initState({
     viz,
     year,
-    page,
+    page, selectedIndis,
     indicatorMeta,
     indicatorCode,
     mapLocations,
@@ -67,9 +82,9 @@ export default class Choro {
     this.mapLocations = mapLocations;
     this.indiSelections = {
       viz,
-      sortby: 'Rank',
+      sortby: 'rank',
       year,
-      page,
+      page:page||'mvi',
       mviPreset:'mviLi'
       //   indiSelections["viz"] = $(".selectedViz")[0].children[0].innerHTML;
       //   indiSelections["page"] = $(".selectedPage").attr("id");
@@ -83,6 +98,7 @@ export default class Choro {
     this.textBBoxDict = {};
     this.legendContainerSelector = legendContainerSelector;
     this.profileData = profileData;
+    this.selectedIndis = selectedIndis;
     this.main_chart_svg = d3.select(mapContainerSelector)
       .append("svg")
       .attr("width", vizContainerWidth)
@@ -99,13 +115,21 @@ export default class Choro {
     this.indiSelections.viz = vizType;
     this.updateVizEngine(this.indicatorCodeInitial)
   }
-  updatePageType ({page, chartType}) {
+  updatePageType ({page, chartType, codes}) {
     this.indiSelections.page = page;
     this.indiSelections.viz = chartType;
+    if(codes) {
+      this.selectedIndis = codes;
+    }
     this.updateVizEngine(this.indicatorCodeInitial)
   }
   updateSortingType (sorting) {
     this.indiSelections.sortby = sorting;
+    this.updateVizEngine(this.indicatorCodeInitial)
+  }
+  updateMviCodes(codes) {
+    console.log(codes);
+    this.selectedIndis = codes;
     this.updateVizEngine(this.indicatorCodeInitial)
   }
 }
@@ -141,3 +165,21 @@ Choro.prototype.updateIndexRectangles = updateIndexRectangles
 Choro.prototype.updateBarAxis = updateBarAxis;
 Choro.prototype.initXAxis = initXAxis;
 Choro.prototype.updateYAxis = updateYAxis;
+Choro.prototype.getIndexCountryList = getIndexCountryList;
+Choro.prototype.drawIndexSpider = drawIndexSpider;
+Choro.prototype.processSpiderData = processSpiderData;
+// Choro.prototype.mviBarChart = mviBarChart;
+// Choro.prototype.mviColumnChart = mviColumnChart;
+Choro.prototype.appendMultiRectangles = appendMultiRectangles;
+Choro.prototype.getIndexValues = getIndexValues
+Choro.prototype.preprocessIndexWeights = preprocessIndexWeights
+Choro.prototype.getIndexDataYears = getIndexDataYears
+Choro.prototype.getMinMaxObj = getMinMaxObj
+Choro.prototype.computeSubindexValues = computeSubindexValues
+Choro.prototype.computeIndexValues = computeIndexValues
+Choro.prototype.getCustomIndicatorSelection = getCustomIndicatorSelection
+Choro.prototype.processSpiderData = processSpiderData
+Choro.prototype.drawIndexSpider = drawIndexSpider
+Choro.prototype.getIndexCountryList = getIndexCountryList
+Choro.prototype.multiRectTransform = multiRectTransform;
+Choro.prototype.updateVizBlocks = updateVizBlocks;

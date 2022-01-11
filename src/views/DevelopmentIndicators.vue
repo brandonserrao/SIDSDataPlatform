@@ -1,8 +1,11 @@
 <template>
   <div class="mt-5">
   <v-row>
-    <v-col cols='3'>
+    <v-col v-if="page==='devIdictors'" cols='3'>
       <indicators-nav :activeIndicatorCode="indicator" @indicatorChange="indicatorUpdate"/>
+    </v-col>
+    <v-col v-else cols='3'>
+      <mvi-indicators-nav @MviIndicatorsChange="MVIindicatorUpdate"/>
     </v-col>
     <v-col cols='9'>
       <v-row>
@@ -12,7 +15,7 @@
       </v-row>
       <v-row class="justify-center">
           <v-tabs
-            v-if="indicator!=='region'"
+            v-if="indicator!=='region' || page==='mvi'"
             :value="activeTab"
             class="tabs indicators-slider"
           >
@@ -32,7 +35,7 @@
       </v-row>
       <v-row>
         <v-col cols='12'>
-          <indicators-choro-chart :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
+          <indicators-choro-chart :mviCodes="mviCodes" :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
         </v-col>
       </v-row>
     </v-col>
@@ -44,6 +47,7 @@
 // @ is an alias to /src
 
 import IndicatorsNav from '@/components/IndicatorsNav.vue'
+import MVIIndicatorsNav from '@/components/MVIIndicatorsNav.vue'
 import IndicatorsChoroChart from '@/components/IndicatorsChoroChart.vue'
 
 export default {
@@ -51,6 +55,17 @@ export default {
   props:['chartType', 'indicator', 'page'],
   data: function() {
     return {
+      mviCodes:["mvi-ldc-VIC-Index-environmental"
+,"mvi-ldc-AFF-Index-environmental"
+,"mvi-ldc-REM-Index-geographic"
+,"mvi-ldc-LECZ-Index-geographic"
+,"popDry"
+,"mvi-ldc-XCON-Index-economic"
+,"mvi-ldc-XIN-Index-economic"
+,"mvi-ldc-AIN-Index-economic"
+,"mvi-ST.INT.RCPT.XP.ZS-financial"
+,"mvi-BX.TRF.PWKR.DT.GD.ZS-financial"
+,"mvi-BX.KLT.DINV.WD.GD.ZS-financial"],
       sorting:'rank',
       menuBar:{
         devIdictors: [{
@@ -89,14 +104,15 @@ export default {
   },
   components: {
     IndicatorsNav,
-    IndicatorsChoroChart
+    IndicatorsChoroChart,
+    MviIndicatorsNav:MVIIndicatorsNav
   },
   computed: {
     sortingName() {
       if(this.sorting === 0) {
-        return 'Rank'
+        return 'rank'
       } else {
-        return 'Region'
+        return 'region'
       }
     },
     activeTab() {
@@ -114,6 +130,9 @@ export default {
     },
     indicatorUpdate(indicator) {
       this.$router.push({path:`/development-indicators/${indicator['Indicator Code']}/${this.chartType}`})
+    },
+    MVIindicatorUpdate(mviCodes){
+      this.mviCodes = mviCodes;
     }
   }
 }

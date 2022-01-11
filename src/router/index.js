@@ -96,31 +96,31 @@ const routes = [
       }
     ),
   },
-  // {
-  //   path: '/vulnerability/:indicator?/:chartType?',
-  //   link: '/vulnerability',
-  //   name: 'Vulnerability',
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
-  //   beforeEnter: async (to, from, next) => {
-  //     if(!to.params.chartType) {
-  //       next({ path: `/vulnerability/region/spider`})
-  //     }
-  //     if(!to.params.indicator) {
-  //       next({ path: `/vulnerability/region/spider`})
-  //     }
-  //     await store.dispatch('indicators/getCategories');
-  //     await store.dispatch('indicators/getMeta');
-  //     await store.dispatch('indicators/getProfileData');
-  //     next()
-  //   },
-  //   props: (to) => (
-  //     {
-  //       chartType: to.params.chartType,
-  //       indicator: to.params.indicator,
-  //       page: 'mvi'
-  //     }
-  //   ),
-  // },
+  {
+    path: '/vulnerability/:indicator?/:chartType?',
+    link: '/vulnerability',
+    name: 'Vulnerability',
+    component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
+    beforeEnter: async (to, from, next) => {
+      if(!to.params.chartType) {
+        next({ path: `/vulnerability/mvi/spider`})
+      }
+      if(!to.params.indicator) {
+        next({ path: `/vulnerability/mvi/spider`})
+      }
+      await store.dispatch('indicators/getCategories');
+      await store.dispatch('indicators/getMeta');
+      await store.dispatch('indicators/getProfileData');
+      next()
+    },
+    props: (to) => (
+      {
+        chartType: to.params.chartType,
+        indicator: 'mvi',
+        page: 'mvi'
+      }
+    ),
+  },
   {
     path: '/country-profiles/:country?',
     link: '/country-profiles',

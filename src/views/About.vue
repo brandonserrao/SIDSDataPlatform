@@ -25,6 +25,7 @@
               </p>
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <v-divider/>
           <v-expansion-panel>
             <v-expansion-panel-header>What is UNDP's SIDS Offer?</v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -47,6 +48,7 @@
               </p>
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <v-divider/>
           <v-expansion-panel>
             <v-expansion-panel-header>What are the sources of data used?</v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -55,6 +57,7 @@
               </p>
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <v-divider/>
           <v-expansion-panel>
             <v-expansion-panel-header>What are the future stages of development for this data platform?</v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -63,6 +66,7 @@
               </p>
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <v-divider/>
           <v-expansion-panel>
             <v-expansion-panel-header>Who should I contact to learn more?</v-expansion-panel-header>
             <v-expansion-panel-content>
