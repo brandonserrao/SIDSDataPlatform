@@ -78,7 +78,6 @@ export function updateVizEngine(indicatorCode) {
       this.indicatorData = this.indexData.index
       this.indexWeights = JSON.parse(JSON.stringify(indexWeightsDict[this.indicatorCode]));//deep copy
       this.countryOrder = this.getIndexCountryList()
-      console.log(this.indiSelections.viz, this.countryOrder)
       let spiderData = this.processSpiderData()
 
       this.spiderData=spiderData
@@ -111,16 +110,17 @@ export function updateVizEngine(indicatorCode) {
       this.updateChoroLegend(quantize);
       this.updateBarAxis();
       this.updateYAxis();
-    // if (this.indiSelections["viz"] == "series") {
-    //     ///this should pass in data directly or else it won't update based on the customMvi
-    //     dataset = parse(dat);
-    //     optionSelected = {
-    //       countryGroupOption: tempTimeChartSelection,
-    //       datasetOption: indicatorCode,
-    //     };
-    //     console.log({ dataset, optionSelected });
-    //     updateTimeChart({ dataset, optionSelected });
-    //   }
+      if (this.indiSelections["viz"] == "series") {
+        ///this should pass in data directly or else it won't update based on the customMvi
+        let timeData={};
+        timeData[this.indicatorCode] = this.indicatorData;
+        let dataset = this.parse(timeData);
+        let optionSelected = {
+          countryGroupOption: this.countyType,
+          datasetOption: this.indicatorCode,
+        };
+        this.updateTimeChart({ dataset, optionSelected });
+      }
 //
 //       updateVizSliders()//again, just for fun
   });
@@ -904,9 +904,7 @@ export function updateChoroLegend(quantize) {
       this.showChoroLegend(choroLegend, quantize);
     } else if (
       this.indiSelections["viz"] == "bars" ||
-      this.indiSelections["viz"] == "Multi-indicator" ||
-      this.indiSelections["viz"] == "Info" ||
-      this.indiSelections["viz"] == "Time Series" ||
+      this.indiSelections["viz"] == "series" ||
       this.indiSelections["viz"] == "spider" ||
       this.indiSelections["viz"] == "global"
     ) {

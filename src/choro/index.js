@@ -54,6 +54,12 @@ import {
   drawIndexSpider,
   getIndexCountryList } from './processIndexData'
 
+import {
+  initTimeSeries,
+  updateTimeChart,
+  parse
+} from './timeSeries'
+
     // <script src="scripts/vizEngineUpdate.js"></script>
     // <script src="scripts/vizEngineElementAttributes.js"></script>
     // <script src="scripts/vizEngineGlobals.js"></script>
@@ -62,13 +68,14 @@ import {
     // <script src="scripts/vizEngineInit.js"></script>
     // <script src="scripts/processIndexData.js"></script>
 export default class Choro {
-  constructor({viz, year, selectedIndis, indicatorCode, page, indicatorMeta, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
-    this.initState({viz, year, selectedIndis, indicatorCode, page, indicatorMeta,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
+  constructor({viz, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
+    this.initState({viz, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
     this.initVizEngine({sidsXML})
   }
   initState({
     viz,
     year,
+    countyType,
     page, selectedIndis,
     indicatorMeta,
     indicatorCode,
@@ -80,6 +87,7 @@ export default class Choro {
     profileData}){
       console.log(page, 'page')
     this.mapLocations = mapLocations;
+    this.countyType = countyType || 'All';
     this.page = page || 'mvi' ;
     this.indiSelections = {
       viz,
@@ -130,8 +138,11 @@ export default class Choro {
     this.updateVizEngine(this.indicatorCodeInitial)
   }
   updateMviCodes(codes) {
-    console.log(codes);
     this.selectedIndis = codes;
+    this.updateVizEngine(this.indicatorCodeInitial)
+  }
+  updateCountryTypeFilterType(countyType) {
+    this.countyType = countyType
     this.updateVizEngine(this.indicatorCodeInitial)
   }
 }
@@ -184,3 +195,6 @@ Choro.prototype.drawIndexSpider = drawIndexSpider
 Choro.prototype.getIndexCountryList = getIndexCountryList
 Choro.prototype.multiRectTransform = multiRectTransform;
 Choro.prototype.updateVizBlocks = updateVizBlocks;
+Choro.prototype.initTimeSeries = initTimeSeries;
+Choro.prototype.updateTimeChart = updateTimeChart;
+Choro.prototype.parse = parse;

@@ -35,16 +35,28 @@
         <div v-if="chartType === 'bars' || chartType === 'spider'" class="sorting-row">
           <v-tabs
             v-model="sorting"
-            class="tabs tabs-small tabs-slider sorting-slider"
+            class="tabs tabs-small tabs-slider sorting"
           >
             <v-tab key="rank" value="rank">Rank</v-tab>
             <v-tab key="region" value="region">Region</v-tab>
           </v-tabs>
         </div>
+        <div v-if="chartType === 'series'" class="sorting-row">
+          <div class="select sorting sorting-select">
+          <v-select
+            rounded
+            dense
+            hide-details
+            v-model="region"
+            :items="regions"
+            outlined
+          ></v-select>
+          </div>
+        </div>
       </v-row>
       <v-row dense v-if="chartType !== 'info'">
         <v-col  v-if="chartType !== 'info'" cols='12'>
-          <indicators-choro-chart :mviCodes="mviCodes" :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
+          <indicators-choro-chart :region="region" :mviCodes="mviCodes" :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
         </v-col>
       </v-row>
       <v-row  v-else class="justify-center" >
@@ -106,16 +118,24 @@ export default {
   data: function() {
     return {
       mviCodes:["mvi-ldc-VIC-Index-environmental"
-,"mvi-ldc-AFF-Index-environmental"
-,"mvi-ldc-REM-Index-geographic"
-,"mvi-ldc-LECZ-Index-geographic"
-,"popDry"
-,"mvi-ldc-XCON-Index-economic"
-,"mvi-ldc-XIN-Index-economic"
-,"mvi-ldc-AIN-Index-economic"
-,"mvi-ST.INT.RCPT.XP.ZS-financial"
-,"mvi-BX.TRF.PWKR.DT.GD.ZS-financial"
-,"mvi-BX.KLT.DINV.WD.GD.ZS-financial"],
+                ,"mvi-ldc-AFF-Index-environmental"
+                ,"mvi-ldc-REM-Index-geographic"
+                ,"mvi-ldc-LECZ-Index-geographic"
+                ,"popDry"
+                ,"mvi-ldc-XCON-Index-economic"
+                ,"mvi-ldc-XIN-Index-economic"
+                ,"mvi-ldc-AIN-Index-economic"
+                ,"mvi-ST.INT.RCPT.XP.ZS-financial"
+                ,"mvi-BX.TRF.PWKR.DT.GD.ZS-financial"
+                ,"mvi-BX.KLT.DINV.WD.GD.ZS-financial"
+      ],
+      region: 'All',
+      regions:[
+        'All',
+        'AIS',
+        'Caribbean',
+        'Pacific'
+      ],
       sorting:'rank',
       menuBar:{
         devIdictors: [{
@@ -128,10 +148,10 @@ export default {
           name:'Global view',
           chartType:'global'
         },
-        // {
-        //   name:'Time series',
-        //   chartType:'series'
-        // }
+        {
+          name:'Time series',
+          chartType:'series'
+        }
       ],
         mvi: [{
           name:'Info',
@@ -146,10 +166,10 @@ export default {
           name:'Global view',
           chartType:'global'
         },
-        // {
-        //   name:'Time series',
-        //   chartType:'series'
-        // }
+        {
+          name:'Time series',
+          chartType:'series'
+        }
       ]
       }
     }
@@ -201,12 +221,12 @@ export default {
     margin-left: 0px;
   }
   .indicators-tabs {
-    max-width: 492px;
+    max-width: 638px;
     margin-left: auto;
     margin-right: auto;
   }
   .mvi-tabs {
-    max-width: 527px;
+    max-width: 680px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -214,10 +234,13 @@ export default {
     position: relative;
     width: 100%;
   }
-  .sorting-slider{
+  .sorting{
     position: absolute;
     max-width: 224px;
     left: calc(100% - 224px);
+  }
+  .sorting-select {
+    top: 5px;
   }
   .tabs-small .v-tab {
     height: 24px !important;

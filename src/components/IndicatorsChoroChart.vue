@@ -9,6 +9,9 @@
     <div id="choro_map_container">
 
     </div>
+    <div id="timeSeriesContainer" style="width: 900px;display:none">
+      <!-- <div class="timeSeriesTooltip"></div> -->
+    </div>
   </div>
 </template>
 
@@ -24,7 +27,7 @@ export default {
       choro:null
     }
   },
-  props:['indicatorCode','page', 'chartType', 'sorting', 'mviCodes'],
+  props:['indicatorCode', 'region', 'page', 'chartType', 'sorting', 'mviCodes'],
   computed: {
     ...mapState({
       profileData: state => state.indicators.profileData,
@@ -74,6 +77,11 @@ export default {
     indicatorCode() {
       if(this.choro && this.page === this.choro.page) {
         this.choro.updateVizEngine(this.indicatorCode);
+      }
+    },
+    region() {
+      if(this.choro && this.page === this.choro.page) {
+        this.choro && this.choro.updateCountryTypeFilterType(this.region);
       }
     },
     sorting() {

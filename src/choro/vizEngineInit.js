@@ -38,6 +38,7 @@ export function initVizEngine({sidsXML}) {
       appendMultiRectangles()
       this.initCountrySvgs();
       this.appendAllElements();
+      this.initTimeSeries();
   //   initVizEngineTooltips(); // requires maps to be loaded
   //
   //
