@@ -6,17 +6,24 @@
         LANDSCAPE ORIENTATION
       </p>
     </div>
-    <!-- 
-    <div
-      v-show="!(screenOrientation === 'landscape-primary')"
-      class="landscape-enforcer"
-    >
-      <p>
-        THE GEOSPATIAL DATA FUNCTIONALITY REQUIRES YOUR DEVICE TO BE IN
-        LANDSCAPE ORIENTATION
-      </p>
-    </div> -->
-    <!-- <button class="debug" @click="_logSources()">Debug logger</button> -->
+
+    <div class="collapse-btn">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="ionicon"
+        viewBox="0 0 512 512"
+      >
+        <path
+          fill="none"
+          stroke="#eee"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="48"
+          d="M328 112L184 256l144 144"
+        />
+      </svg>
+    </div>
+
     <map-dataset-controller
       class="data-controller"
       :map="map"
@@ -491,6 +498,20 @@ export default {
   },
   mounted() {
     this.map = new GIS("map"); //initialzing mapbox map instance???
+
+    /** Collapse/Expand for Box  */
+    /* $(".bottom-left").on("click", function () {
+      $(".app-body").toggleClass("collapsed");
+      $(this).toggleClass("collapsed");
+    }); */
+    let collapseBtn = document.getElementsByClassName("collapse-btn")[0];
+    collapseBtn.addEventListener("click", function () {
+      console.log("collapse-btn onclick firing");
+      document
+        .getElementsByClassName("data-controller")[0]
+        .classList.toggle("collapsed");
+      this.classList.toggle("collapsed");
+    });
   },
 };
 </script>
@@ -566,6 +587,9 @@ export default {
   top: 2em;
   width: 400px;
   z-index: 999;
+
+  transition: 0.5s ease-in-out all;
+  opacity: 1;
 }
 
 /* FOR LEGEND ??*/
@@ -633,5 +657,47 @@ export default {
   height: 0px;
   width: 0px;
   padding: 5px;
+}
+
+.collapse-btn {
+  width: 30px;
+  height: 50px;
+  position: absolute;
+  left: -0vw;
+  top: 10vh;
+  background-color: rgba(153, 142, 142, 0.562);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.5s ease-in-out;
+  /*     display: flex;
+    justify-content: center;*/
+  z-index: 1600;
+  margin-left: -5px;
+}
+
+@media (orientation: landscape) and (max-width: 750px) {
+  .collapse-btn {
+    top: 30vh;
+    /* margin-left: 0; */
+  }
+}
+
+.collapse-btn svg {
+  max-width: 26px;
+
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.collapse-btn.collapsed {
+  transform: rotate(180deg);
+}
+
+.data-controller.collapsed {
+  opacity: 0;
+  z-index: -999;
+  pointer-events: none;
 }
 </style>
