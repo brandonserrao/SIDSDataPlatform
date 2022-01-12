@@ -61,23 +61,52 @@
     <v-list v-if="!activeSearch" dense :class="{'list-datasets-active':dataset}" class="list-datasets list-scrollabe">
       <v-list-item-group>
         <template v-for="(item, i) in datasets">
-          <v-list-item
-            inactive
-            class="list-scrollabe_item cursor-pointer"
-            v-if="!dataset || dataset === item.name"
+          <v-tooltip
+            right
+            open-delay="300"
+            transition="fade"
+            max-width="250"
             :key="i"
-            @click="toggleDataset(item.name)"
-          >
-            <v-list-item-content>
+            content-class="indicator-tooltip"
+           >
+            <template v-slot:activator="{ on, attrs }">
+              <v-list-item
+                inactive
+                class="list-scrollabe_item cursor-pointer"
+                v-if="!dataset || dataset === item.name"
+                :key="i"
+                v-bind="attrs"
+                v-on="on"
+                @click="toggleDataset(item.name)"
+              >
+                <v-list-item-content>
+                  <v-img
+                    contain
+                    max-height="50"
+                    :src="item.background"
+                  ></v-img>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+
+            <v-card class="tooltip-card pt-2">
               <v-img
                 contain
                 max-height="50"
                 :src="item.background"
               ></v-img>
-            </v-list-item-content>
-          </v-list-item>
-          <v-divider v-if="!dataset && i!== datasets.length - 1" :key="'divider' + i"></v-divider>
-      </template>
+              <v-card-title class="mb-1 active-indicator_header">{{datasetMeta[item.name] ? datasetMeta[item.name]['Dataset Name'] : ''}}</v-card-title>
+              <v-card-text>
+                <div class="mb-1">
+                  {{datasetMeta[item.name] ? datasetMeta[item.name]['# of Indicators'] : ''}} indicators
+                  {{datasetMeta[item.name] ? datasetMeta[item.name]['SIDS Coverage'] : ''}} SIDS
+
+                </div>
+                <b>Organization:</b>{{datasetMeta[item.name] ? datasetMeta[item.name]['Organization'] : ''}}
+              </v-card-text>
+            </v-card>
+          </v-tooltip>
+        </template>
       </v-list-item-group>
     </v-list>
     <v-select
@@ -170,6 +199,8 @@
 </template>
 <script>
 import { mapState } from 'vuex';
+import { datasetMeta } from '@/assets/datasets/datasetMeta';
+
 
 export default {
   name: 'IndicatorsNav',
@@ -184,6 +215,7 @@ export default {
       activeCategory: 'All categories',
       activeSubCategory: 'All categories',
       activeIndicator:null,
+      datasetMeta: datasetMeta,
       datasets: [
         {
           name: 'key',
