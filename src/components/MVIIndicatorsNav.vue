@@ -97,7 +97,7 @@ export default {
             name:'Remittances (% of GDP)'
           },{
             code:'mvi-BX.KLT.DINV.WD.GD.ZS-financial',
-            name:'FDI Inflowd (% of GDP)'
+            name:'FDI Inflows (% of GDP)'
           }]
         }
       ]
