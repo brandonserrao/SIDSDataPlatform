@@ -113,6 +113,19 @@ export default {
       console.log(`toggling Legend: displayLegend= ${this.displayLegend}`);
       this.displayLegend = !this.displayLegend;
     },
+    resetToolbarMenus() {
+      console.log(
+        `! resetToolbarMenus() currently only resets: Palette Select, Opacity Slider`
+      );
+
+      let paletteMenu = document.getElementsByClassName("selected-color")[0];
+      paletteMenu.children[0].innerHTML = "Default";
+      paletteMenu.children[1].className = "menu-icon " + "color-icon-1"; //usng color-icon-1 as placeholder for now
+
+      let opacitySlider = document.getElementsByClassName("opacity-slider")[0];
+      opacitySlider.value = globals.opacity; //hardcoded until changed to be based on shared reactive variable
+    },
+
     selectCountry(selection) {
       this.map.zoomToCountry(selection);
       // this.map.zoomTo(selection); //this. component instance; reffing its .map which is a Map class from index.js; calling class method zoomTo =
@@ -381,6 +394,7 @@ export default {
         );
         globals.lastActive.dataset = activeDataset;
         globals.currentLayerState.color = null;
+        this.resetToolbarMenus();
       }
 
       //if there isn't a dataset selected and updatecalls;

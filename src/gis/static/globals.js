@@ -9,6 +9,7 @@ const globals = {
   precision: null, //modified in changeDataOnMap and recolor etc; TODO deglobalize this
   myHistogram: null,
   lastActive: { dataset: null, layer: null },
+  opacity: 0.8,
   /* //were unused; obsoleted by passing these through emits when required
   activeDataset: null,
   activeLayer: null, */

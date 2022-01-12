@@ -33,7 +33,7 @@ export default class Map {
       "pk.eyJ1Ijoic2ViYXN0aWFuLWNoIiwiYSI6ImNpejkxdzZ5YzAxa2gyd21udGpmaGU0dTgifQ.IrEd_tvrl6MuypVNUGU5SQ";
     this.map = new mapboxgl.Map({
       container, // container ID
-      style: "mapbox://styles/mapbox/satellite-streets-v11",
+      style: "mapbox://styles/mapbox/light-v10", //"mapbox://styles/mapbox/satellite-streets-v11",
       center: [-71.5, 19.0],
       zoom: 7,
       maxZoom: 14,
@@ -245,7 +245,7 @@ export default class Map {
         },
         paint: {
           "fill-color": "blue",
-          "fill-opacity": 0,
+          "fill-opacity": globals.opacity, // 0
         },
       },
       globals.firstSymbolId
@@ -364,7 +364,7 @@ export default class Map {
             visibility: "visible",
           },
           paint: {
-            "fill-opacity": 0.8,
+            "fill-opacity": globals.opacity, //0.8
             "fill-color": [
               "interpolate",
               ["linear"],
@@ -406,6 +406,10 @@ export default class Map {
       // console.log(`adjusting "ocean" layer opacity`);
       map.setPaintProperty("ocean", "fill-opacity", sliderValue * 0.02);
     }
+
+    //update global opacity value
+    globals.opacity = sliderValue;
+    console.log(`globals.opacity`, globals.opacity);
   }
   changeColor(colorObject) {
     let map = this.map;
@@ -699,7 +703,7 @@ export default class Map {
             1322,
             "#eff3ff",
           ],
-          "fill-opacity": 0.8,
+          "fill-opacity": globals.opacity, //0.8,
         },
       },
       globals.firstSymbolId
@@ -764,7 +768,7 @@ export default class Map {
             },
             paint: {
               "fill-color": "blue",
-              "fill-opacity": 0.0,
+              "fill-opacity": globals.opacity, // 0.0
             },
           },
           globals.firstSymbolId
@@ -799,7 +803,7 @@ export default class Map {
           },
           paint: {
             "fill-color": "blue",
-            "fill-opacity": 0.0,
+            "fill-opacity": globals.opacity, // 0.0
           },
         },
         globals.firstSymbolId
@@ -853,7 +857,7 @@ export default class Map {
         },
         paint: {
           "fill-color": "blue",
-          "fill-opacity": 0.0,
+          "fill-opacity": globals.opacity, // 0.0
         },
       });
 
@@ -969,7 +973,7 @@ export default class Map {
           map.setPaintProperty(
             globals.currentLayerState.hexSize,
             "fill-opacity",
-            0.0
+            globals.opacity // 0.0
           );
           setTimeout(() => {
             map.setFilter(globals.currentLayerState.hexSize, null);
@@ -996,7 +1000,7 @@ export default class Map {
             map.setPaintProperty(
               globals.currentLayerState.hexSize,
               "fill-opacity",
-              0.8
+              globals.opacity // 0.8
             );
           }, 100);
         }
@@ -1067,7 +1071,7 @@ export default class Map {
         map.setPaintProperty(
           globals.currentLayerState.hexSize,
           "fill-opacity",
-          0.0
+          globals.opacity // 0.0
         );
         setTimeout(() => {
           map.setFilter(globals.currentLayerState.hexSize, null);
@@ -1114,7 +1118,7 @@ export default class Map {
           map.setPaintProperty(
             globals.currentLayerState.hexSize,
             "fill-opacity",
-            0.8
+            globals.opacity // 0.8
           );
         }, 400);
       }

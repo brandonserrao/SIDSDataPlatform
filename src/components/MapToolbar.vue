@@ -338,8 +338,8 @@
                         <div
                           style="margin-top: 12px; font-size: 12px; width: 80%"
                         >
-                          Draw mode is a nice mode in which you draw some
-                          polygons and triangles really great.
+                          Toggle administrative boundaries on for areas where
+                          they are available.
                         </div>
                       </div>
                     </div>
@@ -880,7 +880,7 @@
                   class="icon aplus-icon"
                   @click="handleLabelsChange('aplus', 'aminus')"
                 ></div>
-                <div class="description hover">A- A+</div>
+                <div class="description hover">Map Labels: Toggle On/Off</div>
                 <div
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>
