@@ -62,11 +62,11 @@ export default {
           category:'Geographic',
           color:'#CC333F',
           indicators:[{
-            code:'mvi-ldc-DRY-Index-geographic',
+            code:'mvi-ldc-REM-Index-geographic',
             name:'Remoteness'
           },
           {
-            code:'mvi-ldc-REM-Index-geographic',
+            code:'mvi-ldc-DRY-Index-geographic',
             name:'Population in Drylands',
           },
           {
