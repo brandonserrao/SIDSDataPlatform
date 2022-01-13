@@ -105,7 +105,7 @@ export function updateVizEngine(indicatorCode) {
       this.updateLabels(vizElementAttributes, noData); //selectedPage, selectedViz, selectedYear,selectedSortby, indicatorData, noData)
       this.updateCircles(vizElementAttributes);
 // //    updateCountryLines(vizElementAttributes);
-      this.updateChoroTooltips(noData);
+      this.updateRegionLables(noData);
       this.updateChoroLegend(quantize);
       this.updateBarAxis();
       this.updateYAxis();
@@ -924,7 +924,7 @@ export function updateChoroLegend(quantize) {
     }
   }
 
-export function updateChoroTooltips() {
+export function updateRegionLables() {
     let countryMaps = d3.selectAll(".regionTitle"),
     regionAverages = {},
     regionRank = {},
