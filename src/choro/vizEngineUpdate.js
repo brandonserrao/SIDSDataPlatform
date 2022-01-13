@@ -2,14 +2,16 @@ import * as d3 from 'd3';
 
 import {
   hues,
-  totalIndexRectangles
+  totalIndexRectangles,
+  regionCountries
 } from './vizEngineGlobals';
 
 import {
   regionColors,
   getRandomInt,
   getIsoByName,
-  nFormatter
+  nFormatter,
+  filterObject
 } from './vizEngineHelperFunctions';
 
 import {
@@ -106,7 +108,7 @@ export function updateVizEngine(indicatorCode) {
       this.updateLabels(vizElementAttributes, noData); //selectedPage, selectedViz, selectedYear,selectedSortby, indicatorData, noData)
       this.updateCircles(vizElementAttributes);
 // //    updateCountryLines(vizElementAttributes);
-      // this.updateChoroTooltips();
+      this.updateChoroTooltips(noData);
       this.updateChoroLegend(quantize);
       this.updateBarAxis();
       this.updateYAxis();
@@ -926,255 +928,171 @@ export function updateChoroLegend(quantize) {
     }
   }
 
-// function updateChoroTooltips(noData) {
-//   const countryMaps = $("#allSids path, .regionTitle");
-//   indicatorDataYear = this.indicatorData["data"][this.indiSelections["year"]],
-//   allVals = Object.values(indicatorDataYear).filter(
-//     (val) => typeof val == "number"
-//   );
+export function updateChoroTooltips() {
+    let countryMaps = d3.selectAll(".regionTitle"),
+    regionAverages = {},
+    regionRank = {},
+    regionTitleVals,
+    allVals,
+    countryListLength,
+    regionTitleHeight,
+    indicatorDataYear = this.indicatorData["data"][this.indiSelections["year"]];
+    countryMaps.each(function () {
+      let region = this.id.replace("RegionTitle", ""),
+      regionLists = {
+        ais: regionCountries["ais"],
+        pacific: regionCountries["pacific"],
+        caribbean: regionCountries["caribbean"],
+      },
+      total = 0;
 
-//   if (indiSelections["page"] == "countryDataTab") {
-    // indiMax = Math.max(
-    //   ...Object.values(indicatorDataYear).filter(
-    //     (val) => typeof val == "number"
-    //   )
-    // );
-    // countryMaps.each(function (index) {
-    //   if (countryMaps[index].id.includes("RegionTitle")) {
-    //     region = countryMaps[index].id.replace("RegionTitle", "");
-    //     regionTitles = {
-    //       ais: "AIS",
-    //       pacific: "Pacific",
-    //       caribbean: "Caribbean",
-    //     };
-    //     regionLists = {
-    //       ais: regionCountries["ais"],
-    //       pacific: regionCountries["pacific"],
-    //       caribbean: regionCountries["caribbean"],
-    //     };
-    //     tooltipTitle = regionTitles[region] + " Region";
-    //     total = 0;
-    //
-    //     for (countryIndex in regionLists[region]) {
-    //       val = indicatorDataYear[regionLists[region][countryIndex]];
-    //       if (typeof val == "number") {
-    //         total += val;
-    //       }
-    //     }
-    //     regionColor = regionColor = regionColors(region, "Y").substring(1);
-    //
-    //     regionValuesLength = Object.values(
-    //       filterObject(indicatorDataYear, regionLists[region])
-    //     ).filter((val) => typeof val == "number").length;
-    //     if (regionValuesLength == 0) {
-    //       regionValuesLength = 1;
-    //     }
-    //     regionVal = total / regionValuesLength;
-    //     regionRank[region] = 1;
-    //     allVals = Object.values(indicatorDataYear).filter(
-    //       (val) => typeof val == "number"
-    //     );
-    //     for (val in allVals) {
-    //       //console.log(allVals[val],regionVal)
-    //       if (allVals[val] > regionVal) {
-    //         regionRank[region]++;
-    //       }
-    //     }
-    //     // console.log(regionValuesLength)
-    //     content = "Average: " + nFormatter(regionVal, 3);
-    //     regionAverages[region] = regionVal;
-    //   } else {
-    //     iso = countryMaps[index].id;
-    //     country = sidsDict[iso];
-    //     tooltipTitle = country;
-    //     try {
-    //       secondLine = "Value: " + indicatorDataYear[iso].toFixed(2);
-    //     } catch (error) {
-    //       secondLine = "No Data";
-    //     }
-    //     if ((indiSelections["year"] = "recentValue")) {
-    //       year = indicatorData["data"]["recentYear"][iso];
-    //     } else {
-    //       year = indiSelections["year"];
-    //     }
-    //     thirdLine = "Year: " + year;
-    //     content = secondLine + "</h6><h6>" + thirdLine;
-//     //     regionColor = regionColors(countryJson[iso].Region, "Y").substring(1);
-//     //   }
-//     //   $("#tooltipChoro" + index.toString()).html(
-//     //     '<h4 style="color:#' +
-//     //       regionColor +
-//     //       '">' +
-//     //       tooltipTitle +
-//     //       "</h4><h6>" +
-//     //       content +
-//     //       "</h6></div>"
-//     //   ); //<div class="arrow" data-popper-arrow></div>
-//     //   // console.log(index+": yo");
-//     // });
-// //   } else if ((indiSelections["page"] = "mviTab")) {
-// //     // indiMax = 1
-// //     // regionTitles = { "ais": "AIS", "pacific": "Pacific", "caribbean": "Caribbean" }
-// //     // countryMaps.each(function (index) {
-// //     //     if (countryMaps[index].id.includes("RegionTitle")) {
-// //     //         region = countryMaps[index].id.replace("RegionTitle", "")
-// //     //         tooltipTitle = regionTitles[region] + " Region"
-// //     //         population = 0
-// //     //         for (countryIndex in regionCountries[region]) {
-// //     //           //  console.log(region, countryIndex)
-// //     //             population += countryJson[regionCountries[region][countryIndex]].Population
-// //     //         }
-// //     //         regionColor = regionColor = regionColors(region, "Y").substring(1)
-// //     //         content = "Population: " + nFormatter(population, 3)
-// //     //         regionAverages[region] = population
-// //     //     }
-// //     //     else {
-// //     //         try {
-// //     //             tooltipTitle = countryJson[countryMaps[index].id].Country
-// //     //         }
-// //     //         catch { tooltipTitle = countryMaps[index].id }
-// //     //         // console.log(tooltipTitle)
-// //     //         // console.log(wdiFull[indicator]["year"])
-// //     //      //   console.log("yaaaaaah")
-// //     //         try {
-// //     //             MBC = getMviValue(tooltipTitle,indiSelections)
-// //     //             secondLine = "MVI Value: " +nFormatter(MBC["value"],2)
-// //     //           //  console.log(mviData)//+ getMVIData//-----get MVI value//wdiFull[indicator]["data"][tooltipTitle].toFixed(2)
-// //     //         }
-// //     //         catch (error) { secondLine = "No Data" }
-// //     //         thirdLine = "Year: " + 2018 /// <-- replace with year variable when refactored
-// //     //         regionColor = regionColors(countryJson[countryMaps[index].id].Region, "Y").substring(1)
-// //     //         $('#tooltipChoro' + (index).toString()).html('<h4 style="color:#' + regionColor + '">' + tooltipTitle + '</h4><h6>' + secondLine + '</h6><h6>' + thirdLine + '</h6></div>')//<div class="arrow" data-popper-arrow></div>
-// //     //         // console.log(index+": yo");
-// //     //     }
-// //     // });
-// //   }
-//
-//   //console.log(regionAverages, indiMax, regionRank, allVals.length)
-//   let regionTitleVals = {};
-//   if (
-//     this.indiSelections["viz"] == "choro" ||
-//     this.indiSelections["viz"] == "series"
-//   ) {
-//     regionTitleVals = {
-//       opacity: 1,
-//       pacificX: 775,
-//       pacificY: 460,
-//       caribbeanX: 760,
-//       caribbeanY: 130,
-//       aisX: 785,
-//       aisY: 335,
-//     };
-//   } else if (
-//     this.indiSelections["viz"] == "bars" ||
-//     this.indiSelections["viz"] == "multi"
-//   ) {
-//     if (this.indiSelections["sortby"] == "rank") {
-//       regionTitleVals = {
-//         opacity: 1,
-//         pacificX: 775,
-//         pacificY: 330,
-//         caribbeanX: 760,
-//         caribbeanY: 170,
-//         aisX: 785,
-//         aisY: 250,
-//       };
-//       regionTitleHeight = 400,
-//       // if(indiSelections["page"]=="mviTab"){
-//       //     countryListLength=34
-//       //     regionTitleVals = { "opacity": 1, "pacificX": 775, "pacificY": 330, "caribbeanX": 760, "caribbeanY": 170, "aisX": 785, "aisY": 250 }
-//       // }
-//       // else if(indiSelections["page"]=="countryDataTab"){
-//       countryListLength = allVals.length;
-//       if (countryListLength > 0) {
-//         regionTitleVals = {
-//           opacity: 1,
-//           pacificX: 715,
-//           pacificY:
-//             regionTitleHeight * (regionRank["pacific"] / countryListLength) +
-//             60,
-//           caribbeanX: 700,
-//           caribbeanY:
-//             regionTitleHeight * (regionRank["caribbean"] / countryListLength) +
-//             60,
-//           aisX: 725,
-//           aisY:
-//             regionTitleHeight * (regionRank["ais"] / countryListLength) + 60,
-//         };
-//       } else {
-//         regionTitleVals = {
-//           opacity: 1,
-//           pacificX: 715,
-//           pacificY: 450,
-//           caribbeanX: 700,
-//           caribbeanY: 110,
-//           aisX: 725,
-//           aisY: 300,
-//         };
-//       }
-//       // }
-//     } else if (indiSelections["sortby"] == "Region") {
-//       regionTitleVals = {
-//         opacity: 1,
-//         pacificX: 715,
-//         pacificY: 450,
-//         caribbeanX: 700,
-//         caribbeanY: 110,
-//         aisX: 725,
-//         aisY: 300,
-//       };
-//     }
-//   } else if (indiSelections["viz"] == "Global View") {
-//     regionTitleVals = {
-//       opacity: 1,
-//       pacificX: 675,
-//       pacificY: 70,
-//       caribbeanX: 30,
-//       caribbeanY: 115,
-//       aisX: 370,
-//       aisY: 85,
-//     };
-//   } else if (indiSelections["viz"] == "Spider") {
-//     if (indiSelections["sortby"] == "Rank") {
-//       regionTitleVals = {
-//         opacity: 1,
-//         pacificX: 775,
-//         pacificY: 330,
-//         caribbeanX: 760,
-//         caribbeanY: 170,
-//         aisX: 785,
-//         aisY: 250,
-//       };
-//     } else {
-//       regionTitleVals = {
-//         opacity: 1,
-//         pacificX: 20,
-//         pacificY: 100,
-//         caribbeanX: 670,
-//         caribbeanY: 90,
-//         aisX: 530,
-//         aisY: 530,
-//       };
-//     }
-//   }
-//
-//   // console.log( regionTitleHeight, regionRank["pacific"], countryListLength)
-//   d3.select("#pacificRegionTitle")
-//     .transition()
-//     .duration(1000)
-//     .attr("x", regionTitleVals["pacificX"])
-//     .attr("y", regionTitleVals["pacificY"])
-//     .attr("fill-opacity", regionTitleVals["opacity"]);
-//   d3.select("#caribbeanRegionTitle")
-//     .transition()
-//     .duration(1000)
-//     .attr("x", regionTitleVals["caribbeanX"])
-//     .attr("y", regionTitleVals["caribbeanY"])
-//     .attr("fill-opacity", regionTitleVals["opacity"]);
-//   d3.select("#aisRegionTitle")
-//     .transition()
-//     .duration(1000)
-//     .attr("x", regionTitleVals["aisX"])
-//     .attr("y", regionTitleVals["aisY"])
-//     .attr("fill-opacity", regionTitleVals["opacity"]);
-// }
+      for (let countryIndex in regionLists[region]) {
+        let val = indicatorDataYear[regionLists[region][countryIndex]];
+        if (typeof val == "number") {
+          total += val;
+        }
+      }
+
+      let regionValuesLength = Object.values(
+        filterObject(indicatorDataYear, regionLists[region])
+      ).filter((val) => typeof val == "number").length;
+
+      if (regionValuesLength == 0) {
+        regionValuesLength = 1;
+      }
+      let regionVal = total / regionValuesLength;
+      regionRank[region] = 1;
+      allVals = Object.values(indicatorDataYear).filter(
+        (val) => typeof val == "number"
+      );
+      for (let val in allVals) {
+        //console.log(allVals[val],regionVal)
+        if (allVals[val] > regionVal) {
+          regionRank[region]++;
+        }
+      }
+      // console.log(regionValuesLength)
+      regionAverages[region] = regionVal;
+    });
+
+    if (
+      this.indiSelections["viz"] == "choro" ||
+      this.indiSelections["viz"] == "series"
+    ) {
+      regionTitleVals = {
+        opacity: 1,
+        pacificX: 775,
+        pacificY: 460,
+        caribbeanX: 760,
+        caribbeanY: 130,
+        aisX: 785,
+        aisY: 335,
+      };
+    } else if (
+      this.indiSelections["viz"] == "bars"
+    ) {
+      if (this.indiSelections["sortby"] == "rank") {
+        regionTitleVals = {
+          opacity: 1,
+          pacificX: 775,
+          pacificY: 330,
+          caribbeanX: 760,
+          caribbeanY: 170,
+          aisX: 785,
+          aisY: 250,
+        };
+        regionTitleHeight = 400;
+
+        countryListLength = allVals.length;
+        if (countryListLength > 0) {
+          regionTitleVals = {
+            opacity: 1,
+            pacificX: 715,
+            pacificY:
+              regionTitleHeight * (regionRank["pacific"] / countryListLength) +
+              60,
+            caribbeanX: 700,
+            caribbeanY:
+              regionTitleHeight * (regionRank["caribbean"] / countryListLength) +
+              60,
+            aisX: 725,
+            aisY:
+              regionTitleHeight * (regionRank["ais"] / countryListLength) + 60,
+          };
+        } else {
+          regionTitleVals = {
+            opacity: 1,
+            pacificX: 715,
+            pacificY: 450,
+            caribbeanX: 700,
+            caribbeanY: 110,
+            aisX: 725,
+            aisY: 300,
+          };
+        }
+        // }
+      } else if (this.indiSelections["sortby"] == "region") {
+        regionTitleVals = {
+          opacity: 1,
+          pacificX: 715,
+          pacificY: 450,
+          caribbeanX: 700,
+          caribbeanY: 110,
+          aisX: 725,
+          aisY: 300,
+        };
+      }
+    } else if (this.indiSelections["viz"] == "global") {
+      regionTitleVals = {
+        opacity: 1,
+        pacificX: 675,
+        pacificY: 70,
+        caribbeanX: 30,
+        caribbeanY: 115,
+        aisX: 370,
+        aisY: 85,
+      };
+    } else if (this.indiSelections["viz"] == "spider") {
+      if (this.indiSelections["sortby"] == "rank") {
+        regionTitleVals = {
+          opacity: 1,
+          pacificX: 775,
+          pacificY: 330,
+          caribbeanX: 760,
+          caribbeanY: 170,
+          aisX: 785,
+          aisY: 250,
+        };
+      } else {
+        regionTitleVals = {
+          opacity: 1,
+          pacificX: 20,
+          pacificY: 100,
+          caribbeanX: 670,
+          caribbeanY: 90,
+          aisX: 530,
+          aisY: 530,
+        };
+      }
+    }
+
+    // console.log( regionTitleHeight, regionRank["pacific"], countryListLength)
+    d3.select("#pacificRegionTitle")
+      .transition()
+      .duration(1000)
+      .attr("x", regionTitleVals["pacificX"])
+      .attr("y", regionTitleVals["pacificY"])
+      .attr("fill-opacity", regionTitleVals["opacity"]);
+    d3.select("#caribbeanRegionTitle")
+      .transition()
+      .duration(1000)
+      .attr("x", regionTitleVals["caribbeanX"])
+      .attr("y", regionTitleVals["caribbeanY"])
+      .attr("fill-opacity", regionTitleVals["opacity"]);
+    d3.select("#aisRegionTitle")
+      .transition()
+      .duration(1000)
+      .attr("x", regionTitleVals["aisX"])
+      .attr("y", regionTitleVals["aisY"])
+      .attr("fill-opacity", regionTitleVals["opacity"]);
+  }

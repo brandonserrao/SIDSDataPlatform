@@ -122,17 +122,16 @@ export  function getRandomInt(min, max) {
 // }
 //
 //
-// function filterObject(obj, arr) {
-//     newObj = {}
-//     Object.keys(obj).forEach((key) => {
-//         if (arr.includes(key)) {
-//             newObj[key] = obj[key];
-//         };
-//     });
-//     return newObj;
-// }
-//
-//
+export function filterObject(obj, arr) {
+    let newObj = {}
+    Object.keys(obj).forEach((key) => {
+        if (arr.includes(key)) {
+            newObj[key] = obj[key];
+        }
+    });
+    return newObj;
+}
+
 export function getIsoByName(countryName) {
   return Object.keys(sidsDict).find(key => sidsDict[key] === countryName);
 }
