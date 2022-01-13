@@ -30,7 +30,7 @@ import {
   updateIndexRectangles,
   updateBarAxis,
   updateYAxis,
-  updateChoroTooltips,
+  updateRegionLables,
   updateVizBlocks
 } from './vizEngineUpdate';
 
@@ -198,4 +198,4 @@ Choro.prototype.updateVizBlocks = updateVizBlocks;
 Choro.prototype.initTimeSeries = initTimeSeries;
 Choro.prototype.updateTimeChart = updateTimeChart;
 Choro.prototype.parse = parse;
-Choro.prototype.updateChoroTooltips = updateChoroTooltips;
+Choro.prototype.updateRegionLables = updateRegionLables;
