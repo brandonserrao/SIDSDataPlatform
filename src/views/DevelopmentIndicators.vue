@@ -224,7 +224,7 @@ export default {
     margin-left: 0px;
   }
   .nav-tabs-row {
-    margin-top: -10px;
+    margin-top: -10px !important;;
   }
   .indicators-tabs {
     max-width: 638px;
