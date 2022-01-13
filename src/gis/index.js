@@ -55,6 +55,11 @@ export default class Map {
       this._addVectorSources();
       this.getBasemapLabels();
     });
+
+    //for debugging
+    this.map.on("click", (e) => {
+      console.log(`A click event has occurred at ${e.lngLat}`);
+    });
   }
 
   on(type, layerIds, listenerFunction) {
@@ -428,7 +433,7 @@ export default class Map {
     }
 
     //update global opacity value
-    globals.opacity = sliderValue;
+    globals.opacity = (parseInt(sliderValue) * 2) / 100;
     console.log(`globals.opacity`, globals.opacity);
   }
   changeColor(colorObject) {
