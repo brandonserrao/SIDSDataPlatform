@@ -86,7 +86,6 @@ export default class Choro {
     vizContainerWidth,
     vizContainerHeight,
     profileData}){
-      console.log(page, 'page')
     this.mapLocations = mapLocations;
     this.countyType = countyType || 'All';
     this.page = page || 'mvi' ;

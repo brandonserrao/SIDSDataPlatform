@@ -160,10 +160,6 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
             pacificListSort
           );
           rank = chosenCountryList.indexOf(country);
-          //console.log(rank)
-          if (rank == -1) {
-            console.log(country, val);
-          }
           totalVals = indicatorValues.length + 4;
         }
 

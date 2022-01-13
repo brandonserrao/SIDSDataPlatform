@@ -223,6 +223,9 @@ export default {
     transition: 500ms;
     margin-left: 0px;
   }
+  .nav-tabs-row {
+    margin-top: -10px;
+  }
   .indicators-tabs {
     max-width: 638px;
     margin-left: auto;

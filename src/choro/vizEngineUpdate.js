@@ -24,7 +24,6 @@ import {
 
 
 export function updateVizEngine(indicatorCode) {
-  console.log('upd', indicatorCode, indexCodes, Object.keys(indexCodes))
 
   this.indicatorCodeInitial = indicatorCode;
   this.indicatorCode = indicatorCode;
@@ -36,7 +35,6 @@ export function updateVizEngine(indicatorCode) {
   if (this.indicatorCode == "region") {
     this.indicatorCode = "hdr137506-compositeIndices";///temp so has something to attach to data
   }
-  console.log(Object.keys(indexCodes).includes(this.indicatorCode), indexCodes, this.indicatorCode, '!!!!!!!!')
   if (Object.keys(indexCodes).includes(this.indicatorCode)) {
     this.vizMode = "index";
     this.apiCode="indexData-" + indexCodes[this.indicatorCode];
@@ -99,7 +97,6 @@ export function updateVizEngine(indicatorCode) {
       let vizElementAttributes = this.processVizElementAttributes();
 //     ///////////
 //
-      console.log(vizElementAttributes, noData , 'values')
       this.updateCountrySvgColors(quantize);//currently color data is computed here (quantize)
       this.updateCountryPositions(vizElementAttributes);
       this.updateCountryTitles(vizElementAttributes, noData);
@@ -113,8 +110,6 @@ export function updateVizEngine(indicatorCode) {
       this.updateBarAxis();
       this.updateYAxis();
       if (this.indiSelections["viz"] == "series") {
-        console.log('upd !!!!!!!!!!!!!!!')
-        ///this should pass in data directly or else it won't update based on the customMvi
         let timeData={};
         timeData[this.indicatorCode] = this.indicatorData;
         let dataset = this.parse(timeData);

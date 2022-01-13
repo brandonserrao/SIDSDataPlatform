@@ -407,7 +407,6 @@ export function updateTimeChart({ dataset, optionSelected }) {
               .join("div")
               .text((d) => d.key + " : " + d.value)
           );
-          console.log("tooltipTime")
       } else {
         //dot normal size
         gMark

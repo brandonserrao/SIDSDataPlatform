@@ -130,9 +130,6 @@ export function RadarChart(parent_selector, options, countryList, pillar, dataFu
 	/////////////// Draw the Circular grid //////////////////
 	/////////////////////////////////////////////////////////
 
-
-	console.log("circles")
-
 	//Wrapper for the grid & axes
 	let axisGrid = g.append("g").attr("class", "axisWrapper");
 
@@ -527,9 +524,6 @@ export function RadarChart(parent_selector, options, countryList, pillar, dataFu
 
 	//Remove whatever chart with the same id/class was present before
 	d3.select("#spiderLegend").select("svg").remove();
-
-	console.log("initiate")
-
 	//Initiate the radar chart SVG
 	let svgLegend = d3.select("#spiderLegend").append("svg")
 		.attr("width", "100%")
@@ -576,7 +570,6 @@ export function RadarChart(parent_selector, options, countryList, pillar, dataFu
 		// 	.attr("fill", "#737373")
 		// 	.text(d => allKeyData[d]["Profile"].Country);
 	}
-	console.log("end")
 	return svg;
 }
 
