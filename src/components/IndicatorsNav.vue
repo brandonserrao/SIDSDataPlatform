@@ -60,8 +60,9 @@
     </v-virtual-scroll>
     <v-list v-if="!activeSearch" dense :class="{'list-datasets-active':dataset}" class="list-datasets list-scrollabe">
       <v-list-item-group>
-        <template v-for="(item, i) in datasets">
+        <template v-for="(item, i) in datasets" >
           <v-tooltip
+            v-if="!dataset || dataset === item.name"
             right
             open-delay="300"
             transition="fade"
@@ -73,7 +74,6 @@
               <v-list-item
                 inactive
                 class="list-scrollabe_item cursor-pointer"
-                v-if="!dataset || dataset === item.name"
                 :key="i"
                 v-bind="attrs"
                 v-on="on"
@@ -166,7 +166,6 @@
               <v-card-title class="mb-1 active-indicator_header">{{indicator.Indicator}}</v-card-title>
               <v-card-text>
                 <div class="mb-1">{{indicator.Dimension}}</div>
-                {{indicator.Definition}}
                 <v-divider class="mb-1 mt-1"></v-divider>
                 <b>Source:</b>{{indicator.Source}} <br/>
                 <a :href="indicator.Link" target="_blank">Link</a>
@@ -222,68 +221,56 @@ export default {
           background: require('@/assets/datasets/keyIcon.png')
         },
         {
-          name: 'mvi',
-          background: require('@/assets/datasets/mviIcon.png')
+          name: 'hdr',
+          background: require('@/assets/datasets/hdrIcon.png')
         },
         {
-          name: 'ssi',
-          background: require('@/assets/datasets/ssiIcon.png')
-        },
-        {
-          name: 'igrac',
-          background: require('@/assets/datasets/igracIcon.png')
-        },
-        {
-          name: 'wdi',
-          background: require('@/assets/datasets/wdiIcon.png')
-        },
-        {
-          name: 'who',
-          background: require('@/assets/datasets/whoIcon.png')
-        },
-        {
-          name: 'irena',
-          background: require('@/assets/datasets/irenaIcon.png')
-        },
-        {
-          name: 'undesa',
-          background: require('@/assets/datasets/undesaIcon.png')
-        },
-        {
-          name: 'fao',
-          background: require('@/assets/datasets/faoIcon.png')
-        },
-        {
-          name: 'unctad',
-          background: require('@/assets/datasets/unctadIcon.png')
-        },
-        {
-          name: 'rfti',
-          background: require('@/assets/datasets/rftiIcon.png')
-        },
-        {
-          name: 'epi',
-          background: require('@/assets/datasets/epiIcon.png')
+          name: 'ihme',
+          background: require('@/assets/datasets/ihmeIcon.png')
         },
         {
           name: 'ohi',
           background: require('@/assets/datasets/ohiIcon.png')
         },
         {
+          name: 'mvi',
+          background: require('@/assets/datasets/mviIcon.png')
+        },
+        {
           ndgain: 'ndgain',
           background: require('@/assets/datasets/ndgainIcon.png')
         },
         {
-          name: 'hdr',
-          background: require('@/assets/datasets/hdrIcon.png')
+          name: 'epi',
+          background: require('@/assets/datasets/epiIcon.png')
         },
         {
-          name: 'sdg',
-          background: require('@/assets/datasets/sdgIcon.png')
+          name: 'ssi',
+          background: require('@/assets/datasets/ssiIcon.png')
         },
         {
-          name: 'blasiak',
-          background: require('@/assets/datasets/blasiakIcon.png')
+          name: 'unctad',
+          background: require('@/assets/datasets/unctadIcon.png')
+        },
+        {
+          name: 'unicef',
+          background: require('@/assets/datasets/unicefIcon.png')
+        },
+        {
+          name: 'undesa',
+          background: require('@/assets/datasets/undesaIcon.png')
+        },
+        {
+          name: 'irena',
+          background: require('@/assets/datasets/irenaIcon.png')
+        },
+        {
+          name: 'igrac',
+          background: require('@/assets/datasets/igracIcon.png')
+        },
+        {
+          name: 'itu',
+          background: require('@/assets/datasets/ituIcon.png')
         },
         {
           name: 'gggr',
@@ -294,17 +281,9 @@ export default {
           background: require('@/assets/datasets/ghiIcon.png')
         },
         {
-          name: 'ihme',
-          background: require('@/assets/datasets/ihmeIcon.png')
+          name: 'blasiak',
+          background: require('@/assets/datasets/blasiakIcon.png')
         },
-        {
-          name: 'itu',
-          background: require('@/assets/datasets/ituIcon.png')
-        },
-        {
-          name: 'unicef',
-          background: require('@/assets/datasets/unicefIcon.png')
-        }
       ]
     }
   },
@@ -421,7 +400,7 @@ export default {
       for(let indicator in this.activeDataset[category][subCategory]) {
         indicatorsList.push(this.activeDataset[category][subCategory][indicator]);
       }
-      return indicatorsList;
+      return indicatorsList
     },
     changeCategory() {
       this.activeSubCategory = ''
@@ -445,8 +424,6 @@ export default {
       this.searchString = '';
       this.activeSearch = false;
       this.selectDataset(indicator.Dataset);
-      this.activeCategory = indicator.Category;
-      this.activeSubCategory = indicator.Subcategory;
       this.setActiveIndicator(indicator);
     },
     clearFullSearch() {
@@ -500,6 +477,7 @@ export default {
 }
 .inicator-item_header {
   text-align: left;
+  font-weight: 800 !important;
   width: 100%;
 }
 .inicator-item_description {

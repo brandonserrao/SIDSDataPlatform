@@ -33,13 +33,16 @@
       </v-row>
       <v-row dense jusify="end">
         <div v-if="chartType === 'bars' || chartType === 'spider'" class="sorting-row">
-          <v-tabs
-            v-model="sorting"
-            class="tabs tabs-small tabs-slider sorting"
-          >
-            <v-tab key="rank" value="rank">Rank</v-tab>
-            <v-tab key="region" value="region">Region</v-tab>
-          </v-tabs>
+          <div class="input-label tabs-slider-label">
+            Sort by:
+          </div>
+            <v-tabs
+              v-model="sorting"
+              class="tabs tabs-small tabs-slider sorting sorting-tabs"
+            >
+              <v-tab key="rank" value="rank">Rank</v-tab>
+              <v-tab key="region" value="region">Region</v-tab>
+            </v-tabs>
         </div>
         <div v-if="chartType === 'series'" class="sorting-row">
           <div class="select sorting sorting-select">
@@ -234,13 +237,21 @@ export default {
     position: relative;
     width: 100%;
   }
+  .tabs-slider-label{
+    position: absolute;
+    left: calc(100% - 222px);
+    top: 12px;
+  }
+  .sorting-tabs {
+    top: 28px;
+  }
   .sorting{
     position: absolute;
     max-width: 224px;
     left: calc(100% - 224px);
   }
   .sorting-select {
-    top: 5px;
+    top: 12px;
   }
   .nav-tabs-row {
     min-height: 38px;
