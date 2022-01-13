@@ -45,12 +45,14 @@
       @toggle-labels="toggleLabels($event)"
     />
     <div id="map">
-      <grid-loader
-        class="loader-gis display-none"
-        :loading="gisLoader.loading"
-        :color="gisLoader.color"
-        :size="gisLoader.size"
-      ></grid-loader>
+      <div class="loader-gis-modal">
+        <grid-loader
+          class="loader-gis display-none"
+          :loading="gisLoader.loading"
+          :color="gisLoader.color"
+          :size="gisLoader.size"
+        ></grid-loader>
+      </div>
     </div>
   </div>
 </template>
@@ -429,8 +431,10 @@ export default {
           //display loader spinner
           console.log("showing loading spinner");
           let spinner = document.getElementsByClassName("loader-gis")[0];
+          let modal = document.getElementsByClassName("loader-gis-modal")[0];
           console.log(spinner);
           spinner.classList.remove("display-none");
+          modal.classList.remove("display-none");
           console.log(spinner);
 
           //if ocean dataset or layer selected place resolution indicator to 10km hex option
@@ -581,6 +585,14 @@ export default {
   /* margin: 0 auto; */
   opacity: 0.75;
   z-index: 1500;
+}
+
+.loader-gis-modal {
+  position: relative;
+  background-color: rgba(134, 131, 131, 0.13);
+  width: 100%;
+  height: 100%;
+  z-index: 900;
 }
 
 .display-none {

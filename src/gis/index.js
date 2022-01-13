@@ -33,7 +33,8 @@ export default class Map {
       "pk.eyJ1Ijoic2ViYXN0aWFuLWNoIiwiYSI6ImNpejkxdzZ5YzAxa2gyd21udGpmaGU0dTgifQ.IrEd_tvrl6MuypVNUGU5SQ";
     this.map = new mapboxgl.Map({
       container, // container ID
-      style: "mapbox://styles/mapbox/light-v10", //"mapbox://styles/mapbox/satellite-streets-v11",
+      // style: "mapbox://styles/mapbox/light-v10",
+      style: "mapbox://styles/mapbox/satellite-streets-v11",
       center: [-71.5, 19.0],
       zoom: 7,
       maxZoom: 14,
@@ -174,7 +175,9 @@ export default class Map {
     //show loader spinner
     console.log("show loading spinner");
     let spinner = document.getElementsByClassName("loader-gis")[0];
+    let modal = document.getElementsByClassName("loader-gis-modal")[0];
     spinner.classList.remove("display-none");
+    modal.classList.remove("display-none");
   }
 
   hideSpinner() {
@@ -183,7 +186,9 @@ export default class Map {
     //hide loader spinner
     console.log("hide loading spinner");
     let spinner = document.getElementsByClassName("loader-gis")[0];
+    let modal = document.getElementsByClassName("loader-gis-modal")[0];
     spinner.classList.add("display-none");
+    modal.classList.add("display-none");
   }
 
   //taken from old code
@@ -197,7 +202,22 @@ export default class Map {
       `changeHexagonSize( ${resolution} ); currentHexSize: ${globals.currentLayerState.hexSize}`
     );
 
-    this.clearHexHighlight();
+    if (
+      resolution
+      // resolution === "hex1"
+    ) {
+      //showing loader in expectation of hex1 taking longer to display
+      // $(".loader-gis").show();
+      console.log("handling spinner for hex1 loading");
+      this.showSpinner();
+
+      map.once("idle", () => {
+        // $(".loader-gis").hide();
+        this.hideSpinner();
+      });
+
+      this.clearHexHighlight();
+    }
 
     if (map.getLayer("ocean")) {
       // $(".hexsize").toggle();
@@ -245,13 +265,13 @@ export default class Map {
         },
         paint: {
           "fill-color": "blue",
-          "fill-opacity": globals.opacity, // 0
+          "fill-opacity": 0.0, //globals.opacity, // 0
         },
       },
       globals.firstSymbolId
     );
 
-    if (resolution === "hex1") {
+    /* if (resolution === "hex1") {
       //showing loader in expectation of hex1 taking longer to display
       // $(".loader-gis").show();
       console.log("handling spinner for hex1 loading");
@@ -261,7 +281,7 @@ export default class Map {
         // $(".loader-gis").hide();
         this.hideSpinner();
       });
-    }
+    } */
 
     if (map.getStyle().name === "Mapbox Satellite") {
       console.log(`map style is Mapbox Satellite; moveLayer to ${resolution}`);
@@ -768,7 +788,7 @@ export default class Map {
             },
             paint: {
               "fill-color": "blue",
-              "fill-opacity": globals.opacity, // 0.0
+              "fill-opacity": 0.0, //globals.opacity, //
             },
           },
           globals.firstSymbolId
@@ -803,7 +823,7 @@ export default class Map {
           },
           paint: {
             "fill-color": "blue",
-            "fill-opacity": globals.opacity, // 0.0
+            "fill-opacity": 0.0, //globals.opacity, //
           },
         },
         globals.firstSymbolId
@@ -857,7 +877,7 @@ export default class Map {
         },
         paint: {
           "fill-color": "blue",
-          "fill-opacity": globals.opacity, // 0.0
+          "fill-opacity": 0.0, //globals.opacity, //
         },
       });
 
@@ -973,7 +993,8 @@ export default class Map {
           map.setPaintProperty(
             globals.currentLayerState.hexSize,
             "fill-opacity",
-            globals.opacity // 0.0
+            0.0
+            //globals.opacity
           );
           setTimeout(() => {
             map.setFilter(globals.currentLayerState.hexSize, null);
@@ -1071,7 +1092,7 @@ export default class Map {
         map.setPaintProperty(
           globals.currentLayerState.hexSize,
           "fill-opacity",
-          globals.opacity // 0.0
+          0.0 //globals.opacity
         );
         setTimeout(() => {
           map.setFilter(globals.currentLayerState.hexSize, null);
