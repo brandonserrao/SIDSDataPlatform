@@ -1,5 +1,14 @@
 <template>
   <div class="mvi-indicators-nav">
+    <v-tabs
+      :value="activePreset"
+      grow
+      class="mb-2 mvi-nav-tabs tabs tabs-small"
+    >
+      <v-tab value="0" @change="setPreset('MVI')">MVI</v-tab>
+      <v-tab value="1" @change="setPreset('EVI')">EVI</v-tab>
+      <v-tab value="2">Custom</v-tab>
+    </v-tabs>
     <v-card flat>
       <v-list dense v-for="indicatorCatery in catIndicators"
         :key="indicatorCatery.category"
@@ -34,6 +43,7 @@ export default {
   // props:['activeIndicatorCode'],
   data() {
     return {
+      activePreset : 0,
       selectedIndicators:[
         "mvi-ldc-VIC-Index-environmental" ,
         "mvi-ldc-AFF-Index-environmental" ,
@@ -46,6 +56,29 @@ export default {
         "mvi-ST.INT.RCPT.XP.ZS-financial",
         "mvi-BX.TRF.PWKR.DT.GD.ZS-financial",
         "mvi-BX.KLT.DINV.WD.GD.ZS-financial"
+      ],
+      MVI:[
+        "mvi-ldc-VIC-Index-environmental" ,
+        "mvi-ldc-AFF-Index-environmental" ,
+        "mvi-ldc-DRY-Index-geographic" ,
+        "mvi-ldc-REM-Index-geographic" ,
+        "mvi-ldc-LECZ-Index-geographic",
+        "mvi-ldc-XCON-Index-economic",
+        "mvi-ldc-XIN-Index-economic",
+        "mvi-ldc-AIN-Index-economic",
+        "mvi-ST.INT.RCPT.XP.ZS-financial",
+        "mvi-BX.TRF.PWKR.DT.GD.ZS-financial",
+        "mvi-BX.KLT.DINV.WD.GD.ZS-financial"
+      ],
+      EVI: [
+        "mvi-ldc-VIC-Index-environmental" ,
+        "mvi-ldc-AFF-Index-environmental" ,
+        "mvi-ldc-DRY-Index-geographic" ,
+        "mvi-ldc-REM-Index-geographic" ,
+        "mvi-ldc-LECZ-Index-geographic",
+        "mvi-ldc-XCON-Index-economic",
+        "mvi-ldc-XIN-Index-economic",
+        "mvi-ldc-AIN-Index-economic"
       ],
       catIndicators:[
         {
@@ -107,11 +140,27 @@ export default {
   },
   methods:{
     updateValue() {
+      this.updatePreset();
       this.emitValue()
     },
     emitValue() {
       return this.$emit('MviIndicatorsChange', this.selectedIndicators)
     },
+    updatePreset() {
+      if(this.selectedIndicators.length === 11) {
+        return this.activePreset = 0;
+      }
+      let hasFinance = this.selectedIndicators.every(indicator => !indicator.includes('-financial'))
+      if (this.selectedIndicators.length === 8 && hasFinance) {
+        return this.activePreset = 1;
+      }
+      return this.activePreset = 2;
+
+    },
+    setPreset(presetName) {
+      this.selectedIndicators = this[presetName];
+      this.emitValue();
+    }
   },
   mounted() {
     this.emitValue()
@@ -120,6 +169,10 @@ export default {
 </script>
 
 <style>
+.mvi-nav-tabs .v-tab {
+  padding: 8px !important;
+  min-width: 40px;
+}
 .mvi-indicators-nav .v-list-item__action {
   margin: 0 !important;
 }

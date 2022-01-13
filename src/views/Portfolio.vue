@@ -87,7 +87,7 @@
                 ></portfolio-pie-chart>
             </v-col>
           </v-row>
-        <v-divider class="mt-3 mb-2 d-none d-md-block mb-6"></v-divider>
+        <v-divider class="mt-2 d-none d-md-block mb-2"></v-divider>
         <v-row dense justify="center">
           <v-col cols='5' md="12">
             <div class="select">

@@ -53,3 +53,10 @@
 .v-tabs-slider {
   background: #E9ECF6 !important;
 }
+
+.tabs-small .v-tab {
+  height: 24px !important;
+}
+.tabs-small .v-tabs-slider-wrapper {
+  height: 24px !important;
+}

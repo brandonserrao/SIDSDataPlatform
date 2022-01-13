@@ -242,12 +242,6 @@ export default {
   .sorting-select {
     top: 5px;
   }
-  .tabs-small .v-tab {
-    height: 24px !important;
-  }
-  .v-tabs-slider-wrapper {
-    height: 24px !important;
-  }
   .nav-tabs-row {
     min-height: 38px;
   }
