@@ -93,7 +93,6 @@ export default {
       if(this.choro && this.page === this.choro.page) {
         this.choro && this.choro.updateMviCodes(this.mviCodes);
       }
-      this.choro && this.choro.updateMviCodes(this.mviCodes);
     },
   }
 }
