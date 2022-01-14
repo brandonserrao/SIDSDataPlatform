@@ -203,8 +203,8 @@ export default {
         this.$router.push({path:`/development-indicators/${this.indicator}/${chartType}`})
       }
     },
-    indicatorUpdate(indicator) {
-      this.$router.push({path:`/development-indicators/${indicator['Indicator Code']}/${this.chartType}`})
+    indicatorUpdate(indicatorCode) {
+      this.$router.push({path:`/development-indicators/${indicatorCode}/${this.chartType}`})
     },
     MVIindicatorUpdate(mviCodes){
       this.mviCodes = mviCodes;

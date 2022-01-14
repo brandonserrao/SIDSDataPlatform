@@ -34,7 +34,7 @@
                   inactive
                   v-bind="attrs"
                   v-on="on"
-                  @click="emitIndicatorChange(item)"
+                  @click="emitIndicatorChange(item['Indicator Code'])"
                 >
                   <v-list-item-title class="inicator-item_header mt-2">
                     {{item.Indicator}}
@@ -151,7 +151,7 @@
                 inactive
                 v-bind="attrs"
                 v-on="on"
-                @click="emitIndicatorChange(indicator)"
+                @click="emitIndicatorChange(indicator['Indicator Code'])"
               >
                 <v-list-item-title class="inicator-item_header mt-2">
                   {{indicator.Indicator}}
@@ -181,9 +181,13 @@
       <v-card-text class="active-indicator-info">
         <div class="mb-1 d-flex">
           <div class="active-dimension"> {{activeIndicatorDimension}} </div>
+          {{activeIndicatorDimensions}}
           <v-select class='dimensions-select' v-if="activeIndicatorDimensions.length > 1"
             :items="activeIndicatorDimensions"
-            v-model="activeIndicatorDimension"
+            :value="activeIndicatorCode"
+            item-text="dimension"
+            item-value="code"
+            @change="emitIndicatorChange"
             label="Dimension"
             dense
           ></v-select>
@@ -375,7 +379,10 @@ export default {
     },
     activeIndicatorDimensions() {
       return this.activeIndicator.codesArray.map(code => {
-        return this.indicatorsMeta[code].Dimension
+        return {
+          code,
+          dimension: this.indicatorsMeta[code].Dimension
+        }
       })
     }
   },
@@ -406,6 +413,7 @@ export default {
       this.activeSubCategory = ''
     },
     emitIndicatorChange(indicator) {
+      console.log(indicator)
       this.$emit('indicatorChange', indicator)
     },
     setActiveIndicator(indicator) {
