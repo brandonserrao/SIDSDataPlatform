@@ -1072,6 +1072,7 @@ export function updateRegionLables() {
       }
     }
 
+    this.regionAverages = regionAverages;
     // console.log( regionTitleHeight, regionRank["pacific"], countryListLength)
     d3.select("#pacificRegionTitle")
       .transition()

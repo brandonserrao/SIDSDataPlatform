@@ -74,6 +74,13 @@ export const sidsDict = {"ATG":"Antigua and Barbuda", "ABW":"Aruba","BHS":"The B
 "SUR":"Suriname","TLS": "Timor Leste","TTO":"Trinidad and Tobago", "TON": "Tonga",
 "TUV":"Tuvalu","TCA":"Turks and Caicos Islands","VUT": "Vanuatu","AIA":"Anguilla",
 "COK":"Cook Islands","MSR":"Montserrat","TKL":"Tokelau","NIU": "Niue"}
+
+export const regionsDict = {
+  caribbean: 'Caribbean',
+  ais: 'AIS',
+  pacific: 'Pacific'
+}
+
 //
 //
 //

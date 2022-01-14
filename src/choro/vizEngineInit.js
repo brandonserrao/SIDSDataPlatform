@@ -3,7 +3,7 @@ import tippy from 'tippy.js';
 
 import { indexColors } from './index-data'
 import {regionColors, getBoundingBox, nFormatter} from './vizEngineHelperFunctions'
-import {countryListLongitude, sidsDict} from './vizEngineGlobals'
+import {countryListLongitude, sidsDict, regionsDict} from './vizEngineGlobals'
 // countryListSpider
 //runs this right away (it works, for some reason it doesn't draw the titles if executed on click )
 ///////////////////////////////////
@@ -543,6 +543,33 @@ export function initVizEngineTooltips() {
         return tooltipElement
     }
   });
+
+  tippy('.regionTitle', {
+    theme: 'light',
+    delay: 300,
+    onShow: function(instance) {
+      let content = instance.popper.getElementsByClassName('tippyContent')[0];
+      let regionCode = instance.reference.id.replace('RegionTitle', '');
+      let value =  nFormatter(rootThis.regionAverages[regionCode],2);
+      content.innerHTML = `Average: ${value}`;
+    },
+    content: function (reference) {
+        let tooltipElement = document.createElement('div'),
+        header = document.createElement('h3'),
+        content = document.createElement('div');
+        tooltipElement.id="choroRegionTooltip"
+        content.classList.add('tippyContent');
+        tooltipElement.appendChild(header);
+        tooltipElement.appendChild(content);
+
+
+        let regionCode = reference.id.replace('RegionTitle', '');
+        header.innerHTML = regionsDict[regionCode];
+
+        return tooltipElement
+    }
+  });
+
 }
 ////////////////////////////////
 //Y-axis
