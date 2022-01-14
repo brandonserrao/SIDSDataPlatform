@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import {nFormatter} from './vizEngineHelperFunctions'
+import { sidsDict } from './vizEngineGlobals'
 
 export function RadarChart(parent_selector, options, countryList, pillar, dataFull) {
 	let data = dataFull[pillar]
@@ -488,7 +489,7 @@ export function RadarChart(parent_selector, options, countryList, pillar, dataFu
 			}else if (pillar=="customIndex") {
 				tooltip.transition()
 					.style('display', 'block')
-					.text(nFormatter(d.value,2)+", "+d.axis);
+					.text(nFormatter(d.value,2)+", "+ sidsDict[d.axis]);
 			} else {
 				tooltip.transition()
 					.style('display', 'block')

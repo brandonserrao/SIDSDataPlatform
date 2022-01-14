@@ -242,7 +242,10 @@ export default {
   text-anchor: middle;
   color: black;
 }
-
+.spiderbox {
+  position: relative;
+  z-index: 5;
+}
 #choro_legend_container {
   margin: 0;
   padding: 0;
