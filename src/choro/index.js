@@ -14,7 +14,9 @@ import {
   initXAxis,
   hideChoroLegend,
   showChoroLegend,
-  appendMultiRectangles} from './vizEngineInit'
+  appendMultiRectangles,
+  initVizEngineTooltips
+} from './vizEngineInit'
 
 
   import { updateVizEngine,
@@ -199,3 +201,4 @@ Choro.prototype.initTimeSeries = initTimeSeries;
 Choro.prototype.updateTimeChart = updateTimeChart;
 Choro.prototype.parse = parse;
 Choro.prototype.updateRegionLables = updateRegionLables;
+Choro.prototype.initVizEngineTooltips = initVizEngineTooltips;

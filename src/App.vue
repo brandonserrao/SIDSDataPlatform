@@ -38,7 +38,9 @@ export default {
 @import './assets/styles/forms.css';
 @import './choro/vizEngine.css';
 
-
+html {
+  scroll-behavior: smooth;
+}
 
 #app {
   padding: 0;

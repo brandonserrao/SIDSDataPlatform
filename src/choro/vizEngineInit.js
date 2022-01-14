@@ -1,8 +1,10 @@
 import * as d3 from 'd3';
+import tippy from 'tippy.js';
 
 import { indexColors } from './index-data'
 import {regionColors, getBoundingBox, nFormatter} from './vizEngineHelperFunctions'
-import {countryListLongitude} from './vizEngineGlobals'
+import {countryListLongitude, sidsDict} from './vizEngineGlobals'
+// countryListSpider
 //runs this right away (it works, for some reason it doesn't draw the titles if executed on click )
 ///////////////////////////////////
 
@@ -39,6 +41,7 @@ export function initVizEngine({sidsXML}) {
       this.initCountrySvgs();
       this.appendAllElements();
       this.initTimeSeries();
+      this.initVizEngineTooltips()
   //   initVizEngineTooltips(); // requires maps to be loaded
   //
   //
@@ -500,7 +503,42 @@ export function appendCountryRectangles() {
     .attr("height", 0)
     .classed("choroRect", true);
 }
+export function initVizEngineTooltips() {
+  let rootThis = this;
+  tippy('.countrySvg', {
+    theme: 'light',
+    delay: 300,
+    onShow: function(instance) {
 
+      let content = instance.popper.getElementsByClassName('tippyContent')[0];
+      let countryCode = instance.reference.id;
+      let year = rootThis.indiSelections.year === 'recentValue' ? 'Most recent value' : rootThis.indiSelections.year;
+      let value = 1;
+      if(rootThis.vizMode === 'index') {
+        value = rootThis.indexData.index.data[rootThis.indiSelections.year][countryCode];
+      } else {
+        value = rootThis.indicatorData.data[rootThis.indiSelections.year][countryCode];
+      }
+      value = typeof value === 'string' ? value : nFormatter(value,2);
+      content.innerHTML = `Value: ${value} <br/> Year: ${year}`;
+    },
+    content: function (reference) {
+        let tooltipElement = document.createElement('div'),
+        header = document.createElement('h3'),
+        content = document.createElement('div');
+        tooltipElement.id="choroCountryTooltip"
+        content.classList.add('tippyContent');
+        tooltipElement.appendChild(header);
+        tooltipElement.appendChild(content);
+
+
+        let countryCode = reference.id;
+        header.innerHTML = sidsDict[countryCode];
+
+        return tooltipElement
+    }
+  });
+}
 ////////////////////////////////
 //Y-axis
 ///////////////////////////////

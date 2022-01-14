@@ -178,7 +178,7 @@
   </v-card>
     <v-card flat class="mt-2" v-if="activeIndicator">
       <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.Indicator}}</v-card-title>
-      <v-card-text>
+      <v-card-text class="active-indicator-info">
         <div class="mb-1 d-flex">
           <div class="active-dimension"> {{activeIndicatorDimension}} </div>
           <v-select class='dimensions-select' v-if="activeIndicatorDimensions.length > 1"
@@ -508,5 +508,10 @@ export default {
 }
 .cursor-pointer {
   cursor: pointer;
+}
+.active-indicator-info {
+  padding-top: 8px !important;
+  max-height: calc(100vh - 410px);
+  overflow-y: scroll;
 }
 </style>
