@@ -181,7 +181,6 @@
       <v-card-text class="active-indicator-info">
         <div class="mb-1 d-flex">
           <div class="active-dimension"> {{activeIndicatorDimension}} </div>
-          {{activeIndicatorDimensions}}
           <v-select class='dimensions-select' v-if="activeIndicatorDimensions.length > 1"
             :items="activeIndicatorDimensions"
             :value="activeIndicatorCode"
@@ -361,6 +360,10 @@ export default {
     },
     activeIndicatorsWithMeta() {
       let indicatorsWithMetaArray = this.activeIndicators.map(codesArray => {
+        codesArray.map(code =>  {
+          let metaData = this.indicatorsMeta[code];
+          metaData.codesArray = codesArray;
+        })
         let metaData = this.indicatorsMeta[codesArray[0]];
         metaData.codesArray = codesArray;
         return metaData;
