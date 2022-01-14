@@ -270,22 +270,26 @@ export function initCountrySvgs(){
   let rootThis = this;
     d3.select(this.sidsMaps)
     .selectAll("path")
-    .on("mouseover", function () {
-      if (d3.select(this).classed("countryActive"))
-        return; /* no need to change class when county is already selected */
-      d3.select(this).attr("class", "countryHover");
-    })
-    .on("mouseout", function () {
-      if (d3.select(this).classed("countryActive")) return;
-      d3.select(this).attr("class", function () {
-        return (
-          regionColors(
-            rootThis.profileData[this.id].Region,
-            rootThis.profileData[this.id]["Member State (Y/N)"]
-          ) + " shadow countrySvg"
-        );
-      });
-    })
+    // .on("mouseover", function () {
+    //   if (d3.select(this).classed("countryActive"))
+    //     return; /* no need to change class when county is already selected */
+    //   // d3.select(this).attr("class", "countryHover");
+    // })
+    // .on("mouseout", function () {
+    //   if (d3.select(this).classed("countryActive")) return;
+    //   d3.select(this).attr("class", function () {
+    //     console.log(regionColors(
+    //       rootThis.profileData[this.id].Region,
+    //       rootThis.profileData[this.id]["Member State (Y/N)"]
+    //     ) + " shadow countrySvg")
+    //     return (
+    //       regionColors(
+    //         rootThis.profileData[this.id].Region,
+    //         rootThis.profileData[this.id]["Member State (Y/N)"]
+    //       ) + " shadow countrySvg"
+    //     );
+    //   });
+    // })
     .on("click", function () {
       // TODO: uncomment to male zoom works
 
@@ -505,13 +509,14 @@ export function appendCountryRectangles() {
 }
 export function initVizEngineTooltips() {
   let rootThis = this;
-  tippy('.countrySvg', {
+
+  tippy('.countrySvg, .choroCircle', {
     theme: 'light',
     delay: 300,
     onShow: function(instance) {
 
       let content = instance.popper.getElementsByClassName('tippyContent')[0];
-      let countryCode = instance.reference.id;
+      let countryCode = instance.reference.parentElement.id;
       let year = rootThis.indiSelections.year === 'recentValue' ? 'Most recent value' : rootThis.indiSelections.year;
       let value = 1;
       if(rootThis.vizMode === 'index') {
@@ -532,7 +537,7 @@ export function initVizEngineTooltips() {
         tooltipElement.appendChild(content);
 
 
-        let countryCode = reference.id;
+        let countryCode = reference.parentElement.id;
         header.innerHTML = sidsDict[countryCode];
 
         return tooltipElement

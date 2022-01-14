@@ -263,7 +263,7 @@ export function updateCountrySvgColors(quantize) {
   let indicatorDataYear = this.indicatorData["data"][this.indiSelections["year"]],
   rootThis = this;
   ///draw choropleth scale
-  if (this.indiSelections["viz"] !== "mvi") {
+  if (this.page !== "mvi") {
     /* break the data values into 9 ranges of €100 each   */
 
 
@@ -288,7 +288,6 @@ export function updateCountrySvgColors(quantize) {
             }
           } else {
            if (
-              rootThis.indiSelections["viz"] == "Multi-indicator" ||
               rootThis.indiSelections["viz"] == "bars" ||
               rootThis.indiSelections["viz"] == "spider" ||
               rootThis.indiSelections["viz"] == "global" ||
@@ -308,6 +307,7 @@ export function updateCountrySvgColors(quantize) {
       })
       .on("mouseout", function () {
         if (d3.select(this).classed("countryActive")) return;
+        if (rootThis.indiSelections.viz!=='choro') return;
         d3.select(this).attr("class", function () {
           /* reset county color to quantize range */
           let  stat = indicatorDataYear[this.id];
