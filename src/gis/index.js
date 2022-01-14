@@ -175,9 +175,6 @@ export default class Map {
   }
 
   showSpinner() {
-    // document.querySelector(".loader-gis").style.display = "block";
-
-    //show loader spinner
     console.log("show loading spinner");
     let spinner = document.getElementsByClassName("loader-gis")[0];
     let modal = document.getElementsByClassName("loader-gis-modal")[0];
@@ -211,16 +208,14 @@ export default class Map {
       resolution
       // resolution === "hex1"
     ) {
-      //showing loader in expectation of hex1 taking longer to display
-      // $(".loader-gis").show();
-      console.log("handling spinner for hex1 loading");
+      /* console.log("handling spinner for hex1 loading");
       this.showSpinner();
 
       map.once("idle", () => {
         // $(".loader-gis").hide();
         this.hideSpinner();
       });
-
+ */
       this.clearHexHighlight();
     }
 
@@ -1073,6 +1068,8 @@ export default class Map {
       } while (this.checkForDuplicates(breaks_new) && globals.precision < 10);
       breaks = breaks_new;
       console.log("new breaks:", breaks);
+
+      globals.currentLayerState.breaks = breaks; //update global state
 
       map.setPaintProperty(globals.currentLayerState.hexSize, "fill-color", [
         "interpolate",

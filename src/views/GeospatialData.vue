@@ -155,8 +155,6 @@ export default {
       console.log("changeBasemap(object) object is:");
       console.log(object);
 
-      //oldcode goes in here; calling on mapclass methods
-      //call
       this.map.changeBasemap(object);
     },
     changeOpacity(object) {
@@ -517,11 +515,6 @@ export default {
   mounted() {
     this.map = new GIS("map"); //initialzing mapbox map instance???
 
-    /** Collapse/Expand for Box  */
-    /* $(".bottom-left").on("click", function () {
-      $(".app-body").toggleClass("collapsed");
-      $(this).toggleClass("collapsed");
-    }); */
     let collapseBtn = document.getElementsByClassName("collapse-btn")[0];
     collapseBtn.addEventListener("click", function () {
       console.log("collapse-btn onclick firing");

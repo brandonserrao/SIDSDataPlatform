@@ -890,22 +890,6 @@
         </div>
       </div>
     </div>
-    <!-- SPINNER LOADER -->
-    <!--
-    <div class="loader-gis">
-      <svg
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        width="170"
-        height="170"
-        viewbox="0 0 200 173.20508075688772"
-      >
-        <path
-          fill="#003399"
-          d="M0 86.60254037844386L50 0L150 0L200 86.60254037844386L150 173.20508075688772L50 173.20508075688772Z"
-        ></path>
-      </svg>
-    </div> -->
   </div>
 </template>
 
@@ -938,11 +922,19 @@ export default {
 
       //display loader spinner
       if (!(change_type === "change-opacity")) {
+        /* 
         console.log("showing loading spinner");
         let spinner = document.getElementsByClassName("loader-gis")[0];
         console.log(spinner);
         spinner.classList.remove("display-none");
-        console.log(spinner);
+        console.log(spinner); */
+            
+            
+        console.log("show loading spinner");
+        let spinner = document.getElementsByClassName("loader-gis")[0];
+        let modal = document.getElementsByClassName("loader-gis-modal")[0];
+        spinner.classList.remove("display-none");
+        modal.classList.remove("display-none");
       }
 
       //CANDO: extract object packaging and emit to own line outside of typecheck
