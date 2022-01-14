@@ -13,7 +13,7 @@
                 v-for="(item, i) in goalTypes"
                 :key="i"
                 eager
-                transition="fade"
+                transition="none"
                 open-delay="200"
                 max-width="400"
                 nudge-right="516"
@@ -59,7 +59,7 @@
                 :key="i"
                 eager
                 open-delay="200"
-                transition="fade"
+                transition="none"
                 :nudge-top="18 + 40 * (i + 1)"
                 max-width="400"
                 bottom
@@ -135,7 +135,7 @@
                     v-for="(n, index) in activeGoalTypes"
                     :key="n"
                     eager
-                    transition="fade"
+                    transition="none"
                     open-delay="300"
                     :nudge-right="(4 - (index % 5)) * 80 || 6"
                     :nudge-top="(Math.floor(index/5)) * 80 || 6"

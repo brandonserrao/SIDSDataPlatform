@@ -24,7 +24,7 @@
               right
               open-delay="300"
               max-width="250"
-              transition="fade"
+              transition="none"
               :key="item.Indicator"
               content-class="indicator-tooltip"
              >
@@ -65,7 +65,7 @@
             v-if="!dataset || dataset === item.name"
             right
             open-delay="300"
-            transition="fade"
+            transition="none"
             max-width="250"
             :key="i"
             content-class="indicator-tooltip"
@@ -140,7 +140,7 @@
           <v-tooltip
             right
             open-delay="300"
-            transition="fade"
+            transition="none"
             max-width="250"
             :key="i"
             content-class="indicator-tooltip"
