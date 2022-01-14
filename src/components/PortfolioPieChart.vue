@@ -217,6 +217,7 @@ export default {
 .pie-chart svg {
   width: 100%;
   min-height: 150px;
+  overflow: visible;
 }
 .pie-chart polyline {
   opacity: 0.3;

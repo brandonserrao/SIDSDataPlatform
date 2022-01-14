@@ -43,7 +43,7 @@ export default {
         "#EF412C", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8",
         "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8"
       ],
-      ss: ["Keeping people out of poverty", "Strengthen effective, inclusive and accountable governance", "Enhance national prevention and recovery capacities for resilient societies", "Promote nature-based solutions for a sustainable planet", "Close the energy gap", "Strengthen gender equality and the empowerment of women and girls"],
+      ss: ["Keeping people out of poverty", "Strengthen effective, inclusive and accountable governance", "Enhance national prevention and recovery capacities for resilient societies", "Promote nature-based solutions for a sustainable planet", "Close the energy gap", "Strenghten gender equality and the empowerment of women and girls"],
       barsMargin: { top: 60, right: 10, bottom: 0, left: 10 },
       svgWidth: 880,
       svgHeight: 160,
@@ -84,6 +84,7 @@ export default {
         }
       });
       this.filteredProjects.map( project => {
+        console.log(project.solution)
         this.ss.map((solution, index) => {
           if(project.solution.includes(solution)) {
             barsData[index].budget = barsData[index].budget + parseInt(project.budget);
