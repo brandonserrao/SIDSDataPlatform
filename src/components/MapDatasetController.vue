@@ -137,8 +137,8 @@
                     eager
                     transition="fade"
                     open-delay="300"
-                    :nudge-right="(5 - (index % 6)) * 80 || 6"
-                    :nudge-top="getGoalsTooltipNudgeTop(index)"
+                    :nudge-right="(4 - (index % 5)) * 80 || 6"
+                    :nudge-top="(Math.floor(index/5)) * 80 || 6"
                     max-width="400"
                     content-class="indicator-tooltip"
                     allow-overflow
@@ -652,16 +652,8 @@ export default {
       this.activeGoal = goalNumber;
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
       this.$refs.slider.scrollOffset = 120 * (goalNumber - 1);
-    },
-    getGoalsTooltipNudgeTop(index) {
-      if (index < 6) {
-        return 6;
-      } else if (index < 12) {
-        return 120;
-      }
-      return 112;
-    },
-  },
+    }
+  }
 };
 </script>
 

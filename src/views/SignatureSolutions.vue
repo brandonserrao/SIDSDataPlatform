@@ -84,7 +84,6 @@ export default {
         }
       });
       this.filteredProjects.map( project => {
-        console.log(project.solution)
         this.ss.map((solution, index) => {
           if(project.solution.includes(solution)) {
             barsData[index].budget = barsData[index].budget + parseInt(project.budget);
@@ -100,7 +99,6 @@ export default {
       let svg = d3.select(`#tab${this.id} .svg-container`).append("svg");
       svg.attr('height', this.svgHeight)
           .attr('width', this.svgWidth);
-
       this.svgContainer = svg.append("g")
           .attr("transform", "translate(" + this.barsMargin.left + "," + this.barsMargin.top + ")");
       this.y1 = d3.scaleLinear().rangeRound([this.barsHeight, 0])
