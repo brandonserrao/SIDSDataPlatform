@@ -928,8 +928,7 @@ export default {
         console.log(spinner);
         spinner.classList.remove("display-none");
         console.log(spinner); */
-            
-            
+
         console.log("show loading spinner");
         let spinner = document.getElementsByClassName("loader-gis")[0];
         let modal = document.getElementsByClassName("loader-gis-modal")[0];
@@ -2251,7 +2250,7 @@ body {
 .full-height {
   height: 100%;
 }
-
+/* 
 .fiji,
 .FJI {
   background: url("../assets/gis/sidebar/fiji.png");
@@ -2271,7 +2270,7 @@ body {
 .GRD {
   background: url("../assets/gis/sidebar/grenada.png");
 }
-
+ */
 .flag {
   width: 38px;
   height: 23px;

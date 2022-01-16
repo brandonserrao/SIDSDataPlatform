@@ -462,7 +462,8 @@ export default class Map {
     }
 
     if (selectedColor === "invert") {
-      var reverse = currentColor.reverse();
+      // var reverse = currentColor.reverse();
+      let reverse = [...currentColor].reverse();
       globals.currentLayerState.color = reverse;
     } else if (selectedColor === "red") {
       globals.currentLayerState.color = colors.colorSeq["pinkish"];

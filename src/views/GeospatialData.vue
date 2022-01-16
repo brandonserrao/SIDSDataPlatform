@@ -683,7 +683,7 @@ export default {
   height: 50px;
   position: absolute;
   left: -0vw;
-  top: 10vh;
+  top: 20vh;
   background-color: rgba(153, 142, 142, 0.562);
   border-radius: 10px;
   cursor: pointer;
@@ -696,7 +696,7 @@ export default {
 
 @media (orientation: landscape) and (max-width: 750px) {
   .collapse-btn {
-    top: 30vh;
+    top: 50vh;
     /* margin-left: 0; */
   }
 }
