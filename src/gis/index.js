@@ -37,7 +37,12 @@ export default class Map {
       style: "mapbox://styles/mapbox/satellite-streets-v11",
       center: [-71.5, 19.0],
       zoom: 7,
-      maxZoom: 14,
+      maxZoom: 13.5,
+      minZoom: 1,
+      maxBounds: [
+        [-270, -45],
+        [+270, +45],
+      ],
     });
 
     this.map.on("load", () => {
@@ -56,9 +61,19 @@ export default class Map {
       this.getBasemapLabels();
     });
 
-    //for debugging
+    //for
+    let self = this.map;
     this.map.on("click", (e) => {
       console.log(`A click event has occurred at ${e.lngLat}`);
+    });
+
+    //for debugging
+    this.map.on("click", () => {
+      console.log("isStyleLoaded():", self.isStyleLoaded());
+      console.log("areTilesLoaded():", self.areTilesLoaded());
+      console.log("getZoom():", self.getZoom());
+      console.log("getMinZoom():", self.getMinZoom());
+      console.log("getMaxZoom():", self.getMaxZoom());
     });
   }
 
@@ -539,7 +554,9 @@ export default class Map {
     globals.myHistogram.data.datasets[0].backgroundColor = colorRampNew;
     globals.myHistogram.update();
 
-    this.hideSpinner();
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   add3D() {
@@ -631,7 +648,9 @@ export default class Map {
       });
     }
 
-    this.hideSpinner();
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   addLabels(labelObject) {
@@ -662,7 +681,9 @@ export default class Map {
       //$('#addLabels')[0].innerText = 'Add Labels'
     }
 
-    this.hideSpinner();
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   addOcean(activeDataset, activeLayer) {
@@ -751,7 +772,9 @@ export default class Map {
 
     // this.addLegend(); //TODO doesnt this need the extra params that I added to the addLegend function?
 
-    this.hideSpinner();
+    this.map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   changeDataOnMap(activeDataset, activeLayer) {
@@ -1032,7 +1055,9 @@ export default class Map {
     map.moveLayer("allsids", globals.firstSymbolId);
     //END------------------------------------------
 
-    this.hideSpinner();
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   recolorBasedOnWhatsOnPage() {
@@ -1158,7 +1183,9 @@ export default class Map {
       selectedData
     ); */
 
-    this.hideSpinner();
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   remove3d() {
@@ -1604,7 +1631,10 @@ export default class Map {
 
     //finished loading in so hide spinner
     // hideSpinner();//TODO: REIMPLEMENT SPINNER
-    this.hideSpinner();
+
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   logSources() {
