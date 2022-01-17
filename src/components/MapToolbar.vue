@@ -20,7 +20,15 @@
                 <div class="description hover">
                   Map : Select country of your choice
                 </div>
-                <div class="menu-drop row-flex align-items-center display-none">
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    align-items-center
+                    display-none
+                    country-select-bar
+                  "
+                >
                   <div
                     class="col-flex space-evenly"
                     style="position: relative; height: 100%"
@@ -100,6 +108,7 @@
 
                     <!-- Brandon's component-based country-options-->
                     <div
+                      id="countryOptions"
                       class="col-flex country-options display-none options-drop"
                     >
                       <country-selector-option
@@ -107,6 +116,7 @@
                         :key="name.GID_0"
                         :name="name.NAME_0"
                         :id="name.GID_0"
+                        :flagCode="name.flagCode"
                         @option-select="handleCountryChange($event)"
                       ></country-selector-option>
                     </div>
@@ -126,16 +136,18 @@
                     "
                   >
                     <input
+                      id="country-search-input"
                       type="text"
                       class="search-input"
                       name="search-country"
                       placeholder="Search Country"
+                      @keyup="filterCountries"
                     />
                     <div class="search-icon"></div>
                   </div>
                   <div
                     class="search-icon first-icon"
-                    @click="toggleSearchBar()"
+                    @click="toggleSearchBar(true)"
                   ></div>
                 </div>
               </div>
@@ -326,8 +338,8 @@
                         <div
                           style="margin-top: 12px; font-size: 12px; width: 80%"
                         >
-                          Draw mode is a nice mode in which you draw some
-                          polygons and triangles really great.
+                          Toggle administrative boundaries on for areas where
+                          they are available.
                         </div>
                       </div>
                     </div>
@@ -868,7 +880,7 @@
                   class="icon aplus-icon"
                   @click="handleLabelsChange('aplus', 'aminus')"
                 ></div>
-                <div class="description hover">A- A+</div>
+                <div class="description hover">Map Labels: Toggle On/Off</div>
                 <div
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>
@@ -878,22 +890,6 @@
         </div>
       </div>
     </div>
-    <!-- SPINNER LOADER -->
-    <!--
-    <div class="loader-gis">
-      <svg
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        width="170"
-        height="170"
-        viewbox="0 0 200 173.20508075688772"
-      >
-        <path
-          fill="#003399"
-          d="M0 86.60254037844386L50 0L150 0L200 86.60254037844386L150 173.20508075688772L50 173.20508075688772Z"
-        ></path>
-      </svg>
-    </div> -->
   </div>
 </template>
 
@@ -926,11 +922,18 @@ export default {
 
       //display loader spinner
       if (!(change_type === "change-opacity")) {
+        /* 
         console.log("showing loading spinner");
         let spinner = document.getElementsByClassName("loader-gis")[0];
         console.log(spinner);
         spinner.classList.remove("display-none");
-        console.log(spinner);
+        console.log(spinner); */
+
+        console.log("show loading spinner");
+        let spinner = document.getElementsByClassName("loader-gis")[0];
+        let modal = document.getElementsByClassName("loader-gis-modal")[0];
+        spinner.classList.remove("display-none");
+        modal.classList.remove("display-none");
       }
 
       //CANDO: extract object packaging and emit to own line outside of typecheck
@@ -1198,6 +1201,51 @@ export default {
       document
         .getElementsByClassName("small-menu")[0]
         .classList.remove("display-none");
+    },
+    filterCountries() {
+      this.toggleCountryMenu(true); //expand country menu to be visible if closed
+      console.log("filterCountries firing");
+      // Declare variables
+      var input, filter, list, options, country, i, txtValue;
+      input = document.getElementById("country-search-input");
+      filter = input.value.toUpperCase();
+      list = document.getElementById("countryOptions");
+      options = list.getElementsByClassName("country-option");
+
+      // Loop through all list items, and hide those who don't match the search query
+      for (i = 0; i < options.length; i++) {
+        country = options[i]; //.getElementsByTagName("a")[0];
+        txtValue = country.textContent || country.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          // options[i].style.display = "";
+          options[i].classList.remove("display-none");
+          // resultFound = true;
+        } else {
+          options[i].classList.add("display-none");
+        }
+      }
+      /*
+      let resultFound;
+      if (!resultFound) {
+        console.log("no result");
+        let div = document.createElement("div");
+        div.append("No matches found");
+        // div.id = "noMatches";
+        div.classList.add(
+          "no-matches",
+          "row-flex",
+          "country-option",
+          "align-items-center"
+        ); //match class formatting for other country-options
+        // list.append(div);
+        document.getElementsByClassName("country-select-bar")[0].append(div);
+      } else {
+        // let message = document.getElementById("noMatches");
+        let countrySelectBar =
+          document.getElementsByClassName("country-select-bar");
+        let message = countrySelectBar[0].getElementsByClassName("no-matches");
+        message?.remove();
+      } */
     },
 
     //NEW--------------------------------------------
@@ -1682,9 +1730,13 @@ export default {
       }
     },
 
-    toggleCountryMenu() {
+    toggleCountryMenu(state = null) {
+      console.log("toggleCountryMenu firing");
       var countryMenu = document.getElementsByClassName("country-options")[0];
-      if (countryMenu.classList.contains("display-none")) {
+      if (
+        state == true ||
+        (state === null && countryMenu.classList.contains("display-none"))
+      ) {
         countryMenu.classList.remove("display-none");
       } else {
         countryMenu.classList.add("growUp");
@@ -2198,7 +2250,7 @@ body {
 .full-height {
   height: 100%;
 }
-
+/* 
 .fiji,
 .FJI {
   background: url("../assets/gis/sidebar/fiji.png");
@@ -2218,7 +2270,7 @@ body {
 .GRD {
   background: url("../assets/gis/sidebar/grenada.png");
 }
-
+ */
 .flag {
   width: 38px;
   height: 23px;

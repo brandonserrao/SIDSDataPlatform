@@ -6,17 +6,24 @@
         LANDSCAPE ORIENTATION
       </p>
     </div>
-    <!-- 
-    <div
-      v-show="!(screenOrientation === 'landscape-primary')"
-      class="landscape-enforcer"
-    >
-      <p>
-        THE GEOSPATIAL DATA FUNCTIONALITY REQUIRES YOUR DEVICE TO BE IN
-        LANDSCAPE ORIENTATION
-      </p>
-    </div> -->
-    <!-- <button class="debug" @click="_logSources()">Debug logger</button> -->
+
+    <div class="collapse-btn">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="ionicon"
+        viewBox="0 0 512 512"
+      >
+        <path
+          fill="none"
+          stroke="#eee"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="48"
+          d="M328 112L184 256l144 144"
+        />
+      </svg>
+    </div>
+
     <map-dataset-controller
       class="data-controller"
       :map="map"
@@ -38,12 +45,14 @@
       @toggle-labels="toggleLabels($event)"
     />
     <div id="map">
-      <grid-loader
-        class="loader-gis display-none"
-        :loading="gisLoader.loading"
-        :color="gisLoader.color"
-        :size="gisLoader.size"
-      ></grid-loader>
+      <div class="loader-gis-modal">
+        <grid-loader
+          class="loader-gis display-none"
+          :loading="gisLoader.loading"
+          :color="gisLoader.color"
+          :size="gisLoader.size"
+        ></grid-loader>
+      </div>
     </div>
   </div>
 </template>
@@ -106,6 +115,19 @@ export default {
       console.log(`toggling Legend: displayLegend= ${this.displayLegend}`);
       this.displayLegend = !this.displayLegend;
     },
+    resetToolbarMenus() {
+      console.log(
+        `! resetToolbarMenus() currently only resets: Palette Select, Opacity Slider`
+      );
+
+      let paletteMenu = document.getElementsByClassName("selected-color")[0];
+      paletteMenu.children[0].innerHTML = "Default";
+      paletteMenu.children[1].className = "menu-icon " + "color-icon-1"; //usng color-icon-1 as placeholder for now
+
+      let opacitySlider = document.getElementsByClassName("opacity-slider")[0];
+      opacitySlider.value = globals.opacity; //hardcoded until changed to be based on shared reactive variable
+    },
+
     selectCountry(selection) {
       this.map.zoomToCountry(selection);
       // this.map.zoomTo(selection); //this. component instance; reffing its .map which is a Map class from index.js; calling class method zoomTo =
@@ -133,8 +155,6 @@ export default {
       console.log("changeBasemap(object) object is:");
       console.log(object);
 
-      //oldcode goes in here; calling on mapclass methods
-      //call
       this.map.changeBasemap(object);
     },
     changeOpacity(object) {
@@ -374,6 +394,7 @@ export default {
         );
         globals.lastActive.dataset = activeDataset;
         globals.currentLayerState.color = null;
+        this.resetToolbarMenus();
       }
 
       //if there isn't a dataset selected and updatecalls;
@@ -408,8 +429,10 @@ export default {
           //display loader spinner
           console.log("showing loading spinner");
           let spinner = document.getElementsByClassName("loader-gis")[0];
+          let modal = document.getElementsByClassName("loader-gis-modal")[0];
           console.log(spinner);
           spinner.classList.remove("display-none");
+          modal.classList.remove("display-none");
           console.log(spinner);
 
           //if ocean dataset or layer selected place resolution indicator to 10km hex option
@@ -491,6 +514,15 @@ export default {
   },
   mounted() {
     this.map = new GIS("map"); //initialzing mapbox map instance???
+
+    let collapseBtn = document.getElementsByClassName("collapse-btn")[0];
+    collapseBtn.addEventListener("click", function () {
+      console.log("collapse-btn onclick firing");
+      document
+        .getElementsByClassName("data-controller")[0]
+        .classList.toggle("collapsed");
+      this.classList.toggle("collapsed");
+    });
   },
 };
 </script>
@@ -548,6 +580,14 @@ export default {
   z-index: 1500;
 }
 
+.loader-gis-modal {
+  position: relative;
+  background-color: rgba(134, 131, 131, 0.13);
+  width: 100%;
+  height: 100%;
+  z-index: 900;
+}
+
 .display-none {
   display: none;
 }
@@ -566,6 +606,9 @@ export default {
   top: 2em;
   width: 400px;
   z-index: 999;
+
+  transition: 0.5s ease-in-out all;
+  opacity: 1;
 }
 
 /* FOR LEGEND ??*/
@@ -633,5 +676,47 @@ export default {
   height: 0px;
   width: 0px;
   padding: 5px;
+}
+
+.collapse-btn {
+  width: 30px;
+  height: 50px;
+  position: absolute;
+  left: -0vw;
+  top: 20vh;
+  background-color: rgba(153, 142, 142, 0.562);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.5s ease-in-out;
+  /*     display: flex;
+    justify-content: center;*/
+  z-index: 1600;
+  margin-left: -5px;
+}
+
+@media (orientation: landscape) and (max-width: 750px) {
+  .collapse-btn {
+    top: 50vh;
+    /* margin-left: 0; */
+  }
+}
+
+.collapse-btn svg {
+  max-width: 26px;
+
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.collapse-btn.collapsed {
+  transform: rotate(180deg);
+}
+
+.data-controller.collapsed {
+  opacity: 0;
+  z-index: -999;
+  pointer-events: none;
 }
 </style>
