@@ -53,7 +53,7 @@ export default {
     initChart() {
       this.pie = d3.select(`#${this.chartName}${this.postfix}`).append("svg").append("g");
       let translate = this.$vuetify.breakpoint.name === 'xs' || this.$vuetify.breakpoint.name === 'sm' ?
-      `translate(160, 40)` : `translate(180, 75)`
+      `translate(160, 40)` : `translate(140, 75)`
       this.pie.append("g")
         .attr("class", "slices").attr("transform", translate);
       this.pie.append("g")
@@ -214,8 +214,11 @@ export default {
 </script>
 
 <style>
+.pie-chart {
+  text-align: center;
+}
 .pie-chart svg {
-  width: 100%;
+  width: auto;
   min-height: 150px;
   overflow: visible;
 }
