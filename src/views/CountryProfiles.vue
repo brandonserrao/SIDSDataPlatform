@@ -1,10 +1,10 @@
 <template>
-  <div class="mt-xs-0 mt-sm-0 mt-mb-5 mt-lg-5 mt-xl-5">
+  <div class="mt-xs-0 mt-sm-0 mt-md-5 mt-lg-5 mt-xl-5">
     <v-row class="profile-header-row" :style="isMobile ? {'background-image': `url(${activeCountryProfile.photo})`} : {}" justify="center">
-      <v-col cols="12" offset-md="3" md="3">
+      <v-col cols="12" offset-md="1" md="4" offset-lg="3" lg="3">
         <h2 class="page-header country-profile-header">Country profile</h2>
       </v-col>
-      <v-col cols="10" md="3" class="select-column">
+      <v-col cols="10" md="4" lg="3" class="select-column">
         <v-select
           rounded
           class="country-select"
@@ -53,14 +53,13 @@
     <v-row class="d-none d-md-flex" justify="center">
       <v-col cols="11" md="6">
         <div class="select">
-          <label class="input-label">Overlay countries to compare indicator rank among SIDS</label>
           <v-select
             rounded
             :value="compare"
             :items="filteredCountries"
             item-text="Country"
             item-value="id"
-            placeholder="Select countries"
+            placeholder="Overlay countries to compare indicator rank among SIDS"
             @change="setCompareCountries"
             chips
             outlined
@@ -91,35 +90,35 @@
       </v-col>
     </v-row>
     <v-row class="d-none d-md-flex" justify="center">
-      <v-col cols="4">
+      <v-col md="6" lg="4">
         <profiles-spider-chart
           headerText="Climate Action"
           :graphOptions="graphOptions.Climate"
           pillarName="Climate"
           :activeCountries="graphCountriesProfiles"/>
       </v-col>
-      <v-col cols="4">
+      <v-col md="6" lg="4">
         <profiles-spider-chart
           headerText="Blue Economy"
           :graphOptions="graphOptions.Blue"
           pillarName="Blue"
           :activeCountries="graphCountriesProfiles"/>
       </v-col>
-      <v-col cols="4">
+      <v-col md="6" lg="4">
         <profiles-spider-chart
           headerText="Digital Transformation"
           :graphOptions="graphOptions.Digital"
           pillarName="Digital"
           :activeCountries="graphCountriesProfiles"/>
       </v-col>
-      <v-col cols="4">
+      <v-col md="6" lg="4">
         <profiles-spider-chart
           headerText="Multidimensional Vulnerability"
           :graphOptions="graphOptions.MVI2"
           pillarName="MVI2"
           :activeCountries="graphCountriesProfiles"/>
       </v-col>
-      <v-col cols="6">
+      <v-col md="6" lg="4">
         <profiles-finance
           :countryId="country"/>
       </v-col>
@@ -179,14 +178,13 @@
     <v-row class="d-flex d-md-none" justify="center">
       <v-col cols="11" md="6">
         <div class="select">
-          <label class="input-label">Overlay countries to compare indicator rank among SIDS</label>
           <v-select
             rounded
             :value="compare"
             :items="filteredCountries"
             item-text="Country"
             item-value="id"
-            placeholder="Select countries"
+            placeholder="Overlay countries to compare indicator rank among SIDS"
             @change="setCompareCountries"
             chips
             outlined
@@ -494,17 +492,18 @@ export default {
   .graph-tabs {
     background-color: transparent !important;
   }
- @media all and (max-width:600px) {
-   .country-profile-header {
+ @media all and (max-width:960px) {
+  .country-profile-header {
     margin: 0px auto 130px;
     color: #F2F2F3 !important;
     text-align: center;
-   }
-   .menu-col {
-     width: 0 !important;
-   }
-   .select-column {
-     margin-bottom: 15px;
-   }
+    text-shadow: 0px 0px 2px rgb(0 0 0 / 60%);
+  }
+  .menu-col {
+    width: 0 !important;
+  }
+  .select-column {
+    margin-bottom: 15px;
+  }
  }
 </style>

@@ -9,11 +9,11 @@
         ></portfolio-map>
       </v-col>
     </v-row>
-    <router-view class="d-none d-md-block mb-3 mt-negative"></router-view>
-    <v-row justify="center">
-      <v-col class="d-none d-md-block margin-wrap-right"></v-col>
+    <router-view class="d-none d-lg-block mb-3 mt-negative"></router-view>
+    <v-row class="flex-lg-nowrap" justify="center">
+      <v-col class="d-none d-lg-block margin-wrap-right"></v-col>
       <v-col class="d-none d-md-block tabs-column">
-        <v-row justify="center">
+        <v-row class="d-none d-lg-flex" justify="center">
           <v-col cols="12">
               <v-tabs
                 class="tabs prtfolio-slider"
@@ -26,7 +26,7 @@
           </v-col>
         </v-row>
         <v-row class="d-none d-md-flex" justify="center">
-          <v-col cols="6">
+          <v-col cols="6" md="5" lg="6">
             <portfolio-pie-chart
               @changeFilter="changeFilter"
               :data="regionFunding"
@@ -34,7 +34,7 @@
               :colorScheme="regionColors"
             ></portfolio-pie-chart>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="6" md="5" lg="6">
             <portfolio-pie-chart
               @changeFilter="changeFilter"
               :data="sourcesFunding"
@@ -44,9 +44,9 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col class="margin-wrap-right">
+      <v-col class="selects-col margin-wrap-right">
         <v-row dense justify="center">
-          <v-col cols='5' md="12">
+          <v-col cols='5' md="6" lg="12">
             <div class="select">
             <label class="input-label">Years</label>
             <v-select
@@ -60,36 +60,35 @@
             ></v-select>
             </div>
           </v-col>
-            <v-col cols='5' md="12">
-              <div class="select">
-              <label class="input-label">Region</label>
-              <v-select
-                rounded
-                hide-details
-                dense
-                :value="region"
-                @change="updateRegion"
-                :items="regionsToSelect"
-                outlined
-              ></v-select>
-              </div>
-            </v-col>
-          </v-row>
-          <v-row justify="center">
-            <v-col cols="10" class="d-block d-md-none">
-
-                <portfolio-pie-chart
-                  @changeFilter="changeFilter"
-                  :data="regionFunding"
-                  chartName="region"
-                  postfix="1"
-                  :colorScheme="regionColors"
-                ></portfolio-pie-chart>
-            </v-col>
-          </v-row>
-        <v-divider class="d-none d-md-block mb-6"></v-divider>
+          <v-col class="d-block d-lg-none"  md="6" lg="12">
+            <div class="select">
+            <label class="input-label">Region</label>
+            <v-select
+              rounded
+              hide-details
+              dense
+              :value="region"
+              @change="updateRegion"
+              :items="regionsToSelect"
+              outlined
+            ></v-select>
+            </div>
+          </v-col>
+        </v-row>
+        <v-row class="d-flex d-md-none" justify="center">
+          <v-col cols="10">
+              <portfolio-pie-chart
+                @changeFilter="changeFilter"
+                :data="regionFunding"
+                chartName="region"
+                postfix="1"
+                :colorScheme="regionColors"
+              ></portfolio-pie-chart>
+          </v-col>
+        </v-row>
+        <v-divider class="mt-2 d-none d-lg-block mb-2"></v-divider>
         <v-row dense justify="center">
-          <v-col cols='5' md="12">
+          <v-col cols='5'  md="6" lg="12">
             <div class="select">
               <label class="input-label">Funding categories</label>
               <v-select
@@ -103,7 +102,7 @@
               ></v-select>
             </div>
           </v-col>
-          <v-col cols='5' md="12">
+          <v-col cols='5'  md="6" lg="12">
             <div class="select">
               <label class="input-label">Funding sources</label>
               <v-select
@@ -120,8 +119,8 @@
             </div>
           </v-col>
         </v-row>
-        <v-row justify="center">
-          <v-col cols="10" class="d-block d-md-none">
+        <v-row class="d-flex d-md-none" justify="center">
+          <v-col cols="10">
             <portfolio-pie-chart
               @changeFilter="changeFilter"
               :data="sourcesFunding"
@@ -148,8 +147,8 @@
     <v-row>
       <v-col>
         <v-card flat>
-          <goals-selector class="d-flex d-md-none" @changeType="updateTypeData" :activeGoalType="pages[activePage]" />
-          <router-view class="d-block d-md-none"></router-view>
+          <goals-selector class="d-flex d-lg-none" @changeType="updateTypeData" :activeGoalType="pages[activePage]" />
+          <router-view class="d-block d-lg-none"></router-view>
         </v-card>
       </v-col>
     </v-row>
@@ -390,7 +389,7 @@ export default {
     margin-top: -205px !important;
   }
   .tabs-column {
-    min-width: 900px;
+    min-width: 830px;
   }
   .tabs {
     margin-left: auto;
@@ -405,7 +404,10 @@ export default {
     max-width: 200px;
     margin-right: auto;
   }
-  @media all and (max-width:600px) {
+  @media all and (max-width:1264px) {
+    .tabs-column {
+      min-width: none;
+    }
     .margin-wrap-right {
       max-width: none;
     }

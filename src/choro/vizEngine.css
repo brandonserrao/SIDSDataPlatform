@@ -5,13 +5,6 @@
   stroke-width: 1px;
   filter: drop-shadow(1px 1px 0px purple);
 }
-
-.countryHover {
-  fill: #91eefe;
-  filter: drop-shadow(1px 1px 0px purple);
-  cursor: pointer;
-}
-
 .shadow {
   filter: drop-shadow(1px 1px 0px black);
 }
@@ -145,8 +138,11 @@
   margin: 0;
   margin-top: 20px;
   padding: 0;
+  text-align: center;
 }
-
+#choro_map_container {
+  text-align: center;
+}
 #choro_map_container svg {
   margin-top: 5px;
   margin-bottom: -5px;
@@ -179,6 +175,14 @@
   display: none;
 }
 
+.choroCircle {
+  cursor: pointer;
+}
+.countrySvg:hover {
+  fill: #91eefe;
+  filter: drop-shadow(1px 1px 0px purple);
+  cursor: pointer;
+}
 .listbox {
   background: white;
   overflow-x: hidden;

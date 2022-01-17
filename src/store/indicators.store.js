@@ -10,12 +10,15 @@ export default {
   mutations: {
     setCategories(state, data) {
       state.indicatorsCategories = data;
+      console.log(data, '1')
     },
     setMeta(state, data) {
       state.indicatorsMeta = data;
+      console.log(data, '2')
     },
     setProfileData(state, data) {
       state.profileData = data;
+      console.log(data, '3')
     },
   },
   actions: {

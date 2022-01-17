@@ -1,9 +1,9 @@
 <template>
-  <v-card flat class="overflow">
+  <v-card flat class="overflow background-grey">
     <v-row dense>
       <v-col cols="7" md="4">
       <v-subheader class="d-none d-md-block info-bar_header block-header">{{country.Country}}</v-subheader>
-        <v-list dense class="indicators-list"
+        <v-list dense class="indicators-list background-grey"
         >
           <v-list-item
           >
@@ -52,17 +52,18 @@
           </v-list-item>
         </v-list>
       </v-col>
-      <v-col class="p-0 d-flex align-center" md="3" cols="5">
-        <img
-          class="info-bar_map"
+      <v-col class="p-0 d-flex align-center" md="4" cols="5">
+        <v-img
+          contain
           :src="country.map"
+          height="250"
         />
       </v-col>
-      <v-col class="p-0 align-center d-none d-md-block" cols="5">
+      <v-col class="p-0 align-center d-none d-md-block" cols="4">
         <v-img
           cover
-          max-height="250"
           :src="country.photo"
+          height="250"
         ></v-img>
       </v-col>
     </v-row>
@@ -107,8 +108,7 @@ export default {
   overflow:visible;
 }
 .info-bar_header {
-  font-size: 18px;
-  font-weight: bold;
+  padding-top: 10px;
 }
 .info-bar_map {
   max-height: 230px;

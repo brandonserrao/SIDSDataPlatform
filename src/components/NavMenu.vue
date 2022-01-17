@@ -32,19 +32,24 @@
       </v-list>
     </v-navigation-drawer>
     <v-list
-      class="main-menu d-none d-md-block"
+      class="main-menu-desktop main-menu d-none d-md-block"
       dense>
-        <v-list-item
-          v-for="route in routes"
-          :key="route.link"
-          :to="route.link"
-        >
-          <v-list-item-content>
-            <v-list-item-title
-              v-text="route.name">
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <div class="border-wrapper">
+          <v-list-item
+
+            class="menu-item"
+            v-for="route in routes"
+            :key="route.link"
+            :to="route.link"
+          >
+            <v-list-item-content>
+              <v-list-item-title
+                class="menu-item_text"
+                v-text="route.name">
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </div>
     </v-list>
   </div>
 </template>
@@ -74,9 +79,12 @@ export default {
 <style scoped>
 .main-menu {
   height: 100%;
-  padding-top: 25vh;
+  padding-top: 20vh;
   text-transform: uppercase;
   text-align: right;
+}
+.main-menu-desktop {
+  background: transparent !important;
 }
 .mdl-tabs__tab-bar {
   flex-direction: column;
@@ -120,5 +128,38 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
+}
+.menu-item{
+  height: 50px;
+  padding-right: 24px;
+}
+.menu-item .menu-item_text {
+  font-size: 14px !important;
+  letter-spacing: 1px;
+  color: rgba(0,0,0,.54);
+  font-weight: 500;
+  white-space: normal;
+}
+.menu-item.v-list-item--active::before {
+  opacity: 0;
+}
+.menu-item.v-list-item--active::before {
+  opacity: 0;
+}
+.menu-item.v-list-item--active:hover::before {
+  opacity: 0.12;
+}
+.menu-item.v-list-item--active {
+  padding-right: 21px;
+  border-right: 3px solid #ED462F;
+}
+.border-wrapper {
+  padding-bottom: 10px;
+  padding-top: 10px;
+  border-right: 1px solid rgba(10, 11, 49, 0.2) !important;
+}
+.menu-item.v-list-item--active .menu-item_text {
+  color: #E21549;
+
 }
 </style>
