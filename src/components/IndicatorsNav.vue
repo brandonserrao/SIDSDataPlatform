@@ -62,7 +62,6 @@
       <v-list-item-group>
         <template v-for="(item, i) in datasets" >
           <v-tooltip
-            v-if="!dataset || dataset === item.name"
             right
             open-delay="300"
             transition="none"
@@ -73,6 +72,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-list-item
                 inactive
+                v-show="!dataset || dataset === item.name"
                 class="list-scrollabe_item cursor-pointer"
                 :key="i"
                 v-bind="attrs"
@@ -234,6 +234,10 @@ export default {
         {
           name: 'ohi',
           background: require('@/assets/datasets/ohiIcon.png')
+        },
+        {
+          name:'wdi',
+          background: require('@/assets/datasets/wdiIcon.png')
         },
         {
           name: 'mvi',

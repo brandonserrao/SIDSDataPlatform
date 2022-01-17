@@ -218,7 +218,7 @@ export function processSpiderData() {
 
 export function drawIndexSpider() {
   let subindexList=Object.keys(this.indexWeights["subindices"]),
-  margin = { top: 50, right: 110, bottom: 0, left: 0 };
+  margin = { top: 55, right: 50, bottom: 0, left: 0 };
   // width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right;
   // height = Math.min(
   //   width,

@@ -138,8 +138,11 @@
   margin: 0;
   margin-top: 20px;
   padding: 0;
+  text-align: center;
 }
-
+#choro_map_container {
+  text-align: center;
+}
 #choro_map_container svg {
   margin-top: 5px;
   margin-bottom: -5px;
