@@ -1,13 +1,24 @@
 <template>
   <div class="mt-5">
   <v-row dense>
-    <v-col v-if="page==='devIdictors'" cols='3'>
+    <v-col  class="d-none d-lg-block" v-if="page==='devIdictors'" cols='3'>
       <indicators-nav :activeIndicatorCode="indicator" @indicatorChange="indicatorUpdate"/>
     </v-col>
-    <v-col v-else cols='3'>
+    <v-col  class="d-none d-lg-block" v-else cols='3'>
       <mvi-indicators-nav @MviIndicatorsChange="MVIindicatorUpdate"/>
     </v-col>
-    <v-col cols='9'>
+    <v-dialog
+      v-model="dialog"
+      width="400"
+      :fullscreen = "isMobile"
+      content-class="dialog-box"
+      transition="dialog-right-transition"
+    >
+      <indicators-nav v-if="page==='devIdictors'" :activeIndicatorCode="indicator" @indicatorChange="indicatorUpdate"/>
+      <mvi-indicators-nav v-else @close="dialog = !dialog" @MviIndicatorsChange="MVIindicatorUpdate"/>
+    </v-dialog>
+
+    <v-col md='12' lg='9'>
       <v-row dense >
         <v-col cols='12'>
           <h2 v-if="page!=='mvi'" class="page-header">
@@ -22,14 +33,24 @@
           <v-tabs
             v-if="indicator!=='region' || page==='mvi'"
             :value="activeTab"
+            :grow="isMobile"
             :class="{
               'indicators-tabs' : page!=='mvi',
               'mvi-tabs' : page==='mvi'
             }"
             class="tabs tabs-small"
           >
-            <v-tab v-for="(tab, index) in menuBar[page]" :value="index" :key="index" @change="transitionTo(tab.chartType)">{{tab.name}}</v-tab>
+            <v-tab v-for="(tab, index) in tabs" :value="index" :key="index" @change="transitionTo(tab.chartType)">{{tab.name}}</v-tab>
           </v-tabs>
+          <v-btn
+              class="d-block filter-button d-lg-none"
+              rounded
+              @click="dialog=!dialog"
+              fab
+              color="primary"
+            >
+            <v-icon>mdi-filter</v-icon>
+          </v-btn>
       </v-row>
       <v-row dense jusify="end">
         <div v-if="chartType === 'bars' || chartType === 'spider'" class="sorting-row">
@@ -120,6 +141,7 @@ export default {
   props:['chartType', 'indicator', 'page'],
   data: function() {
     return {
+      dialog:false,
       mviCodes:["mvi-ldc-VIC-Index-environmental"
                 ,"mvi-ldc-AFF-Index-environmental"
                 ,"mvi-ldc-REM-Index-geographic"
@@ -146,14 +168,16 @@ export default {
           chartType:'choro'
         },{
           name:'Bar chart',
-          chartType:'bars'
+          chartType:'bars',
+          mobile: true
         },{
           name:'Global view',
           chartType:'global'
         },
         {
           name:'Time series',
-          chartType:'series'
+          chartType:'series',
+          mobile: true
         }
       ],
         mvi: [{
@@ -164,14 +188,16 @@ export default {
           chartType:'spider'
         },{
           name:'Bar chart',
-          chartType:'bars'
+          chartType:'bars',
+          mobile: true
         },{
           name:'Global view',
           chartType:'global'
         },
         {
           name:'Time series',
-          chartType:'series'
+          chartType:'series',
+          mobile: true
         }
       ]
       }
@@ -189,6 +215,15 @@ export default {
       } else {
         return 'region'
       }
+    },
+    isMobile() {
+      return this.$vuetify.breakpoint.name === 'xs' || this.$vuetify.breakpoint.name === 'sm'
+    },
+    tabs() {
+      if(this.isMobile) {
+        return this.menuBar[this.page].filter(bar => bar.mobile)
+      }
+      return this.menuBar[this.page]
     },
     activeTab() {
       return this.menuBar[this.page].findIndex(menuItem => menuItem.chartType === this.chartType)
@@ -227,11 +262,13 @@ export default {
     margin-top: -10px !important;;
   }
   .indicators-tabs {
+    margin-bottom: auto;
     max-width: 638px;
     margin-left: auto;
     margin-right: auto;
   }
   .mvi-tabs {
+    margin-bottom: auto;
     max-width: 680px;
     margin-left: auto;
     margin-right: auto;
@@ -258,5 +295,28 @@ export default {
   }
   .nav-tabs-row {
     min-height: 38px;
+  }
+  .radarChart .radar {
+    margin-left: 125px;
+    margin-right: 125px;
+  }
+  .dialog-box {
+    background: #fff;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  .filter-button {
+    margin-left: auto;
+    margin-right: 0;
+  }
+  @media all and (max-width:960px) {
+    .indicators-tabs, .mvi-tabs {
+      min-width: none;
+      min-width: auto;
+      max-width: 90%;
+    }
+    .sorting, .tabs-slider-label {
+      position: static;
+    }
   }
 </style>

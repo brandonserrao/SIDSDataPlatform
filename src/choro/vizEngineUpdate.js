@@ -548,10 +548,18 @@ export function updateLabels(vizElementAttributes, noData) {
       .transition()
       .duration(1200)
       .attr("x", function () {
-        return vizElementAttributes[this.parentNode.id]["LT"]["x"] + 170;
+        let val = vizElementAttributes[this.parentNode.id]["LT"]["x"] + 110
+        if(this.vizWidth >= 800) {
+          val +=60;
+        }
+        return val;
       })
       .attr("y", function () {
-        return vizElementAttributes[this.parentNode.id]["LT"]["y"];
+        let value = vizElementAttributes[this.parentNode.id]["LT"]["y"];
+        if(rootThis.vizWidth < 800) {
+          value = value*2 + vizElementAttributes[this.parentNode.id]["MRT1"]["height"] - 12;
+        }
+        return value;
       })
       .attr("fill-opacity", function () {
         if (
@@ -599,6 +607,7 @@ export function updateRectangles(vizElementAttributes) {
 }
 //
 export function updateIndexRectangles(vizElementAttributes) {
+  let rootThis = this;
   let subindexList=Object.keys(this.indexWeights["subindices"])
   for(let i=0;i<subindexList.length;i++){
    d3.select(this.sidsMaps)
@@ -609,7 +618,11 @@ export function updateIndexRectangles(vizElementAttributes) {
         return vizElementAttributes[this.parentNode.id]["MRT"+(i)]["x"];
       })
       .attr("y", function () {
-        return vizElementAttributes[this.parentNode.id]["MRT"+(i)]["y"];
+        let value = vizElementAttributes[this.parentNode.id]["MRT"+(i)]["y"]
+        if(rootThis.vizWidth < 800) {
+          value = value*2 + vizElementAttributes[this.parentNode.id]["MRT"+(i)]["height"];
+        }
+        return value;
       })
       .attr("width", function () {
               return vizElementAttributes[this.parentNode.id]["MRT"+(i)]["width"];
@@ -627,7 +640,11 @@ export function updateIndexRectangles(vizElementAttributes) {
          return vizElementAttributes[this.parentNode.id]["RT"]["x"];
        })
        .attr("y", function () {
-         return vizElementAttributes[this.parentNode.id]["RT"]["y"];
+         let value = vizElementAttributes[this.parentNode.id]["RT"]["y"]
+         if(rootThis.vizWidth < 800) {
+           value = value*2 + vizElementAttributes[this.parentNode.id]["MRT"+(i)]["height"];
+         }
+         return value;
        })
        .attr("width", function () {
                return vizElementAttributes[this.parentNode.id]["RT"]["width"];

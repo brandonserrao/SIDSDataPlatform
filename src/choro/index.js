@@ -106,6 +106,7 @@ export default class Choro {
     this.bboxDict = {};
     this.indicatorMeta = indicatorMeta;
     this.textBBoxDict = {};
+    this.vizWidth = vizContainerWidth;
     this.legendContainerSelector = legendContainerSelector;
     this.profileData = profileData;
     this.selectedIndis = selectedIndis;
