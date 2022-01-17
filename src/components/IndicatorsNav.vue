@@ -228,16 +228,16 @@ export default {
           background: require('@/assets/datasets/hdrIcon.png')
         },
         {
+          name:'wdi',
+          background: require('@/assets/datasets/wdiIcon.png')
+        },
+        {
           name: 'ihme',
           background: require('@/assets/datasets/ihmeIcon.png')
         },
         {
           name: 'ohi',
           background: require('@/assets/datasets/ohiIcon.png')
-        },
-        {
-          name:'wdi',
-          background: require('@/assets/datasets/wdiIcon.png')
         },
         {
           name: 'mvi',

@@ -185,6 +185,7 @@ export default {
   width: 100%;
   background-position: 50% -65px;
   transition: 700ms;
+  margin-bottom: 8px;
 }
 .map-AIS {
   background-size: 125%;
