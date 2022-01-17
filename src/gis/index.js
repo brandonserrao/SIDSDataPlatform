@@ -33,10 +33,16 @@ export default class Map {
       "pk.eyJ1Ijoic2ViYXN0aWFuLWNoIiwiYSI6ImNpejkxdzZ5YzAxa2gyd21udGpmaGU0dTgifQ.IrEd_tvrl6MuypVNUGU5SQ";
     this.map = new mapboxgl.Map({
       container, // container ID
+      // style: "mapbox://styles/mapbox/light-v10",
       style: "mapbox://styles/mapbox/satellite-streets-v11",
       center: [-71.5, 19.0],
       zoom: 7,
-      maxZoom: 14,
+      maxZoom: 13.5,
+      minZoom: 1,
+      maxBounds: [
+        [-270, -45],
+        [+270, +45],
+      ],
     });
 
     this.map.on("load", () => {
@@ -53,6 +59,21 @@ export default class Map {
       this._addPointSources();
       this._addVectorSources();
       this.getBasemapLabels();
+    });
+
+    //for
+    let self = this.map;
+    this.map.on("click", (e) => {
+      console.log(`A click event has occurred at ${e.lngLat}`);
+    });
+
+    //for debugging
+    this.map.on("click", () => {
+      console.log("isStyleLoaded():", self.isStyleLoaded());
+      console.log("areTilesLoaded():", self.areTilesLoaded());
+      console.log("getZoom():", self.getZoom());
+      console.log("getMinZoom():", self.getMinZoom());
+      console.log("getMaxZoom():", self.getMaxZoom());
     });
   }
 
@@ -169,12 +190,11 @@ export default class Map {
   }
 
   showSpinner() {
-    // document.querySelector(".loader-gis").style.display = "block";
-
-    //show loader spinner
     console.log("show loading spinner");
     let spinner = document.getElementsByClassName("loader-gis")[0];
+    let modal = document.getElementsByClassName("loader-gis-modal")[0];
     spinner.classList.remove("display-none");
+    modal.classList.remove("display-none");
   }
 
   hideSpinner() {
@@ -183,7 +203,9 @@ export default class Map {
     //hide loader spinner
     console.log("hide loading spinner");
     let spinner = document.getElementsByClassName("loader-gis")[0];
+    let modal = document.getElementsByClassName("loader-gis-modal")[0];
     spinner.classList.add("display-none");
+    modal.classList.add("display-none");
   }
 
   //taken from old code
@@ -197,7 +219,20 @@ export default class Map {
       `changeHexagonSize( ${resolution} ); currentHexSize: ${globals.currentLayerState.hexSize}`
     );
 
-    this.clearHexHighlight();
+    if (
+      resolution
+      // resolution === "hex1"
+    ) {
+      /* console.log("handling spinner for hex1 loading");
+      this.showSpinner();
+
+      map.once("idle", () => {
+        // $(".loader-gis").hide();
+        this.hideSpinner();
+      });
+ */
+      this.clearHexHighlight();
+    }
 
     if (map.getLayer("ocean")) {
       // $(".hexsize").toggle();
@@ -245,13 +280,13 @@ export default class Map {
         },
         paint: {
           "fill-color": "blue",
-          "fill-opacity": 0,
+          "fill-opacity": 0.0, //globals.opacity, // 0
         },
       },
       globals.firstSymbolId
     );
 
-    if (resolution === "hex1") {
+    /* if (resolution === "hex1") {
       //showing loader in expectation of hex1 taking longer to display
       // $(".loader-gis").show();
       console.log("handling spinner for hex1 loading");
@@ -261,7 +296,7 @@ export default class Map {
         // $(".loader-gis").hide();
         this.hideSpinner();
       });
-    }
+    } */
 
     if (map.getStyle().name === "Mapbox Satellite") {
       console.log(`map style is Mapbox Satellite; moveLayer to ${resolution}`);
@@ -364,7 +399,7 @@ export default class Map {
             visibility: "visible",
           },
           paint: {
-            "fill-opacity": 0.8,
+            "fill-opacity": globals.opacity, //0.8
             "fill-color": [
               "interpolate",
               ["linear"],
@@ -406,6 +441,10 @@ export default class Map {
       // console.log(`adjusting "ocean" layer opacity`);
       map.setPaintProperty("ocean", "fill-opacity", sliderValue * 0.02);
     }
+
+    //update global opacity value
+    globals.opacity = (parseInt(sliderValue) * 2) / 100;
+    console.log(`globals.opacity`, globals.opacity);
   }
   changeColor(colorObject) {
     let map = this.map;
@@ -438,7 +477,8 @@ export default class Map {
     }
 
     if (selectedColor === "invert") {
-      var reverse = currentColor.reverse();
+      // var reverse = currentColor.reverse();
+      let reverse = [...currentColor].reverse();
       globals.currentLayerState.color = reverse;
     } else if (selectedColor === "red") {
       globals.currentLayerState.color = colors.colorSeq["pinkish"];
@@ -514,7 +554,9 @@ export default class Map {
     globals.myHistogram.data.datasets[0].backgroundColor = colorRampNew;
     globals.myHistogram.update();
 
-    this.hideSpinner();
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   add3D() {
@@ -606,7 +648,9 @@ export default class Map {
       });
     }
 
-    this.hideSpinner();
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   addLabels(labelObject) {
@@ -637,7 +681,9 @@ export default class Map {
       //$('#addLabels')[0].innerText = 'Add Labels'
     }
 
-    this.hideSpinner();
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   addOcean(activeDataset, activeLayer) {
@@ -699,7 +745,7 @@ export default class Map {
             1322,
             "#eff3ff",
           ],
-          "fill-opacity": 0.8,
+          "fill-opacity": globals.opacity, //0.8,
         },
       },
       globals.firstSymbolId
@@ -726,7 +772,9 @@ export default class Map {
 
     // this.addLegend(); //TODO doesnt this need the extra params that I added to the addLegend function?
 
-    this.hideSpinner();
+    this.map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   changeDataOnMap(activeDataset, activeLayer) {
@@ -764,7 +812,7 @@ export default class Map {
             },
             paint: {
               "fill-color": "blue",
-              "fill-opacity": 0.0,
+              "fill-opacity": 0.0, //globals.opacity, //
             },
           },
           globals.firstSymbolId
@@ -799,7 +847,7 @@ export default class Map {
           },
           paint: {
             "fill-color": "blue",
-            "fill-opacity": 0.0,
+            "fill-opacity": 0.0, //globals.opacity, //
           },
         },
         globals.firstSymbolId
@@ -853,7 +901,7 @@ export default class Map {
         },
         paint: {
           "fill-color": "blue",
-          "fill-opacity": 0.0,
+          "fill-opacity": 0.0, //globals.opacity, //
         },
       });
 
@@ -870,6 +918,8 @@ export default class Map {
       var features = map.queryRenderedFeatures({
         layers: [globals.currentLayerState.hexSize],
       });
+      // console.log(`features:`);
+      // console.log(features);
 
       if (features) {
         var uniFeatures;
@@ -880,11 +930,16 @@ export default class Map {
         } else {
           uniFeatures = this.getUniqueFeatures(features, "hexid");
         }
+        // console.log("uniFeatures");
+        // console.log(uniFeatures);
 
         //console.log(uniFeatures);
         var selectedData = uniFeatures.map((x) => x.properties[Field_Name]);
+        console.log("selectedData");
+        console.log(selectedData);
 
         var breaks = chroma.limits(selectedData, "q", 4);
+        console.log("breaks:", breaks);
         var breaks_new = [];
         globals.precision = 1;
         do {
@@ -894,12 +949,13 @@ export default class Map {
               breaks[i].toPrecision(globals.precision)
             );
           }
-          //console.log(breaks_new);
+          console.log("breaks_new:", breaks_new);
         } while (this.checkForDuplicates(breaks_new) && globals.precision < 10);
         breaks = breaks_new;
+        console.log("new breaks:", breaks);
 
-        console.log("globals.currentLayerState.color:");
-        console.log(globals.currentLayerState.color);
+        // console.log("globals.currentLayerState.color:");
+        // console.log(globals.currentLayerState.color);
         /* if (!globals.currentLayerState.color) {
           //triggering if the color palette stored has been reset to null (intended to be triggered by change in active dataset)
           console.log(
@@ -908,6 +964,7 @@ export default class Map {
         } */
 
         var colorRamp = colors.colorSeq["yellow-blue"];
+        console.log(colorRamp);
 
         if (Field_Name.substring(0, 2) === "1a") {
           colorRamp = colors.colorDiv.gdpColor;
@@ -961,6 +1018,7 @@ export default class Map {
             globals.currentLayerState.hexSize,
             "fill-opacity",
             0.0
+            //globals.opacity
           );
           setTimeout(() => {
             map.setFilter(globals.currentLayerState.hexSize, null);
@@ -987,7 +1045,7 @@ export default class Map {
             map.setPaintProperty(
               globals.currentLayerState.hexSize,
               "fill-opacity",
-              0.8
+              globals.opacity // 0.8
             );
           }, 100);
         }
@@ -997,7 +1055,9 @@ export default class Map {
     map.moveLayer("allsids", globals.firstSymbolId);
     //END------------------------------------------
 
-    this.hideSpinner();
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   recolorBasedOnWhatsOnPage() {
@@ -1022,7 +1082,21 @@ export default class Map {
       );
       //console.log(selectedData);
       var breaks = chroma.limits(selectedData, "q", 4);
-      console.log(breaks);
+      console.log("breaks in recolor:", breaks);
+      var breaks_new = [];
+      globals.precision = 1;
+      do {
+        globals.precision++;
+        for (let i = 0; i < 5; i++) {
+          breaks_new[i] = parseFloat(breaks[i].toPrecision(globals.precision));
+        }
+        console.log("breaks_new:", breaks_new);
+      } while (this.checkForDuplicates(breaks_new) && globals.precision < 10);
+      breaks = breaks_new;
+      console.log("new breaks:", breaks);
+
+      globals.currentLayerState.breaks = breaks; //update global state
+
       map.setPaintProperty(globals.currentLayerState.hexSize, "fill-color", [
         "interpolate",
         ["linear"],
@@ -1046,7 +1120,7 @@ export default class Map {
         map.setPaintProperty(
           globals.currentLayerState.hexSize,
           "fill-opacity",
-          0.0
+          0.0 //globals.opacity
         );
         setTimeout(() => {
           map.setFilter(globals.currentLayerState.hexSize, null);
@@ -1093,7 +1167,7 @@ export default class Map {
           map.setPaintProperty(
             globals.currentLayerState.hexSize,
             "fill-opacity",
-            0.8
+            globals.opacity // 0.8
           );
         }, 400);
       }
@@ -1109,7 +1183,9 @@ export default class Map {
       selectedData
     ); */
 
-    this.hideSpinner();
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   remove3d() {
@@ -1257,16 +1333,11 @@ export default class Map {
      */
   ) {
     console.log("updateHistogram params passed are:");
-    console.log("colors:");
-    console.log(colors);
-    console.log("breaks:");
-    console.log(breaks);
-    console.log("precision:");
-    console.log(precision);
-    console.log("activeLayer:");
-    console.log(activeLayer);
-    console.log("selectedData:");
-    console.log(selectedData);
+    console.log("colors:", colors);
+    console.log("breaks:", breaks);
+    console.log("precision:", precision);
+    console.log("activeLayer:", activeLayer);
+    console.log("selectedData:", selectedData);
 
     //old code
 
@@ -1343,7 +1414,8 @@ export default class Map {
       .mode("lch")
       .colors(nGroup); // yellow to dark-blue
  */
-    chroma.scale([colors[0], colors[4]]).mode("lch").colors(nGroup);
+
+    // chroma.scale([colors[0], colors[4]]).mode("lch").colors(nGroup);
 
     var data = {
       labels: breaks_precision.slice(0, -1),
@@ -1366,7 +1438,7 @@ export default class Map {
       tooltips: {
         enabled: false,
       },
-      updateLegend: {
+      legend: {
         display: false,
       },
       annotation: {
@@ -1559,7 +1631,10 @@ export default class Map {
 
     //finished loading in so hide spinner
     // hideSpinner();//TODO: REIMPLEMENT SPINNER
-    this.hideSpinner();
+
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
   }
 
   logSources() {

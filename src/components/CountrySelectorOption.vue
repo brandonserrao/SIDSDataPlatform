@@ -4,14 +4,40 @@
     @click="emitCountryChange()"
   >
     <div class="country-name">{{ name }}</div>
-    <div class="flag" :class="{ id: id }" style="margin-right: 10px"></div>
+    <!-- <div
+      class="flag flag-icon"
+      :class="{
+        id: this.id,
+        flagCode: !flagCode ? 'flag-icon-' + flagCode : 'flag-icon-xx',
+      }"
+      style="margin-right: 10px"
+    ></div> -->
+    <div
+      class="flag flag-icon"
+      :class="classObject"
+      style="margin-right: 10px"
+    ></div>
   </div>
 </template>
 
 <script>
 export default {
   name: "CountrySelectorOption",
-  props: ["name", "id"],
+  props: ["name", "id", "flagCode"],
+  computed: {
+    classObject() {
+      let object = {};
+      object[
+        !this.flagCode
+          ? "display-none" //"flag-icon-xx"
+          : "flag-icon-" + this.flagCode.toLowerCase()
+      ] = true;
+      object[!this.id ? "" : this.id] = true;
+      return object;
+    },
+    // flagClassString: !flagCode ? 'flag-icon-' + flagCode : 'flag-icon-xx',
+    // id : this.id,
+  },
   methods: {
     emitCountryChange() {
       console.log(`emitCountryChange ${this.name} ${this.id}`);
@@ -21,7 +47,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .row-flex {
   display: flex;
   flex-direction: row;

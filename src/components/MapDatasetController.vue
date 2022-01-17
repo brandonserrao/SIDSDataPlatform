@@ -684,11 +684,17 @@ export default {
 @media (orientation: landscape) {
   .data-controller {
     /* display: none; */
-    max-height: 100vh;
+    max-height: 85vh;
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior: contain;
   }
+
+  /* .toolbar {
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+  } */
 }
 @media (orientation: landscape) and (max-width: 750px) {
   .data-controller {
