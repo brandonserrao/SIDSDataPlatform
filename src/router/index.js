@@ -12,7 +12,7 @@ const routes = [
     name: 'UNDP SIDS Portfolio',
     props: (route) => ({
       region: route.query.region || 'All',
-      year: route.query.year || '2021',
+      year: route.query.year || 'all',
       fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
       fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
     }),
@@ -159,8 +159,9 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
+
   routes
 })
 export { router, routes }
