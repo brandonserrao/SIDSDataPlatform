@@ -10,6 +10,7 @@ const names = [
       [-142.03125, 12.209249],
     ],
     GID_0: "PCF",
+    flagCode: null,
   },
   {
     NAME_0: "Caribbean Region", //corrected spelling from "Carribean"
@@ -20,6 +21,7 @@ const names = [
       [-53.86, 27.08],
     ],
     GID_0: "CBR",
+    flagCode: null,
   },
   {
     NAME_0: "Atlantic, Indian, and South China Sea",
@@ -30,6 +32,7 @@ const names = [
     ],
     // GID_0: "KNA", //duplicate; believed to be error
     GID_0: "AIS",
+    flagCode: null,
   },
   {
     NAME_0: "Aruba",
@@ -39,6 +42,7 @@ const names = [
       [-69.86542, 12.62403],
     ],
     GID_0: "ABW",
+    flagCode: "AW",
   },
   {
     NAME_0: "Anguilla",
@@ -48,6 +52,7 @@ const names = [
       [-62.92403, 18.59542],
     ],
     GID_0: "AIA",
+    flagCode: "AI",
   },
   {
     NAME_0: "Antigua and Barbuda",
@@ -57,6 +62,7 @@ const names = [
       [-61.65653, 17.72958],
     ],
     GID_0: "ATG",
+    flagCode: "AG",
   },
   {
     NAME_0: "Bahrain",
@@ -66,6 +72,7 @@ const names = [
       [50.82486, 26.28875],
     ],
     GID_0: "BHR",
+    flagCode: "BH",
   },
   {
     NAME_0: "Bahamas",
@@ -75,6 +82,7 @@ const names = [
       [-72.71208, 27.27139],
     ],
     GID_0: "BHS",
+    flagCode: "BS",
   },
   {
     NAME_0: "Belize",
@@ -84,6 +92,7 @@ const names = [
       [-87.48597, 18.49729],
     ],
     GID_0: "BLZ",
+    flagCode: "BZ",
   },
   {
     NAME_0: "Bermuda",
@@ -93,6 +102,7 @@ const names = [
       [-64.6462, 32.47723],
     ],
     GID_0: "BMU",
+    flagCode: "BM",
   },
   {
     NAME_0: "Barbados",
@@ -102,6 +112,7 @@ const names = [
       [-59.4193, 13.33514],
     ],
     GID_0: "BRB",
+    flagCode: "BB",
   },
   {
     NAME_0: "Cape Verde",
@@ -111,6 +122,7 @@ const names = [
       [-22.65681, 17.20542],
     ],
     GID_0: "CPV",
+    flagCode: "CV",
   },
   {
     NAME_0: "Cook Islands",
@@ -120,6 +132,7 @@ const names = [
       [-157.32056, -8.91498],
     ],
     GID_0: "COK",
+    flagCode: "CK",
   },
   {
     NAME_0: "Comoros",
@@ -129,6 +142,7 @@ const names = [
       [44.54097, -11.36486],
     ],
     GID_0: "COM",
+    flagCode: "KM",
   },
   {
     NAME_0: "Cuba",
@@ -138,6 +152,7 @@ const names = [
       [-74.13119, 23.27764],
     ],
     GID_0: "CUB",
+    flagCode: "CU",
   },
   {
     NAME_0: "Curaçao",
@@ -147,6 +162,7 @@ const names = [
       [-68.63931, 12.39292],
     ],
     GID_0: "CUW",
+    flagCode: "CW",
   },
   {
     NAME_0: "Cayman Islands",
@@ -156,6 +172,7 @@ const names = [
       [-79.72264, 19.75736],
     ],
     GID_0: "CYM",
+    flagCode: "KY",
   },
   {
     NAME_0: "Dominica",
@@ -165,6 +182,7 @@ const names = [
       [-61.24014, 15.64014],
     ],
     GID_0: "DMA",
+    flagCode: "DM",
   },
   {
     NAME_0: "Dominican Republic",
@@ -174,6 +192,7 @@ const names = [
       [-68.32264, 19.93236],
     ],
     GID_0: "DOM",
+    flagCode: "DO",
   },
   {
     NAME_0: "Fiji",
@@ -183,6 +202,7 @@ const names = [
       [-180, -12.4617],
     ],
     GID_0: "FJI",
+    flagCode: "FJ",
   },
   {
     NAME_0: "Guinea-Bissau",
@@ -192,6 +212,7 @@ const names = [
       [-13.63652, 12.68544],
     ],
     GID_0: "GNB",
+    flagCode: "GW",
   },
   {
     NAME_0: "Grenada",
@@ -201,6 +222,7 @@ const names = [
       [-61.37819, 12.54014],
     ],
     GID_0: "GRD",
+    flagCode: "GD",
   },
   {
     NAME_0: "Guyana",
@@ -210,6 +232,7 @@ const names = [
       [-56.48025, 8.53092],
     ],
     GID_0: "GUY",
+    flagCode: "GY",
   },
   {
     NAME_0: "Haiti",
@@ -219,6 +242,7 @@ const names = [
       [-71.61815, 20.09042],
     ],
     GID_0: "HTI",
+    flagCode: "HT",
   },
   {
     NAME_0: "Jamaica",
@@ -228,6 +252,7 @@ const names = [
       [-75.96986, 18.52514],
     ],
     GID_0: "JAM",
+    flagCode: "JM",
   },
   {
     NAME_0: "Kiribati",
@@ -237,6 +262,7 @@ const names = [
       [-176.84869, 4.69949],
     ],
     GID_0: "KIR",
+    flagCode: "KI",
   },
   {
     NAME_0: "Maldives",
@@ -246,6 +272,7 @@ const names = [
       [73.76041, 7.10653],
     ],
     GID_0: "MDV",
+    flagCode: "MV",
   },
   {
     NAME_0: "Marshall Islands",
@@ -255,6 +282,7 @@ const names = [
       [172.17261, 14.72319],
     ],
     GID_0: "MHL",
+    flagCode: "MH",
   },
   {
     NAME_0: "Montserrat",
@@ -264,6 +292,7 @@ const names = [
       [-62.14458, 16.82431],
     ],
     GID_0: "MSR",
+    flagCode: "MS",
   },
   {
     NAME_0: "Mauritius",
@@ -273,6 +302,7 @@ const names = [
       [63.50347, -10.33708],
     ],
     GID_0: "MUS",
+    flagCode: "MU",
   },
   {
     NAME_0: "Niue",
@@ -282,6 +312,7 @@ const names = [
       [-169.77361, -18.95222],
     ],
     GID_0: "NIU",
+    flagCode: "NU",
   },
   {
     NAME_0: "Nauru",
@@ -291,6 +322,7 @@ const names = [
       [166.95934, -0.50206],
     ],
     GID_0: "NRU",
+    flagCode: "NR",
   },
   {
     NAME_0: "Palau",
@@ -300,6 +332,7 @@ const names = [
       [134.72139, 8.09417],
     ],
     GID_0: "PLW",
+    flagCode: "PW",
   },
   {
     NAME_0: "Papua New Guinea",
@@ -309,6 +342,7 @@ const names = [
       [157.03778, -0.75583],
     ],
     GID_0: "PNG",
+    flagCode: "PG",
   },
   {
     NAME_0: "Saint Kitts and Nevis",
@@ -318,6 +352,7 @@ const names = [
       [-62.53931, 17.41819],
     ],
     GID_0: "KNA",
+    flagCode: "KN",
   },
   {
     NAME_0: "Saint Lucia",
@@ -327,6 +362,7 @@ const names = [
       [-60.86986, 14.11042],
     ],
     GID_0: "LCA",
+    flagCode: "LC",
   },
   {
     NAME_0: "Samoa",
@@ -336,6 +372,7 @@ const names = [
       [-171.39771, -13.43981],
     ],
     GID_0: "WSM",
+    flagCode: "WS",
   },
   {
     NAME_0: "Singapore",
@@ -345,6 +382,7 @@ const names = [
       [104.0858, 1.47139],
     ],
     GID_0: "SGP",
+    flagCode: "SG",
   },
   {
     NAME_0: "Solomon Islands",
@@ -354,6 +392,7 @@ const names = [
       [170.1925, -4.44522],
     ],
     GID_0: "SLB",
+    flagCode: "SB",
   },
   {
     NAME_0: "Suriname",
@@ -363,6 +402,7 @@ const names = [
       [-53.97749, 6.01514],
     ],
     GID_0: "SUR",
+    flagCode: "SR",
   },
   {
     NAME_0: "Sint Maarten",
@@ -372,6 +412,7 @@ const names = [
       [-62.99986, 18.06355],
     ],
     GID_0: "SXM",
+    flagCode: "SX",
   },
   {
     NAME_0: "Seychelles",
@@ -381,6 +422,7 @@ const names = [
       [56.29568, -3.71264],
     ],
     GID_0: "SYC",
+    flagCode: "SC",
   },
   {
     NAME_0: "Turks and Caicos Islands",
@@ -390,6 +432,7 @@ const names = [
       [-71.08208, 21.96264],
     ],
     GID_0: "TCA",
+    flagCode: "TC",
   },
   {
     NAME_0: "Tokelau",
@@ -399,6 +442,7 @@ const names = [
       [-171.1814, -8.53194],
     ],
     GID_0: "TKL",
+    flagCode: "TK",
   },
   {
     NAME_0: "Timor-Leste",
@@ -408,6 +452,7 @@ const names = [
       [127.3425, -8.12694],
     ],
     GID_0: "TLS",
+    flagCode: "TL",
   },
   {
     NAME_0: "Tonga",
@@ -417,6 +462,7 @@ const names = [
       [-173.735, -15.5658],
     ],
     GID_0: "TON",
+    flagCode: "TO",
   },
   {
     NAME_0: "Trinidad and Tobago",
@@ -426,6 +472,7 @@ const names = [
       [-60.49208, 11.35958],
     ],
     GID_0: "TTO",
+    flagCode: "TT",
   },
   {
     NAME_0: "Tuvalu",
@@ -435,6 +482,7 @@ const names = [
       [179.87135, -5.6425],
     ],
     GID_0: "TUV",
+    flagCode: "TV",
   },
   {
     NAME_0: "Saint Vincent and the Grenadines",
@@ -444,6 +492,7 @@ const names = [
       [-61.11403, 13.38347],
     ],
     GID_0: "VCT",
+    flagCode: "VC",
   },
   {
     NAME_0: "British Virgin Islands",
@@ -453,6 +502,7 @@ const names = [
       [-64.27042, 18.74958],
     ],
     GID_0: "VGB",
+    flagCode: "VG",
   },
   {
     NAME_0: "Vanuatu",
@@ -462,6 +512,7 @@ const names = [
       [170.24028, -13.07248],
     ],
     GID_0: "VUT",
+    flagCode: "VU",
   },
   {
     NAME_0: "São Tomé and Príncipe",
@@ -471,6 +522,7 @@ const names = [
       [7.46264, 1.70153],
     ],
     GID_0: "STP",
+    flagCode: "ST",
   },
   {
     NAME_0: "Federated States of Micronesia",
@@ -480,6 +532,7 @@ const names = [
       [163.03544, 10.09033],
     ],
     GID_0: "FSM",
+    flagCode: "FM",
   },
 ];
 export default names;
