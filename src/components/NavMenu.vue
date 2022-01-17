@@ -67,7 +67,14 @@ export default {
     isMobile() {
       return this.$vuetify.breakpoint.name === 'xs' || this.$vuetify.breakpoint.name === 'sm'
     },
-    routes () { return this.$router.options.routes.filter( route => route.path!=='*' )}
+    routes () {
+      return this.$router.options.routes.filter( route => {
+        if(this.isMobile) {
+          return !route.desctopOnly && route.path!=='*'
+        }
+        return route.path!=='*'
+      } )
+    }
   },
   props: {
     msg: String

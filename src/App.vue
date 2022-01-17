@@ -14,7 +14,7 @@
         <router-view class="root-router" />
       </v-col>
     </v-row>
-    <root-footer />
+    <root-footer class="d-none d-md-flex" />
   </v-container>
 </template>
 <script>

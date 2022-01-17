@@ -74,8 +74,12 @@ const routes = [
     path: '/development-indicators/:indicator?/:chartType?',
     link: '/development-indicators',
     name: 'Development Indicators',
+    desctopOnly:true,
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
     beforeEnter: async (to, from, next) => {
+      if(window.innerWidth < 960) {
+        next('/')
+      }
 
       if(!to.params.chartType) {
         next({ path: `/development-indicators/region/choro`})
@@ -100,8 +104,12 @@ const routes = [
     path: '/vulnerability/:indicator?/:chartType?',
     link: '/vulnerability',
     name: 'Vulnerability',
+    desctopOnly:true,
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
     beforeEnter: async (to, from, next) => {
+      if(window.innerWidth < 960) {
+        next('/')
+      }
       if(!to.params.chartType) {
         next({ path: `/vulnerability/mvi/spider`})
       }
@@ -153,7 +161,9 @@ const routes = [
   },
   {
     path: '*',
-    redirect: '/portfolio'
+    redirect: function() {
+      return window.innerWidth < 960 ? '/country-profiles' : '/portfolio'
+    }
   }
 
 ]
