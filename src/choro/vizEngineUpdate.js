@@ -338,7 +338,7 @@ export function updateCountrySvgColors(quantize) {
             " shadow countrySvg"
           );
         } catch(e) {
-          console.log(e);
+          console.log(e, this.id);
         }
       });
   }

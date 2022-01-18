@@ -31,7 +31,7 @@
       </v-row>
       <v-row dense class="nav-tabs-row justify-center">
           <v-tabs
-            v-if="indicator!=='region' || page==='mvi'"
+            v-if="indicator!=='region' || isMobile || page==='mvi'"
             :value="activeTab"
             :grow="isMobile"
             :class="{
@@ -170,7 +170,7 @@ export default {
         'Caribbean',
         'Pacific'
       ],
-      sorting:'rank',
+      sorting:0,
       menuBar:{
         devIdictors: [{
           name:'Choropleth',
@@ -252,6 +252,11 @@ export default {
     },
     MVIindicatorUpdate(mviCodes){
       this.mviCodes = mviCodes;
+    }
+  },
+  watch: {
+    page() {
+      this.sorting = 0
     }
   }
 }

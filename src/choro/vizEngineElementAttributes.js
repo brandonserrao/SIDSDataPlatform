@@ -298,14 +298,14 @@ export function textTransform(
         "scale(1,1) translate(" +
         (-textX + textBBox.width / 2) +
         "," +
-        (-textY + (RTo["y"] * 2) + totalHeight / totalVals / 2) +
+        (-textY  - 20 + (RTo["y"]) + totalHeight / totalVals / 2) +
         ")";
     } else if (this.vizWidth < 800) {
       output =
         "scale(1,1) translate(" +
         (-textX + textBBox.width / 2) +
         "," +
-        (-textY  - 20 + (RTo["y"]) + totalHeight / totalVals / 2) +
+        (-textY  - 14 + (RTo["y"]) + totalHeight / totalVals / 2) +
         ")";
     } else  {
       output =

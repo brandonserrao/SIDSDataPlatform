@@ -119,7 +119,7 @@ export default class Choro {
       .append("svg")
       .attr("width", vizContainerWidth)
       .attr("height", vizContainerHeight);
-    if(indicatorCode!=='region'){
+    if(indicatorCode!=='region' || this.vizWidth<800){
       this.updateVizEngine(indicatorCode)
     }
   }

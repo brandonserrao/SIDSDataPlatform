@@ -75,7 +75,7 @@ export function appendAllElements(){
 //
 export function initChoroLegend(quantize) {
 
-  let textPadding = this.vizWidth <= 800 ? (this.vizWidth - 180)/2 : 400
+  let textPadding = this.vizWidth <= 800 ? (this.vizWidth - 40)/2 : 400
 //   $("#indicatorExport").show();
   d3.select("#regionLegend").style('display','none');
 
