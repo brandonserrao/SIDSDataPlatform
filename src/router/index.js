@@ -75,7 +75,6 @@ const routes = [
     path: '/development-indicators/:indicator?/:chartType?',
     link: '/development-indicators',
     name: 'Development Indicators',
-    desctopOnly:true,
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
     beforeEnter: async (to, from, next) => {
       let chartType = to.params.chartType || 'choro',
@@ -106,7 +105,6 @@ const routes = [
     path: '/vulnerability/:indicator?/:chartType?',
     link: '/vulnerability',
     name: 'Vulnerability',
-    desctopOnly:true,
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
     beforeEnter: async (to, from, next) => {
       console.log(vuetify)
