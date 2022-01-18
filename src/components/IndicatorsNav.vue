@@ -1,5 +1,13 @@
 <template>
   <div class="indicators-nav">
+    <v-btn
+        class="close-button d-block dense d-md-none"
+        icon
+        @click="$emit('close')"
+        color="primary"
+      >
+      <v-icon>mdi-close</v-icon>
+    </v-btn>
     <v-card flat>
       <v-text-field v-if="!dataset"
         class="ml-2 mr-2"
@@ -529,4 +537,14 @@ export default {
   max-height: calc(100vh - 410px);
   overflow-y: scroll;
 }
+.indicators-nav {
+  padding: relative;
+}
+.close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 5;
+}
+
 </style>
