@@ -50,7 +50,7 @@ export default {
         page:this.page,
         selectedIndis:this.mviCodes,
         vizContainerWidth:(document.body.clientWidth - 40) > 800 ? 800 : (document.body.clientWidth - 40),
-        vizContainerHeight:(document.body.clientWidth - 40) > 800 ? 580 : 1160,
+        vizContainerHeight:(document.body.clientWidth - 40) > 800 ? 580 : 1360,
         mapContainerSelector: '#choro_map_container',
         legendContainerSelector:'#choro_legend_container'
       })
