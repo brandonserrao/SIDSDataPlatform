@@ -14,7 +14,7 @@
       content-class="dialog-box"
       transition="dialog-right-transition"
     >
-      <indicators-nav v-if="page==='devIdictors'" :activeIndicatorCode="indicator" @indicatorChange="indicatorUpdate"/>
+      <indicators-nav @close="dialog = !dialog" v-if="page==='devIdictors'" :activeIndicatorCode="indicator" @indicatorChange="indicatorUpdate"/>
       <mvi-indicators-nav v-else @close="dialog = !dialog" @MviIndicatorsChange="MVIindicatorUpdate"/>
     </v-dialog>
 
@@ -43,7 +43,7 @@
             <v-tab v-for="(tab, index) in tabs" :value="index" :key="index" @change="transitionTo(tab.chartType)">{{tab.name}}</v-tab>
           </v-tabs>
           <v-btn
-              class="d-block filter-button d-lg-none"
+              class="d-none d-md-block filter-button d-lg-none"
               rounded
               @click="dialog=!dialog"
               fab
@@ -52,7 +52,16 @@
             <v-icon>mdi-filter</v-icon>
           </v-btn>
       </v-row>
-      <v-row dense jusify="end">
+      <v-row class="nav-filter-row" dense jusify="end">
+        <v-btn
+            class="d-block d-md-none filter-sm-button"
+            rounded
+            @click="dialog=!dialog"
+            fab
+            color="primary"
+          >
+          <v-icon>mdi-filter</v-icon>
+        </v-btn>
         <div v-if="chartType === 'bars' || chartType === 'spider'" class="sorting-row">
           <div class="input-label tabs-slider-label">
             Sort by:
@@ -226,7 +235,7 @@ export default {
       return this.menuBar[this.page]
     },
     activeTab() {
-      return this.menuBar[this.page].findIndex(menuItem => menuItem.chartType === this.chartType)
+      return this.tabs.findIndex(menuItem => menuItem.chartType === this.chartType)
     },
   },
   methods: {
@@ -317,6 +326,14 @@ export default {
     }
     .sorting, .tabs-slider-label {
       position: static;
+    }
+    .sorting-row {
+      width: auto;
+      margin-left: auto;
+      margin-right: 0
+    }
+    .nav-filter-row {
+      padding: 10px 5%;
     }
   }
 </style>

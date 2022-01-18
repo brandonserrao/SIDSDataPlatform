@@ -111,7 +111,7 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
   // console.log(indicatorData)
   let val = indicatorDataObj[country],
   totalHeight = 500,
-  totalWidth = this.vizWidth < 800 ? this.vizWidth - 160 : 440,
+  totalWidth = this.vizWidth < 800 ? this.vizWidth - 40 : 440,
   cx = bBox[4],
   cy = bBox[5],
   output;
@@ -157,15 +157,18 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
         margin = 4;
 
         let maxx = Math.max(...indicatorValues),
-        minn = Math.min(...indicatorValues),
+        minn =  0, //Math.min(...indicatorValues),
         normValue = (val - minn) / (maxx - minn);
 
         //console.log(country,normValue,rank,minn)
         //console.log(totalHeight,totalVals,rank)
-
+        let x = this.vizWidth < 800 ? 0 : 160;
+        let y = this.vizWidth < 800 ?
+        (totalHeight / totalVals) * rank + topMargin + 20 * rank :
+        (totalHeight / totalVals) * rank + topMargin;
         output = {
-          x: 160,
-          y: (totalHeight / totalVals) * rank + topMargin,
+          x: x,
+          y,
           width: normValue * totalWidth,
           height: totalHeight / totalVals - margin,
         }; //,"color":color};
@@ -290,14 +293,21 @@ export function textTransform(
     let RTo = this.rectTransform(country, bBox, indicatorDataObj),
     // console.log(RTo,totalVals,textY)
     output;
-    if(this.vizWidth < 800) {
+    if(this.vizWidth < 800 && this.vizMode === 'index') {
       output =
         "scale(1,1) translate(" +
         (-textX + textBBox.width / 2) +
         "," +
         (-textY + (RTo["y"] * 2) + totalHeight / totalVals / 2) +
         ")";
-    } else {
+    } else if (this.vizWidth < 800) {
+      output =
+        "scale(1,1) translate(" +
+        (-textX + textBBox.width / 2) +
+        "," +
+        (-textY  - 20 + (RTo["y"]) + totalHeight / totalVals / 2) +
+        ")";
+    } else  {
       output =
         "scale(1,1) translate(" +
         (-textX + 140 - textBBox.width / 2) +
@@ -383,7 +393,7 @@ export function textTransform(
 export function multiRectTransform(country, bBox, indicatorDataObj, indexDataObj, indiSelections,indexWeights,i){
   let RTm=this.rectTransform(country, bBox, indicatorDataObj, indiSelections),
   subindexList=Object.keys(indexWeights["subindices"]),
-  totalWidthBar = this.vizWidth < 800 ? this.vizWidth - 60 : 440,
+  totalWidthBar = this.vizWidth < 800 ? this.vizWidth - 40 : 440,
   totalHeightColumn = 200;
 
   if(this.vizMode=="index"&&(indiSelections["viz"] == "bars"||indiSelections["viz"] == "global")){

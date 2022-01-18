@@ -9,7 +9,7 @@
     <div id="choro_map_container">
 
     </div>
-    <div id="timeSeriesContainer" style="width: 900px;display:none">
+    <div id="timeSeriesContainer">
       <!-- <div class="timeSeriesTooltip"></div> -->
     </div>
   </div>
@@ -430,7 +430,6 @@ export default {
 
 #choro_legend_container {
   height: 57px;
-  width: 90%;
   overflow: visible;
 }
 
@@ -453,7 +452,17 @@ export default {
   padding: 5px;
   font-size: 12px;
 }
+#timeSeriesContainer {
+  width: 900px;
+  display:none;
+}
 
+@media all and (max-width:960px) {
+  #timeSeriesContainer {
+    width: 100%;
+    display:none;
+  }
+}
 /*# sourceMappingURL=vizEngine.css.map */
 
 </style>

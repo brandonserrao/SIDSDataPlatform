@@ -548,15 +548,15 @@ export function updateLabels(vizElementAttributes, noData) {
       .transition()
       .duration(1200)
       .attr("x", function () {
-        let val = vizElementAttributes[this.parentNode.id]["LT"]["x"] + 110
-        if(this.vizWidth >= 800) {
-          val +=60;
+        let val = vizElementAttributes[this.parentNode.id]["LT"]["x"] + 10
+        if(rootThis.vizWidth >= 800) {
+          val +=160;
         }
         return val;
       })
       .attr("y", function () {
         let value = vizElementAttributes[this.parentNode.id]["LT"]["y"];
-        if(rootThis.vizWidth < 800) {
+        if(rootThis.vizWidth < 800 && this.vizMode === 'index') {
           value = value*2 + vizElementAttributes[this.parentNode.id]["MRT1"]["height"] - 12;
         }
         return value;
@@ -619,7 +619,7 @@ export function updateIndexRectangles(vizElementAttributes) {
       })
       .attr("y", function () {
         let value = vizElementAttributes[this.parentNode.id]["MRT"+(i)]["y"]
-        if(rootThis.vizWidth < 800) {
+        if(rootThis.vizWidth < 800 && this.vizMode === 'index') {
           value = value*2 + vizElementAttributes[this.parentNode.id]["MRT"+(i)]["height"];
         }
         return value;
@@ -641,7 +641,7 @@ export function updateIndexRectangles(vizElementAttributes) {
        })
        .attr("y", function () {
          let value = vizElementAttributes[this.parentNode.id]["RT"]["y"]
-         if(rootThis.vizWidth < 800) {
+         if(rootThis.vizWidth < 800 && this.vizMode === 'index') {
            value = value*2 + vizElementAttributes[this.parentNode.id]["MRT"+(i)]["height"];
          }
          return value;
@@ -710,9 +710,9 @@ export function updateBarAxis() {
   let indicatorDataYear = this.indicatorData["data"][this.indiSelections["year"]],
   barAxis = d3.select(".barAxis");
   const x = d3.scaleLinear();
-  var margin = { left: 160, right: 5 };
+  var margin = { left: this.vizWidth < 800 ? 0 : 160, right: 5 };
   var xAxis = d3.axisTop(x);
-  var width = 440;
+  var width = this.vizWidth < 800 ? this.vizWidth - 40 : 440;
   var height = 90;
 
   let max = Math.max(
