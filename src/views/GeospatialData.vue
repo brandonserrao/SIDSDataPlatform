@@ -87,7 +87,7 @@ export default {
       activeLayerName: null,
       displayLegend: true,
       gisLoader: { loading: true, color: "purple", size: "50px" },
-      screenOrientation: window.screen.orientation.type,
+      // screenOrientation: window.screen.orientation.type,
     };
   },
   components: {
