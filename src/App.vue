@@ -48,7 +48,7 @@ html {
 }
 #content {
   min-height: calc(100vh - 100px);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 .root-router {
   padding: 0 2em 4em;

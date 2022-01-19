@@ -175,7 +175,7 @@
   display: none;
 }
 
-.choroCircle {
+.choroCircle, .choroRectMvi, .choroRect {
   cursor: pointer;
 }
 .countrySvg:hover {

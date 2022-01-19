@@ -511,7 +511,7 @@ export function appendCountryRectangles() {
 export function initVizEngineTooltips() {
   let rootThis = this;
 
-  tippy('.countrySvg, .choroCircle', {
+  tippy('.countrySvg, .choroCircle, .choroRectMvi, .choroRect', {
     theme: 'light',
     delay: 300,
     onShow: function(instance) {
