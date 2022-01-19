@@ -40,6 +40,7 @@ export default {
 
 html {
   scroll-behavior: smooth;
+  padding: env(safe-area-inset);
 }
 
 #app {
