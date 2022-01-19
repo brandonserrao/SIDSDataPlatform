@@ -1,7 +1,10 @@
 import * as d3 from 'd3';
+import tippy from 'tippy.js';
 
+import { indexColors } from './index-data'
 import {regionColors, getBoundingBox, nFormatter} from './vizEngineHelperFunctions'
-import {countryListLongitude} from './vizEngineGlobals'
+import {countryListLongitude, sidsDict, regionsDict} from './vizEngineGlobals'
+// countryListSpider
 //runs this right away (it works, for some reason it doesn't draw the titles if executed on click )
 ///////////////////////////////////
 
@@ -34,8 +37,11 @@ export function initVizEngine({sidsXML}) {
         .appendChild(svgMap); /* island of sidsMaps map */
   //
   //
+      appendMultiRectangles()
       this.initCountrySvgs();
       this.appendAllElements();
+      this.initTimeSeries();
+      this.initVizEngineTooltips()
   //   initVizEngineTooltips(); // requires maps to be loaded
   //
   //
@@ -264,22 +270,26 @@ export function initCountrySvgs(){
   let rootThis = this;
     d3.select(this.sidsMaps)
     .selectAll("path")
-    .on("mouseover", function () {
-      if (d3.select(this).classed("countryActive"))
-        return; /* no need to change class when county is already selected */
-      d3.select(this).attr("class", "countryHover");
-    })
-    .on("mouseout", function () {
-      if (d3.select(this).classed("countryActive")) return;
-      d3.select(this).attr("class", function () {
-        return (
-          regionColors(
-            rootThis.profileData[this.id].Region,
-            rootThis.profileData[this.id]["Member State (Y/N)"]
-          ) + " shadow countrySvg"
-        );
-      });
-    })
+    // .on("mouseover", function () {
+    //   if (d3.select(this).classed("countryActive"))
+    //     return; /* no need to change class when county is already selected */
+    //   // d3.select(this).attr("class", "countryHover");
+    // })
+    // .on("mouseout", function () {
+    //   if (d3.select(this).classed("countryActive")) return;
+    //   d3.select(this).attr("class", function () {
+    //     console.log(regionColors(
+    //       rootThis.profileData[this.id].Region,
+    //       rootThis.profileData[this.id]["Member State (Y/N)"]
+    //     ) + " shadow countrySvg")
+    //     return (
+    //       regionColors(
+    //         rootThis.profileData[this.id].Region,
+    //         rootThis.profileData[this.id]["Member State (Y/N)"]
+    //       ) + " shadow countrySvg"
+    //     );
+    //   });
+    // })
     .on("click", function () {
       // TODO: uncomment to male zoom works
 
@@ -497,7 +507,70 @@ export function appendCountryRectangles() {
     .attr("height", 0)
     .classed("choroRect", true);
 }
+export function initVizEngineTooltips() {
+  let rootThis = this;
 
+  tippy('.countrySvg, .choroCircle', {
+    theme: 'light',
+    delay: 300,
+    onShow: function(instance) {
+
+      let content = instance.popper.getElementsByClassName('tippyContent')[0];
+      let countryCode = instance.reference.parentElement.id;
+      let year = rootThis.indiSelections.year === 'recentValue' ? 'Most recent value' : rootThis.indiSelections.year;
+      let value = 1;
+      if(rootThis.vizMode === 'index') {
+        value = rootThis.indexData.index.data[rootThis.indiSelections.year][countryCode];
+      } else {
+        value = rootThis.indicatorData.data[rootThis.indiSelections.year][countryCode];
+      }
+      value = typeof value === 'string' ? value : nFormatter(value,2);
+      content.innerHTML = `Value: ${value} <br/> Year: ${year}`;
+    },
+    content: function (reference) {
+        let tooltipElement = document.createElement('div'),
+        header = document.createElement('h3'),
+        content = document.createElement('div');
+        tooltipElement.id="choroCountryTooltip"
+        content.classList.add('tippyContent');
+        tooltipElement.appendChild(header);
+        tooltipElement.appendChild(content);
+
+
+        let countryCode = reference.parentElement.id;
+        header.innerHTML = sidsDict[countryCode];
+
+        return tooltipElement
+    }
+  });
+
+  tippy('.regionTitle', {
+    theme: 'light',
+    delay: 300,
+    onShow: function(instance) {
+      let content = instance.popper.getElementsByClassName('tippyContent')[0];
+      let regionCode = instance.reference.id.replace('RegionTitle', '');
+      let value =  nFormatter(rootThis.regionAverages[regionCode],2);
+      content.innerHTML = `Average: ${value}`;
+    },
+    content: function (reference) {
+        let tooltipElement = document.createElement('div'),
+        header = document.createElement('h3'),
+        content = document.createElement('div');
+        tooltipElement.id="choroRegionTooltip"
+        content.classList.add('tippyContent');
+        tooltipElement.appendChild(header);
+        tooltipElement.appendChild(content);
+
+
+        let regionCode = reference.id.replace('RegionTitle', '');
+        header.innerHTML = regionsDict[regionCode];
+
+        return tooltipElement
+    }
+  });
+
+}
 ////////////////////////////////
 //Y-axis
 ///////////////////////////////
@@ -615,3 +688,45 @@ export function appendCountryRectangles() {
 //       }
 //     });
 //   }
+
+export function appendMultiRectangles() {
+  d3.select("#allSids")
+  .selectAll("g")
+  .append("rect")
+  .style("fill", indexColors["mvi-index-index"]["Financial"])
+  .attr("x", 160)
+  .attr("y", 100)
+  .attr("width", 0)
+  .attr("height", 0)
+  .classed("choroRect0 choroRectMvi", true);
+
+d3.select("#allSids")
+  .selectAll("g")
+  .append("rect")
+  .style("fill", indexColors["mvi-index-index"]["Economic"])
+  .attr("x", 160)
+  .attr("y", 200)
+  .attr("width", 0)
+  .attr("height", 0)
+  .classed("choroRect1 choroRectMvi", true);
+
+d3.select("#allSids")
+  .selectAll("g")
+  .append("rect")
+  .style("fill", indexColors["mvi-index-index"]["Geographic"])
+  .attr("x", 160)
+  .attr("y", 300)
+  .attr("width", 0)
+  .attr("height", 0)
+  .classed("choroRect2 choroRectMvi", true);
+
+d3.select("#allSids")
+  .selectAll("g")
+  .append("rect")
+  .style("fill", indexColors["mvi-index-index"]["Environmental"])
+  .attr("x", 160)
+  .attr("y", 400)
+  .attr("width", 0)
+  .attr("height", 0)
+  .classed("choroRect3 choroRectMvi", true);
+  }

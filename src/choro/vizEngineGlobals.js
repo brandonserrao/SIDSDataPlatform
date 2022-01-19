@@ -31,7 +31,7 @@ export const hues = ["b", "b", "b",]
 // var textBBoxDict = {};
 // var bboxInit=0;
 export const indexCodes = ["mvi"]//,egov,etc.]
-// //var subindexWeights={"mvi":{"Economic":1,"Geographic":1,"Environmental":1,"Financial":1}}
+export const subindexWeights={"mvi":{"Economic":1,"Geographic":1,"Environmental":1,"Financial":1}}
 // var vizMode;
 // d3.select(self.frameElement).style("height", "650px");
 /////
@@ -62,6 +62,7 @@ export const regionCountries = {
         , "BRB", "VCT", "GRD", "TTO", "GUY", "SUR"]
 }
 //
+export const totalIndexRectangles =4;
 export const sidsDict = {"ATG":"Antigua and Barbuda", "ABW":"Aruba","BHS":"The Bahamas","BMU":"Bermuda",
 "BHR":"Bahrain","BRB": "Barbados", "BLZ":"Belize","VGB": "British Virgin Islands","CPV":"Cabo Verde",
 "CYM":"Cayman Islands", "COM":"Comoros","CUB": "Cuba","CUW":"Curaçao","DMA":"Dominica","DOM": "Dominican Republic",
@@ -73,6 +74,13 @@ export const sidsDict = {"ATG":"Antigua and Barbuda", "ABW":"Aruba","BHS":"The B
 "SUR":"Suriname","TLS": "Timor Leste","TTO":"Trinidad and Tobago", "TON": "Tonga",
 "TUV":"Tuvalu","TCA":"Turks and Caicos Islands","VUT": "Vanuatu","AIA":"Anguilla",
 "COK":"Cook Islands","MSR":"Montserrat","TKL":"Tokelau","NIU": "Niue"}
+
+export const regionsDict = {
+  caribbean: 'Caribbean',
+  ais: 'AIS',
+  pacific: 'Pacific'
+}
+
 //
 //
 //
@@ -125,18 +133,18 @@ export const sidsDict = {"ATG":"Antigua and Barbuda", "ABW":"Aruba","BHS":"The B
 //     remit: "Remittances (% of GDP)",
 //   };
 //
-//   mviIndicatorsDict = {
-//     expConc: "mvi-ldc-XCON-Index-economic",
-//     expInst: "mvi-ldc-XIN-Index-economic",
-//     agrInst: "mvi-ldc-AIN-Index-economic",
-//     agrGDP: "mvi-ldc-AFF-Index-environmental",
-//     victims: "mvi-ldc-VIC-Index-environmental",
-//     popLECZ: "mvi-ldc-LECZ-Index-geographic",
-//     remote: "mvi-ldc-REM-Index-geographic", //"popDry": "%mvi-ldc-DRY-Index-geographic",
-//     tourism: "mvi-ST.INT.RCPT.XP.ZS-financial",
-//     fdi: "mvi-BX.KLT.DINV.WD.GD.ZS-financial",
-//     remit: "mvi-BX.TRF.PWKR.DT.GD.ZS-financial",
-//   };
+export const  mviIndicatorsDict = {
+    expConc: "mvi-ldc-XCON-Index-economic",
+    expInst: "mvi-ldc-XIN-Index-economic",
+    agrInst: "mvi-ldc-AIN-Index-economic",
+    agrGDP: "mvi-ldc-AFF-Index-environmental",
+    victims: "mvi-ldc-VIC-Index-environmental",
+    popLECZ: "mvi-ldc-LECZ-Index-geographic",
+    remote: "mvi-ldc-REM-Index-geographic", //"popDry": "%mvi-ldc-DRY-Index-geographic",
+    tourism: "mvi-ST.INT.RCPT.XP.ZS-financial",
+    fdi: "mvi-BX.KLT.DINV.WD.GD.ZS-financial",
+    remit: "mvi-BX.TRF.PWKR.DT.GD.ZS-financial",
+  };
 //
 export const indexDict = {"mvi":"mvi-index-index"};
 //
@@ -161,83 +169,83 @@ export const mviDimensions = {
 export const mviDimensionList = Object.keys(mviDimensions);
 //
 //   //should compute this automatically
-//   mviCountryListSpider = [
-//     "HTI",
-//     "DOM",
-//     "ATG",
-//     "KNA",
-//     "DMA",
-//     "LCA",
-//     "BRB",
-//     "VCT",
-//     "GRD",
-//     "TTO",
-//     "GUY",
-//     "SUR",
-//     "CPV",
-//     "GNB",
-//     "STP",
-//     "COM",
-//     "MUS",
-//     "SYC",
-//     "MDV",
-//     "TLS",
-//     "PLW",
-//     "PNG",
-//     "SLB",
-//     "FSM",
-//     "MHL",
-//     "VUT",
-//     "NRU",
-//     "KIR",
-//     "FJI",
-//     "TUV",
-//     "TON",
-//     "WSM",
-//     "BLZ",
-//     "JAM",
-//   ];
+export const  countryListSpider = [
+    "HTI",
+    "DOM",
+    "ATG",
+    "KNA",
+    "DMA",
+    "LCA",
+    "BRB",
+    "VCT",
+    "GRD",
+    "TTO",
+    "GUY",
+    "SUR",
+    "CPV",
+    "GNB",
+    "STP",
+    "COM",
+    "MUS",
+    "SYC",
+    "MDV",
+    "TLS",
+    "PLW",
+    "PNG",
+    "SLB",
+    "FSM",
+    "MHL",
+    "VUT",
+    "NRU",
+    "KIR",
+    "FJI",
+    "TUV",
+    "TON",
+    "WSM",
+    "BLZ",
+    "JAM",
+  ];
 //
-//   mviCountryListLongitude = [
-//     "Belize",
-//     "Jamaica",
-//     "Haiti",
-//     "Dominican Republic",
-//     "Antigua and Barbuda",
-//     "St. Kitts and Nevis",
-//     "Dominica",
-//     "Saint Lucia",
-//     "Barbados",
-//     "St. Vincent and the Grenadines",
-//     "Grenada",
-//     "Trinidad and Tobago",
-//     "Guyana",
-//     "Suriname",
-//     "",
-//     "",
-//     "Cabo Verde",
-//     "Guinea-Bissau",
-//     "São Tomé and Príncipe",
-//     "Comoros",
-//     "Mauritius",
-//     "Seychelles",
-//     "Maldives",
-//     "",
-//     "",
-//     "Timor Leste",
-//     "Palau",
-//     "Papua New Guinea",
-//     "Solomon Islands",
-//     "Micronesia",
-//     "Marshall Islands",
-//     "Vanuatu",
-//     "Nauru",
-//     "Kiribati",
-//     "Fiji",
-//     "Tuvalu",
-//     "Tonga",
-//     "Samoa",
-//   ];
+export const  mviCountryListLongitude = [
+    "Belize",
+    "Jamaica",
+    "Haiti",
+    "Dominican Republic",
+    "Antigua and Barbuda",
+    "St. Kitts and Nevis",
+    "Dominica",
+    "Saint Lucia",
+    "Barbados",
+    "St. Vincent and the Grenadines",
+    "Grenada",
+    "Trinidad and Tobago",
+    "Guyana",
+    "Suriname",
+    "",
+    "",
+    "Cabo Verde",
+    "Guinea-Bissau",
+    "São Tomé and Príncipe",
+    "Comoros",
+    "Mauritius",
+    "Seychelles",
+    "Maldives",
+    "",
+    "",
+    "Timor Leste",
+    "Palau",
+    "Papua New Guinea",
+    "Solomon Islands",
+    "Micronesia",
+    "Marshall Islands",
+    "Vanuatu",
+    "Nauru",
+    "Kiribati",
+    "Fiji",
+    "Tuvalu",
+    "Tonga",
+    "Samoa",
+  ];
 //
 //
 //   // pacificList2 = [

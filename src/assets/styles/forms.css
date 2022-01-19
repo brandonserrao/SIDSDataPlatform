@@ -23,8 +23,12 @@
 .v-input__slot {
   min-height: 36px !important;
   padding: 0 8px 0 18px !important;
-
-      transition: none !important;
+  transition: none !important;
+}
+.v-input--checkbox .v-input__slot {
+  min-height: 36px !important;
+  padding: 0 8px 0 8px !important;
+  transition: none !important;
 }
 .v-text-field input {
   padding: 2px 0 2px !important;

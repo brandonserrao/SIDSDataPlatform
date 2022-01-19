@@ -179,11 +179,11 @@ export default {
 .map {
   cursor: pointer;
   flex-direction: column;
-  height: 80vh;
-  max-height: 720px;
+  height: 75vh;
+  max-height: 460px;
   background-size: 95%;
   width: 100%;
-  background-position: 50% -10px;
+  background-position: 50% -65px;
   transition: 700ms;
 }
 .map-AIS {
@@ -210,6 +210,7 @@ export default {
 .custom-chip_header {
   justify-content: center;
   padding: 0.1em;
+  font-weight: 700;
 }
 .custom-chip_text {
   justify-content: center;
@@ -218,22 +219,33 @@ export default {
   text-align: center;
   font-size: 12px;
   line-height: 1;
+  font-weight: 900;
+  margin: auto;
 }
 .map_info {
   flex-grow: 0;
 }
 
-@media all and (max-width:600px) {
+@media all and (max-width:1264px) {
+  .map {
+    height: 300px;
+    max-height: 720px;
+  }
+}
+@media all and (max-width:960px) {
   .map {
     background-image:none !important;
     height: auto;
     max-height: 720px;
   }
+}
+@media all and (max-width:600px) {
   .prtfolio-header {
     padding: 0 40px 0 40px;
   }
   .portfolio-chip {
     min-width: 30%;
+    margin: 5px 5% !important
   }
 }
 </style>

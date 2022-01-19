@@ -38,7 +38,9 @@ export default {
 @import './assets/styles/forms.css';
 @import './choro/vizEngine.css';
 
-
+html {
+  scroll-behavior: smooth;
+}
 
 #app {
   padding: 0;
@@ -59,12 +61,15 @@ body,
   font-family: "Proxima Nova", sans-serif !important;
 }
 
-@media all and (max-width: 600px) {
+@media all and (max-width: 960px) {
   .root-router {
     padding: 0 0 4em;
   }
   .menu-col {
     width: 0 !important;
   }
+}
+svg {
+  overflow: visible !important;
 }
 </style>

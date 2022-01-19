@@ -415,9 +415,6 @@ export default {
     max-width: 62px;
     padding: 3px;
   }
-  .sdg-goal img {
-    width: 100%;
-  }
   .barsLabels {
     font-family: sans-serif;
     font-size: 10px;

@@ -7,7 +7,7 @@
         v-model="searchString"
         @focus="showFullList"
         @blur="hideFullList"
-        hide-details="auto"
+        hide-details
         @click:append="clearFullSearch"
         append-icon="mdi-close"
         prepend-icon="mdi-magnify"
@@ -16,24 +16,25 @@
       <v-virtual-scroll
         v-if="activeSearch"
         :items="allIndicators"
-        height="600"
+        height="calc(100vh - 70px)"
         itemHeight="69"
       >
           <template v-slot:default="{ item }">
             <v-tooltip
               right
-              open-delay="500"
+              open-delay="300"
               max-width="250"
+              transition="none"
               :key="item.Indicator"
               content-class="indicator-tooltip"
              >
               <template v-slot:activator="{ on, attrs }">
                 <v-list-item
-                  class="inicator-item"
+                  class="inicator-item cursor-pointer"
                   inactive
                   v-bind="attrs"
                   v-on="on"
-                  @click="emitIndicatorChange(item)"
+                  @click="emitIndicatorChange(item['Indicator Code'])"
                 >
                   <v-list-item-title class="inicator-item_header mt-2">
                     {{item.Indicator}}
@@ -57,101 +58,135 @@
             </v-tooltip>
           </template>
     </v-virtual-scroll>
-      <v-list v-if="!activeSearch" dense class="list-datasets list-scrollabe">
-        <v-list-item-group>
-          <template v-for="(item, i) in datasets">
-            <v-list-item
-              inactive
-              class="list-scrollabe_item"
-              v-if="!dataset || dataset === item.name"
-              :key="i"
-              @click="toggleDataset(item.name)"
-            >
-              <v-list-item-content>
-                <v-img
-                  contain
-                  max-height="50"
-                  :src="item.background"
-                ></v-img>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider v-if="!dataset && i!== datasets.length - 1" :key="'divider' + i"></v-divider>
-        </template>
-        </v-list-item-group>
-      </v-list>
-      <v-select
-        v-if="dataset && indicatorCategories"
-        class="ml-2 mr-2"
-        v-model="activeCategory"
-        @change="changeCategory"
-        :items="indicatorCategories"
-        label="Categories"
-      ></v-select>
+    <v-list v-if="!activeSearch" dense :class="{'list-datasets-active':dataset}" class="list-datasets list-scrollabe">
+      <v-list-item-group>
+        <template v-for="(item, i) in datasets" >
+          <v-tooltip
+            right
+            open-delay="300"
+            transition="none"
+            max-width="250"
+            :key="i"
+            content-class="indicator-tooltip"
+           >
+            <template v-slot:activator="{ on, attrs }">
+              <v-list-item
+                inactive
+                v-show="!dataset || dataset === item.name"
+                class="list-scrollabe_item cursor-pointer"
+                :key="i"
+                v-bind="attrs"
+                v-on="on"
+                @click="toggleDataset(item.name)"
+              >
+                <v-list-item-content>
+                  <v-img
+                    contain
+                    max-height="50"
+                    :src="item.background"
+                  ></v-img>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
 
-      <v-select
-        v-if="dataset && indicatorSubCategories"
+            <v-card class="tooltip-card pt-2">
+              <v-img
+                contain
+                max-height="50"
+                :src="item.background"
+              ></v-img>
+              <v-card-title class="mb-1 active-indicator_header">{{datasetMeta[item.name] ? datasetMeta[item.name]['Dataset Name'] : ''}}</v-card-title>
+              <v-card-text>
+                <div class="mb-1">
+                  {{datasetMeta[item.name] ? datasetMeta[item.name]['# of Indicators'] : ''}} indicators
+                  {{datasetMeta[item.name] ? datasetMeta[item.name]['SIDS Coverage'] : ''}} SIDS
+
+                </div>
+                <b>Organization:</b>{{datasetMeta[item.name] ? datasetMeta[item.name]['Organization'] : ''}}
+              </v-card-text>
+            </v-card>
+          </v-tooltip>
+        </template>
+      </v-list-item-group>
+    </v-list>
+    <v-select
+      v-if="dataset && indicatorCategories"
+      class="ml-2 mr-2"
+      v-model="activeCategory"
+      hide-details
+      @change="changeCategory"
+      :items="indicatorCategories"
+      label="Categories"
+    ></v-select>
+    <v-select
+      v-if="dataset && indicatorSubCategories"
+      class="ml-2 mr-2"
+      hide-details
+      v-model="activeSubCategory"
+      :items="indicatorSubCategories"
+      label="Subcategories"
+    ></v-select>
+    <v-text-field v-if="dataset"
         class="ml-2 mr-2"
-        v-model="activeSubCategory"
-        :items="indicatorSubCategories"
-        label="Subcategories"
-      ></v-select>
-      <v-text-field v-if="dataset"
-          class="ml-2 mr-2"
-          v-model="deepSearch"
-          label="Search indicators"
-          hide-details="auto"
-          append-icon="mdi-close"
-          @click:append="clearDeepSearch"
-      ></v-text-field>
-      <v-list v-if="dataset" dense :class="{'list-short' : activeIndicator}" class="list-indicators list-scrollabe">
-        <v-list-item-group>
-          <template v-for="(indicator, i) in activeIndicatorsWithMeta">
-            <v-tooltip
-              right
-              max-width="250"
-              :key="i"
-              content-class="indicator-tooltip"
-             >
-              <template v-slot:activator="{ on, attrs }">
-                <v-list-item
-                  class="inicator-item"
-                  inactive
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="emitIndicatorChange(indicator)"
-                >
-                  <v-list-item-title class="inicator-item_header mt-2">
-                    {{indicator.Indicator}}
-                  </v-list-item-title>
-                  <v-list-item-content class="inicator-item_description">
-                    {{indicator.Definition}}
-                  </v-list-item-content>
-                </v-list-item>
-                <v-divider v-if="dataset && i!== activeIndicatorsWithMeta.length" :key="'divider' + i"></v-divider>
-              </template>
-              <v-card class="tooltip-card">
-                <v-card-title class="mb-1 active-indicator_header">{{indicator.Indicator}}</v-card-title>
-                <v-card-text>
-                  <div class="mb-1">{{indicator.Dimension}}</div>
+        v-model="deepSearch"
+        label="Search indicators"
+        hide-details
+        append-icon="mdi-close"
+        @click:append="clearDeepSearch"
+    ></v-text-field>
+    <v-list v-if="dataset" dense :class="{'list-short' : activeIndicator}" class="list-indicators list-scrollabe">
+      <v-list-item-group>
+        <template v-for="(indicator, i) in activeIndicatorsWithMeta">
+          <v-tooltip
+            right
+            open-delay="300"
+            transition="none"
+            max-width="250"
+            :key="i"
+            content-class="indicator-tooltip"
+           >
+            <template v-slot:activator="{ on, attrs }">
+              <v-list-item
+                class="inicator-item cursor-pointer"
+                inactive
+                v-bind="attrs"
+                v-on="on"
+                @click="emitIndicatorChange(indicator['Indicator Code'])"
+              >
+                <v-list-item-title class="inicator-item_header mt-2">
+                  {{indicator.Indicator}}
+                </v-list-item-title>
+                <v-list-item-content class="inicator-item_description">
                   {{indicator.Definition}}
-                  <v-divider class="mb-1 mt-1"></v-divider>
-                  <b>Source:</b>{{indicator.Source}} <br/>
-                  <a :href="indicator.Link" target="_blank">Link</a>
-                </v-card-text>
-              </v-card>
-            </v-tooltip>
-          </template>
-        </v-list-item-group>
-      </v-list>
-    </v-card>
-    <v-card class="mt-2" v-if="activeIndicator">
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider v-if="dataset && i!== activeIndicatorsWithMeta.length" :key="'divider' + i"></v-divider>
+            </template>
+            <v-card class="tooltip-card">
+              <v-card-title class="mb-1 active-indicator_header">{{indicator.Indicator}}</v-card-title>
+              <v-card-text>
+                <div class="mb-1">{{indicator.Dimension}}</div>
+                <v-divider class="mb-1 mt-1"></v-divider>
+                <b>Source:</b>{{indicator.Source}} <br/>
+                <a :href="indicator.Link" target="_blank">Link</a>
+              </v-card-text>
+            </v-card>
+          </v-tooltip>
+        </template>
+      </v-list-item-group>
+    </v-list>
+  </v-card>
+    <v-card flat class="mt-2" v-if="activeIndicator">
       <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.Indicator}}</v-card-title>
-      <v-card-text>
+      <v-card-text class="active-indicator-info">
         <div class="mb-1 d-flex">
           <div class="active-dimension"> {{activeIndicatorDimension}} </div>
           <v-select class='dimensions-select' v-if="activeIndicatorDimensions.length > 1"
             :items="activeIndicatorDimensions"
-            v-model="activeIndicatorDimension"
+            :value="activeIndicatorCode"
+            item-text="dimension"
+            item-value="code"
+            @change="emitIndicatorChange"
             label="Dimension"
             dense
           ></v-select>
@@ -166,6 +201,8 @@
 </template>
 <script>
 import { mapState } from 'vuex';
+import { datasetMeta } from '@/assets/datasets/datasetMeta';
+
 
 export default {
   name: 'IndicatorsNav',
@@ -180,74 +217,67 @@ export default {
       activeCategory: 'All categories',
       activeSubCategory: 'All categories',
       activeIndicator:null,
+      datasetMeta: datasetMeta,
       datasets: [
         {
           name: 'key',
           background: require('@/assets/datasets/keyIcon.png')
         },
         {
-          name: 'mvi',
-          background: require('@/assets/datasets/mviIcon.png')
+          name: 'hdr',
+          background: require('@/assets/datasets/hdrIcon.png')
         },
         {
-          name: 'ssi',
-          background: require('@/assets/datasets/ssiIcon.png')
-        },
-        {
-          name: 'igrac',
-          background: require('@/assets/datasets/igracIcon.png')
-        },
-        {
-          name: 'wdi',
-          background: require('@/assets/datasets/wdiIcon.png')
-        },
-        {
-          name: 'who',
-          background: require('@/assets/datasets/whoIcon.png')
-        },
-        {
-          name: 'irena',
-          background: require('@/assets/datasets/irenaIcon.png')
-        },
-        {
-          name: 'undesa',
-          background: require('@/assets/datasets/undesaIcon.png')
-        },
-        {
-          name: 'fao',
-          background: require('@/assets/datasets/faoIcon.png')
-        },
-        {
-          name: 'unctad',
-          background: require('@/assets/datasets/unctadIcon.png')
-        },
-        {
-          name: 'rfti',
-          background: require('@/assets/datasets/rftiIcon.png')
-        },
-        {
-          name: 'epi',
-          background: require('@/assets/datasets/epiIcon.png')
+          name: 'ihme',
+          background: require('@/assets/datasets/ihmeIcon.png')
         },
         {
           name: 'ohi',
           background: require('@/assets/datasets/ohiIcon.png')
         },
         {
+          name:'wdi',
+          background: require('@/assets/datasets/wdiIcon.png')
+        },
+        {
+          name: 'mvi',
+          background: require('@/assets/datasets/mviIcon.png')
+        },
+        {
           ndgain: 'ndgain',
           background: require('@/assets/datasets/ndgainIcon.png')
         },
         {
-          name: 'hdr',
-          background: require('@/assets/datasets/hdrIcon.png')
+          name: 'epi',
+          background: require('@/assets/datasets/epiIcon.png')
         },
         {
-          name: 'sdg',
-          background: require('@/assets/datasets/sdgIcon.png')
+          name: 'ssi',
+          background: require('@/assets/datasets/ssiIcon.png')
         },
         {
-          name: 'blasiak',
-          background: require('@/assets/datasets/blasiakIcon.png')
+          name: 'unctad',
+          background: require('@/assets/datasets/unctadIcon.png')
+        },
+        {
+          name: 'unicef',
+          background: require('@/assets/datasets/unicefIcon.png')
+        },
+        {
+          name: 'undesa',
+          background: require('@/assets/datasets/undesaIcon.png')
+        },
+        {
+          name: 'irena',
+          background: require('@/assets/datasets/irenaIcon.png')
+        },
+        {
+          name: 'igrac',
+          background: require('@/assets/datasets/igracIcon.png')
+        },
+        {
+          name: 'itu',
+          background: require('@/assets/datasets/ituIcon.png')
         },
         {
           name: 'gggr',
@@ -258,17 +288,9 @@ export default {
           background: require('@/assets/datasets/ghiIcon.png')
         },
         {
-          name: 'ihme',
-          background: require('@/assets/datasets/ihmeIcon.png')
+          name: 'blasiak',
+          background: require('@/assets/datasets/blasiakIcon.png')
         },
-        {
-          name: 'itu',
-          background: require('@/assets/datasets/ituIcon.png')
-        },
-        {
-          name: 'unicef',
-          background: require('@/assets/datasets/unicefIcon.png')
-        }
       ]
     }
   },
@@ -342,6 +364,10 @@ export default {
     },
     activeIndicatorsWithMeta() {
       let indicatorsWithMetaArray = this.activeIndicators.map(codesArray => {
+        codesArray.map(code =>  {
+          let metaData = this.indicatorsMeta[code];
+          metaData.codesArray = codesArray;
+        })
         let metaData = this.indicatorsMeta[codesArray[0]];
         metaData.codesArray = codesArray;
         return metaData;
@@ -360,7 +386,10 @@ export default {
     },
     activeIndicatorDimensions() {
       return this.activeIndicator.codesArray.map(code => {
-        return this.indicatorsMeta[code].Dimension
+        return {
+          code,
+          dimension: this.indicatorsMeta[code].Dimension
+        }
       })
     }
   },
@@ -385,12 +414,13 @@ export default {
       for(let indicator in this.activeDataset[category][subCategory]) {
         indicatorsList.push(this.activeDataset[category][subCategory][indicator]);
       }
-      return indicatorsList;
+      return indicatorsList
     },
     changeCategory() {
       this.activeSubCategory = ''
     },
     emitIndicatorChange(indicator) {
+      console.log(indicator)
       this.$emit('indicatorChange', indicator)
     },
     setActiveIndicator(indicator) {
@@ -409,8 +439,6 @@ export default {
       this.searchString = '';
       this.activeSearch = false;
       this.selectDataset(indicator.Dataset);
-      this.activeCategory = indicator.Category;
-      this.activeSubCategory = indicator.Subcategory;
       this.setActiveIndicator(indicator);
     },
     clearFullSearch() {
@@ -440,14 +468,20 @@ export default {
 
 <style scoped>
 .list-scrollabe {
-  max-height: calc(100vh - 110px);
   overflow-y: scroll;
 }
+
+.list-datasets {
+  max-height: calc(100vh - 68px);
+}
+.list-datasets-active {
+  padding: 0;
+}
 .list-indicators {
-  max-height: calc(100vh - 260px);
+  max-height: calc(100vh - 200px);
 }
 .list-short {
-  max-height: calc(100vh - 410px);
+  max-height: calc(100vh - 510px);
 }
 .list-scrollabe_item {
   height: 66px;
@@ -458,6 +492,7 @@ export default {
 }
 .inicator-item_header {
   text-align: left;
+  font-weight: 800 !important;
   width: 100%;
 }
 .inicator-item_description {
@@ -485,5 +520,13 @@ export default {
 .dimensions-select{
   max-width: 60%;
   margin-right: 0;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.active-indicator-info {
+  padding-top: 8px !important;
+  max-height: calc(100vh - 410px);
+  overflow-y: scroll;
 }
 </style>

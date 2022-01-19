@@ -1,21 +1,24 @@
 <template>
   <div class="">
-    <v-card class="mb-4">
+    <v-card class="mb-1 background-transparent">
       <!--       <button class="printout debug" @click="">
         Printout Datasets to Console
       </button> -->
       <v-row>
         <v-col cols="6">
-          <v-list dense>
+          <v-list class="background-none" dense>
             <v-list-item-group v-model="activeGoalType" mandatory>
               <v-tooltip
                 top
                 v-for="(item, i) in goalTypes"
                 :key="i"
                 eager
+                transition="none"
+                open-delay="200"
                 max-width="400"
-                nudge-right="106"
-                :nudge-top="20 + 40 * i"
+                nudge-right="516"
+                :nudge-top="18 + 40 * (i + 1)"
+                bottom
                 content-class="indicator-tooltip"
                 allow-overflow
               >
@@ -39,7 +42,7 @@
                       :src="item.headerImg"
                     ></v-img>
                   </v-card-title>
-                  <v-card-text>
+                  <v-card-text class="tooltip-card_text">
                     {{ item.description }}
                   </v-card-text>
                 </v-card>
@@ -48,15 +51,19 @@
           </v-list>
         </v-col>
         <v-col cols="6">
-          <v-list v-if="activeGoalType === 'pillars'" dense>
+          <v-list class="background-none" v-if="activeGoalType === 'pillars'" dense>
             <v-list-item-group v-model="activePillar" mandatory>
               <v-tooltip
                 right
                 v-for="(item, i) in pillars"
                 :key="i"
                 eager
-                :nudge-top="-40 + 40 * i"
-                max-width="320"
+                open-delay="200"
+                transition="none"
+                :nudge-top="18 + 40 * (i + 1)"
+                max-width="400"
+                bottom
+                :nudge-right="303"
                 content-class="indicator-tooltip"
                 allow-overflow
               >
@@ -110,16 +117,16 @@
               <v-menu
                 open-on-hover
                 bottom
-                :nudge-left="255"
-                :nudge-bottom="46"
+                :nudge-left="256"
+                :nudge-bottom="118"
                 content-class="sdg-menu"
               >
                 <template v-slot:activator="{ on }">
                   <img
                     v-on="on"
                     :src="getGoalImage(index)"
-                    height="56"
-                    width="56"
+                    height="120"
+                    width="120"
                   />
                 </template>
                 <div class="goals-tooltip-content">
@@ -128,9 +135,11 @@
                     v-for="(n, index) in activeGoalTypes"
                     :key="n"
                     eager
-                    :nudge-right="(5 - (index % 6)) * 56 || 6"
-                    :nudge-top="getGoalsTooltipNudgeTop(index)"
-                    max-width="380"
+                    transition="none"
+                    open-delay="300"
+                    :nudge-right="(4 - (index % 5)) * 80 || 6"
+                    :nudge-top="(Math.floor(index/5)) * 80 || 6"
+                    max-width="400"
                     content-class="indicator-tooltip"
                     allow-overflow
                   >
@@ -141,8 +150,8 @@
                         @click="selectGoal(index + 1)"
                         :src="getGoalImage(index)"
                         class="tooltip-image"
-                        height="56"
-                        width="56"
+                        height="80"
+                        width="80"
                       />
                     </template>
                     <v-card>
@@ -166,6 +175,7 @@
             rounded
             class="map-input"
             dense
+            hide-details
             v-model="activeDatasetName"
             :items="filteredDatasets"
             item-text="name"
@@ -176,11 +186,12 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row v-if="activeDataset && activeDataset.type === 'layers'" dense>
+      <v-row class="spacing-row" v-if="activeDataset && activeDataset.type === 'layers'" dense>
         <v-col>
           <v-select
             rounded
             dense
+            hide-details
             class="map-input"
             v-model="activeLayerName"
             item-text="Description"
@@ -192,10 +203,7 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row
-        v-else-if="activeDataset && activeDataset.type === 'temporal'"
-        dense
-      >
+      <v-row class="spacing-row" v-else-if="activeDataset && activeDataset.type === 'temporal'" dense >
         <v-col>
           <v-slider
             class="map-input"
@@ -209,27 +217,35 @@
           ></v-slider>
         </v-col>
       </v-row>
+      <v-row v-else class="spacing-row">
+      </v-row>
     </v-card>
-    <v-card v-if="activeLayer">
-      <v-card-subtitle>
+    <v-card class="mb-1 block-info background-grey" >
+      <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
           {{ activeDataset.type === "temporal" ? activeLayer.Temporal : "" }}</b
         >
       </v-card-subtitle>
-      <v-card-text>
+      <v-card-subtitle class="block-header" v-else>
+        SIDS Geospatial Platform
+      </v-card-subtitle>
+      <v-card-text v-if="activeLayer">
         {{ activeLayer.Desc_long }}<br />
         <b>Reference</b> {{ activeLayer.Source_Name }} <br />
         <a :href="activeLayer.Source_Link" target="_blank">
           {{ activeLayer.Source_Link }}
         </a>
       </v-card-text>
+      <v-card-text v-else>
+        This map visualizes data for the SIDS at different resolutions. Select a dataset above or a country to view spatial data about that region.
+      </v-card-text>
     </v-card>
 
     <!-- New Legend/Histogram -->
     <!-- <v-card v-if="displayLegend" class="histogram_frame"> -->
-    <v-card v-show="displayLegend" class="histogram_frame">
-      <div id="histogram_frame" class="pic app-body population-per-km col-flex">
+    <v-card v-show="displayLegend" class="background-grey histogram_frame">
+      <div v-show="activeLayer" id="histogram_frame" class="pic app-body population-per-km col-flex">
         <div class="row-flex space-evenly" id="legendTitle"></div>
         <div class="row-flex space-evenly" id="updateLegend"></div>
         <canvas
@@ -239,6 +255,9 @@
           height="115"
         ></canvas>
       </div>
+      <v-card-text class="histogram_placeholder" v-show="!activeLayer">
+        Select a Dataset and Layer to view data on the map.
+      </v-card-text>
     </v-card>
   </div>
 </template>
@@ -266,8 +285,8 @@ export default {
           name: "SIDS offer Pillars",
           value: "pillars",
           headerImg:
-            // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png",
-            "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sidsOfferPillars.png",
+            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png",
+            // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sidsOfferPillars.png",
           // "../assets/gis/icons/sidsOfferPillars.png", //working on local server
           description:
             "UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.",
@@ -276,20 +295,21 @@ export default {
           name: "SDGs",
           value: "sdgs",
           headerImg:
-            // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png",
-            "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sdgs.png",
+            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png",
+            // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sdgs.png",
           // "../assets/gis/icons/SDGs.png",
           description:
-            "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
+          "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
+
         },
         {
           name: "SAMOA Pathway",
           value: "samoaPriorities",
           headerImg:
-            // "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png",
-            "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaPathway.png",
+            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png",
+            // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaPathway.png",
           description:
-            "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
+          "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
         },
       ],
       activePillar: 1,
@@ -631,24 +651,19 @@ export default {
     selectGoal(goalNumber) {
       this.activeGoal = goalNumber;
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
-      this.$refs.slider.scrollOffset = 56 * (goalNumber - 1);
-    },
-    getGoalsTooltipNudgeTop(index) {
-      if (index < 6) {
-        return 6;
-      } else if (index < 12) {
-        return 56;
-      }
-      return 112;
-    },
-  },
+      this.$refs.slider.scrollOffset = 120 * (goalNumber - 1);
+    }
+  }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 /*Brandon additions*/
-
+.data-controller {
+  display: flex;
+  flex-direction: column;
+}
 .row-flex {
   display: flex;
   flex-direction: row;
@@ -699,10 +714,12 @@ export default {
   } */
 }
 /*End of Brandon additions*/
-
+.histogram_placeholder {
+  height: 200px;
+}
 .goals-slider {
-  padding: 8px 0;
-  width: 106px;
+  padding: 8px 0 0;
+  width: 170px;
   margin: auto;
 }
 .goals-slider .v-slide-group__next,
@@ -711,7 +728,7 @@ export default {
 }
 .goals-tooltip-content {
   display: flex;
-  max-width: 336px;
+  max-width: 400px;
   flex-wrap: wrap;
 }
 .tooltip-image {
@@ -727,6 +744,9 @@ export default {
 }
 .tooltip-card_img {
   margin: auto;
+}
+.tooltip-card_text {
+  font-weight: 600;
 }
 .pillars_icon {
   margin-right: 5px !important;
@@ -749,5 +769,19 @@ export default {
   word-break: keep-all !important;
   word-wrap: normal;
   /* white-space: nowrap */
+}
+.spacing-row {
+  height: 55px;
+}
+.background-none {
+  background: none !important;
+}
+.background-transparent {
+  background-color: rgba(221, 221, 221, 0.7) !important;
+}
+.block-info {
+  height: 200px;
+  overflow-y: scroll;
+
 }
 </style>

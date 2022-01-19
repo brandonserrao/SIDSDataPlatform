@@ -35,7 +35,7 @@ export function processVizElementAttributes() {
     textBBox = this.textBBoxDict[country],
 
     RTa = this.rectTransform(country, bBox, indicatorDataObj, this.indiSelections),
-    //MRTa = multiRectTransform(country, bBox, indicatorDataObj, indiSelections);
+    MRTa={},
     VTa = this.vizTransform(country, bBox, indicatorDataObj, this.indiSelections),
     LTa = this.labelTransform(country, bBox, indicatorDataObj, this.indiSelections),
     CTa = this.circleTransform(country, bBox, indicatorDataObj, this.indiSelections),
@@ -45,17 +45,23 @@ export function processVizElementAttributes() {
       textBBox,
       indicatorDataObj,
       this.indiSelections
-    );
-
+    ),
+    subindexList=Object.keys(this.indexWeights["subindices"]);
+    for(let i=0;i<subindexList.length;i++){
+      MRTa[i] = this.multiRectTransform(country, bBox, indicatorDataObj, this.indexData, this.indiSelections,this.indexWeights,i);
+    }
     vizElementAttributes[country] = {
       VT: VTa,
       RT: RTa,
       LT: LTa,
       CT: CTa,
-            //MRT: MRTa,
+      MRT: MRTa,
       TT: TTa
-
     };
+    for(let i=0;i<subindexList.length;i++){
+      vizElementAttributes[country]["MRT"+i]=MRTa[i];
+
+    }
   }
 
   return vizElementAttributes;
@@ -132,11 +138,11 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
         //           console.log(sortedData)
         let rank,
         totalVals;
-        if (this.indiSelections["sortby"] == "Rank") {
+        if (this.indiSelections["sortby"] == "rank") {
           //this filter removes any empty elements
           rank = sortedData[country];
           totalVals = indicatorValues.length;
-        } else if (this.indiSelections["sortby"] == "Region") {
+        } else if (this.indiSelections["sortby"] == "region") {
           let countryOrder = Object.keys(sortedData);
           let pacificListSort = countryOrder.filter((item) =>
             regionCountries["pacific"].includes(item)
@@ -154,10 +160,6 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
             pacificListSort
           );
           rank = chosenCountryList.indexOf(country);
-          //console.log(rank)
-          if (rank == -1) {
-            console.log(country, val);
-          }
           totalVals = indicatorValues.length + 4;
         }
 
@@ -323,15 +325,16 @@ export function textTransform(
       return ""; //scale(0.001,0.001)"
     }
   } else if (this.indiSelections["viz"] == "spider") {
-    let mviRank = this.indiSelections["countryOrder"].indexOf(country),
-    scale;
+    let mviRank = this.countryOrder.indexOf(country),
+      numberOfCountries=this.countryOrder.length,
+      scale;
     if (mviRank == -1) {
         scale = 1//0.001;
     } else {
         scale = 1;
     }
-    x = 300 * Math.sin(mviRank / 34 * 2 * 3.14) - textX + 370
-    y = -280 * Math.cos(mviRank / 34 * 2 * 3.14) - textY + 250
+    x = 300 * Math.sin(mviRank / numberOfCountries * 2 * 3.14) - textX + 370
+    y = -280 * Math.cos(mviRank / numberOfCountries * 2 * 3.14) - textY + 250
 
     // scale = 1;
     // x = 0;
@@ -376,6 +379,50 @@ export function textTransform(
   //     }
   // }
 }
+
+export function multiRectTransform(country, bBox, indicatorDataObj, indexDataObj, indiSelections,indexWeights,i){
+  let RTm=this.rectTransform(country, bBox, indicatorDataObj, indiSelections),
+  subindexList=Object.keys(indexWeights["subindices"]),
+  totalWidthBar = 440,
+  totalHeightColumn = 200;
+
+  if(this.vizMode=="index"&&(indiSelections["viz"] == "bars"||indiSelections["viz"] == "global")){
+      let x=0,
+      val=indexDataObj[subindexList[i]]["data"][indiSelections["year"]][country];
+      for(let j=0;j<i;j++){
+        x+=indexDataObj[subindexList[j]]["data"][indiSelections["year"]][country]
+      }
+      let maxx = Math.max(...Object.values(indexDataObj["index"]["data"][indiSelections["year"]])),
+      minn = 0, //Math.min(...indicatorValues)
+      normValue,
+      normX;
+// TODO: Ask Ben about min (now is 0)
+      if (maxx>0&&!isNaN(val)&&!isNaN(x)){
+        normValue = (val - minn) / (maxx - minn);
+        normX= (x-0)/maxx-minn
+      } else {
+        normValue=0
+        normX=0
+      }
+      if(!isNaN(val)){
+        if (indiSelections["viz"] == "bars") {
+          RTm["x"]=normX*totalWidthBar+160
+          RTm["width"]=normValue*totalWidthBar
+        } else if (indiSelections["viz"] == "global") {
+          RTm["y"]=425-(normX+normValue)*totalHeightColumn
+          RTm["height"]=normValue*totalHeightColumn
+        }
+      } else {
+        RTm["width"]=0
+        RTm["height"]=0
+      }//default, to hide the index rectangles
+    } else {
+      RTm["width"]=0
+      RTm["height"]=0
+    }//default, to hide the index rectangles
+  return RTm
+}
+
 
 export function labelTransform(country, bBox, indicatorDataObj) {
   let RTl = this.rectTransform(country, bBox, indicatorDataObj);
@@ -426,22 +473,21 @@ export function vizTransform(country, bBox, indicatorDataObj) {
     y = -cy + valY / scale / 1.41 - 154 / scale;
     scale = scale / 1.41;
   } else if (this.indiSelections["viz"] == "spider") {
-    //   orderedCountryList=indiSelections["countryOrder"]
-    // mviRank = orderedCountryList.indexOf(country)
-    //
-    // if (mviRank == -1) {
-    //     scale = 0
-    // }
-    // else {
-    //     scale = .54;
-    // }
-    // x = 460 * Math.sin(mviRank / 34 * 2 * 3.14) - cx + 690
-    // y = -460 * Math.cos(mviRank / 34 * 2 * 3.14) - cy + 450
-    //
-    // // //temp
-    // // x = 0;
-    // // y = 0;
-    // // scale = 0.8;
+      let mviRank = this.countryOrder.indexOf(country),
+      numberOfCountries=this.countryOrder.length;
+      if (mviRank == -1) {
+          scale = 0
+      }
+      else {
+          scale = .54;
+      }
+      x = 460 * Math.sin(mviRank / numberOfCountries * 2 * 3.14) - cx + 690
+      y = -460 * Math.cos(mviRank / numberOfCountries * 2 * 3.14) - cy + 450
+
+    // //temp
+    // x = 0;
+    // y = 0;
+    // scale = 0.8;
   } else if (this.indiSelections["viz"] == "series") {
     scale = 0.01;
     x = ((1 - scale) * cx) / scale;

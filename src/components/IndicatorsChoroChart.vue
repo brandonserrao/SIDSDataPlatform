@@ -3,8 +3,14 @@
     <div id="choro_legend_container">
       <img id="regionLegend" src="https://sids-dashboard.github.io/SIDSDataPlatform/images/tempChoroLegend.jpg" style="margin-top:-15">
     </div>
+    <div class="spiderbox" style="height:0;margin:0;">
+      <div id="indexSpider" class="radarChart" style="text-align:center;height:0"></div>
+    </div>
     <div id="choro_map_container">
 
+    </div>
+    <div id="timeSeriesContainer" style="width: 900px;display:none">
+      <!-- <div class="timeSeriesTooltip"></div> -->
     </div>
   </div>
 </template>
@@ -21,7 +27,7 @@ export default {
       choro:null
     }
   },
-  props:['indicatorCode', 'chartType', 'sorting'],
+  props:['indicatorCode', 'region', 'page', 'chartType', 'sorting', 'mviCodes'],
   computed: {
     ...mapState({
       profileData: state => state.indicators.profileData,
@@ -41,6 +47,7 @@ export default {
         indicatorMeta:this.indicatorMeta,
         profileData: this.profileData,
         page:this.page,
+        selectedIndis:this.mviCodes,
         vizContainerWidth:'800',
         vizContainerHeight:'580',
         mapContainerSelector: '#choro_map_container',
@@ -55,21 +62,38 @@ export default {
     await this.initChart()
   },
   watch:{
-    indicatorCode() {
-      this.choro.updateVizEngine(this.indicatorCode);
-    },
-    chartType() {
-      this.choro.updateVizType(this.chartType);
-    },
     page() {
-      this.choro.updatePageType({
+      this.choro && this.choro.updatePageType({
         page: this.page,
-        chartType: this.chartType
+        chartType: this.chartType,
+        code: this.indicatorCode
       });
     },
+    chartType() {
+      if(this.choro && this.page === this.choro.page) {
+      this.choro.updateVizType(this.chartType);
+      }
+    },
+    indicatorCode() {
+      if(this.choro && this.page === this.choro.page) {
+        this.choro.updateVizEngine(this.indicatorCode);
+      }
+    },
+    region() {
+      if(this.choro && this.page === this.choro.page) {
+        this.choro && this.choro.updateCountryTypeFilterType(this.region);
+      }
+    },
     sorting() {
-      this.choro && this.choro.updateSortingType(this.sorting);
-    }
+      if(this.choro && this.page === this.choro.page) {
+        this.choro && this.choro.updateSortingType(this.sorting);
+      }
+    },
+    mviCodes () {
+      if(this.choro && this.page === this.choro.page) {
+        this.choro && this.choro.updateMviCodes(this.mviCodes);
+      }
+    },
   }
 }
 </script>
@@ -218,7 +242,10 @@ export default {
   text-anchor: middle;
   color: black;
 }
-
+.spiderbox {
+  position: relative;
+  z-index: 5;
+}
 #choro_legend_container {
   margin: 0;
   padding: 0;

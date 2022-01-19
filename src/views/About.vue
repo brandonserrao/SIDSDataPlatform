@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5">
+  <div class="mt-5 about-page">
     <v-row justify="center">
       <v-col cols="12">
         <h2 class="page-header">About the SIDS Data Visualization Platform</h2>
@@ -25,6 +25,7 @@
               </p>
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <v-divider/>
           <v-expansion-panel>
             <v-expansion-panel-header>What is UNDP's SIDS Offer?</v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -47,6 +48,7 @@
               </p>
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <v-divider/>
           <v-expansion-panel>
             <v-expansion-panel-header>What are the sources of data used?</v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -55,6 +57,7 @@
               </p>
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <v-divider/>
           <v-expansion-panel>
             <v-expansion-panel-header>What are the future stages of development for this data platform?</v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -63,6 +66,7 @@
               </p>
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <v-divider/>
           <v-expansion-panel>
             <v-expansion-panel-header>Who should I contact to learn more?</v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -86,3 +90,8 @@
     </v-row>
   </div>
 </template>
+<style>
+   .about-page .v-expansion-panel::after {
+     border-top: 1px solid rgba(0, 0, 0, 0.12) !important;
+   }
+</style>

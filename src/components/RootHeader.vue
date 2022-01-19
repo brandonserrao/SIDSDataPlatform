@@ -85,9 +85,6 @@ export default {
   animation: fadein 2s;
 }
 
-.header-text_header-big {
-  font-size: 36px;
-}
 .header-text_header-small {
   font-size: 36px;
   -webkit-animation: fadein 3s;
