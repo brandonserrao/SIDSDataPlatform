@@ -116,7 +116,6 @@
 </template>
 
 <script>
-
 export default {
   name: "GoualsSelector",
   data() {
@@ -407,13 +406,20 @@ export default {
         if (goalNmber.length < 2) {
           goalNmber = "0" + goalNmber;
         }
-        return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNmber}.png`;
+        // return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNmber}.png`;
+        return `https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/SDG_Icons_2019_WEB/E-WEB-Goal-${goalNmber}.png`;
       } else if (this.activeGoalType === "samoa") {
-        return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${
+        // return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${
+        //   index + 1
+        // }samoaIcons.png`;
+        return `https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaIcons/100w/Asset_${
           index + 1
         }samoaIcons.png`;
       } else if (this.activeGoalType === "signature-solutions") {
-        return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SSicons/1x/${this[
+        // return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SSicons/1x/${this[
+        //   "signature-solutions"
+        // ][index].toLowerCase()}SS.png`;
+        return `https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/SSicons/1x/${this[
           "signature-solutions"
         ][index].toLowerCase()}SS.png`;
       }

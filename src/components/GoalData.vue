@@ -1,35 +1,34 @@
 <template>
   <div class="goal-data">
-    <div :id="`${goalNumber}bars`">
-      GOAL {{goalNumber}}
-    </div>
+    <div :id="`${goalNumber}bars`">GOAL {{ goalNumber }}</div>
     <div class="goal-data_icon">
-      <img :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNumber}.png`">
+      <!-- <img :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNumber}.png`"> -->
+      <img
+        :src="`https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNumber}.png`"
+      />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'GoalData',
-  props:{
+  name: "GoalData",
+  props: {
     name: {
       type: String,
-      default: ''
+      default: "",
     },
     color: {
       type: String,
-      default: ''
+      default: "",
     },
     goalNumber: {
       type: String,
-      default: ''
-    }
-  }
-}
+      default: "",
+    },
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>
+<style scoped></style>
