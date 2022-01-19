@@ -74,6 +74,8 @@ export function appendAllElements(){
 //////////////////////////////////////
 //
 export function initChoroLegend(quantize) {
+
+  let textPadding = this.vizWidth <= 800 ? (this.vizWidth - 40)/2 : 400
 //   $("#indicatorExport").show();
   d3.select("#regionLegend").style('display','none');
 
@@ -114,7 +116,7 @@ export function initChoroLegend(quantize) {
   d3.select(this.legendContainerSelector).select("svg")
     .append("text")
     .attr("class", "choroLegendTitle")
-    .attr("x", 400)
+    .attr("x", textPadding)
     .attr("y", 14)
     .attr("text-anchor", "middle")
     // .transition()
@@ -171,7 +173,6 @@ export function showChoroLegend(choroLegend, quantize) {
 
 function appendLinesMapAndRegions() {
 //    main_chart_svg = d3.select("#choro_map_container")//.select("svg");
-
     this.main_chart_svg
       .append("svg:image")
       .attr("x", -18)
@@ -510,7 +511,7 @@ export function appendCountryRectangles() {
 export function initVizEngineTooltips() {
   let rootThis = this;
 
-  tippy('.countrySvg, .choroCircle', {
+  tippy('.countrySvg, .choroCircle, .choroRectMvi, .choroRect', {
     theme: 'light',
     delay: 300,
     onShow: function(instance) {

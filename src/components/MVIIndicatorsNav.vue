@@ -1,14 +1,28 @@
 <template>
   <div class="mvi-indicators-nav">
-    <v-tabs
-      :value="activePreset"
-      grow
-      class="mb-2 mvi-nav-tabs tabs tabs-small"
-    >
-      <v-tab value="0" @change="setPreset('MVI')">MVI</v-tab>
-      <v-tab value="1" @change="setPreset('EVI')">EVI</v-tab>
-      <v-tab value="2">Custom</v-tab>
-    </v-tabs>
+    <v-row>
+      <v-col>
+        <v-tabs
+          :value="activePreset"
+          grow
+          class="mb-2 mvi-nav-tabs tabs tabs-small"
+        >
+          <v-tab value="0" @change="setPreset('MVI')">MVI</v-tab>
+          <v-tab value="1" @change="setPreset('EVI')">EVI</v-tab>
+          <v-tab value="2">Custom</v-tab>
+        </v-tabs>
+      </v-col>
+      <v-col class="flex-grow-0">
+        <v-btn
+            class="d-block dense d-md-none"
+            icon
+            @click="$emit('close')"
+            color="primary"
+          >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-card flat>
       <v-list dense v-for="indicatorCatery in catIndicators"
         :key="indicatorCatery.category"

@@ -14,6 +14,16 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css"
     />
+    <script>
+      function pass() {
+        const password = prompt('Enter password');
+        if(password !== 'island') {
+          alert('Wrong password');
+          pass();
+        }
+      }
+      pass();
+    </script>
   </head>
   <body>
     <noscript>

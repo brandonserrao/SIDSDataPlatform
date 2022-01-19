@@ -60,7 +60,7 @@
             ></v-select>
             </div>
           </v-col>
-          <v-col class="d-block d-lg-none"  md="6" lg="12">
+          <v-col class="d-block d-lg-none" cols='5'  md="6" lg="12">
             <div class="select">
             <label class="input-label">Region</label>
             <v-select

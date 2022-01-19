@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row class="goals-selector">
     <v-col cols="5">
       <v-list dense>
         <v-list-item-group
@@ -65,18 +65,17 @@
             open-on-hover
             bottom
             :nudge-left="255"
-            :nudge-bottom="46"
-            content-class="sdg-menu"
+            :nudge-bottom="80"
+            content-class="goals-selector-sdg-menu"
           >
             <template v-slot:activator="{ on }">
               <img
                 v-on="on"
                 :src="getGoalImage(index)"
-                height="56"
-                :width="activeGoalType === 'signature-solutions' ? 138 : 56"
+                width="120"
               />
             </template>
-            <div class="goals-tooltip-content">
+            <div class="goals-selector-tooltip-content">
               <!-- <v-tooltip
                 right
                   v-for="(n, index) in activeGoalTypes"
@@ -94,9 +93,9 @@
                 :key="n"
                 @click="selectGoal(index + 1)"
                 :src="getGoalImage(index)"
-                class="tooltip-image"
-                height="56"
-                :width="activeGoalType === 'signature-solutions' ? 138 : 56"
+                class="goals-selector-tooltip-image"
+                :width="activeGoalType === 'signature-solutions' ? 240 : 80"
+
               />
               <!-- </template>
                 <v-card>
@@ -437,9 +436,8 @@ export default {
       this.activeGoal = goalNumber;
       this.$store.commit("goals/setActiveGoal", this.activeGoal);
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
-      this.$refs.slider.scrollOffset =
-        (this.activeGoalType === "signature-solutions" ? 138 : 56) *
-        (goalNumber - 1);
+      this.$refs.slider.scrollOffset = 120 * (goalNumber - 1);
+
     },
     emitTypeChange(type) {
       this.$store.commit("goals/setActiveGoal", 1);
@@ -466,55 +464,38 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.goals-slider {
+.goals-selector .goals-slider {
   padding: 8px 0;
-  width: 106px;
+  width: 170px;
   margin: auto;
 }
-.goals-slider-ss {
-  width: 188px;
-}
-.goals-slider .v-slide-group__next,
-.goals-slider .v-slide-group__prev {
+.goals-selector .goals-slider .v-slide-group__next,
+.goals-selector .goals-slider .v-slide-group__prev {
   min-width: 25px;
 }
-.goals-tooltip-content {
+.goals-selector-tooltip-content {
   display: flex;
-  max-width: 336px;
+  max-width: 240px;
   flex-wrap: wrap;
   background: #fff;
 }
-.tooltip-image {
+.goals-selector-tooltip-image {
   transition: 200ms;
   cursor: pointer;
 }
-.indicator-tooltip {
-  background: none !important;
-  padding: 0 !important;
-}
-.tooltip-card_img {
-  margin: auto;
-}
-.pillars_icon {
+.goals-selector-pillars_icon {
   margin-right: 5px !important;
 }
-.pillar {
+.goals-selector .pillar {
   padding: 0 8px;
 }
-.pillar-tooltip_img {
-  margin-right: 10px;
+.goals-selector-tooltip-image:hover {
+  transform: scale(110%);
 }
-.tooltip-image:hover {
-  transform: scale(120%);
-}
-.sdg-menu {
+.goals-selector-sdg-menu {
   padding: 10px;
+  background: #FFF;
   box-shadow: none !important;
   overflow: visible !important;
-}
-.coal-title {
-  word-break: keep-all !important;
-  word-wrap: normal;
-  /* white-space: nowrap */
 }
 </style>

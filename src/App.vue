@@ -14,7 +14,7 @@
         <router-view class="root-router" />
       </v-col>
     </v-row>
-    <root-footer />
+    <root-footer class="d-none d-md-flex" />
   </v-container>
 </template>
 <script>
@@ -48,7 +48,7 @@ html {
 }
 #content {
   min-height: calc(100vh - 100px);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 .root-router {
   padding: 0 2em 4em;

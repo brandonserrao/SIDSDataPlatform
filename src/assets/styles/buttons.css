@@ -7,9 +7,28 @@
   box-shadow: none !important;
   height: 50px !important;
 }
+.v-btn.dense {
+  height: 38px !important;
+  width: 38px !important;
+  padding: 0 19px !important
+}
+.v-btn--fab {
+  width: 50px !important;
+  padding: 0 25px !important;
+}
 .v-btn.primary:hover {
   background-color: #213D65 !important;
   padding: 0 30px !important;
+}
+
+.v-btn.dense:hover  {
+  height: 38px !important;
+  width: 38px !important;
+  padding: 0 19px !important
+}
+.v-btn--fab:hover  {
+  width: 50px !important;
+  padding: 0 25px !important;
 }
 .v-btn.primary:active {
   background-color: #082753 !important;

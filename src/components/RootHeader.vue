@@ -135,6 +135,6 @@ export default {
   position: relative;
   z-index: 5;
   width: 70%;
-  margin: 1em auto 1em;
+  margin: 0.5em auto auto;
 }
 </style>

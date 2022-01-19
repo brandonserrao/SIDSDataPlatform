@@ -50,10 +50,19 @@
           </v-expansion-panel>
           <v-divider/>
           <v-expansion-panel>
+            <v-expansion-panel-header>What is the SIDS Data Visualization Platform? </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <p>
+The UNDP Data Visualization Platform for Small Island Developing States, a digital tool for accelerating development in SIDS by providing policymakers, research institutions, and country offices with access to updated, standardized, and comprehensive data. As a central component of the UNDP’s SIDS Offer, the visualization and analytics features of this platform will help SIDS to respond to the SAMOA Pathway and the 2030 agenda by rising up to the urgent challenges of climate change and their green and blue transition. By focusing on the needs of SIDS, this tool has been designed specifically to feature datasets about Digital Transformation, Blue Economy, and Climate Action.  There are three main types of data within the SIDS data platform, including data on the UNDP portfolio of projects and investment in SIDS, country-level development indicators, and geospatial data. For each data type we have developed interfaces within the platform to visualize, analyze, and export these data.
+              </p>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-divider/>
+          <v-expansion-panel>
             <v-expansion-panel-header>What are the sources of data used?</v-expansion-panel-header>
             <v-expansion-panel-content>
               <p>
-                All data sources used in the platform are publicly available. We have strived to curate the data in order to feature reliable, accurate and comprehensive information.
+                The SIDS data platform uses all publicly available datasets from a broad base of partner agencies and research publications. This includes data from the World Bank, WHO, UNICEF, UNDESA, IRENA, ITU, IGRAC, IHME, FAO, UNCTAD, UNDESA, Yale, CIESIN, OECD, UNWTO, ILO, and many additional sources. All citations are provided with the corresponding dataset within the platform. We have strived to curate the data in order to feature reliable, accurate and comprehensive information.
               </p>
             </v-expansion-panel-content>
           </v-expansion-panel>

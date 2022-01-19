@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
+import vuetify from '@/plugins/vuetify';
 
 
 Vue.use(VueRouter)
@@ -12,7 +13,7 @@ const routes = [
     name: 'UNDP SIDS Portfolio',
     props: (route) => ({
       region: route.query.region || 'All',
-      year: route.query.year || '2021',
+      year: route.query.year || 'all',
       fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
       fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
     }),
@@ -76,17 +77,21 @@ const routes = [
     name: 'Development Indicators',
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
     beforeEnter: async (to, from, next) => {
-
-      if(!to.params.chartType) {
-        next({ path: `/development-indicators/region/choro`})
-      }
-      if(!to.params.indicator) {
-        next({ path: `/development-indicators/region/choro`})
+      let chartType = to.params.chartType || 'choro',
+      indicator = to.params.indicator || 'region';
+      if((vuetify.framework.breakpoint.xs || vuetify.framework.breakpoint.sm)
+        && chartType !== 'series'
+      ) {
+        chartType = 'bars'
       }
       await store.dispatch('indicators/getCategories');
       await store.dispatch('indicators/getMeta');
       await store.dispatch('indicators/getProfileData');
-      next()
+      if(indicator === to.params.indicator && chartType === to.params.chartType) {
+        next()
+      } else {
+        next({ path: `/development-indicators/${indicator}/${chartType}`})
+      }
     },
     props: (to) => (
       {
@@ -102,16 +107,21 @@ const routes = [
     name: 'Vulnerability',
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
     beforeEnter: async (to, from, next) => {
-      if(!to.params.chartType) {
-        next({ path: `/vulnerability/mvi/spider`})
-      }
-      if(!to.params.indicator) {
-        next({ path: `/vulnerability/mvi/spider`})
+      console.log(vuetify)
+      let chartType = to.params.chartType || 'spider'
+      if((vuetify.framework.breakpoint.xs || vuetify.framework.breakpoint.sm)
+        && chartType !== 'series'
+      ) {
+        chartType = 'bars'
       }
       await store.dispatch('indicators/getCategories');
       await store.dispatch('indicators/getMeta');
       await store.dispatch('indicators/getProfileData');
-      next()
+      if(chartType === to.params.chartType) {
+        next()
+      } else {
+        next({ path: `/vulnerability/mvi/${chartType}`})
+      }
     },
     props: (to) => (
       {
@@ -153,14 +163,17 @@ const routes = [
   },
   {
     path: '*',
-    redirect: '/portfolio'
+    redirect: function() {
+      return window.innerWidth < 960 ? '/country-profiles' : '/portfolio'
+    }
   }
 
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
+
   routes
 })
 export { router, routes }

@@ -185,19 +185,20 @@ export default {
   width: 100%;
   background-position: 50% -65px;
   transition: 700ms;
+  margin-bottom: 8px;
 }
 .map-AIS {
-  background-size: 125%;
+  background-size: 115%;
   background-position-x: 50%;
   background-position-y: -100px;
 }
 .map-Caribbean {
-  background-size: 144%;
+  background-size: 134%;
   background-position-x: -35%;
   background-position-y: -60px;
 }
 .map-Pacific {
-  background-size: 130%;
+  background-size: 120%;
   background-position-x: 210%;
   background-position-y: -140px;
 }

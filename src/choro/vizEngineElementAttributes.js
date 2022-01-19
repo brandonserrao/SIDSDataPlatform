@@ -111,22 +111,12 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
   // console.log(indicatorData)
   let val = indicatorDataObj[country],
   totalHeight = 500,
-  totalWidth = 440,
+  totalWidth = this.vizWidth < 800 ? this.vizWidth - 40 : 440,
   cx = bBox[4],
   cy = bBox[5],
   output;
 
   if (this.indiSelections["viz"] == "bars") {
-    //if on mvi page, width should be zero but other vars can be same as bar chart
-
-    // if (indiSelections["page"] == "mviTab") {
-    //     // return { "x": 160, "y": totalHeight / totalVals * (rank) + topMargin, "width": 0, "height": totalHeight / totalVals - margin }//,"color":color};
-    //     output= mviBarChart(country, "Bar Chart", getMVIData(), getChosenCountryListMVI(), 1)
-
-    // }
-
-    // else {
-
     if (isNumeric(val)) {
       try {
         var filtered = Object.fromEntries(
@@ -167,15 +157,18 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
         margin = 4;
 
         let maxx = Math.max(...indicatorValues),
-        minn = 0, //Math.min(...indicatorValues)
+        minn =  0, //Math.min(...indicatorValues),
         normValue = (val - minn) / (maxx - minn);
 
         //console.log(country,normValue,rank,minn)
         //console.log(totalHeight,totalVals,rank)
-
+        let x = this.vizWidth < 800 ? 0 : 160;
+        let y = this.vizWidth < 800 ?
+        (totalHeight / totalVals) * rank + topMargin + 20 * rank :
+        (totalHeight / totalVals) * rank + topMargin;
         output = {
-          x: 160,
-          y: (totalHeight / totalVals) * rank + topMargin,
+          x: x,
+          y,
           width: normValue * totalWidth,
           height: totalHeight / totalVals - margin,
         }; //,"color":color};
@@ -299,12 +292,29 @@ export function textTransform(
   } else if (this.indiSelections["viz"] == "bars") {
     let RTo = this.rectTransform(country, bBox, indicatorDataObj),
     // console.log(RTo,totalVals,textY)
-    output =
-      "scale(1,1) translate(" +
-      (-textX + 140 - textBBox.width / 2) +
-      "," +
-      (-textY + RTo["y"] + totalHeight / totalVals / 2) +
-      ")";
+    output;
+    if(this.vizWidth < 800 && this.vizMode === 'index') {
+      output =
+        "scale(1,1) translate(" +
+        (-textX + textBBox.width / 2) +
+        "," +
+        (-textY  - 20 + (RTo["y"]) + totalHeight / totalVals / 2) +
+        ")";
+    } else if (this.vizWidth < 800) {
+      output =
+        "scale(1,1) translate(" +
+        (-textX + textBBox.width / 2) +
+        "," +
+        (-textY + (RTo["y"]) - 5) +
+        ")";
+    } else  {
+      output =
+        "scale(1,1) translate(" +
+        (-textX + 140 - textBBox.width / 2) +
+        "," +
+        (-textY + RTo["y"] + totalHeight / totalVals / 2) +
+        ")";
+    }
 
     return output;
   } else if (this.indiSelections["viz"] == "global") {
@@ -383,7 +393,7 @@ export function textTransform(
 export function multiRectTransform(country, bBox, indicatorDataObj, indexDataObj, indiSelections,indexWeights,i){
   let RTm=this.rectTransform(country, bBox, indicatorDataObj, indiSelections),
   subindexList=Object.keys(indexWeights["subindices"]),
-  totalWidthBar = 440,
+  totalWidthBar = this.vizWidth < 800 ? this.vizWidth - 40 : 440,
   totalHeightColumn = 200;
 
   if(this.vizMode=="index"&&(indiSelections["viz"] == "bars"||indiSelections["viz"] == "global")){
@@ -406,7 +416,11 @@ export function multiRectTransform(country, bBox, indicatorDataObj, indexDataObj
       }
       if(!isNaN(val)){
         if (indiSelections["viz"] == "bars") {
-          RTm["x"]=normX*totalWidthBar+160
+          if(this.vizWidth < 800) {
+            RTm["x"]=normX*totalWidthBar
+          } else {
+            RTm["x"]=normX*totalWidthBar+160
+          }
           RTm["width"]=normValue*totalWidthBar
         } else if (indiSelections["viz"] == "global") {
           RTm["y"]=425-(normX+normValue)*totalHeightColumn

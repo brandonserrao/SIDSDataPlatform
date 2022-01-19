@@ -1,6 +1,6 @@
 <template>
   <v-row :id="'tab'+id" justify="center">
-    <div class="d-none d-md-block">
+    <div class="d-none d-lg-block">
       <v-row class="mb-0 svg-row" justify="center">
         <div class="svg-container">
         </div>
@@ -14,10 +14,10 @@
         </div>
       </v-row>
     </div>
-    <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
+    <v-col class="d-block d-lg-none text-center block-subheader" cols='12'>
       {{projectCount[activeGoal]}} projects
     </v-col>
-    <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
+    <v-col class="d-block d-lg-none text-center block-subheader" cols='12'>
       {{nFormatter(budgetCount[activeGoal])}} budget
     </v-col>
   </v-row>
