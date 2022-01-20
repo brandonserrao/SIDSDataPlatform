@@ -30,6 +30,7 @@ export default {
     },
     setCountryList(state, data) {
       state.countryList = data;
+      console.log(data)
     }
   },
   actions: {

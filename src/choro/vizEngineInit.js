@@ -3,7 +3,7 @@ import tippy from 'tippy.js';
 
 import { indexColors } from './index-data'
 import {regionColors, getBoundingBox, nFormatter} from './vizEngineHelperFunctions'
-import {countryListLongitude, sidsDict, regionsDict} from './vizEngineGlobals'
+import {countryListLongitude, sidsDict, regionsDict, isoToIds} from './vizEngineGlobals'
 // countryListSpider
 //runs this right away (it works, for some reason it doesn't draw the titles if executed on click )
 ///////////////////////////////////
@@ -292,6 +292,9 @@ export function initCountrySvgs(){
     //   });
     // })
     .on("click", function () {
+      if(rootThis.vizWidth >=800) {
+        rootThis.clickCallback(isoToIds[this.id])
+      }
       // TODO: uncomment to male zoom works
 
 

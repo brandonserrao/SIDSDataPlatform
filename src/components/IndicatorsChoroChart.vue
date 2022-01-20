@@ -48,6 +48,7 @@ export default {
         indicatorMeta:this.indicatorMeta,
         profileData: this.profileData,
         page:this.page,
+        clickCallback:this.counntryClickCallback,
         selectedIndis:this.mviCodes,
         vizContainerWidth:(document.body.clientWidth - 40) > 800 ? 800 : (document.body.clientWidth - 40),
         vizContainerHeight:(document.body.clientWidth - 40) > 800 ? 580 : 1360,
@@ -55,9 +56,9 @@ export default {
         legendContainerSelector:'#choro_legend_container'
       })
     },
-    handleIndicatorSelect() {
-      console.log(this.indicatorCode)
-    },
+    counntryClickCallback(countryCode) {
+      this.$router.push({path:`/country-profiles/${countryCode}`})
+    }
   },
   async mounted() {
     await this.initChart()
