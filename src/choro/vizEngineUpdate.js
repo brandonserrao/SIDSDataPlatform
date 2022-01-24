@@ -732,7 +732,14 @@ export function updateBarAxis() {
     );
   }
 
-  xAxis.tickFormat(d3.format(".2s"));
+  let absMax=Math.abs(max)
+  if(absMax>1){
+    xAxis.tickFormat(d3.format(".2s"));}
+  else if (absMax<1&& absMax>0.01){
+    xAxis.tickFormat(d3.format(".2n"));}
+  else  if (absMax<0.01 && absMax>0){
+    xAxis.tickFormat(d3.format(".1e"));}
+
   x.domain([min, max]).range([0, width]);
 
   if (
