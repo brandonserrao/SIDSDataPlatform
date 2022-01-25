@@ -179,8 +179,8 @@ export default {
 .map {
   cursor: pointer;
   flex-direction: column;
-  height: 75vh;
-  max-height: 460px;
+  height: calc(100vh - 237px);
+  max-height: 580px;
   background-size: 95%;
   width: 100%;
   background-position: 50% -65px;
