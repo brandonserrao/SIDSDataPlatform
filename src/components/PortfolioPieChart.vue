@@ -139,7 +139,7 @@ export default {
       }
 
       text.text(function (d) {
-        if (d.data.value / sumall < 0.0236) { return ""; } else {
+        if (d.data.value / sumall < 0.04) { return ""; } else {
           return d.data.category + " - " + rootThis.nFormatter(d.data.value, 1);
         }
       });
@@ -185,7 +185,7 @@ export default {
             var d2 = interpolate(t);
             var pos = rootThis.outerArc.centroid(d2);
             pos[0] = rootThis.radius * 0.95 * (rootThis.midAngle(d2) < Math.PI ? 1 : -1);
-            if (d.data.value / sumall < 0.0236) {
+            if (d.data.value / sumall < 0.04) {
               return []
             }
             return [rootThis.arc.centroid(d2), rootThis.outerArc.centroid(d2), pos];
