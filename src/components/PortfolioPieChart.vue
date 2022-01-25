@@ -138,8 +138,13 @@ export default {
         sumall += this.data[source].value
       }
 
-      text.text(function (d) {
-        if (d.data.value / sumall < 0.04) { return ""; } else {
+      text.text(function (d,c,g) {
+        let showText = !((d.data.value / sumall) < 0.0236);
+        if(c !== 0) {
+          showText = showText && !(((d.data.value + g[c-1].__data__.data.value) / sumall) < 0.1);
+        }
+
+        if (!showText) { return ""; } else {
           return d.data.category + " - " + rootThis.nFormatter(d.data.value, 1);
         }
       });
@@ -177,7 +182,7 @@ export default {
         .append("polyline");
 
       polyline.transition().duration(1000)
-        .attrTween("points", function (d) {
+        .attrTween("points", function (d,c,g) {
           this._current = this._current || d;
           var interpolate = d3.interpolate(this._current, d);
           this._current = interpolate(0);
@@ -185,7 +190,11 @@ export default {
             var d2 = interpolate(t);
             var pos = rootThis.outerArc.centroid(d2);
             pos[0] = rootThis.radius * 0.95 * (rootThis.midAngle(d2) < Math.PI ? 1 : -1);
-            if (d.data.value / sumall < 0.04) {
+            let showText = !((d.data.value / sumall) < 0.0236);
+            if(c !== 0) {
+              showText = showText && !(((d.data.value + g[c-1].__data__.data.value) / sumall) < 0.1);
+            }
+            if (!showText) {
               return []
             }
             return [rootThis.arc.centroid(d2), rootThis.outerArc.centroid(d2), pos];
