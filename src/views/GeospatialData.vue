@@ -72,8 +72,6 @@ import MapToolbar from "@/components/MapToolbar"; //my attempt at adapting Ben's
 // import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import GridLoader from "vue-spinner/src/GridLoader.vue";
 
-// import MapToolbar from "@/components/oldMapToolbar";//my old sidebar implementation, before Ben's
-
 // @ is an alias to /src
 
 export default {
@@ -152,28 +150,16 @@ export default {
     },
 
     changeBasemap(object) {
-      console.log("changeBasemap(object) object is:");
-      console.log(object);
-
       this.map.changeBasemap(object);
     },
     changeOpacity(object) {
-      console.log("changeOpacity(object) object is:");
-      console.log(object);
-
       this.map.changeOpacity(object);
     },
     changeColor(object) {
-      console.log("changeColor(object) object is: ");
-      console.log(object);
-
       this.map.changeColor(object);
     },
 
     addBoundaryLayer(object) {
-      console.log("addBoundaryLayer(object) object is:");
-      console.log(object);
-
       let map = this.map; //patches reference to where map stored in component
       //taken from old code
       let pointsLayers = [

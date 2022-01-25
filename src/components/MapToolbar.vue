@@ -62,51 +62,6 @@
                       <div class="flag" style="margin-right: 40px">Search</div>
                     </div>
 
-                    <!-- Ben's original hardcoded country-options -->
-                    <!--
-                    <div
-                      class="col-flex country-options display-none options-drop"
-                    >
-                      <div
-                        class="row-flex country-option align-items-center"
-                        @click="handleCountryChange('Fiji', 'flag fiji')"
-                      >
-                        <div class="country-name">Fiji</div>
-                        <div class="flag fiji" style="margin-right: 10px"></div>
-                      </div>
-                      <div
-                        class="row-flex country-option align-items-center"
-                        @click="handleCountryChange('Bermuda', 'flag bermuda')"
-                      >
-                        <div class="country-name">Bermuda</div>
-                        <div
-                          class="flag bermuda"
-                          style="margin-right: 10px"
-                        ></div>
-                      </div>
-                      <div
-                        class="row-flex country-option align-items-center"
-                        @click="handleCountryChange('Haiti', 'flag haiti')"
-                      >
-                        <div class="country-name">Haiti</div>
-                        <div
-                          class="flag haiti"
-                          style="margin-right: 10px"
-                        ></div>
-                      </div>
-                      <div
-                        class="row-flex country-option align-items-center"
-                        @click="handleCountryChange('Grenada', 'flag grenada')"
-                      >
-                        <div class="country-name">Grenada</div>
-                        <div
-                          class="flag grenada"
-                          style="margin-right: 10px"
-                        ></div>
-                      </div>
-                    </div> -->
-
-                    <!-- Brandon's component-based country-options-->
                     <div
                       id="countryOptions"
                       class="col-flex country-options display-none options-drop"
@@ -725,7 +680,7 @@
                             name="admin-region"
                             value="admin-region-one"
                             @change="
-                              handleBoundryChange({
+                              handleBoundryChange('change-boundary', {
                                 'admin1-overlay': $event.target.checked,
                               })
                             "
@@ -743,7 +698,7 @@
                             name="admin-region"
                             value="admin-region-two"
                             @change="
-                              handleBoundryChange({
+                              handleBoundryChange('change-boundary', {
                                 'admin2-overlay': $event.target.checked,
                               })
                             "
@@ -814,22 +769,7 @@
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>
               </div>
-              <!--
-              <div class="menu row-flex">
-                <div
-                  class="icon threeD-icon"
-                  @click="handleHeightChange('toggle-3D', 'twoD')"
-                ></div>
-                <div
-                  class="icon twoD-icon display-none"
-                  @click="handleHeightChange('toggle-3D', 'threeD')"
-                ></div>
-                <div class="description hover">3D 2D</div>
-                <div
-                  class="menu-drop row-flex align-items-center display-none"
-                ></div>
-              </div>
- -->
+
               <!-- Opacity Select Menu -->
               <div class="menu row-flex">
                 <div class="icon opacity-icon" @click="toggleMenu(6)"></div>
@@ -861,17 +801,8 @@
                 </div>
               </div>
 
-              <!-- Labels Select Menu
-
-              "handleLabelsChange('aminus', 'aplus')"
-
-              -->
+              <!-- Labels Select Menu-->
               <div class="menu row-flex">
-                <!--
-                <div
-                  class="icon aminus-icon"
-                  @click="emit_toggle_legend()"
-                ></div> -->
                 <div
                   class="icon aminus-icon display-none"
                   @click="handleLabelsChange('aminus', 'aplus')"
@@ -906,30 +837,20 @@ export default {
   data() {
     return {
       names: names, //consider redoing these via props
-      debug: true,
       currentCountry: "Search Country or Region", //placeholder text for country select searchbar
     };
   },
   methods: {
     emit_toggle_legend() {
+      //unused
       this.$emit("toggle-legend");
     },
+
     handleGisMenuChange(change_type, object) {
       //determine type of menuchange based on eventType
-      console.log(`change_type: ${change_type}`);
-      console.log("handleGisMenuChange: object passed:");
-      console.log(object);
 
       //display loader spinner
       if (!(change_type === "change-opacity")) {
-        /* 
-        console.log("showing loading spinner");
-        let spinner = document.getElementsByClassName("loader-gis")[0];
-        console.log(spinner);
-        spinner.classList.remove("display-none");
-        console.log(spinner); */
-
-        console.log("show loading spinner");
         let spinner = document.getElementsByClassName("loader-gis")[0];
         let modal = document.getElementsByClassName("loader-gis-modal")[0];
         spinner.classList.remove("display-none");
@@ -940,14 +861,8 @@ export default {
       if (change_type === "select-country") {
         //value will be country name; returning the names.js object of sids info
         let name = object.text;
-        let flag = object.flag;
-        console.log(`name: ${name} flag: ${flag}`);
         let countryObject = this.sidsByName[name];
-        let bbox = this.sidsByName[name].bb;
-        console.log(`bounding box ${bbox}`);
-
-        this.$emit(change_type, countryObject); //custom event for parent to hear
-
+        this.$emit(change_type, countryObject);
         document.getElementsByClassName("country-name")[0].textContent = name;
       } else if (change_type === "select-resolution") {
         let resolution = object.resolution;
@@ -967,7 +882,6 @@ export default {
         let colorObject = { color: color };
         this.$emit(change_type, colorObject);
       } else if (change_type === "toggle-3D") {
-        //obj.value = "2D" or "3D"
         let threeD = object.value;
         let threeDObject = { threeD: threeD };
         this.$emit(change_type, threeDObject);
@@ -981,42 +895,18 @@ export default {
     },
 
     handleResolutionChange(index = 1, resolution = "hex5") {
-      //index=1, resolution='hex5' are the desired default state
-      console.log("handleResolutionChange");
-
-      //case: empty arguments; shouldn't happen due to default arguements
-      /*       if (!index || !resolution) {
-        //handle empty args as a reset event and raise higher level log
-        alert(`handleResolutionChange called with: ${index} and ${resolution}`);
-        console.log("empty handleResolutionChange called: doing nothing");
-        return;
-      } */
-
       var resolutionOptions =
         document.getElementsByClassName("resolution-option");
 
       if (this.active_dataset === "Ocean Data") {
-        //handle if called while ocean dataset active
-        console.log(
-          `active_dataset: ${this.active_dataset}; set resolution selector to 10, do nothing`
-        );
-
         for (let i = 0; i < resolutionOptions.length; i++) {
           if (i === 2) {
-            //i = 2 is the hardcoded index for the 10km selector
             resolutionOptions[i].classList.add("border-blue");
           } else {
             resolutionOptions[i].classList.remove("border-blue");
           }
         }
       } else {
-        //handle if non-ocean dataset active
-        console.log(
-          `active_dataset: ${this.active_dataset}; switching resolution`
-        );
-        /*
-        var resolutionOptions = document.getElementsByClassName("resolution-option");
- */
         for (let i = 0; i < resolutionOptions.length; i++) {
           if (index === i) {
             resolutionOptions[i].classList.add("border-blue");
@@ -1029,23 +919,16 @@ export default {
           "icon resolution-icon " + resolution;
 
         let eventData = { index: index, resolution: resolution };
-        // this.handleGisMenuChange({ Resolution: text });
-        console.log("passing eventData to handleGisMenuChange");
         this.handleGisMenuChange("select-resolution", eventData); //text needs renaming to a better variable name
       }
     },
 
-    //my version: handleBoundariesChange
     handleBoundryChange(object) {
-      //my code from handleBoundariesChange(object)
-      console.log("handleBoundryChange $emitting object");
-      console.log(object);
-      // addBoundaryLayer(object);//old code; replace with an emit
       this.$emit("select-boundary-layer", object);
+      // this.handleGisMenuChange(change_type, object);
     },
 
     handleBasemapChange(text, image) {
-      console.log("handleBasemapChange");
       var selected = document.getElementsByClassName("selected-basemap")[0];
       var basemapMenu = document.getElementsByClassName("basemap-options")[0];
       basemapMenu.classList.add("growUp");
@@ -1060,21 +943,14 @@ export default {
       document.getElementsByClassName("basemap-icon-handle")[0].className =
         "icon basemap-icon-handle " + image;
 
-      // this.handleGisMenuChange({ basemap: text });
-      console.log(
-        "passing handleBasemapChange eventData to handleGisMenuChange"
-      );
       let eventData = { name: text, icon: image };
       this.handleGisMenuChange("select-basemap", eventData);
     },
 
     handleCountryChange(eventData) {
-      console.log(`handleCountryChange:`);
-      console.log(eventData);
       let text = eventData.name;
       let image = eventData.id;
 
-      //Brandon - considering changing to tak
       var selected = document.getElementsByClassName("big-menu")[0];
       var countryMenu = document.getElementsByClassName("country-options")[0];
       countryMenu.classList.add("growUp");
@@ -1090,15 +966,11 @@ export default {
       selected2.children[0].className = image;
       selected2.children[0].innerHTML = "";
 
-      // this.handleGisMenuChange({ Country: text });
-      console.log(
-        "passing handleCountryChange eventData to handleGisMenuChange"
-      );
       this.handleGisMenuChange("select-country", eventData); //text needs renaming to a better variable name
     },
 
     closeAllMenu(index) {
-      console.log(`closeAllMenu(${index})`);
+      //closes all open toolbar menus
       var allMenu = document.getElementsByClassName("menu-drop");
 
       for (let i = 0; i < allMenu.length; i++) {
@@ -1202,9 +1074,10 @@ export default {
         .getElementsByClassName("small-menu")[0]
         .classList.remove("display-none");
     },
+
     filterCountries() {
       this.toggleCountryMenu(true); //expand country menu to be visible if closed
-      console.log("filterCountries firing");
+
       // Declare variables
       var input, filter, list, options, country, i, txtValue;
       input = document.getElementById("country-search-input");
@@ -1304,266 +1177,6 @@ export default {
       }
     },
 
-    //IRRELEVANT RIGHT NOW---------------------------
-
-    //only used in this function apparently; why is it even outside?
-    //  let count = "a";
-    addLayer() {
-      let count = "a"; //moved in from outside
-      var layers = document.getElementsByClassName("layer-input");
-      var index = [];
-
-      for (let i = 0; i < layers.length; i++) {
-        index.push(layers[i].selectedIndex);
-      }
-
-      document.getElementById("layers").innerHTML =
-        document.getElementById("layers").innerHTML +
-        `
-          <div id='` +
-        count +
-        `-layer' class="row-flex align-items-center" style="margin-top:6px;">
-            <div class="row-flex align-items-center space-evenly" style="margin-right:6px; background-color:#A9A9A9;width:30px; height:30px;border-radius:5px;text-align:center; cursor:pointer;" @click="addVariables('` +
-        count +
-        `')"><i class='layers-value'><b>` +
-        count +
-        `</b></i></div>
-            <div class="row-flex space-between align-items-center" style="height:30px;width:304px;background-color:#DFDFDF; border-radius:5px;">
-
-              <div class="row-flex align-items-center" style="margin: 0 10px;">
-                <select name="` +
-        count +
-        `" class="layer-input" id="` +
-        count +
-        `layer-input" style=" padding: 0 0 0 4px; width: 240px; height: 30px;border:0; outline:none; background-color:#DFDFDF;">
-                  <option value="">Select New Dataset</option>
-                  <option value="Aaaaa">Aaaaa</option>
-                  <option value="Bbbbb">Bbbbb</option>
-                  <option value="Ccccc">Ccccc</option>
-                </select>
-              </div>
-
-              <div class="row-flex align-items-center">
-                <div class="color-black layers-N" style="cursor:pointer;" @click="toggleBlueColor(this)">N</div>
-                <div class="row-flex align-items-center" style="margin: 0 10px;cursor: pointer;height:10px;width:11px;" @click="removeLayer('` +
-        count +
-        `')">
-                  <div style="width:11px; height:1.5px; background-color:brown"></div>
-                </div>
-              </div>
-            </div>
-          </div>`;
-
-      for (let i = 0; i < layers.length; i++) {
-        layers[i].selectedIndex = index[i];
-      }
-
-      count = String.fromCharCode(count.charCodeAt(0) + 1);
-    },
-
-    calculatorRun() {
-      var object = {};
-
-      var value = document.getElementsByClassName("calc-function")[0].value;
-      var inputN = document.getElementById("input-N");
-
-      if (inputN.classList.contains("color-blue")) {
-        object["calc-input"] = { Value: value, Normalize: 1 };
-      } else {
-        object["calc-input"] = { Value: value, Normalize: 0 };
-      }
-
-      var layersValue = document.getElementsByClassName("layer-input");
-      var layersN = document.getElementsByClassName("layers-N");
-
-      var layers = [];
-      for (let i = 0; i < layersValue.length; i++) {
-        if (layersN[i].classList.contains("color-blue")) {
-          layers.push({
-            Variable: layersValue[i].name,
-            Value: layersValue[i].value,
-            Normalize: 1,
-          });
-        } else {
-          layers.push({
-            Variable: layersValue[i].name,
-            Value: layersValue[i].value,
-            Normalize: 0,
-          });
-        }
-      }
-      object["layers"] = layers;
-
-      console.log("caculatorRun->handleGisMenuChange");
-      this.handleGisMenuChange(object);
-    },
-
-    calcButtonPress(val) {
-      document.getElementsByClassName("calc-function")[0].value =
-        document.getElementsByClassName("calc-function")[0].value + val;
-      document.getElementsByClassName("calc-function")[0].focus();
-    },
-
-    addVariables(val) {
-      document.getElementsByClassName("calc-function")[0].value =
-        document.getElementsByClassName("calc-function")[0].value + val;
-      document.getElementsByClassName("calc-function")[0].focus();
-
-      var layerVariables = document.getElementById("layer-variables");
-
-      if (layerVariables.innerHTML == "") {
-        layerVariables.innerHTML += val;
-      } else {
-        var string = layerVariables.innerHTML;
-        var present = false;
-        for (let i = 0; i < string.length; i++) {
-          if (string[i] === val) {
-            present = true;
-          }
-        }
-        if (!present) {
-          layerVariables.innerHTML += "," + val;
-        }
-      }
-    },
-    //a calculator-related function i believe
-    removeLayer(layer) {
-      document.getElementById("" + layer + "-layer").remove();
-      let layerVariables = document.getElementById("layer-variables");
-      if (layerVariables.innerHTML.length === 1) {
-        layerVariables.innerHTML = "";
-      } else {
-        let string = layerVariables.innerHTML;
-        for (let i = 0; i < string.length; i++) {
-          if (string[i] === layer) {
-            if (i != 0 && string[i - 1] === ",") {
-              let val = string.replace("," + layer, "");
-              layerVariables.innerHTML = val;
-              break;
-            } else {
-              let val = string.replace(layer + ",", "");
-              layerVariables.innerHTML = val;
-              break;
-            }
-          }
-        }
-      }
-    },
-
-    handleDownload() {
-      var object = {};
-
-      var regions = document.getElementsByClassName("region");
-      for (let i = 0; i < regions.length; i++) {
-        if (regions[i].checked === true) {
-          if (regions[i].value === "Visible-Area") {
-            object["region"] = "Visible-Area";
-          } else if (regions[i].value === "CountryOrRegion") {
-            object["region"] =
-              "Country" + document.getElementById("cuntryorregion").value;
-          } else {
-            object["region"] =
-              "Polygon " + document.getElementById("polygon").value;
-          }
-        }
-      }
-
-      var temporalResolution = document.getElementsByClassName(
-        "temporal-resolution"
-      );
-      for (let i = 0; i < temporalResolution.length; i++) {
-        if (temporalResolution[i].checked === true) {
-          if (temporalResolution[i].value === "chosen-year") {
-            object["Temporal-resolution"] = "Chosen-year";
-          } else if (temporalResolution[i].value === "year-range") {
-            object["Temporal-resolution"] =
-              "From " +
-              document.getElementById("year-range-from").value +
-              " to " +
-              document.getElementById("year-range-to").value;
-          }
-        }
-      }
-
-      var spatialResolution =
-        document.getElementsByClassName("spatial-resolution");
-      for (let i = 0; i < spatialResolution.length; i++) {
-        if (spatialResolution[i].checked === true) {
-          object["Spatial-resolution"] = spatialResolution[i].value;
-        }
-      }
-
-      var gridType = document.getElementsByClassName("grid-type");
-      for (let i = 0; i < gridType.length; i++) {
-        if (gridType[i].checked === true) {
-          object["Grid-type"] = gridType[i].value;
-        }
-      }
-
-      var fileType = document.getElementsByClassName("file-type");
-      for (let i = 0; i < fileType.length; i++) {
-        if (fileType[i].checked === true) {
-          object["File-type"] = fileType[i].value;
-        }
-      }
-
-      var dataLayers = document.getElementsByClassName("data-layers");
-      for (let i = 0; i < dataLayers.length; i++) {
-        if (dataLayers[i].checked === true) {
-          object["Data-layers"] = dataLayers[i].value;
-        }
-      }
-
-      console.log("handleDownload->handleGisMenuChange");
-      this.handleGisMenuChange(object);
-    },
-
-    handleCalcMenu() {
-      document
-        .getElementsByClassName("close-menu")[0]
-        .classList.add("display-none");
-      var calc = document.getElementById("calc-menu");
-      if (calc.classList.contains("display-none")) {
-        this.removeHover();
-        this.closeAllMenu(8);
-        document
-          .getElementsByClassName("blue-box-calc")[0]
-          .classList.remove("display-none");
-        calc.classList.remove("display-none");
-      } else {
-        this.closeAllMenu();
-        setTimeout(() => {
-          this.addHover();
-        }, 500);
-        document
-          .getElementsByClassName("blue-box-calc")[0]
-          .classList.add("display-none");
-      }
-    },
-
-    handleDrawMenu() {
-      document
-        .getElementsByClassName("close-menu")[0]
-        .classList.add("display-none");
-      var draw = document.getElementById("draw-menu");
-      if (draw.classList.contains("display-none")) {
-        this.removeHover();
-        this.closeAllMenu(10);
-        document
-          .getElementsByClassName("blue-box-draw")[0]
-          .classList.remove("display-none");
-        draw.classList.remove("display-none");
-      } else {
-        this.closeAllMenu();
-        setTimeout(() => {
-          this.addHover();
-        }, 500);
-        document
-          .getElementsByClassName("blue-box-draw")[0]
-          .classList.add("display-none");
-      }
-    },
-
     //TO LOOK AT STILL--------------------------------
 
     //need to look at how it works/implemented in old version first
@@ -1596,12 +1209,11 @@ export default {
       }
 
       object["height"] = value;
-      console.log("handleHeightChange->handleGisMenuChange");
+
       this.handleGisMenuChange("toggle-3D", object);
     },
 
     handleLabelsChange(first, second) {
-      //TODO: simplify this oldcode logic
       var curr = document.getElementsByClassName(first + "-icon")[0];
       var reqd = document.getElementsByClassName(second + "-icon")[0];
 
@@ -1616,86 +1228,10 @@ export default {
       setTimeout(() => {
         reqd.classList.remove("flip2");
       }, 280);
-      /* ///oldcode
-      var value;
-      var object = {};
-
-      if (first === "aminus") {
-        value = "A+";
-      } else {
-        value = "A-";
-      }
-
-      object["Label"] = value;
-       */
 
       let object = { label: first === "aminus" ? true : false };
 
-      console.log("handleLabelsChange->handleGisMenuChange");
       this.handleGisMenuChange("toggle-labels", object);
-    },
-
-    handleBivariateMode() {
-      document
-        .getElementsByClassName("close-menu")[0]
-        .classList.add("display-none");
-
-      var bivariate = document.getElementsByClassName("bivariate")[0];
-      var object = {};
-      var key;
-      if (bivariate.classList.contains("display-none")) {
-        this.closeAllMenu(9);
-        this.removeHover();
-        document
-          .getElementsByClassName("blue-box-bivariate")[0]
-          .classList.remove("display-none");
-        bivariate.classList.remove("display-none");
-        key = "Enabled";
-      } else {
-        this.closeAllMenu();
-        setTimeout(() => {
-          this.addHover();
-        }, 500);
-        document
-          .getElementsByClassName("blue-box-bivariate")[0]
-          .classList.add("display-none");
-        key = "Disabled";
-      }
-
-      object["bivariate-mode"] = key;
-      console.log("handleBivariateMode->handleGisMenuChange");
-      this.handleGisMenuChange(object);
-    },
-
-    handleDualMode() {
-      document
-        .getElementsByClassName("close-menu")[0]
-        .classList.add("display-none");
-      var dualMode = document.getElementsByClassName("dual-mode")[0];
-      var object = {};
-      var key;
-      if (dualMode.classList.contains("display-none")) {
-        this.closeAllMenu(13);
-        this.removeHover();
-        document
-          .getElementsByClassName("blue-box-dual")[0]
-          .classList.remove("display-none");
-        dualMode.classList.remove("display-none");
-        key = "Enabled";
-      } else {
-        this.closeAllMenu();
-        setTimeout(() => {
-          this.addHover();
-        }, 500);
-        document
-          .getElementsByClassName("blue-box-dual")[0]
-          .classList.add("display-none");
-        key = "Disabled";
-      }
-
-      object["dual-mode"] = key;
-      console.log("handleDualMode->handleGisMenuChange");
-      this.handleGisMenuChange(object);
     },
 
     handleColorChange(text, image) {
@@ -1713,7 +1249,7 @@ export default {
 
       document.getElementsByClassName("color-icon")[0].className =
         "icon color-icon " + image;
-      console.log("handleColorChange->handleGisMenuChange");
+
       this.handleGisMenuChange("select-color", { color: text });
     },
 
@@ -1731,7 +1267,6 @@ export default {
     },
 
     toggleCountryMenu(state = null) {
-      console.log("toggleCountryMenu firing");
       var countryMenu = document.getElementsByClassName("country-options")[0];
       if (
         state == true ||
@@ -1760,20 +1295,21 @@ export default {
       }
     },
   },
+
   computed: {
     sidsByName() {
       let sidsDictionary = {};
       for (let entry of names) {
         sidsDictionary[entry.NAME_0] = entry;
       }
-      console.log("sidsByName computed");
+
       return sidsDictionary;
     },
   },
+
   mounted() {
     //1)initialize invisible close-menu div
     //2)populate countrySelection with options
-    //from old code populateDropdown.js (first half of it)
     let mapToolbar = this;
     document
       .getElementsByClassName("close-menu")[0]

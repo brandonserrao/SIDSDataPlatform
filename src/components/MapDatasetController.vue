@@ -51,7 +51,11 @@
           </v-list>
         </v-col>
         <v-col cols="6">
-          <v-list class="background-none" v-if="activeGoalType === 'pillars'" dense>
+          <v-list
+            class="background-none"
+            v-if="activeGoalType === 'pillars'"
+            dense
+          >
             <v-list-item-group v-model="activePillar" mandatory>
               <v-tooltip
                 right
@@ -138,7 +142,7 @@
                     transition="none"
                     open-delay="300"
                     :nudge-right="(4 - (index % 5)) * 80 || 6"
-                    :nudge-top="(Math.floor(index/5)) * 80 || 6"
+                    :nudge-top="Math.floor(index / 5) * 80 || 6"
                     max-width="400"
                     content-class="indicator-tooltip"
                     allow-overflow
@@ -186,7 +190,11 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row class="spacing-row" v-if="activeDataset && activeDataset.type === 'layers'" dense>
+      <v-row
+        class="spacing-row"
+        v-if="activeDataset && activeDataset.type === 'layers'"
+        dense
+      >
         <v-col>
           <v-select
             rounded
@@ -203,7 +211,11 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row class="spacing-row" v-else-if="activeDataset && activeDataset.type === 'temporal'" dense >
+      <v-row
+        class="spacing-row"
+        v-else-if="activeDataset && activeDataset.type === 'temporal'"
+        dense
+      >
         <v-col>
           <v-slider
             class="map-input"
@@ -217,10 +229,9 @@
           ></v-slider>
         </v-col>
       </v-row>
-      <v-row v-else class="spacing-row">
-      </v-row>
+      <v-row v-else class="spacing-row"> </v-row>
     </v-card>
-    <v-card class="mb-1 block-info background-grey" >
+    <v-card class="mb-1 block-info background-grey">
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
@@ -238,14 +249,19 @@
         </a>
       </v-card-text>
       <v-card-text v-else>
-        This map visualizes data for the SIDS at different resolutions. Select a dataset above or a country to view spatial data about that region.
+        This map visualizes data for the SIDS at different resolutions. Select a
+        dataset above or a country to view spatial data about that region.
       </v-card-text>
     </v-card>
 
     <!-- New Legend/Histogram -->
     <!-- <v-card v-if="displayLegend" class="histogram_frame"> -->
     <v-card v-show="displayLegend" class="background-grey histogram_frame">
-      <div v-show="activeLayer" id="histogram_frame" class="pic app-body population-per-km col-flex">
+      <div
+        v-show="activeLayer"
+        id="histogram_frame"
+        class="pic app-body population-per-km col-flex"
+      >
         <div class="row-flex space-evenly" id="legendTitle"></div>
         <div class="row-flex space-evenly" id="updateLegend"></div>
         <canvas
@@ -286,7 +302,7 @@ export default {
           value: "pillars",
           headerImg:
             "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png",
-            // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sidsOfferPillars.png",
+          // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sidsOfferPillars.png",
           // "../assets/gis/icons/sidsOfferPillars.png", //working on local server
           description:
             "UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.",
@@ -296,20 +312,19 @@ export default {
           value: "sdgs",
           headerImg:
             "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png",
-            // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sdgs.png",
+          // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sdgs.png",
           // "../assets/gis/icons/SDGs.png",
           description:
-          "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
-
+            "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
         },
         {
           name: "SAMOA Pathway",
           value: "samoaPriorities",
           headerImg:
             "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png",
-            // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaPathway.png",
+          // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaPathway.png",
           description:
-          "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
+            "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
         },
       ],
       activePillar: 1,
@@ -652,8 +667,8 @@ export default {
       this.activeGoal = goalNumber;
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
       this.$refs.slider.scrollOffset = 120 * (goalNumber - 1);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -689,12 +704,6 @@ export default {
     overflow-x: hidden;
     overscroll-behavior: contain;
   }
-
-  /* .toolbar {
-    overflow-y: auto;
-    overflow-x: hidden;
-    overscroll-behavior: contain;
-  } */
 }
 @media (orientation: landscape) and (max-width: 750px) {
   .data-controller {
@@ -705,13 +714,6 @@ export default {
     overflow-x: hidden;
     /* overscroll-behavior: contain; */
   }
-
-  /* to stop accidental moving out of the map area when scrolling on UI elements of the gis map section for thin devices in landscape */
-  /*   .data-controller,
-  .toolbar,
-  .menu-box {
-    overscroll-behavior: contain;
-  } */
 }
 /*End of Brandon additions*/
 .histogram_placeholder {
@@ -782,6 +784,5 @@ export default {
 .block-info {
   height: 200px;
   overflow-y: scroll;
-
 }
 </style>
