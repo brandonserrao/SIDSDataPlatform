@@ -21,54 +21,55 @@
         prepend-icon="mdi-magnify"
       ></v-text-field>
 
-      <v-virtual-scroll
-        v-if="activeSearch"
-        :items="allIndicators"
-        height="calc(100vh - 70px)"
-        itemHeight="69"
-      >
-          <template v-slot:default="{ item }">
-            <v-tooltip
-              right
-              open-delay="300"
-              max-width="250"
-              transition="none"
-              :key="item.Indicator"
-              content-class="indicator-tooltip"
-             >
-              <template v-slot:activator="{ on, attrs }">
-                <v-list-item
-                  class="inicator-item cursor-pointer"
-                  inactive
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="emitIndicatorChange(item['Indicator Code'])"
-                >
-                  <v-list-item-title class="inicator-item_header mt-2">
-                    {{item.Indicator}}
-                  </v-list-item-title>
-                  <v-list-item-content class="inicator-item_description">
-                    {{item.Definition}}
-                  </v-list-item-content>
-                </v-list-item>
-                <v-divider></v-divider>
-              </template>
-              <v-card class="tooltip-card">
-                <v-card-title class="mb-1 active-indicator_header">{{item.Indicator}}</v-card-title>
-                <v-card-text>
-                  <div class="mb-1">{{item.Dimension}}</div>
-                  {{item.Definition}}
-                  <v-divider class="mb-1 mt-1"></v-divider>
-                  <b>Source:</b>{{item.Source}} <br/>
-                  <a :href="item.Link" target="_blank">Link</a>
-                </v-card-text>
-              </v-card>
-            </v-tooltip>
+    <v-virtual-scroll
+      v-if="activeSearch"
+      :items="allIndicators"
+      height="calc(100vh - 70px)"
+      itemHeight="69"
+    >
+      <template v-slot:default="{ item }">
+        <v-tooltip
+          right
+          open-delay="300"
+          max-width="250"
+          transition="none"
+          :key="item.Indicator"
+          content-class="indicator-tooltip"
+         >
+          <template v-slot:activator="{ on, attrs }">
+            <v-list-item
+              class="inicator-item cursor-pointer"
+              inactive
+              v-bind="attrs"
+              v-on="on"
+              @click="emitIndicatorChange(item['Indicator Code'])"
+            >
+              <v-list-item-title class="inicator-item_header mt-2">
+                {{item.Indicator}}
+              </v-list-item-title>
+              <v-list-item-content class="inicator-item_description">
+                {{item.Definition}}
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider></v-divider>
           </template>
+          <v-card class="tooltip-card">
+            <v-card-title class="mb-1 active-indicator_header">{{item.Indicator}}</v-card-title>
+            <v-card-text>
+              <div class="mb-1">{{item.Dimension}}</div>
+              {{item.Definition}}
+              <v-divider class="mb-1 mt-1"></v-divider>
+              <b>Source:</b>{{item.Source}} <br/>
+              <a :href="item.Link" target="_blank">Link</a>
+            </v-card-text>
+          </v-card>
+        </v-tooltip>
+      </template>
     </v-virtual-scroll>
     <v-list v-if="!activeSearch" dense :class="{'list-datasets-active':dataset}" class="list-datasets list-scrollabe">
       <v-list-item-group>
         <template v-for="(item, i) in datasets" >
+
           <v-tooltip
             right
             open-delay="300"
@@ -252,7 +253,7 @@ export default {
           background: require('@/assets/datasets/mviIcon.png')
         },
         {
-          ndgain: 'ndgain',
+          name: 'ndgain',
           background: require('@/assets/datasets/ndgainIcon.png')
         },
         {
@@ -428,7 +429,6 @@ export default {
       this.activeSubCategory = ''
     },
     emitIndicatorChange(indicator) {
-      console.log(indicator)
       this.$emit('indicatorChange', indicator)
     },
     setActiveIndicator(indicator) {
