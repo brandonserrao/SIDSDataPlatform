@@ -52,19 +52,17 @@ export default class Map {
       this._initOnClickControl();
 
       this._bindMapClickListeners(this); //attempt to pass class into this function, to allow access to class when mapbox map level events are called that can't see the class functions normally
-      //========================================================================
       this._bindRecolorListeners(this); //using this convention from _bindMapClickListeners; TODO review and rewrite these functions
-      //----------------------------------------------------------------------------
 
       this._addPointSources();
       this._addVectorSources();
       this.getBasemapLabels();
     });
 
-    //for
+    //for debugging
     let self = this.map;
     this.map.on("click", (e) => {
-      console.log(`A click event has occurred at ${e.lngLat}`);
+      console.log(`A click event at ${e.lngLat}`);
     });
 
     //for debugging
@@ -134,22 +132,7 @@ export default class Map {
       }
     });
   }
-  /* //obsoleted by zoomToCountry
-  zoomTo(selection) {
-    var v2 = new mapboxgl.LngLatBounds([selection[0], selection[1]]);
-    console.log(`zoomTo(${selection}) calling map.fitBounds`);
-    this.map.fitBounds(v2, {
-      linear: true,
-      padding: {
-        top: 10,
-        bottom: 25,
-        left: 15,
-        right: 5,
-      },
-      pitch: 0,
-    });
-  }
- */
+
   _createMiniMap() {
     this.minimap = new mapboxgl.Minimap({
       center: this.map.getCenter(),
@@ -212,30 +195,17 @@ export default class Map {
   //manages the change when you chang the resolution
   changeHexagonSize(resolutionObject) {
     let map = this.map;
-    console.log("resolutionObject: ");
-    console.log(resolutionObject);
     let resolution = resolutionObject.resolution;
-    console.log(
-      `changeHexagonSize( ${resolution} ); currentHexSize: ${globals.currentLayerState.hexSize}`
-    );
 
-    if (
+    /* if (
       resolution
       // resolution === "hex1"
     ) {
-      /* console.log("handling spinner for hex1 loading");
-      this.showSpinner();
-
-      map.once("idle", () => {
-        // $(".loader-gis").hide();
-        this.hideSpinner();
-      });
- */
       this.clearHexHighlight();
-    }
+    } */
+    this.clearHexHighlight();
 
     if (map.getLayer("ocean")) {
-      // $(".hexsize").toggle();
       let ele_display = document.querySelector(".hexsize")[0].style.display;
 
       if (ele_display === "none") {
@@ -453,7 +423,7 @@ export default class Map {
 
     if (selectedColor === "original") {
       if (globals.currentLayerState.dataLayer === "depth") {
-        globals.currentLayerState.color = colors.colorSeq["ocean"];
+        globals.currentLayerState.color = colors.colorNatural["ocean-depth"]; //colors.colorSeq["ocean"];
       } else if (globals.currentLayerState.dataLayer.substring(0, 2) === "1a") {
         globals.currentLayerState.color = colors.colorDiv.gdpColor;
       } else if (globals.currentLayerState.dataLayer.substring(0, 2) === "1c") {
@@ -470,7 +440,7 @@ export default class Map {
         globals.currentLayerState.color = colors.colorSeq["silvers"];
       } else if (globals.currentLayerState.dataLayer === "d") {
         //breaks = [-4841, -3805, -2608, -1090, 1322];
-        globals.currentLayerState.color = colors.colorSeq["ocean"];
+        globals.currentLayerState.color = colors.colorNatural["ocean-depth"]; //colors.colorSeq["ocean"];
       } else {
         globals.currentLayerState.color = colors.colorSeq["yellow-blue"];
       }
@@ -702,13 +672,14 @@ export default class Map {
     //ocean-specific layer state values hardcoded
     //ocean data uses pre-decided breaks and color;
     globals.currentLayerState.breaks = [-4841, -3805, -2608, -1090, 0];
-    globals.currentLayerState.color = [
-      "#08519c",
-      "#3182bd",
-      "#6baed6",
-      "#bdd7e7",
-      "#eff3ff",
-    ];
+    // globals.currentLayerState.color = [
+    //   "#08519c",
+    //   "#3182bd",
+    //   "#6baed6",
+    //   "#bdd7e7",
+    //   "#eff3ff",
+    // ];
+    globals.currentLayerState.color = colors.colorNatural["ocean-depth"];
 
     //clear out all userLayers
     console.log(`removing all userLayers`);
@@ -1523,15 +1494,12 @@ export default class Map {
       },
     };
 
-    //Histogram in addLegend
-    //old code, adapted;
-    console.log("myHistogram data: ");
-    console.log(data);
-    console.log("myHistogram options: ");
-    console.log(option);
-    console.log("myHistogram canvas: ");
-    console.log(canvas);
-    // console.log("in updateHistogram");
+    // console.log("myHistogram data: ");
+    // console.log(data);
+    // console.log("myHistogram options: ");
+    // console.log(option);
+    // console.log("myHistogram canvas: ");
+    // console.log(canvas);
     console.log("in updateHistogram creating myHistogram");
     globals.myHistogram = Chart.Bar(canvas, {
       data: data,
@@ -1599,9 +1567,9 @@ export default class Map {
     });
   }
   _addVectorSources() {
-    console.log(`_addVectorSources()`);
+    // console.log(`_addVectorSources()`);
     let map = this.map; //patching map reference
-    console.log(`vector sources: ${Object.keys(globals.sources)}`);
+    // console.log(`vector sources: ${Object.keys(globals.sources)}`);
 
     //LOAD SOURCES (VECTOR TILES)
     for (let idString of Object.keys(globals.sources)) {
