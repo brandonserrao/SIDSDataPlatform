@@ -92,7 +92,7 @@
                   <v-img
                     contain
                     max-height="50"
-                    :src="`/static/media/datasets/${item}.png`"
+                    :src="`/SIDSDataPlatform/static/media/datasets/${item}.png`"
                   ></v-img>
                 </v-list-item-content>
               </v-list-item>
@@ -102,7 +102,7 @@
               <v-img
                 contain
                 max-height="50"
-                :src="`/static/media/datasets/${item}.png`"
+                :src="`/SIDSDataPlatform/static/media/datasets/${item}.png`"
               ></v-img>
               <v-card-title class="mb-1 active-indicator_header">{{datasetMeta[item.name] ? datasetMeta[item.name]['Dataset Name'] : ''}}</v-card-title>
               <v-card-text>

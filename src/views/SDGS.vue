@@ -8,7 +8,7 @@
       <v-row class="mt-0 bars-container" justify="center">
         <div class="sdg-goal" v-for="(goal, index) in sdgs" :key="goal">
           <img
-            :src="`/static/media/goals-icons/SDGs/${index+1}.png`"
+            :src="`/SIDSDataPlatform/static/media/goals-icons/SDGs/${index+1}.png`"
             height="56"
             width="56"
             >

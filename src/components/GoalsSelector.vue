@@ -396,11 +396,11 @@ export default {
   methods: {
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
-        return `/static/media/goals-icons/SDGs/${index+1}.png`
+        return `/SIDSDataPlatform/static/media/goals-icons/SDGs/${index+1}.png`
       } else if (this.activeGoalType === "samoa") {
-        return `/static/media/goals-icons/SAMOA/${index+1}.png`
+        return `/SIDSDataPlatform/static/media/goals-icons/SAMOA/${index+1}.png`
       } else if (this.activeGoalType === "signature-solutions") {
-        return `/static/media/goals-icons/SS/${index+1}.png`
+        return `/SIDSDataPlatform/static/media/goals-icons/SS/${index+1}.png`
       }
     },
     goalUpdateNext() {

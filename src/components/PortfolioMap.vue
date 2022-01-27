@@ -151,7 +151,7 @@ export default {
       if(region === 'All') {
         regionToSet = '';
       }
-      let img = '/static/media/portfolio-maps/' + regionToSet + '.png'
+      let img = '/SIDSDataPlatform/static/media/portfolio-maps/' + regionToSet + '.png'
       var img_tag = new Image();
       // when preload is complete, apply the image to the div
       img_tag.onload = function () {

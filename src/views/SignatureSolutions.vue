@@ -10,7 +10,7 @@
           <img
           height="56"
           width="144"
-          :src="`/static/media/goals-icons/SS/${index+1}.png`">
+          :src="`/SIDSDataPlatform/static/media/goals-icons/SS/${index+1}.png`">
         </div>
       </v-row>
     </div>
