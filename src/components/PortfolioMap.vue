@@ -63,7 +63,7 @@ export default {
     return {
       regionClass:'',
       backgroundData: {
-        'background-image': 'url(https://sids-dashboard.github.io/SIDSDataPlatform/graphics/sidsMapNewest-01.png)'
+        'background-image': 'url(/static/media/portfolio-maps/All.png)'
       },
       mapClicks: {
         'All': {
@@ -151,7 +151,7 @@ export default {
       if(region === 'All') {
         regionToSet = '';
       }
-      let img = 'https://sids-dashboard.github.io/SIDSDataPlatform/graphics/sidsMapNewest' + regionToSet + '-01.png'
+      let img = '/static/media/portfolio-maps/' + regionToSet + '.png'
       var img_tag = new Image();
       // when preload is complete, apply the image to the div
       img_tag.onload = function () {

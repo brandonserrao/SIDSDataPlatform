@@ -8,7 +8,7 @@
       <v-row class="mt-0 bars-container" justify="center">
         <div class="samoa-goal" v-for="(goal, index) in samoaPriorities" :key="goal">
           <img
-          :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${index+1}samoaIcons.png`"
+          :src="`/static/media/goals-icons/SAMOA/${index+1}.png`"
           height="56"
           width="56"
           >

@@ -124,20 +124,14 @@ export default {
         {
           name: "SAMOA Pathway",
           value: "samoa",
-          // headerImg:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png',
-          // description: 'The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.'
         },
         {
           name: "SDGs",
           value: "sdgs",
-          // headerImg:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png',
-          // description: 'The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS\'s ownership and leadership in overcoming these challenges.'
         },
         {
           name: "Signature solutions",
           value: "signature-solutions",
-          // headerImg:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png',
-          // description: 'UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.'
         },
       ],
       activeGoal: 1,
@@ -402,26 +396,11 @@ export default {
   methods: {
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
-        let goalNmber = (index + 1).toString();
-        if (goalNmber.length < 2) {
-          goalNmber = "0" + goalNmber;
-        }
-        // return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNmber}.png`;
-        return `https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/SDG_Icons_2019_WEB/E-WEB-Goal-${goalNmber}.png`;
+        return `/static/media/goals-icons/SDGs/${index+1}.png`
       } else if (this.activeGoalType === "samoa") {
-        // return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${
-        //   index + 1
-        // }samoaIcons.png`;
-        return `https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaIcons/100w/Asset_${
-          index + 1
-        }samoaIcons.png`;
+        return `/static/media/goals-icons/SAMOA/${index+1}.png`
       } else if (this.activeGoalType === "signature-solutions") {
-        // return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SSicons/1x/${this[
-        //   "signature-solutions"
-        // ][index].toLowerCase()}SS.png`;
-        return `https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/SSicons/1x/${this[
-          "signature-solutions"
-        ][index].toLowerCase()}SS.png`;
+        return `/static/media/goals-icons/SS/${index+1}.png`
       }
     },
     goalUpdateNext() {

@@ -8,7 +8,7 @@
       <v-row class="mt-0 bars-container" justify="center">
         <div class="sdg-goal" v-for="(goal, index) in sdgs" :key="goal">
           <img
-            :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${parseGoalNumber(index)}.png`"
+            :src="`/static/media/goals-icons/SDGs/${index+1}.png`"
             height="56"
             width="56"
             >
@@ -270,13 +270,6 @@ export default {
           .attr("class", "barsLabels barsLabels2")
           .attr("text-anchor", "middle");
 
-    },
-    parseGoalNumber(number) {
-      let goalNmber = (number + 1).toString();
-      if(goalNmber.length < 2) {
-        goalNmber = '0' + goalNmber;
-      }
-      return goalNmber
     },
     updateBars() {
       let rootThis = this;

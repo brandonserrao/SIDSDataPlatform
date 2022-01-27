@@ -10,7 +10,7 @@
           <img
           height="56"
           width="144"
-          :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SSicons/1x/${imageNames[index]}SS.png`">
+          :src="`/static/media/goals-icons/SS/${index+1}.png`">
         </div>
       </v-row>
     </div>
@@ -37,7 +37,6 @@ export default {
   data() {
     return {
       id: this._uid,
-      imageNames:['poverty', 'governance', 'resilience', 'environment', 'energy', 'gender'],
       svgContainer: null,
       colors: ["#E3253C", "#0076B0", "#F26A2C", "#417F45", "#FAB715",
         "#EF412C", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8",

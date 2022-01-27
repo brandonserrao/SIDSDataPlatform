@@ -72,8 +72,8 @@ export default {
       for(let country in data) {
         let profile = data[country]['Profile'];
         profile.id = country;
-        profile.map = `${'https://sids-dashboard.github.io/SIDSDataPlatform/maps/relief/' + profile.id + 'Relief.png'}`;
-        profile.photo = `${'https://sids-dashboard.github.io/SIDSDataPlatform/images/countryPhotos/' + profile.id + '.jpg'}`;
+        profile.map = `${'/static/media/profiles-maps/' + profile.id + '.png'}`;
+        profile.photo = `${'/static/media/country-photos/' + profile.id + '.jpg'}`;
         profile.code = codes[country]
         countryList.push(profile);
       }
