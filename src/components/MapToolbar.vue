@@ -841,11 +841,6 @@ export default {
     };
   },
   methods: {
-    emit_toggle_legend() {
-      //unused
-      this.$emit("toggle-legend");
-    },
-
     handleGisMenuChange(change_type, object) {
       //determine type of menuchange based on eventType
 
@@ -925,7 +920,6 @@ export default {
 
     handleBoundryChange(object) {
       this.$emit("select-boundary-layer", object);
-      // this.handleGisMenuChange(change_type, object);
     },
 
     handleBasemapChange(text, image) {

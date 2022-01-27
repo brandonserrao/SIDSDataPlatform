@@ -288,7 +288,9 @@ import chroma from "chroma-js"; */
 
 export default {
   name: "MapDatasetController",
-  props: ["displayLegend", "map"],
+  props: [
+    "displayLegend", //"map"
+  ],
   data() {
     return {
       activeGoal: 1,
