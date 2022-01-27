@@ -32,6 +32,17 @@ const constants = {
     0, 1, 2, 4, 12, 16, 24, 25, 26, 27, 28, 29, 31, 32, 41, 43, 45, 47, 48, 50,
     52,
   ],
+  mapOptions: {
+    style: "mapbox://styles/mapbox/light-v10", //"mapbox://styles/mapbox/satellite-streets-v11",
+    center: [-71.5, 19.0],
+    zoom: 7,
+    maxZoom: 13.5,
+    minZoom: 1,
+    maxBounds: [
+      [-270, -45],
+      [+270, +45],
+    ],
+  },
   styles: [
     {
       name: "Mapbox Satellite Streets",

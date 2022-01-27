@@ -68,9 +68,7 @@ import names from "@/gis/static/names";
 import GIS from "@/gis"; //gets and loads the index.js file from this directory, which has the mapboxgl Map class exported
 import MapDatasetController from "@/components/MapDatasetController";
 import MapToolbar from "@/components/MapToolbar"; //my attempt at adapting Ben's Form of new sidebar
-
-// import PulseLoader from "vue-spinner/src/PulseLoader.vue";
-import GridLoader from "vue-spinner/src/GridLoader.vue";
+import GridLoader from "vue-spinner/src/GridLoader.vue"; // import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 
 // @ is an alias to /src
 
@@ -85,7 +83,6 @@ export default {
       activeLayerName: null,
       displayLegend: true,
       gisLoader: { loading: true, color: "purple", size: "50px" },
-      // screenOrientation: window.screen.orientation.type,
     };
   },
   components: {
@@ -95,22 +92,27 @@ export default {
     GridLoader,
   },
   methods: {
-    _logSources() {
-      //debugging: to look at sources loaded onto mapbox map
-      console.log(`listing sources in map`);
-      this.map.logSources();
-    },
+    //A) Interfaces for the Map class
 
+    changeBasemap(object) {
+      this.map.changeBasemap(object);
+    },
+    changeOpacity(object) {
+      this.map.changeOpacity(object);
+    },
+    changeColor(object) {
+      this.map.changeColor(object);
+    },
+    selectCountry(selection) {
+      this.map.zoomToCountry(selection);
+    },
     toggle3D() {
-      console.log(`toggling 3D !!! currently indev`);
       this.map.add3D();
     },
     toggleLabels(labelObject) {
-      console.log(`toggling labels: ${labelObject.label}`);
       this.map.addLabels(labelObject);
     },
     toggleLegend() {
-      console.log(`toggling Legend: displayLegend= ${this.displayLegend}`);
       this.displayLegend = !this.displayLegend;
     },
     resetToolbarMenus() {
@@ -125,21 +127,10 @@ export default {
       let opacitySlider = document.getElementsByClassName("opacity-slider")[0];
       opacitySlider.value = globals.opacity; //hardcoded until changed to be based on shared reactive variable
     },
-
-    selectCountry(selection) {
-      this.map.zoomToCountry(selection);
-      // this.map.zoomTo(selection); //this. component instance; reffing its .map which is a Map class from index.js; calling class method zoomTo =
-    },
-
     changeResolution(object) {
-      console.log("changeResolution(object) object is:");
-      console.log(object); //{resolution: "hex1"} for eg.
-
-      //oldcode goes in here; calling on mapclass methods
-      //call changeHexagonSize/changeResolution
       if (!(this.activeDatasetName === "Ocean Data")) {
         console.log(`activeDatasetName: ${this.activeDatasetName}`);
-        this.map.changeHexagonSize(object); //oldcode expec: object = {Resolution: string}; newcode gives: {resolution: string}
+        this.map.changeHexagonSize(object);
       } else {
         console.log(
           `activeDatasetName: ${this.activeDatasetName}; doing nothing;`
@@ -147,16 +138,6 @@ export default {
         //TODO: implement a more explicitly blocking version where it stops the clicking in the toolbar itself
         return;
       }
-    },
-
-    changeBasemap(object) {
-      this.map.changeBasemap(object);
-    },
-    changeOpacity(object) {
-      this.map.changeOpacity(object);
-    },
-    changeColor(object) {
-      this.map.changeColor(object);
     },
 
     addBoundaryLayer(object) {
@@ -375,9 +356,7 @@ export default {
 
     updateMap(activeDataset, activeLayer) {
       if (!(activeDataset === globals.lastActive.dataset)) {
-        console.log(
-          `dataset changing from ${globals.lastActive.dataset?.name} -> ${activeDataset.name}; resetting color palette;`
-        );
+        // console.log(`dataset changing from ${globals.lastActive.dataset?.name} -> ${activeDataset.name}; resetting color palette;`);
         globals.lastActive.dataset = activeDataset;
         globals.currentLayerState.color = null;
         this.resetToolbarMenus();
@@ -386,9 +365,7 @@ export default {
       //if there isn't a dataset selected and updatecalls;
       //reset actives (can serve as trigger to reset selection)
       if (!activeDataset) {
-        console.log(
-          "no dataset/layer to updateMap with; resetting activeDataset/Layer"
-        );
+        // console.log("no dataset/layer to updateMap with; resetting activeDataset/Layer");
         activeDataset = null;
         activeLayer = null;
       } else {
@@ -444,29 +421,23 @@ export default {
           //TODO: reevaluate this ratch
           //update this vue's state
           this.activeLayerName = activeLayer.Name; //should be identical to activeDatasetName
-          console.log(
-            `activeLayer: ${activeLayer.Field_Name} ${activeLayer.Description}`
-          );
+          // console.log(`activeLayer: ${activeLayer.Field_Name} ${activeLayer.Description}`);
 
           if (activeLayer.Name === "Ocean Data") {
             if (activeLayer.Field_Name === "depth") {
-              console.log(
-                "updateMap w/ Ocean Data-Depths: " + activeLayer.Description
-              );
+              // console.log("updateMap w/ Ocean Data-Depths: " + activeLayer.Description);
               this.map.addOcean(activeDataset, activeLayer);
             } else {
-              console.log(
-                "updateMap w/ Ocean Data: " + activeLayer.Description
-              );
+              // console.log("updateMap w/ Ocean Data: " + activeLayer.Description);
               this.map.changeDataOnMap(activeDataset, activeLayer);
             }
           } else {
-            console.log(
-              "updateMap w/ changeDataOnMap: " +
-                activeDataset.name +
-                " " +
-                activeLayer.Description
-            );
+            // console.log(
+            //   "updateMap w/ changeDataOnMap: " +
+            //     activeDataset.name +
+            //     " " +
+            //     activeLayer.Description
+            // );
             this.map.changeDataOnMap(activeDataset, activeLayer);
           }
 
@@ -499,7 +470,7 @@ export default {
     },
   },
   mounted() {
-    this.map = new GIS("map"); //initialzing mapbox map instance???
+    this.map = new GIS("map");
 
     let collapseBtn = document.getElementsByClassName("collapse-btn")[0];
     collapseBtn.addEventListener("click", function () {

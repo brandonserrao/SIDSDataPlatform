@@ -1,20 +1,20 @@
-import "mapbox-gl/dist/mapbox-gl.css";
-import "@/gis/styles/minimap.css";
+//local imports---------------------------------------
+//import "@/gis/styles/minimap.css";
+// import mapboxMinimap from "mapbox.minimap";
 import filepaths from "@/gis/static/filepaths.js";
-// import constants from "@/gis/static/constants.js";
 import globals from "@/gis/static/globals.js";
-
 import constants from "@/gis/static/constants.js";
 import colors from "@/gis/static/colors.js";
-
+//----------------------------------------------------
+//3rd party imports-----------------------------------
+import mapboxgl from "@/gis/mapboxgl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import * as d3 from "d3";
 import chroma from "chroma-js";
 import Chart from "chart.js";
-// import { Chart } from "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js";
-
 import { featureCollection } from "@turf/helpers";
 import dissolve from "@turf/dissolve";
-
+//----------------------------------------------------
 //---------used to bring in lodash for oldcode
 import Vue from "vue";
 import VueLodash from "vue-lodash";
@@ -22,27 +22,17 @@ import lodash from "lodash";
 Vue.use(VueLodash, { name: "custom", lodash: lodash });
 //----------------------------------------------------
 
-import mapboxgl from "@/gis/mapboxgl";
 // eslint-disable-next-line no-unused-vars
-import mapboxMinimap from "mapbox.minimap";
 // import map from "core-js/fn/array/map";
 
 export default class Map {
   constructor(container) {
     mapboxgl.accessToken =
       "pk.eyJ1Ijoic2ViYXN0aWFuLWNoIiwiYSI6ImNpejkxdzZ5YzAxa2gyd21udGpmaGU0dTgifQ.IrEd_tvrl6MuypVNUGU5SQ";
+
     this.map = new mapboxgl.Map({
       container, // container ID
-      // style: "mapbox://styles/mapbox/light-v10",
-      style: "mapbox://styles/mapbox/satellite-streets-v11",
-      center: [-71.5, 19.0],
-      zoom: 7,
-      maxZoom: 13.5,
-      minZoom: 1,
-      maxBounds: [
-        [-270, -45],
-        [+270, +45],
-      ],
+      ...constants.mapOptions,
     });
 
     this.map.on("load", () => {
@@ -59,26 +49,233 @@ export default class Map {
       this.getBasemapLabels();
     });
 
-    //for debugging
+    //for debugging--------------------
     let self = this.map;
-    this.map.on("click", (e) => {
-      console.log(`A click event at ${e.lngLat}`);
-    });
-
-    //for debugging
     this.map.on("click", () => {
+      // console.log(`A click event at ${e.lngLat}`);
       console.log("isStyleLoaded():", self.isStyleLoaded());
       console.log("areTilesLoaded():", self.areTilesLoaded());
-      console.log("getZoom():", self.getZoom());
-      console.log("getMinZoom():", self.getMinZoom());
-      console.log("getMaxZoom():", self.getMaxZoom());
+      // console.log("getZoom():", self.getZoom());
+      // console.log("getMinZoom():", self.getMinZoom());
+      // console.log("getMaxZoom():", self.getMaxZoom());
     });
+    //--------------------------------
   }
 
+  //Map class methods:
+  //A) map initialization methods----------------------------------------------------------------------------
+
+  _createMiniMap() {
+    this.minimap = new mapboxgl.Minimap({
+      center: this.map.getCenter(),
+      zoom: 6,
+      togglePosition: "topleft",
+      style: "mapbox://styles/mapbox/light-v10",
+    });
+    this.map.addControl(this.minimap, "bottom-right");
+    this.minimap.toggle();
+  }
+  _removeUnusedLayers() {
+    let self = this;
+    constants.unwantedMapboxLayers.forEach((name) =>
+      self.map.removeLayer(name)
+    );
+  }
+  _addPointSources() {
+    let map = this.map; //patching map reference
+    //pulls in the pointdata about airports volcanoes etc
+    console.log("d3.json fetching pointdata geojson file");
+
+    d3.json(filepaths.pointdataFilePath).then(function (d) {
+      map.addSource("points-source", {
+        type: "geojson",
+        data: d,
+      });
+    });
+  }
+  _addVectorSources() {
+    // console.log(`_addVectorSources()`);
+    let map = this.map; //patching map reference
+    // console.log(`vector sources: ${Object.keys(globals.sources)}`);
+
+    //LOAD SOURCES (VECTOR TILES)
+    for (let idString of Object.keys(globals.sources)) {
+      console.log("adding " + idString);
+      map.addSource(idString, globals.sources[idString]);
+    }
+
+    //load the allsids outline onto the map as a layer, if not present
+    if (!map.getLayer("allsids")) {
+      map.addLayer(
+        {
+          id: "allsids",
+          type: "line",
+          source: "allsids",
+          "source-layer": "allSids",
+          layout: {
+            visibility: "visible",
+          },
+          paint: {
+            "line-color": "orange",
+            "line-width": 1,
+          },
+        },
+        globals.firstSymbolId
+      );
+    }
+
+    //finished loading in so hide spinner
+    // hideSpinner();//TODO: REIMPLEMENT SPINNER
+
+    map.once("idle", () => {
+      this.hideSpinner();
+    });
+  }
+  _bindMapClickListeners(mapClassInstance) {
+    let instance = mapClassInstance;
+    //listeners for the query-clicks
+    //ISSUE: BINDS TO MAPBOX MAP, WHICH IS CONTAINED INSIDE THIS CUSTOM MAP CLASS THEREFORE LISTENER CALLS FROM MAPBOXMAP AND NOT THIS CLASS
+    //IDEA: PASS IN THIS CLASS WITH THE LISTENER AND CALL OUR CLASS METHODS FROM THAT INSTEAD
+    this.map.on("click", "hex5", function (e, mapClassInstance = instance) {
+      mapClassInstance.clearOnClickQuery(mapClassInstance);
+      mapClassInstance.onDataClick(e);
+    });
+
+    this.map.on("click", "hex10", function (e, mapClassInstance = instance) {
+      mapClassInstance.clearOnClickQuery(mapClassInstance);
+      mapClassInstance.onDataClick(e);
+    });
+
+    this.map.on("click", "hex1", function (e, mapClassInstance = instance) {
+      mapClassInstance.clearOnClickQuery(mapClassInstance);
+      mapClassInstance.onDataClick(e);
+    });
+
+    this.map.on(
+      "click",
+      "hex5clipped",
+      function (e, mapClassInstance = instance) {
+        mapClassInstance.clearOnClickQuery(mapClassInstance);
+        mapClassInstance.onDataClick(e);
+      }
+    );
+
+    this.map.on("click", "ocean", function (e, mapClassInstance = instance) {
+      mapClassInstance.clearOnClickQuery(mapClassInstance);
+      mapClassInstance.onDataClick(e);
+    });
+
+    this.map.on("click", "admin1", function (e, mapClassInstance = instance) {
+      mapClassInstance.clearOnClickQuery(mapClassInstance);
+      mapClassInstance.addAdminClick(e, "admin1");
+    });
+
+    this.map.on("click", "admin2", function (e, mapClassInstance = instance) {
+      console.log("map.on.click.admin2");
+
+      //clear old selections presents
+      mapClassInstance.clearOnClickQuery(mapClassInstance);
+
+      // this.onDataClick(e);
+      mapClassInstance.addAdminClick(e, "admin2");
+    });
+
+    this.map.on("click", function () /* e, mapClassInstance = instance */ {
+      /*       console.log("map.on.click.clearing-all");
+      console.log("this is:");
+      console.log(this);
+      console.log("mapClassInstance:");
+      console.log(mapClassInstance); */
+      /* my reimplement
+       for (let id of ["iso", "clickedone", "highlightS", "joined"]) {
+        if (
+          mapClassInstance.getLayer("iso") ||
+          mapClassInstance.getSource(id)
+        ) {
+          mapClassInstance.removeLayer(id);
+          mapClassInstance.removeSource(id);
+        }
+      }
+ */
+      //compressed version of oldcode
+      /* if (
+        //this.map.
+        mapClassInstance.getLayer("iso")
+      ) {
+        console.log('removing existing source and layer for "iso"');
+        //this.map.removeLayer("iso");
+        //this.map.removeSource("iso"); 
+        mapClassInstance.removeLayer("iso");
+        mapClassInstance.removeSource("iso");
+      }
+      for (let id of ["clickedone", "highlightS", "joined"]) {
+        console.log(`removing existing source and layer for: ${id}`);
+        if (
+          //this.map.
+          mapClassInstance.getSource(id)
+        ) {
+          // this.map.removeLayer(id);
+          // this.map.removeSource(id);
+          mapClassInstance.removeLayer(id);
+          mapClassInstance.removeSource(id);
+        }
+      } */
+      /* //old code version
+      if (this.map.getLayer("iso")) {
+        this.map.removeLayer("iso");
+        this.map.removeSource("iso");
+      }
+
+      if (this.map.getSource("clickedone")) {
+        this.map.removeLayer("clickedone");
+        this.map.removeSource("clickedone");
+      }
+
+      if (this.map.getSource("highlightS")) {
+        this.map.removeLayer("highlight");
+        this.map.removeSource("highlightS");
+      }
+
+      if (this.map.getSource("joined")) {
+        this.map.removeLayer("joined");
+        this.map.removeSource("joined");
+      } */
+      /* var clickDiv = document.getElementsByClassName("my-custom-control")[0];
+
+      clickDiv.style.display = "none";
+      clickDiv.innerHTML = ""; */
+    });
+  }
+  _bindRecolorListeners(mapClassInstance) {
+    let instance = mapClassInstance;
+    console.log(instance);
+    //this. out here ref the mapClass instance calling this method
+    //TODO: review and rewrite
+
+    for (const eventType of ["zoomend", "dragend"]) {
+      console.log(`binding RecolorListener: ${eventType}`);
+      this.map.on(eventType, function (e, mapClassInstance = instance) {
+        //this. in here would ref the mapboxmap and not our mapClass which has the recolor method
+        console.log("_bindRecolorListeners");
+        console.log("event is:");
+        console.log(e);
+        console.log("instance is:");
+        console.log(instance);
+
+        mapClassInstance.recolorBasedOnWhatsOnPage();
+      });
+    }
+  }
+  _initOnClickControl() {
+    console.log("InitOnClickControl");
+    const toggleControl = new ToggleControl();
+    this.map.addControl(toggleControl, "bottom-right");
+  }
+
+  //B) exposing mapboxgl map methods via this class as interface---------------------------------------------
   on(type, layerIds, listenerFunction) {
     this.map.on(type, layerIds, listenerFunction);
   }
-
   addLayer(input) {
     this.map.addLayer(input);
   }
@@ -88,6 +285,9 @@ export default class Map {
   getLayer(input) {
     this.map.getLayer(input);
   }
+  getSource(id) {
+    return this.map.getSource(id);
+  }
   removeSource(input) {
     this.map.removeSource(input);
   }
@@ -96,14 +296,11 @@ export default class Map {
     return new mapboxgl.Popup(options);
   }
 
-  getSource(id) {
-    return this.map.getSource(id);
-  }
+  //C) Main functions - core logic that implements the major functionality of the map--------------------------------------
 
   zoomToCountry(country) {
     let self = this;
     var v2 = new mapboxgl.LngLatBounds(country.bb);
-    console.log(`zoomTo(${country.NAME_0}) calling map.fitBounds on .bb`);
     this.map.fitBounds(v2, {
       linear: true,
       padding: {
@@ -120,89 +317,24 @@ export default class Map {
     //contextual recolor hexes
     this.map.once("idle", function () {
       console.log("map idle; recoloring non-ocean data");
-      if (
-        !self.map.getLayer("ocean")
-        // !this.map.getLayer("ocean")
-      ) {
-        // this.recolorBasedOnWhatsOnPage();
+      if (!self.map.getLayer("ocean")) {
         setTimeout(() => {
-          // this.recolorBasedOnWhatsOnPage()
           self.recolorBasedOnWhatsOnPage(), 1000;
         }); //timeout added to allow data to load in before triggering recolor+legend update
       }
     });
   }
-
-  _createMiniMap() {
-    this.minimap = new mapboxgl.Minimap({
-      center: this.map.getCenter(),
-      zoom: 6,
-      togglePosition: "topleft",
-      style: "mapbox://styles/mapbox/light-v10",
-    });
-    this.map.addControl(this.minimap, "bottom-right");
-    this.minimap.toggle();
-  }
-
-  _removeUnusedLayers() {
-    this.map.removeLayer("admin-1-boundary");
-    this.map.removeLayer("road-label");
-    this.map.removeLayer("road-number-shield");
-    this.map.removeLayer("road-exit-shield");
-    this.map.removeLayer("admin-1-boundary-bg");
-    this.map.removeLayer("airport-label");
-  }
-
-  getUniqueFeatures(array, comparatorProperty) {
-    //taken directly from old code
-    var existingFeatureKeys = {};
-    //function taken from mapbox that extracts unique features, see comment below
-    // Because features come from tiled vector data, feature geometries may be split
-    // or duplicated across tile boundaries and, as a result, features may appear
-    // multiple times in query results.
-    var uniqueFeatures = array.filter(function (el) {
-      if (existingFeatureKeys[el.properties[comparatorProperty]]) {
-        return false;
-      } else {
-        existingFeatureKeys[el.properties[comparatorProperty]] = true;
-        return true;
-      }
-    });
-
-    return uniqueFeatures;
-  }
-
-  showSpinner() {
-    console.log("show loading spinner");
-    let spinner = document.getElementsByClassName("loader-gis")[0];
-    let modal = document.getElementsByClassName("loader-gis-modal")[0];
-    spinner.classList.remove("display-none");
-    modal.classList.remove("display-none");
-  }
-
-  hideSpinner() {
-    // document.querySelector(".loader-gis").style.display = "none";
-
-    //hide loader spinner
-    console.log("hide loading spinner");
-    let spinner = document.getElementsByClassName("loader-gis")[0];
-    let modal = document.getElementsByClassName("loader-gis-modal")[0];
-    spinner.classList.add("display-none");
-    modal.classList.add("display-none");
-  }
-
-  //taken from old code
   //manages the change when you chang the resolution
   changeHexagonSize(resolutionObject) {
     let map = this.map;
     let resolution = resolutionObject.resolution;
 
     /* if (
-      resolution
-      // resolution === "hex1"
-    ) {
-      this.clearHexHighlight();
-    } */
+        resolution
+        // resolution === "hex1"
+      ) {
+        this.clearHexHighlight();
+      } */
     this.clearHexHighlight();
 
     if (map.getLayer("ocean")) {
@@ -257,16 +389,16 @@ export default class Map {
     );
 
     /* if (resolution === "hex1") {
-      //showing loader in expectation of hex1 taking longer to display
-      // $(".loader-gis").show();
-      console.log("handling spinner for hex1 loading");
-      this.showSpinner();
+        //showing loader in expectation of hex1 taking longer to display
+        // $(".loader-gis").show();
+        console.log("handling spinner for hex1 loading");
+        this.showSpinner();
 
-      map.once("idle", () => {
-        // $(".loader-gis").hide();
-        this.hideSpinner();
-      });
-    } */
+        map.once("idle", () => {
+          // $(".loader-gis").hide();
+          this.hideSpinner();
+        });
+      } */
 
     if (map.getStyle().name === "Mapbox Satellite") {
       console.log(`map style is Mapbox Satellite; moveLayer to ${resolution}`);
@@ -274,14 +406,14 @@ export default class Map {
     }
 
     /*     map.once("idle", function (e) {
-      console.log(`map.once on idle triggered by ${e}`);
-      console.log("map idle-> recoloring");
-      this.recolorBasedOnWhatsOnPage();
+        console.log(`map.once on idle triggered by ${e}`);
+        console.log("map idle-> recoloring");
+        this.recolorBasedOnWhatsOnPage();
 
-      //console.log('change bins');
-      //map.setPaintProperty(globals.currentLayerState.hexSize, 'fill-opacity', 0.7)
-      map.moveLayer(resolution, "allsids");
-    }); */
+        //console.log('change bins');
+        //map.setPaintProperty(globals.currentLayerState.hexSize, 'fill-opacity', 0.7)
+        map.moveLayer(resolution, "allsids");
+      }); */
     map.once("idle", () => {
       console.log("map idle-> recoloring");
       this.recolorBasedOnWhatsOnPage(); //as it's inside an arrow function this. should refer to the outer scope and should be able to find the function
@@ -293,28 +425,6 @@ export default class Map {
       this.hideSpinner();
     });
   }
-
-  getBasemapLabels() {
-    let map = this.map;
-
-    globals.basemapLabels = [];
-    let layers = map.getStyle().layers;
-    //get first symbol layer for insertion of layer under
-    for (var i = 0; i < layers.length; i++) {
-      if (layers[i].type === "symbol") {
-        globals.firstSymbolId = layers[i].id;
-        break;
-      }
-    }
-    for (var x in layers) {
-      if (layers[x].type === "symbol" || layers[x].type === "line") {
-        globals.basemapLabels.push(layers[x]);
-      }
-    }
-
-    console.log(`getBasemapLabels: ${globals.basemapLabels.length} layers`);
-  }
-
   changeBasemap(selectionObject) {
     let self = this;
     let map = this.map;
@@ -398,7 +508,6 @@ export default class Map {
       self.hideSpinner();
     });
   }
-
   changeOpacity(opacityObject) {
     let map = this.map;
     let sliderValue = opacityObject.opacity;
@@ -528,7 +637,6 @@ export default class Map {
       this.hideSpinner();
     });
   }
-
   add3D() {
     let map = this.map;
 
@@ -622,7 +730,50 @@ export default class Map {
       this.hideSpinner();
     });
   }
+  remove3d() {
+    let map = this.map;
+    this.clearHexHighlight();
+    //taken directly from old code
+    console.log("removing 3d");
 
+    let mapLayers = map.getStyle().layers;
+    //console.log(lay);
+    let threedee = Vue._.find(mapLayers, function (o) {
+      return o.type === "fill-extrusion";
+    });
+    if (threedee) {
+      map.removeLayer(threedee.id);
+      map.easeTo({
+        center: map.getCenter(),
+        pitch: 0,
+      });
+    }
+
+    //animate the button back to 2D icon; taken from handleHeightChange
+    let threeDIcon = document.getElementsByClassName("threeD" + "-icon")[0];
+    let twoDIcon = document.getElementsByClassName("twoD" + "-icon")[0];
+
+    if (
+      !twoDIcon.classList.contains("display-none") &&
+      threeDIcon.classList.contains("display-none")
+    ) {
+      console.log("3D icon visible; flip animate to 2D");
+
+      //animation triggering of the button
+      twoDIcon.classList.add("flip1");
+      setTimeout(() => {
+        threeDIcon.classList.remove("display-none");
+        threeDIcon.classList.add("flip2");
+        twoDIcon.classList.add("display-none");
+        twoDIcon.classList.remove("flip1");
+      }, 140);
+      setTimeout(() => {
+        threeDIcon.classList.remove("flip2");
+      }, 280);
+    } else {
+      console.log(`2D icon visible; no flip animate`);
+    }
+  }
   addLabels(labelObject) {
     let map = this.map;
 
@@ -655,7 +806,6 @@ export default class Map {
       this.hideSpinner();
     });
   }
-
   addOcean(activeDataset, activeLayer) {
     this.clearHexHighlight();
     this.remove3d();
@@ -747,7 +897,6 @@ export default class Map {
       this.hideSpinner();
     });
   }
-
   changeDataOnMap(activeDataset, activeLayer) {
     let Field_Name = activeLayer.Field_Name; //get the selected layer's Field_Name
     console.log(`changeDataOnMap fired: ${Field_Name}, activeLayer:`);
@@ -1030,7 +1179,6 @@ export default class Map {
       this.hideSpinner();
     });
   }
-
   recolorBasedOnWhatsOnPage() {
     console.log(`recolorBasedOnWhatsOnPage()`);
     let map = this.map;
@@ -1158,52 +1306,6 @@ export default class Map {
       this.hideSpinner();
     });
   }
-
-  remove3d() {
-    let map = this.map;
-    this.clearHexHighlight();
-    //taken directly from old code
-    console.log("removing 3d");
-
-    let mapLayers = map.getStyle().layers;
-    //console.log(lay);
-    let threedee = Vue._.find(mapLayers, function (o) {
-      return o.type === "fill-extrusion";
-    });
-    if (threedee) {
-      map.removeLayer(threedee.id);
-      map.easeTo({
-        center: map.getCenter(),
-        pitch: 0,
-      });
-    }
-
-    //animate the button back to 2D icon; taken from handleHeightChange
-    let threeDIcon = document.getElementsByClassName("threeD" + "-icon")[0];
-    let twoDIcon = document.getElementsByClassName("twoD" + "-icon")[0];
-
-    if (
-      !twoDIcon.classList.contains("display-none") &&
-      threeDIcon.classList.contains("display-none")
-    ) {
-      console.log("3D icon visible; flip animate to 2D");
-
-      //animation triggering of the button
-      twoDIcon.classList.add("flip1");
-      setTimeout(() => {
-        threeDIcon.classList.remove("display-none");
-        threeDIcon.classList.add("flip2");
-        twoDIcon.classList.add("display-none");
-        twoDIcon.classList.remove("flip1");
-      }, 140);
-      setTimeout(() => {
-        threeDIcon.classList.remove("flip2");
-      }, 280);
-    } else {
-      console.log(`2D icon visible; no flip animate`);
-    }
-  }
-
   //adapted from oldcode
   addNoDataLegend() {
     console.log("!!ATTENTION!! addNoDataLegend called");
@@ -1232,7 +1334,6 @@ export default class Map {
       legendTitle.innerHTML = "No Data for this Region";
     }
   }
-
   addLegend(
     colors = globals.currentLayerState.color,
     breaks = globals.currentLayerState.breaks,
@@ -1288,7 +1389,6 @@ export default class Map {
     this.updateHistogram(colors, breaks, precision, activeLayer, selectedData);
     //-----------------------------------------------------------
   }
-
   updateHistogram( //called in addLegend; extracted for cleanliness
     colors,
     breaks,
@@ -1444,12 +1544,14 @@ export default class Map {
               //min: 1,
 
               //toread https://www.chartjs.org/docs/2.9.4/axes/labelling.html?h=callback%3A
-              callback: function (value, index, values) {
-                if (index || values) {
-                  console.log(
-                    `in scales>yAxes>ticks: index or values: ${index} ${values}`
-                  );
-                }
+              callback: function (
+                value //index, //values
+              ) {
+                // if (index || values) {
+                //   console.log(
+                //     `in scales>yAxes>ticks: index or values: ${index} ${values}`
+                //   );
+                // }
                 if (value === 100000000) return "100M";
                 if (value === 10000000) return "10M";
                 if (value === 1000000) return "1M";
@@ -1508,117 +1610,6 @@ export default class Map {
     console.log(globals.myHistogram);
   }
 
-  //taken from old code
-  //formats numbers -- function written by Ben
-  nFormatter(num, digits) {
-    var si = [
-      {
-        value: 1,
-        symbol: "",
-      },
-      {
-        value: 1e3,
-        symbol: "K",
-      },
-      {
-        value: 1e6,
-        symbol: "M",
-      },
-      {
-        value: 1e9,
-        symbol: "B",
-      },
-    ];
-    var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-    var i;
-    for (i = si.length - 1; i > 0; i--) {
-      if (num >= si[i].value) {
-        break;
-      }
-    }
-    return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
-  }
-
-  checkForDuplicates(array) {
-    //taken directly from oldcode
-    //taken from this example: https://docs.mapbox.com/mapbox-gl-js/example/filter-features-within-map-view/
-    let valuesAlreadySeen = [];
-
-    for (let i = 0; i < array.length; i++) {
-      let value = array[i];
-      if (valuesAlreadySeen.indexOf(value) !== -1) {
-        return true;
-      }
-      valuesAlreadySeen.push(value);
-    }
-    return false;
-  }
-
-  _addPointSources() {
-    let map = this.map; //patching map reference
-    //pulls in the pointdata about airports volcanoes etc
-    console.log("d3.json fetching pointdata geojson file");
-
-    d3.json(filepaths.pointdataFilePath).then(function (d) {
-      map.addSource("points-source", {
-        type: "geojson",
-        data: d,
-      });
-    });
-  }
-  _addVectorSources() {
-    // console.log(`_addVectorSources()`);
-    let map = this.map; //patching map reference
-    // console.log(`vector sources: ${Object.keys(globals.sources)}`);
-
-    //LOAD SOURCES (VECTOR TILES)
-    for (let idString of Object.keys(globals.sources)) {
-      console.log("adding " + idString);
-      map.addSource(idString, globals.sources[idString]);
-    }
-
-    //load the allsids outline onto the map as a layer, if not present
-    if (!map.getLayer("allsids")) {
-      map.addLayer(
-        {
-          id: "allsids",
-          type: "line",
-          source: "allsids",
-          "source-layer": "allSids",
-          layout: {
-            visibility: "visible",
-          },
-          paint: {
-            "line-color": "orange",
-            "line-width": 1,
-          },
-        },
-        globals.firstSymbolId
-      );
-    }
-
-    //finished loading in so hide spinner
-    // hideSpinner();//TODO: REIMPLEMENT SPINNER
-
-    map.once("idle", () => {
-      this.hideSpinner();
-    });
-  }
-
-  logSources() {
-    //for debugging
-    console.log(this.map.style.sourceCaches);
-    console.log(this.map.style._layers);
-    console.log(globals);
-  }
-
-  _initOnClickControl() {
-    console.log("InitOnClickControl");
-    const toggleControl = new ToggleControl();
-    this.map.addControl(toggleControl, "bottom-right");
-  }
-
-  ///onClickControl.js code for onclick querying of hexes
   clearOnClickQuery(mapClassInstance = this.map) {
     console.log("clearOnClickQuery");
     console.log("this is:");
@@ -1664,203 +1655,13 @@ export default class Map {
     clickDiv.style.display = "none";
     clickDiv.innerHTML = "";
   }
-
   clearHexHighlight() {
     if (this.map.getLayer("clickedone")) {
       console.log(`removing highlight`);
       this.map.removeLayer("clickedone");
-
       this.clearOnClickQuery(); //to remove the onClickQuery div
     }
   }
-
-  _bindMapClickListeners(mapClassInstance) {
-    let instance = mapClassInstance;
-    //listeners for the query-clicks
-    //ISSUE: BINDS TO MAPBOX MAP, WHICH IS CONTAINED INSIDE THIS CUSTOM MAP CLASS THEREFORE LISTENER CALLS FROM MAPBOXMAP AND NOT THIS CLASS
-    //IDEA: PASS IN THIS CLASS WITH THE LISTENER AND CALL OUR CLASS METHODS FROM THAT INSTEAD
-    this.map.on("click", "hex5", function (e, mapClassInstance = instance) {
-      console.log("map.on.click.hex5");
-      console.log("this is:");
-      console.log(this);
-      console.log("mapClassInstance is:");
-      console.log(mapClassInstance);
-
-      //clear old selections presents
-      mapClassInstance.clearOnClickQuery(mapClassInstance);
-
-      // this.onDataClick(e);
-      mapClassInstance.onDataClick(e);
-    });
-
-    this.map.on("click", "hex10", function (e, mapClassInstance = instance) {
-      console.log("map.on.click.hex10");
-      console.log("this is:");
-      console.log(this);
-      console.log("mapClassInstance is:");
-      console.log(mapClassInstance);
-
-      //clear old selections presents
-      mapClassInstance.clearOnClickQuery(mapClassInstance);
-
-      // this.onDataClick(e);
-      mapClassInstance.onDataClick(e);
-    });
-
-    this.map.on("click", "hex1", function (e, mapClassInstance = instance) {
-      console.log("map.on.click.hex1");
-      console.log("this is:");
-      console.log(this);
-      console.log("mapClassInstance is:");
-      console.log(mapClassInstance);
-
-      //clear old selections presents
-      mapClassInstance.clearOnClickQuery(mapClassInstance);
-
-      // this.onDataClick(e);
-      mapClassInstance.onDataClick(e);
-    });
-
-    this.map.on(
-      "click",
-      "hex5clipped",
-      function (e, mapClassInstance = instance) {
-        console.log("map.on.click.hex5clipped");
-        console.log("this is:");
-        console.log(this);
-        console.log("mapClassInstance is:");
-        console.log(mapClassInstance);
-
-        //clear old selections presents
-        mapClassInstance.clearOnClickQuery(mapClassInstance);
-
-        // this.onDataClick(e);
-        mapClassInstance.onDataClick(e);
-      }
-    );
-
-    this.map.on("click", "ocean", function (e, mapClassInstance = instance) {
-      console.log("map.on.click.ocean");
-      console.log("this is:");
-      console.log(this);
-      console.log("mapClassInstance is:");
-      console.log(mapClassInstance);
-
-      //clear old selections presents
-      mapClassInstance.clearOnClickQuery(mapClassInstance);
-
-      // this.onDataClick(e);
-      mapClassInstance.onDataClick(e);
-    });
-
-    this.map.on("click", "admin1", function (e, mapClassInstance = instance) {
-      console.log("map.on.click.admin1");
-
-      //clear old selections presents
-      mapClassInstance.clearOnClickQuery(mapClassInstance);
-
-      // this.onDataClick(e);
-      mapClassInstance.addAdminClick(e, "admin1");
-    });
-
-    this.map.on("click", "admin2", function (e, mapClassInstance = instance) {
-      console.log("map.on.click.admin2");
-
-      //clear old selections presents
-      mapClassInstance.clearOnClickQuery(mapClassInstance);
-
-      // this.onDataClick(e);
-      mapClassInstance.addAdminClick(e, "admin2");
-    });
-
-    this.map.on("click", function () /* e, mapClassInstance = instance */ {
-      /*       console.log("map.on.click.clearing-all");
-      console.log("this is:");
-      console.log(this);
-      console.log("mapClassInstance:");
-      console.log(mapClassInstance); */
-      /* my reimplement
-       for (let id of ["iso", "clickedone", "highlightS", "joined"]) {
-        if (
-          mapClassInstance.getLayer("iso") ||
-          mapClassInstance.getSource(id)
-        ) {
-          mapClassInstance.removeLayer(id);
-          mapClassInstance.removeSource(id);
-        }
-      }
- */
-      //compressed version of oldcode
-      /* if (
-        //this.map.
-        mapClassInstance.getLayer("iso")
-      ) {
-        console.log('removing existing source and layer for "iso"');
-        //this.map.removeLayer("iso");
-        //this.map.removeSource("iso"); 
-        mapClassInstance.removeLayer("iso");
-        mapClassInstance.removeSource("iso");
-      }
-      for (let id of ["clickedone", "highlightS", "joined"]) {
-        console.log(`removing existing source and layer for: ${id}`);
-        if (
-          //this.map.
-          mapClassInstance.getSource(id)
-        ) {
-          // this.map.removeLayer(id);
-          // this.map.removeSource(id);
-          mapClassInstance.removeLayer(id);
-          mapClassInstance.removeSource(id);
-        }
-      } */
-      /* //old code version
-      if (this.map.getLayer("iso")) {
-        this.map.removeLayer("iso");
-        this.map.removeSource("iso");
-      }
-
-      if (this.map.getSource("clickedone")) {
-        this.map.removeLayer("clickedone");
-        this.map.removeSource("clickedone");
-      }
-
-      if (this.map.getSource("highlightS")) {
-        this.map.removeLayer("highlight");
-        this.map.removeSource("highlightS");
-      }
-
-      if (this.map.getSource("joined")) {
-        this.map.removeLayer("joined");
-        this.map.removeSource("joined");
-      } */
-      /* var clickDiv = document.getElementsByClassName("my-custom-control")[0];
-
-      clickDiv.style.display = "none";
-      clickDiv.innerHTML = ""; */
-    });
-  }
-
-  _bindRecolorListeners(mapClassInstance) {
-    let instance = mapClassInstance;
-    console.log(instance);
-    //this. out here ref the mapClass instance calling this method
-    //TODO: review and rewrite
-
-    for (const eventType of ["zoomend", "dragend"]) {
-      console.log(`binding RecolorListener: ${eventType}`);
-      this.map.on(eventType, function (e, mapClassInstance = instance) {
-        //this. in here would ref the mapboxmap and not our mapClass which has the recolor method
-        console.log("_bindRecolorListeners");
-        console.log("event is:");
-        console.log(e);
-        console.log("instance is:");
-        console.log(instance);
-
-        mapClassInstance.recolorBasedOnWhatsOnPage();
-      });
-    }
-  }
-
   onDataClick(clicked) {
     console.log(`onDataClick clicked object:`);
     console.log(clicked);
@@ -1932,7 +1733,6 @@ export default class Map {
       },
     });
   }
-
   addAdminClick(e, adminLayerId) {
     var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     clickDiv.style.display = "block";
@@ -2095,6 +1895,109 @@ export default class Map {
 
     // })
   }
+
+  //D) Utility Functions - static code with no major logic which supports major functions-----------------------------------
+
+  getUniqueFeatures(array, comparatorProperty) {
+    //taken directly from old code
+    var existingFeatureKeys = {};
+    //function taken from mapbox that extracts unique features, see comment below
+    // Because features come from tiled vector data, feature geometries may be split
+    // or duplicated across tile boundaries and, as a result, features may appear
+    // multiple times in query results.
+    var uniqueFeatures = array.filter(function (el) {
+      if (existingFeatureKeys[el.properties[comparatorProperty]]) {
+        return false;
+      } else {
+        existingFeatureKeys[el.properties[comparatorProperty]] = true;
+        return true;
+      }
+    });
+
+    return uniqueFeatures;
+  }
+
+  showSpinner() {
+    let spinner = document.getElementsByClassName("loader-gis")[0];
+    let modal = document.getElementsByClassName("loader-gis-modal")[0];
+    spinner.classList.remove("display-none");
+    modal.classList.remove("display-none");
+    console.log("show loading spinner");
+  }
+
+  hideSpinner() {
+    console.log("hide loading spinner");
+    let spinner = document.getElementsByClassName("loader-gis")[0];
+    let modal = document.getElementsByClassName("loader-gis-modal")[0];
+    spinner.classList.add("display-none");
+    modal.classList.add("display-none");
+  }
+
+  getBasemapLabels() {
+    let map = this.map;
+
+    globals.basemapLabels = [];
+    let layers = map.getStyle().layers;
+    //get first symbol layer for insertion of layer under
+    for (var i = 0; i < layers.length; i++) {
+      if (layers[i].type === "symbol") {
+        globals.firstSymbolId = layers[i].id;
+        break;
+      }
+    }
+    for (var x in layers) {
+      if (layers[x].type === "symbol" || layers[x].type === "line") {
+        globals.basemapLabels.push(layers[x]);
+      }
+    }
+
+    console.log(`getBasemapLabels: ${globals.basemapLabels.length} layers`);
+  }
+  nFormatter(num, digits) {
+    var si = [
+      {
+        value: 1,
+        symbol: "",
+      },
+      {
+        value: 1e3,
+        symbol: "K",
+      },
+      {
+        value: 1e6,
+        symbol: "M",
+      },
+      {
+        value: 1e9,
+        symbol: "B",
+      },
+    ];
+    var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+    var i;
+    for (i = si.length - 1; i > 0; i--) {
+      if (num >= si[i].value) {
+        break;
+      }
+    }
+    return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+  }
+
+  checkForDuplicates(array) {
+    //taken directly from oldcode
+    //taken from this example: https://docs.mapbox.com/mapbox-gl-js/example/filter-features-within-map-view/
+    let valuesAlreadySeen = [];
+
+    for (let i = 0; i < array.length; i++) {
+      let value = array[i];
+      if (valuesAlreadySeen.indexOf(value) !== -1) {
+        return true;
+      }
+      valuesAlreadySeen.push(value);
+    }
+    return false;
+  }
+
+  //E) Unsorted/debugging----------------------------------------------------------------------------------
 }
 
 // example mapbox control
