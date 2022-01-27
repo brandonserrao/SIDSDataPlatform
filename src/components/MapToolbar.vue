@@ -1,4 +1,3 @@
-<!--BRANDON: Ben's New Form RIGHTHAND SIDEBAR-->
 <template>
   <div class="sidebarWrapper">
     <!-- Keep this div outside the row   -->
@@ -841,6 +840,7 @@ export default {
     };
   },
   methods: {
+    //A) emit update - interpret and emit the desired interaction and necessary data to the parent
     handleGisMenuChange(change_type, object) {
       //determine type of menuchange based on eventType
 
@@ -884,11 +884,14 @@ export default {
         let label = object.label;
         let labelObject = { label: label };
         this.$emit(change_type, labelObject);
+      } else if (change_type === "select-boundary-layer") {
+        this.$emit("select-boundary-layer", object);
       } else {
-        console.log(`${change_type} not yet handled by handleGisMenuChange`);
+        alert(`${change_type} not yet handled by handleGisMenuChange`);
       }
     },
 
+    //B) handle specific toolbar interactions------------------------------------------------------
     handleResolutionChange(index = 1, resolution = "hex5") {
       var resolutionOptions =
         document.getElementsByClassName("resolution-option");
@@ -919,7 +922,8 @@ export default {
     },
 
     handleBoundryChange(object) {
-      this.$emit("select-boundary-layer", object);
+      // this.$emit("select-boundary-layer", object);
+      this.handleGisMenuChange("select-boundary-layer", object);
     },
 
     handleBasemapChange(text, image) {
@@ -963,217 +967,6 @@ export default {
       this.handleGisMenuChange("select-country", eventData); //text needs renaming to a better variable name
     },
 
-    closeAllMenu(index) {
-      //closes all open toolbar menus
-      var allMenu = document.getElementsByClassName("menu-drop");
-
-      for (let i = 0; i < allMenu.length; i++) {
-        if (i !== index) {
-          allMenu[i].classList.add("close-animation");
-        }
-      }
-
-      setTimeout(() => {
-        for (let i = 0; i < allMenu.length; i++) {
-          if (i !== index) {
-            allMenu[i].classList.add("display-none");
-            allMenu[i].classList.remove("close-animation");
-          }
-        }
-      }, 500);
-
-      var blueBox = document.getElementsByClassName("blue-box");
-
-      for (let i = 0; i < blueBox.length; i++) {
-        blueBox[i].classList.add("display-none");
-      }
-
-      var options = document.getElementsByClassName("options-drop");
-
-      for (let i = 0; i < options.length; i++) {
-        options[i].classList.add("display-none");
-      }
-
-      var infoBox = document.getElementsByClassName("info-box");
-
-      for (let i = 0; i < infoBox.length; i++) {
-        infoBox[i].classList.add("display-none");
-      }
-
-      var infoIconBlue = document.getElementsByClassName("info-icon-blue");
-      var infoNoBgIconBlue = document.getElementsByClassName("info-nobg-icon");
-
-      for (let i = 0; i < infoIconBlue.length; i++) {
-        infoIconBlue[i].classList.add("display-none");
-        infoNoBgIconBlue[i].classList.remove("display-none");
-      }
-    },
-
-    //handles open/closing related behaviour for sidebar menu
-    toggleMenu(index) {
-      var allMenu = document.getElementsByClassName("menu-drop");
-
-      for (let i = 0; i < allMenu.length; i++) {
-        if (i === index) {
-          if (allMenu[i].classList.contains("display-none")) {
-            this.removeHover();
-            this.closeAllMenu(i);
-            allMenu[i].classList.remove("display-none");
-            document
-              .getElementsByClassName("close-menu")[0]
-              .classList.remove("display-none");
-          } else {
-            this.closeAllMenu();
-            setTimeout(() => {
-              this.addHover();
-            }, 500);
-            document
-              .getElementsByClassName("close-menu")[0]
-              .classList.add("display-none");
-          }
-        }
-      }
-    },
-
-    //country-select related
-    resetCountryMenu() {
-      document
-        .getElementsByClassName("search-bar")[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("first-icon")[0]
-        .classList.remove("display-none");
-      document
-        .getElementsByClassName("big-menu")[0]
-        .classList.remove("display-none");
-      document
-        .getElementsByClassName("small-menu")[0]
-        .classList.add("display-none");
-    },
-    //country-select related
-    toggleSearchBar() {
-      document
-        .getElementsByClassName("search-bar")[0]
-        .classList.remove("display-none");
-      document
-        .getElementsByClassName("country-options")[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("first-icon")[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("big-menu")[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("small-menu")[0]
-        .classList.remove("display-none");
-    },
-
-    filterCountries() {
-      this.toggleCountryMenu(true); //expand country menu to be visible if closed
-
-      // Declare variables
-      var input, filter, list, options, country, i, txtValue;
-      input = document.getElementById("country-search-input");
-      filter = input.value.toUpperCase();
-      list = document.getElementById("countryOptions");
-      options = list.getElementsByClassName("country-option");
-
-      // Loop through all list items, and hide those who don't match the search query
-      for (i = 0; i < options.length; i++) {
-        country = options[i]; //.getElementsByTagName("a")[0];
-        txtValue = country.textContent || country.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          // options[i].style.display = "";
-          options[i].classList.remove("display-none");
-          // resultFound = true;
-        } else {
-          options[i].classList.add("display-none");
-        }
-      }
-      /*
-      let resultFound;
-      if (!resultFound) {
-        console.log("no result");
-        let div = document.createElement("div");
-        div.append("No matches found");
-        // div.id = "noMatches";
-        div.classList.add(
-          "no-matches",
-          "row-flex",
-          "country-option",
-          "align-items-center"
-        ); //match class formatting for other country-options
-        // list.append(div);
-        document.getElementsByClassName("country-select-bar")[0].append(div);
-      } else {
-        // let message = document.getElementById("noMatches");
-        let countrySelectBar =
-          document.getElementsByClassName("country-select-bar");
-        let message = countrySelectBar[0].getElementsByClassName("no-matches");
-        message?.remove();
-      } */
-    },
-
-    //NEW--------------------------------------------
-    toggleInputBlueColor(event) {
-      if (event.classList.contains("color-black")) {
-        event.className = "color-blue";
-      } else {
-        event.className = "color-black";
-      }
-    },
-
-    toggleBlueColor(event) {
-      if (event.classList.contains("color-black")) {
-        event.className = "color-blue layers-N";
-      } else {
-        event.className = "color-black layers-N";
-      }
-    },
-    hideInfo(val) {
-      document
-        .getElementsByClassName("info-hover-icon-" + val)[0]
-        .classList.remove("display-none");
-      document
-        .getElementsByClassName("info-blue-icon-" + val)[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("info-box-" + val)[0]
-        .classList.add("display-none");
-    },
-
-    displayInfo(val) {
-      document
-        .getElementsByClassName("info-hover-icon-" + val)[0]
-        .classList.add("display-none");
-      document
-        .getElementsByClassName("info-blue-icon-" + val)[0]
-        .classList.remove("display-none");
-      document
-        .getElementsByClassName("info-box-" + val)[0]
-        .classList.remove("display-none");
-    },
-
-    removeHover() {
-      var description = document.getElementsByClassName("description");
-
-      for (let i = 0; i < description.length; i++) {
-        description[i].classList.remove("hover");
-      }
-    },
-
-    addHover() {
-      var description = document.getElementsByClassName("description");
-
-      for (let i = 0; i < description.length; i++) {
-        description[i].classList.add("hover");
-      }
-    },
-
-    //TO LOOK AT STILL--------------------------------
-
-    //need to look at how it works/implemented in old version first
     handleHeightChange(first, second) {
       var curr = document.getElementsByClassName(first + "-icon")[0];
       var reqd = document.getElementsByClassName(second + "-icon")[0];
@@ -1247,6 +1040,79 @@ export default {
       this.handleGisMenuChange("select-color", { color: text });
     },
 
+    //C) UI manipulation - functions that only change the UI-------------------------------------
+
+    closeAllMenu(index) {
+      //closes all open toolbar menus
+      var allMenu = document.getElementsByClassName("menu-drop");
+
+      for (let i = 0; i < allMenu.length; i++) {
+        if (i !== index) {
+          allMenu[i].classList.add("close-animation");
+        }
+      }
+
+      setTimeout(() => {
+        for (let i = 0; i < allMenu.length; i++) {
+          if (i !== index) {
+            allMenu[i].classList.add("display-none");
+            allMenu[i].classList.remove("close-animation");
+          }
+        }
+      }, 500);
+
+      var blueBox = document.getElementsByClassName("blue-box");
+
+      for (let i = 0; i < blueBox.length; i++) {
+        blueBox[i].classList.add("display-none");
+      }
+
+      var options = document.getElementsByClassName("options-drop");
+
+      for (let i = 0; i < options.length; i++) {
+        options[i].classList.add("display-none");
+      }
+
+      var infoBox = document.getElementsByClassName("info-box");
+
+      for (let i = 0; i < infoBox.length; i++) {
+        infoBox[i].classList.add("display-none");
+      }
+
+      var infoIconBlue = document.getElementsByClassName("info-icon-blue");
+      var infoNoBgIconBlue = document.getElementsByClassName("info-nobg-icon");
+
+      for (let i = 0; i < infoIconBlue.length; i++) {
+        infoIconBlue[i].classList.add("display-none");
+        infoNoBgIconBlue[i].classList.remove("display-none");
+      }
+    },
+    //handles open/closing related behaviour for sidebar menu
+    toggleMenu(index) {
+      var allMenu = document.getElementsByClassName("menu-drop");
+
+      for (let i = 0; i < allMenu.length; i++) {
+        if (i === index) {
+          if (allMenu[i].classList.contains("display-none")) {
+            this.removeHover();
+            this.closeAllMenu(i);
+            allMenu[i].classList.remove("display-none");
+            document
+              .getElementsByClassName("close-menu")[0]
+              .classList.remove("display-none");
+          } else {
+            this.closeAllMenu();
+            setTimeout(() => {
+              this.addHover();
+            }, 500);
+            document
+              .getElementsByClassName("close-menu")[0]
+              .classList.add("display-none");
+          }
+        }
+      }
+    },
+
     toggleBasemapMenu() {
       var basemapMenu = document.getElementsByClassName("basemap-options")[0];
       if (basemapMenu.classList.contains("display-none")) {
@@ -1286,6 +1152,126 @@ export default {
           colorMenu.classList.add("display-none");
           colorMenu.classList.remove("growUp");
         }, 280);
+      }
+    },
+
+    //country-select related
+    resetCountryMenu() {
+      document
+        .getElementsByClassName("search-bar")[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("first-icon")[0]
+        .classList.remove("display-none");
+      document
+        .getElementsByClassName("big-menu")[0]
+        .classList.remove("display-none");
+      document
+        .getElementsByClassName("small-menu")[0]
+        .classList.add("display-none");
+    },
+    //country-select related
+    toggleSearchBar() {
+      document
+        .getElementsByClassName("search-bar")[0]
+        .classList.remove("display-none");
+      document
+        .getElementsByClassName("country-options")[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("first-icon")[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("big-menu")[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("small-menu")[0]
+        .classList.remove("display-none");
+    },
+    //country-select related
+    filterCountries() {
+      this.toggleCountryMenu(true); //expand country menu to be visible if closed
+
+      // Declare variables
+      var input, filter, list, options, country, i, txtValue;
+      input = document.getElementById("country-search-input");
+      filter = input.value.toUpperCase();
+      list = document.getElementById("countryOptions");
+      options = list.getElementsByClassName("country-option");
+
+      // Loop through all list items, and hide those who don't match the search query
+      for (i = 0; i < options.length; i++) {
+        country = options[i]; //.getElementsByTagName("a")[0];
+        txtValue = country.textContent || country.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          // options[i].style.display = "";
+          options[i].classList.remove("display-none");
+          // resultFound = true;
+        } else {
+          options[i].classList.add("display-none");
+        }
+      }
+      /*
+      let resultFound;
+      if (!resultFound) {
+        console.log("no result");
+        let div = document.createElement("div");
+        div.append("No matches found");
+        // div.id = "noMatches";
+        div.classList.add(
+          "no-matches",
+          "row-flex",
+          "country-option",
+          "align-items-center"
+        ); //match class formatting for other country-options
+        // list.append(div);
+        document.getElementsByClassName("country-select-bar")[0].append(div);
+      } else {
+        // let message = document.getElementById("noMatches");
+        let countrySelectBar =
+          document.getElementsByClassName("country-select-bar");
+        let message = countrySelectBar[0].getElementsByClassName("no-matches");
+        message?.remove();
+      } */
+    },
+
+    hideInfo(val) {
+      document
+        .getElementsByClassName("info-hover-icon-" + val)[0]
+        .classList.remove("display-none");
+      document
+        .getElementsByClassName("info-blue-icon-" + val)[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("info-box-" + val)[0]
+        .classList.add("display-none");
+    },
+
+    displayInfo(val) {
+      document
+        .getElementsByClassName("info-hover-icon-" + val)[0]
+        .classList.add("display-none");
+      document
+        .getElementsByClassName("info-blue-icon-" + val)[0]
+        .classList.remove("display-none");
+      document
+        .getElementsByClassName("info-box-" + val)[0]
+        .classList.remove("display-none");
+    },
+
+    removeHover() {
+      var description = document.getElementsByClassName("description");
+
+      for (let i = 0; i < description.length; i++) {
+        description[i].classList.remove("hover");
+      }
+    },
+
+    addHover() {
+      var description = document.getElementsByClassName("description");
+
+      for (let i = 0; i < description.length; i++) {
+        description[i].classList.add("hover");
       }
     },
   },
