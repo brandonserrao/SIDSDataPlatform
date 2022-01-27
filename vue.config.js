@@ -1,7 +1,10 @@
 module.exports = {
-  publicPath: '/SIDSDataPlatform/',
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/SIDSDataPlatform/'
+    : '/',
+  outputDir:'docs',
   transpileDependencies: [
     'vuetify'
   ]
 }
-console.log(process.env.NODE_ENV)
+console.log()
