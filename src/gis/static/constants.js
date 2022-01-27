@@ -33,7 +33,7 @@ const constants = {
     52,
   ],
   mapOptions: {
-    style: "mapbox://styles/mapbox/light-v10", //"mapbox://styles/mapbox/satellite-streets-v11",
+    style: "mapbox://styles/mapbox/satellite-streets-v11", //"mapbox://styles/mapbox/light-v10", //
     center: [-71.5, 19.0],
     zoom: 7,
     maxZoom: 13.5,
