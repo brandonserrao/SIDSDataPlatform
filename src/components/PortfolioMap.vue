@@ -63,7 +63,7 @@ export default {
     return {
       regionClass:'',
       backgroundData: {
-        'background-image': 'url(/static/media/portfolio-maps/All.png)'
+        'background-image': 'url(/SIDSDataPlatform/static/media/portfolio-maps/All.png)'
       },
       mapClicks: {
         'All': {
@@ -149,7 +149,7 @@ export default {
       let regionToSet = region,
       rootThis = this;
       if(region === 'All') {
-        regionToSet = '';
+        regionToSet = 'All';
       }
       let img = '/SIDSDataPlatform/static/media/portfolio-maps/' + regionToSet + '.png'
       var img_tag = new Image();
