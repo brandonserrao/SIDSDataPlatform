@@ -6,3 +6,4 @@ module.exports = {
     'vuetify'
   ]
 }
+console.log(process.env.NODE_ENV)
