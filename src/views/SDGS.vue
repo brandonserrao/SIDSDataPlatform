@@ -186,7 +186,12 @@ export default {
           .attr("x", function (d) { return x(d) - 6; })
           .attr("y", function (d) { return rootThis.y1(rootThis.projectNamesObject[d]) - 30; })
           .attr("width", x.bandwidth())
-          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]) + 30; })
+          .attr("height", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return 0
+            }
+            return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]) + 30;
+          })
           .attr("opacity", 0)
           .each((data, index, list) => {
             tippy(list[index], {
