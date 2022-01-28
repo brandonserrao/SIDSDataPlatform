@@ -115,18 +115,6 @@ export default {
     toggleLegend() {
       this.displayLegend = !this.displayLegend;
     },
-    resetToolbarMenus() {
-      console.log(
-        `! resetToolbarMenus() currently only resets: Palette Select, Opacity Slider`
-      );
-
-      let paletteMenu = document.getElementsByClassName("selected-color")[0];
-      paletteMenu.children[0].innerHTML = "Default";
-      paletteMenu.children[1].className = "menu-icon " + "color-icon-1"; //usng color-icon-1 as placeholder for now
-
-      let opacitySlider = document.getElementsByClassName("opacity-slider")[0];
-      opacitySlider.value = globals.opacity; //hardcoded until changed to be based on shared reactive variable
-    },
     changeResolution(object) {
       if (!(this.activeDatasetName === "Ocean Data")) {
         console.log(`activeDatasetName: ${this.activeDatasetName}`);
@@ -140,6 +128,20 @@ export default {
       }
     },
 
+    resetToolbarMenus() {
+      console.log(
+        `! resetToolbarMenus() currently only resets: Palette Select, Opacity Slider`
+      );
+
+      let paletteMenu = document.getElementsByClassName("selected-color")[0];
+      paletteMenu.children[0].innerHTML = "Default";
+      paletteMenu.children[1].className = "menu-icon " + "color-icon-1"; //usng color-icon-1 as placeholder for now
+
+      let opacitySlider = document.getElementsByClassName("opacity-slider")[0];
+      opacitySlider.value = globals.opacity; //hardcoded until changed to be based on shared reactive variable
+    },
+
+    //B) Main functions
     addBoundaryLayer(object) {
       let map = this.map; //patches reference to where map stored in component
       //taken from old code

@@ -297,6 +297,7 @@ export default class Map {
   }
 
   //C) Main functions - core logic that implements the major functionality of the map--------------------------------------
+  //TODO: MOVE UP INTO GEOSPATIALDATA.VUE AND/OR IMPORT THESE FUNCTIONS AS A SEPARATELY WRITTEN MODULE
 
   zoomToCountry(country) {
     let self = this;
