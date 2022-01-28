@@ -828,7 +828,7 @@ import names from "@/gis/static/names";
 import CountrySelectorOption from "@/components/CountrySelectorOption";
 
 export default {
-  props: ["active_dataset", "active_layer"], //to receive from MapDatasetController via GeospatialData
+  props: ["active_dataset", "active_layer"], //to receive from MapDatasetController via GeospatialData; //currently active_dataset informs handleResolutionChange
   name: "MapToolbar",
   components: {
     CountrySelectorOption,
@@ -839,13 +839,26 @@ export default {
       currentCountry: "Search Country or Region", //placeholder text for country select searchbar
     };
   },
+
+  computed: {
+    sidsByName() {
+      let sidsDictionary = {};
+      for (let entry of names) {
+        sidsDictionary[entry.NAME_0] = entry;
+      }
+
+      return sidsDictionary;
+    },
+  },
+
   methods: {
-    //A) emit update - interpret and emit the desired interaction and necessary data to the parent
+    //A) emit update - interpret and emit the desired interaction and necessary data to the parent (GeospatialData.vue)
     handleGisMenuChange(change_type, object) {
       //determine type of menuchange based on eventType
 
       //display loader spinner
       if (!(change_type === "change-opacity")) {
+        //repainting opacity expected to be near-instantaneous so not require significant loading time
         let spinner = document.getElementsByClassName("loader-gis")[0];
         let modal = document.getElementsByClassName("loader-gis-modal")[0];
         spinner.classList.remove("display-none");
@@ -1087,8 +1100,9 @@ export default {
         infoNoBgIconBlue[i].classList.remove("display-none");
       }
     },
-    //handles open/closing related behaviour for sidebar menu
+    //handles open/closing related behaviour for specified sidebar menu button
     toggleMenu(index) {
+      console.log("toggleMenu called for index: ", index);
       var allMenu = document.getElementsByClassName("menu-drop");
 
       for (let i = 0; i < allMenu.length; i++) {
@@ -1113,7 +1127,9 @@ export default {
       }
     },
 
+    // TODO: consolidate these toggle functions into a single  toggleXMenu
     toggleBasemapMenu() {
+      console.log("toggleBasemapMenu");
       var basemapMenu = document.getElementsByClassName("basemap-options")[0];
       if (basemapMenu.classList.contains("display-none")) {
         basemapMenu.classList.remove("display-none");
@@ -1127,6 +1143,7 @@ export default {
     },
 
     toggleCountryMenu(state = null) {
+      console.log("toggleBasemapMenu, state: ", state);
       var countryMenu = document.getElementsByClassName("country-options")[0];
       if (
         state == true ||
@@ -1143,6 +1160,7 @@ export default {
     },
 
     toggleColorMenu() {
+      console.log("toggleColorMenu");
       var colorMenu = document.getElementsByClassName("color-options")[0];
       if (colorMenu.classList.contains("display-none")) {
         colorMenu.classList.remove("display-none");
@@ -1273,17 +1291,6 @@ export default {
       for (let i = 0; i < description.length; i++) {
         description[i].classList.add("hover");
       }
-    },
-  },
-
-  computed: {
-    sidsByName() {
-      let sidsDictionary = {};
-      for (let entry of names) {
-        sidsDictionary[entry.NAME_0] = entry;
-      }
-
-      return sidsDictionary;
     },
   },
 

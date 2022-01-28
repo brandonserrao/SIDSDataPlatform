@@ -280,11 +280,6 @@
 
 <script>
 import datasets from "@/gis/static/layers";
-// import globals from "@/gis/static/globals";
-/*
-import * as d3 from "d3";
-import chroma from "chroma-js"; */
-// import Chart from "chart.js";
 
 export default {
   name: "MapDatasetController",
