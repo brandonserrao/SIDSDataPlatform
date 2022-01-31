@@ -318,7 +318,6 @@ export default {
   },
   methods: {
     setYear(year) {
-
       this.$router.push({query: Object.assign({}, this.$route.query, {year})})
     },
     setCategory(category) {

@@ -84,6 +84,7 @@ const routes = [
       ) {
         chartType = 'bars'
       }
+      await store.dispatch('indicators/getDatasetsList');
       await store.dispatch('indicators/getCategories');
       await store.dispatch('indicators/getMeta');
       await store.dispatch('indicators/getProfileData');
@@ -137,16 +138,15 @@ const routes = [
     name: 'Country Profiles',
     component: () => import(/* webpackChunkName: "about" */ '../views/CountryProfiles.vue'),
     beforeEnter: async (to, from, next) => {
-      await store.dispatch('sids/getMetaData');
-      await store.dispatch('sids/getAllKeyData');
+      await store.dispatch('profiles/getIndicatorsMetadata');
       if(!to.params.country) {
         next({ path: `/country-profiles/caboVerde`})
       }
-      next()
+      next();
     },
     props: (route) => ({
-      country: route.params.country || '',
-      compare: route.query.compare && route.query.compare.split(',') || []
+      activeCountryId: route.params.country || '',
+      compareIdsList: route.query.compare && route.query.compare.split(',') || []
     }),
   },
   {

@@ -3,7 +3,8 @@ import * as d3 from 'd3';
 
 
 const API_URL = 'https://raw.githubusercontent.com/Ben-Keller/smallislands/main/data';
-const NEW_ALI_UPR = 'https://raw.githubusercontent.com/SIDS-Dashboard/SIDSDataPlatform/main'
+const NEW_API_URl = 'https://raw.githubusercontent.com/SIDS-Dashboard/SIDSDataPlatform/main'
+const NEW_API_URl_2 = 'https://raw.githubusercontent.com/SIDS-Dashboard/api/main/data'
 export default {
   loadAllKeyData,
   loadMetaData,
@@ -13,14 +14,46 @@ export default {
   loadIndicatorsMeta,
   loadProfileData,
   loadSidsSVG,
-  loadMapLocations
+  loadMapLocations,
+
+  loadCountryProfile,
+  loadProfileIndicarotsMetadata,
+
+
+  loadDatasetsList
+
 }
+
+
+async function loadCountryProfile(isoCode) {
+  const resp = await axios.get(`${NEW_API_URl_2}/profiles/${isoCode}.json`)
+  return resp.data;
+}
+async function loadProfileIndicarotsMetadata() {
+  const resp = await axios.get(`${NEW_API_URl_2}/profiles/countryProfileMetadata.json`)
+  return resp.data;
+}
+
+
+
+
+
+
+
 
 
 async function loadAllKeyData () {
   const resp = await axios.get(`${API_URL}/exports/allKeyData.json`)
   return resp.data
 }
+
+async function loadDatasetsList() {
+  const resp = await axios.get(`${NEW_API_URl_2}/datasetMeta.json`)
+  return resp.data;
+}
+
+
+
 async function loadMetaData () {
   const resp = await axios.get(`${API_URL}/exports/keyMetadata.json`)
   return resp.data
@@ -34,7 +67,7 @@ async function loadFundingCategories () {
   return result
 }
 async function loadSIDSData () {
-  const resp = await axios.get(`${NEW_ALI_UPR}/data/exports/sids_db.csv`)
+  const resp = await axios.get(`${NEW_API_URl}/data/exports/sids_db.csv`)
   return d3.csvParse(resp.data)
 }
 async function loadIndicatorsCategories () {
@@ -46,14 +79,14 @@ async function loadIndicatorsMeta () {
   return resp.data
 }
 async function loadProfileData () {
-  const resp = await axios.get(`${NEW_ALI_UPR}/data/profileData.json`)
+  const resp = await axios.get(`${NEW_API_URl}/data/profileData.json`)
   return resp.data
 }
 async function loadSidsSVG () {
-  const resp = await d3.xml(`${NEW_ALI_UPR}/maps/sidsSVG8.svg`)
+  const resp = await d3.xml(`${NEW_API_URl}/maps/sidsSVG8.svg`)
   return resp
 }
 async function loadMapLocations () {
-  const resp = await axios.get(`${NEW_ALI_UPR}/data/exports/mapLocations.json`)
+  const resp = await axios.get(`${NEW_API_URl}/data/exports/mapLocations.json`)
   return resp.data
 }

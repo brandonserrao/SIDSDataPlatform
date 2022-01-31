@@ -2,9 +2,10 @@
   <div class="graph-container">
       <h4 class="block-subheader text-center"
         :style="{color: graphOptions.textColor}">
-        {{headerText}}
+        {{graphOptions.headerText}}
+        {{graphData}}
       </h4>
-      <div class="d-none" v-for="(axis, index) in graphRanks[0].axes" :id="`${pillarName}${index}`" :key="index">
+      <!-- <div class="d-none" v-for="(axis, index) in graphRanks[0].axes" :id="`${pillarName}${index}`" :key="index">
         <profiles-spider-chart-tooltip
           :header="axis.axis"
           :rank="axis.value"
@@ -13,7 +14,7 @@
           :definition="keyMetadata[axis.axis].longDefinition"
           :link="keyMetadata[axis.axis].sourceLink"
         />
-      </div>
+      </div> -->
     <div :id="`graph${pillarName}${postfix}`">
     </div>
   </div>
@@ -23,13 +24,13 @@
 import * as d3 from 'd3';
 import { mapState } from 'vuex';
 import tippy from 'tippy.js';
-import ProfilesSpiderChartTooltip from '@/components/ProfilesSpiderChartTooltip';
+// import ProfilesSpiderChartTooltip from '@/components/ProfilesSpiderChartTooltip';
 import format from '@/mixins/format.mixin'
 
 export default {
   name: 'ProfilesSpiderChart',
   components:{
-    ProfilesSpiderChartTooltip
+    // ProfilesSpiderChartTooltip
   },
   mixins:[format],
   props: {
@@ -84,37 +85,37 @@ export default {
     graphData() {
       return this.activeCountries.map(country => {
         return {
-          name:country,
-          axes: this.allKeyData[country][this.pillarName]
+          name:country.id,
+          axes: country[this.pillarName]
         }
       })
     },
-    graphRanks() {
-      let rankName = `${this.pillarName}Rank`;
-      if(this.pillarName === 'MVI2') {
-        rankName = 'MVI2'
-      }
-      return this.activeCountries.map(country => {
-        return {
-          name:country,
-          axes: this.allKeyData[country][rankName]
-        }
-      })
-    },
-    fullGraphOptions(){
-      return Object.assign({} ,this.defaultGraphOptions, this.graphOptions);
-    },
-    maxAxisValue() {
-      return this.graphRanks.reduce((maxCountriesValue, country)=>{
-        const currentCountryMax = country.axes.reduce((maxAxesValue, axe)=>{
-          if(isNaN(parseInt(axe.value))) {
-            return maxAxesValue
-          }
-          return maxAxesValue > axe.value ? maxAxesValue : axe.value;
-        }, this.fullGraphOptions.maxValue);
-        return maxCountriesValue > currentCountryMax ? maxCountriesValue : currentCountryMax;
-      }, this.fullGraphOptions.maxValue);
-    }
+    // graphRanks() {
+    //   let rankName = `${this.pillarName}Rank`;
+    //   if(this.pillarName === 'MVI2') {
+    //     rankName = 'MVI2'
+    //   }
+    //   return this.activeCountries.map(country => {
+    //     return {
+    //       name:country,
+    //       axes: this.allKeyData[country][rankName]
+    //     }
+    //   })
+    // },
+    // fullGraphOptions(){
+    //   return Object.assign({} ,this.defaultGraphOptions, this.graphOptions);
+    // },
+    // maxAxisValue() {
+    //   return this.graphRanks.reduce((maxCountriesValue, country)=>{
+    //     const currentCountryMax = country.axes.reduce((maxAxesValue, axe)=>{
+    //       if(isNaN(parseInt(axe.value))) {
+    //         return maxAxesValue
+    //       }
+    //       return maxAxesValue > axe.value ? maxAxesValue : axe.value;
+    //     }, this.fullGraphOptions.maxValue);
+    //     return maxCountriesValue > currentCountryMax ? maxCountriesValue : currentCountryMax;
+    //   }, this.fullGraphOptions.maxValue);
+    // }
   },
   methods:{
     drawGraph(){

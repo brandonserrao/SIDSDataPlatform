@@ -1,5 +1,4 @@
 import service from '@/services'
-import codes from '@/assets/countryCodes'
 
 
 export default {
@@ -8,7 +7,6 @@ export default {
     keyMetadata: null,
     allKeyData: null,
     fundingCategories: null,
-    SIDSData: null,
     SIDSDataWithDonors: null,
     countryList: null
   },
@@ -74,7 +72,7 @@ export default {
         profile.id = country;
         profile.map = `${'/SIDSDataPlatform/static/media/profiles-maps/' + profile.id + '.png'}`;
         profile.photo = `${'/SIDSDataPlatform/static/media/country-photos/' + profile.id + '.jpg'}`;
-        profile.code = codes[country]
+        // profile.code = codes[country]
         countryList.push(profile);
       }
       commit("setCountryList", countryList);

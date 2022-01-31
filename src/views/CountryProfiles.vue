@@ -8,12 +8,12 @@
         <v-select
           rounded
           class="country-select"
-          :value="country"
-          @change="setCountry"
-          :items="filteredCountries"
+          :value="activeCountryId"
+          @change="selectCountry"
+          :items="sidsListFiltered"
           hide-selected
           menu-props='{auto:false}'
-          item-text="Country"
+          item-text="name"
           item-value="id"
           outlined
           hide-details
@@ -22,11 +22,10 @@
             <div>
               <i
                 class="flag-icon select_icon"
-                :class="'flag-icon-' + data.item.code"
+                :class="'flag-icon-' + flagGodes[data.item.id]"
               ></i>
-              {{ data.item.Country }}
+              {{ data.item.name }}
             </div>
-          <div></div>
           </template>
         </v-select>
       </v-col>
@@ -35,7 +34,6 @@
           <v-select
             rounded
             dense
-            @change="changeRegion(region)"
             v-model="region"
             :items="regions"
             outlined
@@ -46,7 +44,9 @@
     <v-row class="mt-xs-0 mt-sm-0" justify="center" dense>
       <v-col class="pt-xs-0 pt-sm-0" cols="12">
         <country-info-bar
-          :country="activeCountryProfile"
+          :profile="activeCountryProfile.Profile"
+          :id="activeCountryId"
+          :name="activeCountry.name"
         />
       </v-col>
     </v-row>
@@ -55,9 +55,9 @@
         <div class="select">
           <v-select
             rounded
-            :value="compare"
-            :items="filteredCountries"
-            item-text="Country"
+            :value="compareIdsList"
+            :items="sidsListFiltered"
+            item-text="name"
             item-value="id"
             placeholder="Overlay countries to compare indicator rank among SIDS"
             @change="setCompareCountries"
@@ -75,55 +75,33 @@
                 @click:close="removeCountry(item.id)"
                 :style="getChipStyle(index)"
                 :color="getColor(index)">
-                {{item.Country}}
+                {{item.name}}
               </v-chip>
             </template>
             <template slot="item" slot-scope="data">
             <i
               class="flag-icon select_icon"
-              :class="'flag-icon-' + data.item.code"
+              :class="'flag-icon-' + flagGodes[data.item.id]"
             ></i>
-            {{ data.item.Country }}
+            {{ data.item.name }}
             </template>
           </v-select>
         </div>
       </v-col>
     </v-row>
     <v-row class="d-none d-md-flex" justify="center">
-      <v-col md="6" lg="4">
+      <v-col v-for="pillar in pillars" :key="pillar" md="6" lg="4">
         <profiles-spider-chart
-          headerText="Climate Action"
-          :graphOptions="graphOptions.Climate"
-          pillarName="Climate"
-          :activeCountries="graphCountriesProfiles"/>
+          :graphOptions="graphOptions[pillar]"
+          :pillarName="pillar"
+          :activeCountries="graphValueData"/>
       </v-col>
       <v-col md="6" lg="4">
-        <profiles-spider-chart
-          headerText="Blue Economy"
-          :graphOptions="graphOptions.Blue"
-          pillarName="Blue"
-          :activeCountries="graphCountriesProfiles"/>
-      </v-col>
-      <v-col md="6" lg="4">
-        <profiles-spider-chart
-          headerText="Digital Transformation"
-          :graphOptions="graphOptions.Digital"
-          pillarName="Digital"
-          :activeCountries="graphCountriesProfiles"/>
-      </v-col>
-      <v-col md="6" lg="4">
-        <profiles-spider-chart
-          headerText="Multidimensional Vulnerability"
-          :graphOptions="graphOptions.MVI2"
-          pillarName="MVI2"
-          :activeCountries="graphCountriesProfiles"/>
-      </v-col>
-      <v-col md="6" lg="4">
-        <profiles-finance
-          :countryId="country"/>
+        <!-- <profiles-finance
+          :countryId="activeCountryId"/> -->
       </v-col>
     </v-row>
-    <v-row justify="center" class="d-md-none">
+    <!-- <v-row justify="center" class="d-md-none">
       <v-col cols="11">
         <v-tabs
           v-model="tab"
@@ -174,15 +152,15 @@
         </v-tabs-items>
 
       </v-col>
-    </v-row>
+    </v-row> -->
     <v-row class="d-flex d-md-none" justify="center">
       <v-col cols="11" md="6">
         <div class="select">
           <v-select
             rounded
-            :value="compare"
-            :items="filteredCountries"
-            item-text="Country"
+            :value="compareIdsList"
+            :items="sidsListFiltered"
+            item-text="name"
             item-value="id"
             placeholder="Overlay countries to compare indicator rank among SIDS"
             @change="setCompareCountries"
@@ -200,15 +178,15 @@
                 @click:close="removeCountry(item.id)"
                 :style="getChipStyle(index)"
                 :color="getColor(index)">
-                {{item.Country}}
+                {{item.name}}
               </v-chip>
             </template>
             <template slot="item" slot-scope="data">
             <i
               class="flag-icon select_icon"
-              :class="'flag-icon-' + data.item.code"
+              :class="'flag-icon-' + flagGodes[data.item.id]"
             ></i>
-            {{ data.item.Country }}
+            {{ data.item.name }}
             </template>
           </v-select>
         </div>
@@ -230,30 +208,35 @@
 </template>
 
 <script>
+import flagGodes from '@/assets/flagCodes.js'
+
 import CountryInfoBar from '@/components/CountryInfoBar.vue'
 import ProfilesSpiderChart from '@/components/ProfilesSpiderChart.vue'
-import ProfilesFinance from '@/components/ProfilesFinance.vue'
+// import ProfilesFinance from '@/components/ProfilesFinance.vue'
 import * as d3 from 'd3';
+import store from '@/store'
 import { mapState } from 'vuex';
 
 export default {
   name: 'CountryProfiles',
-  props:['compare', 'country'],
+  props:['compareIdsList', 'activeCountryId'],
   components: {
     CountryInfoBar,
     ProfilesSpiderChart,
-    ProfilesFinance
+    // ProfilesFinance
   },
   data: () => ({
-    activeCountry:null,
+    flagGodes,
     region:'All SIDS',
     regions:["All SIDS", "Caribbean", "AIS", "Pacific"],
     colorScheme: ["#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"],
+    pillars:['Climate', 'Blue', 'Digital', 'MVI2'],
     tab:'Climate',
     tabs:['Climate','Blue Economy','Digital Transformation','Vulnerability','Finance'],
     rgbaColorScheme:['rgba(237, 201, 81, 0.4)','rgba(204, 51, 63, 0.4)','rgba(0, 160, 176, 0.4)','rgba(255, 255, 255, 0.4)'],
     graphOptions:{
       Climate: {
+        header:'Climate Action',
         w: 200,
         h: 180,
         margin: { top: 50, right: 45, bottom: 30, left: 45 },
@@ -264,6 +247,7 @@ export default {
         textColor: "#0DB14B"
       },
       Blue: {
+        header:'Blue Economy',
         w: 200,
         h: 180,
         margin: { top: 50, right: 45, bottom: 30, left: 45 },
@@ -275,6 +259,7 @@ export default {
         textColor: "#0BC6FF"
       },
       Digital: {
+        header:'Digital Transformation',
         w: 200,
         h: 180,
         margin: { top: 50, right: 45, bottom: 30, left: 45 },
@@ -285,6 +270,7 @@ export default {
         textColor: "#F58220"
       },
       MVI2: {
+        header:'Multidimensional Vulnerability',
         w: 320,
         h: 200,
         margin: { top: 70, right: 45, bottom: 100, left: 45 },
@@ -300,51 +286,37 @@ export default {
     },
   }),
   computed:{
-    activeCountryProfile() {
-      console.log(this.countries)
-      return this.countries.find(country => country.id === this.country);
-    },
-    graphCountriesProfiles() {
-      return Array.from(new Set([this.country].concat(this.compare)));
-    },
-    filteredCountries() {
-      if(this.region === this.regions[0]) {
-        return this.countries.map(country => {
-          country.disabled = false
-          return country
-        });
+    ...mapState({
+      sidsList: state => state.profiles.sidsList,
+      profiles: state => state.profiles.profiles,
+      indicatorsMetadata: state => state.profiles.indicatorsMetadata
+    }),
+    sidsListFiltered() {
+      if(this.region === 'All SIDS') {
+        return this.sidsList
+      } else {
+        return this.sidsList.filter(country => {
+          return country.region === this.region ||
+            this.compareIdsList.includes(country.id) ||
+            country.id === this.activeCountryId
+        })
       }
-      let filter = this.countries.map(country => {
-        country.disabled = country['Region'] !== this.region
-        return country
-      });
-
-      filter = filter.sort((country1, country2) => {
-        if(!country1.disabled && country2.disabled) {
-          return -1;
-        }
-        if(country1.disabled && !country2.disabled) {
-          return 1;
-        }
-        if (country1.Country > country2.Country) {
-          return 1;
-        }
-        if (country1.Country > country2.Country) {
-          return -1;
-        }
-        return 0;
+    },
+    graphValueData() {
+      return [this.activeCountryId, ...this.compareIdsList].map(id => {
+        this.profiles[id].id = id
+        return this.profiles[id]
       })
-      console.log(filter)
-      return filter
+    },
+    activeCountryProfile() {
+      return this.profiles[this.activeCountryId];
+    },
+    activeCountry() {
+      return this.sidsList.find(county => county.id === this.activeCountryId);
     },
     isMobile() {
       return this.$vuetify.breakpoint.name === 'xs' || this.$vuetify.breakpoint.name === 'sm'
     },
-    ...mapState({
-      countries: state => state.sids.countryList,
-      keyMetadata: state => state.sids.keyMetadata,
-      allKeyData: state => state.sids.allKeyData,
-    })
   },
   methods:{
     exportCSV() {
@@ -434,8 +406,9 @@ export default {
       })
       exportCSVFile(headers, countryExport, "sids_profile_data", "")
     },
-    setCountry(country) {
+    selectCountry(country) {
       this.$router.push({
+        name:'Country Profiles',
         params:{country},
         query: this.$route.query
       })
@@ -457,11 +430,31 @@ export default {
       return `background-color:${this.rgbaColorScheme[index%4]}`;
     }
   },
-  created() {
-    if(this.country === '') {
-      this.setCountry(this.countries[0].id);
+  async beforeRouteEnter(to, from, next) {
+    try {
+      await store.dispatch('profiles/getCountryProfile', to.params.country);
+
+      await Promise.all(to.query.compare.split(',').map(async (id) => {
+        await store.dispatch('profiles/getCountryProfile', id);
+      }));
+      next()
+    } catch (e) {
+      next(from)
     }
-  }
+  },
+  async beforeRouteUpdate(to, from, next) {
+    try {
+      await store.dispatch('profiles/getCountryProfile', to.params.country);
+
+      await Promise.all(to.query.compare.split(',').map(async (id) => {
+        await store.dispatch('profiles/getCountryProfile', id);
+      }));
+      next()
+    } catch (e) {
+      next(from)
+    }
+
+  },
 }
 </script>
 <style media="screen">
@@ -472,9 +465,6 @@ export default {
   .country-select {
     font-size: 18px !important;
     font-weight: bold;
-  }
-  .v-list-item--disabled {
-    display: none !important;
   }
   .country-select .v-input__append-inner{
     margin-top: 12px !important;
