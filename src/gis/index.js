@@ -9,11 +9,15 @@ import colors from "@/gis/static/colors.js";
 //3rd party imports-----------------------------------
 import mapboxgl from "@/gis/mapboxgl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import * as d3 from "d3";
 import chroma from "chroma-js";
 import Chart from "chart.js";
 import { featureCollection } from "@turf/helpers";
 import dissolve from "@turf/dissolve";
+import bbox from "@turf/bbox";
+import booleanIntersects from "@turf/boolean-intersects";
 //----------------------------------------------------
 //---------used to bring in lodash for oldcode
 import Vue from "vue";
@@ -35,6 +39,8 @@ export default class Map {
       ...constants.mapOptions,
     });
 
+    this.Draw = new MapboxDraw(); //for the mapbox drawing functionality, used in region analysis/drawing polygons
+
     this.map.on("load", () => {
       this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
       this._removeUnusedLayers();
@@ -47,6 +53,11 @@ export default class Map {
       this._addPointSources();
       this._addVectorSources();
       this.getBasemapLabels();
+
+      //TESTING - reimplementing Draw functionality
+      this.map.addControl(this.Draw, "top-right"); //ui buttons for drawing
+      this._initDrawInfoControl(); //display area for region analysis info
+      this._addDrawListeners();
     });
 
     //for debugging--------------------
@@ -270,6 +281,148 @@ export default class Map {
     console.log("InitOnClickControl");
     const toggleControl = new ToggleControl();
     this.map.addControl(toggleControl, "bottom-right");
+  }
+  _initDrawInfoControl() {
+    console.log("InitDrawInfoControl");
+    const drawInfoControl = new DrawInfoControl();
+    this.map.addControl(drawInfoControl, "bottom-left");
+  }
+  _addDrawListeners() {
+    //taken from oldcode implementation in drawFunc.js
+    this.map.on("draw.create", drawCreate);
+    this.map.on("draw.delete", drawDelete);
+    this.map.on("draw.update", drawUpdate);
+
+    function drawUpdate() {
+      console.log("drawUpdate");
+    }
+
+    function drawDelete() {
+      console.log("drawDelete");
+      this.map.setFilter(globals.currentGeojsonLayers.hexSize, null); //map.setFilter(currentGeojsonLayers.hexSize, null);
+    }
+
+    function drawCreate(e) {
+      console.log("drawCreate");
+      //e.preventDefault()
+      //e.stopPropogation()
+      console.log("Drawn Feature Count: ", this.Draw.getAll().features.length);
+
+      let createdPolygon = e.features[0];
+      let boundBox = bbox(createdPolygon);
+
+      let SW = [boundBox[0], boundBox[1]];
+      let NE = [boundBox[2], boundBox[3]];
+
+      let NEPointPixel = this.map.project(NE);
+      let SWPointPixel = this.map.project(SW);
+
+      //use mapbox function to first cull features to those within the boundBox of the drawn polygon
+      let features = this.map.queryRenderedFeatures(
+        [SWPointPixel, NEPointPixel],
+        {
+          layers: [globals.currentGeojsonLayers.hexSize],
+        }
+      );
+      console.log("queryRenderedFeatures: ", features);
+
+      if (features.length > 0) {
+        //use Turf.js function to actually check for intersecting features
+        var filter = features.reduce(
+          function (memo, feature) {
+            //if(! (undefined === turf.intersect(feature, createdPolygon))) {
+            if (booleanIntersects(feature, createdPolygon)) {
+              memo.push(feature.properties.hexid);
+            }
+
+            return memo;
+          },
+          ["in", "hexid"] //callback function using reduce - checks if the boundBox rendered features are "in" the array of "hexid"s
+        );
+
+        //console.log(filter)
+
+        this.map.setFilter(globals.currentGeojsonLayers.hexSize, filter); //sets a rendering filter, formatted based on mapbox filter spec
+
+        this.map.once("idle", function () //e
+        {
+          let info = [];
+          let onscreenFeatures = this.map.queryRenderedFeatures({
+            layers: [globals.currentGeojsonLayers.hexSize],
+          });
+
+          //$("#draw-sidebar").show(); //toggle on display area for the info
+          let drawInfoDiv = document.getElementById("draw-info-control");
+          drawInfoDiv.style.display = "block";
+          drawInfoDiv.style.height = "auto"; // drawInfoDiv.style.height = "100px";
+          drawInfoDiv.style.width = "200px";
+
+          onscreenFeatures.forEach(function (x) {
+            info.push(x.properties[globals.currentGeojsonLayers.dataLayer]);
+          });
+
+          let max = Math.max(...info);
+          let min = Math.min(...info);
+          let total = 0;
+          for (let i = 0; i < info.length; i++) {
+            total += info[i];
+          }
+          let mean = total / info.length;
+
+          //creating the info elements to be appended as children in the control
+          let titleText = document
+            .createElement("p")
+            .append(`<b>Placeholder for legendData.desc value</b>`);
+          let meanText = document
+            .createElement("div")
+            .append(
+              `Mean of Selected: ${this.nformatter(mean, 2)} PlaceholderUnits`
+            );
+          let maxText = document
+            .createElement("div")
+            .append(`Max of Selected: ${max} PlaceholderUnits`);
+          let minText = document
+            .createElement("div")
+            .append(`Min of Selected: ${min} PlaceholderUnits`);
+
+          drawInfoDiv.appendChild(titleText);
+          drawInfoDiv.appendChild(meanText);
+          drawInfoDiv.appendChild(maxText);
+          drawInfoDiv.appendChild(minText);
+
+          // let sidebarHolder = document.getElementById("sidebar-text");
+          // let title = document.getElementById("sideTitle");
+          // let maxDiv = document.getElementById("sideMax");
+          // let minDiv = document.getElementById("sideMin");
+          // let meanDiv = document.getElementById("sideMean");
+
+          /*title.innerHTML = ''
+            maxDiv.innerHTML = "";
+            minDiv.innerHTML = "";
+            meanDiv.innerHTML = ""; */
+
+          //current data layer's fieldname to context the info text/numbers
+          // let legData = Vue._.find(allLayers, [
+          //   "field_name",
+          //   globals.currentGeojsonLayers.dataLayer,
+          // ]);
+          // title.innerHTML = "<b>" + legData.desc + "</b>";
+          // maxDiv.innerHTML = "Max of Selected: " + max + " " + legData.units;
+          // minDiv.innerHTML = "Min of Selected: " + min + " " + legData.units;
+          // meanDiv.innerHTML =
+          //   "Mean of Selected: " + nFormatter(mean, 2) + " " + legData.units;
+
+          // sidebarHolder.appendChild(title);
+          // sidebarHolder.appendChild(maxDiv);
+          // sidebarHolder.appendChild(minDiv);
+          // sidebarHolder.appendChild(meanDiv);
+        });
+      } else {
+        alert(
+          `features.length not > 0; features.length = ${features.length}; doing nothing`
+        );
+      }
+    }
   }
 
   //B) exposing mapboxgl map methods via this class as interface---------------------------------------------
@@ -1652,7 +1805,8 @@ export default class Map {
     }
 
     //toggle the custom control displaying value display off
-    var clickDiv = document.getElementsByClassName("my-custom-control")[0];
+    // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
+    let clickDiv = document.getElementById("on-click-control");
     clickDiv.style.display = "none";
     clickDiv.innerHTML = "";
   }
@@ -1667,7 +1821,8 @@ export default class Map {
     console.log(`onDataClick clicked object:`);
     console.log(clicked);
 
-    var clickDiv = document.getElementsByClassName("my-custom-control")[0];
+    // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
+    let clickDiv = document.getElementById("on-click-control");
     clickDiv.style.display = "block";
     // clickDiv.style.height = "100px";
     clickDiv.style.height = "auto";
@@ -1735,7 +1890,8 @@ export default class Map {
     });
   }
   addAdminClick(e, adminLayerId) {
-    var clickDiv = document.getElementsByClassName("my-custom-control")[0];
+    // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
+    let clickDiv = document.getElementById("on-click-control");
     clickDiv.style.display = "block";
     clickDiv.style.height = "auto";
     // clickDiv.style.height = "100px";
@@ -2001,6 +2157,8 @@ export default class Map {
   //E) Unsorted/debugging----------------------------------------------------------------------------------
 }
 
+//CUSTOM MAPBOX CONTROLS
+
 // example mapbox control
 class ToggleControl {
   onAdd(map) {
@@ -2008,7 +2166,28 @@ class ToggleControl {
     this._container = document.createElement("div");
     this._container.id = "on-click-control";
     this._container.className = "mapboxgl-ctrl my-custom-control";
-    this._container.textContent = "Hello, world";
+    this._container.textContent =
+      "ToggleControl placeholder textContent from intialization";
+
+    return this._container;
+  }
+
+  onRemove() {
+    this._container.parentNode.removeChild(this._container);
+    this._map = undefined;
+  }
+}
+
+class DrawInfoControl {
+  onAdd(map) {
+    this._map = map;
+    this._container = document.createElement("div");
+    this._container.id = "draw-info-control";
+    // this._container.className = "mapboxgl-ctrl my-custom-control";
+    this._container.className = "mapboxgl-ctrl my-custom-control";
+    this._container.textContent =
+      "DrawInfoControl placeholder textContent from intialization";
+
     return this._container;
   }
 

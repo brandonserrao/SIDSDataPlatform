@@ -18,6 +18,9 @@ const globals = {
     color: null,
     breaks: null,
     dataLayer: null,
+    /**String; id of the current data layer;
+     * legacy code only had a few layer possibilities, mainly hex# and ocean
+     */
     hexSize: "hex5",
   },
   sources: {
