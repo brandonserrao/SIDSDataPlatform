@@ -63,7 +63,7 @@ export default {
     return {
       regionClass:'',
       backgroundData: {
-        'background-image': 'url(/static/media/portfolio-maps/All.png)'
+        'background-image': 'url(/SIDSDataPlatform/static/media/portfolio-maps/All.png)'
       },
       mapClicks: {
         'All': {
@@ -151,7 +151,7 @@ export default {
       if(region === 'All') {
         regionToSet = 'All';
       }
-      let img = '/static/media/portfolio-maps/' + regionToSet + '.png'
+      let img = '/SIDSDataPlatform/static/media/portfolio-maps/' + regionToSet + '.png'
       var img_tag = new Image();
       // when preload is complete, apply the image to the div
       img_tag.onload = function () {
@@ -183,7 +183,6 @@ export default {
   max-height: 640px;
   background-size:100%;
   width: 100%;
-  background-position: 50% -3vh;
   transition: 700ms;
   margin-bottom: 8px;
 }
@@ -240,6 +239,7 @@ export default {
   .map {
     min-height: 550px;
     max-height: calc(100vh - 200px);
+    background-position: 50% -3vh;
   }
   .map-AIS {
     background-size:115%;
@@ -254,7 +254,7 @@ export default {
   .map-Pacific {
     background-size:120%;
     background-position-x: 210%;
-    background-position-y: -12vh;
+    background-position-y: -13.5vh;
   }
 }
 @media all and (min-width:1400px) {
