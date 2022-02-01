@@ -3,7 +3,7 @@
   <video class="header_video d-none d-lg-block" autoplay muted loop>
     <source src="/SIDSDataPlatform/static/media/videos/header-xl.webm" type="video/webm">
   </video>
-  <video class="header_video d-none d-mb-block d-lg-none" autoplay muted loop>
+  <video class="header_video d-none d-md-block d-lg-none" autoplay muted loop>
     <source src="/SIDSDataPlatform/static/media/videos/header-md.webm" type="video/webm">
   </video>
   <video class="header_video d-block d-md-none" autoplay muted loop>
