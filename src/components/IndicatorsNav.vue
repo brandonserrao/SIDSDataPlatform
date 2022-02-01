@@ -38,8 +38,7 @@
          >
           <template v-slot:activator="{ on, attrs }">
             <v-list-item
-              class="inicator-item cursor-pointer"
-              inactive
+              class="inicator-item"
               v-bind="attrs"
               v-on="on"
               @click="emitIndicatorChange(item['Indicator Code'])"
@@ -80,9 +79,8 @@
            >
             <template v-slot:activator="{ on, attrs }">
               <v-list-item
-                inactive
                 v-show="!dataset || dataset === item"
-                class="list-scrollabe_item cursor-pointer"
+                class="list-scrollabe_item dataset-item"
                 :key="i"
                 v-bind="attrs"
                 v-on="on"
@@ -144,20 +142,22 @@
         @click:append="clearDeepSearch"
     ></v-text-field>
     <v-list v-if="dataset" dense :class="{'list-short' : activeIndicator}" class="list-indicators list-scrollabe">
-      <v-list-item-group>
+      <v-list-item-group
+        :value="activeIndicatorCode"
+      >
         <template v-for="(indicator, i) in activeIndicatorsWithMeta">
           <v-tooltip
             right
             open-delay="300"
             transition="none"
             max-width="250"
-            :key="i"
+            :key="indicator['Indicator Code']"
             content-class="indicator-tooltip"
            >
             <template v-slot:activator="{ on, attrs }">
               <v-list-item
-                class="inicator-item cursor-pointer"
-                inactive
+                class="inicator-item"
+                :class="{'blue lighten-5': indicator['Indicator Code'] === activeIndicatorCode}"
                 v-bind="attrs"
                 v-on="on"
                 @click="emitIndicatorChange(indicator['Indicator Code'])"
@@ -224,7 +224,7 @@ export default {
       deepSearch:'',
       activeIndicatorDimension:null,
       activeCategory: 'All categories',
-      activeSubCategory: 'All categories',
+      activeSubCategory: 'All subcategories',
       activeIndicator:null,
       datasetMeta: datasetMeta,
       datasets: [
@@ -263,22 +263,18 @@ export default {
     indicatorCategories() {
       if(this.activeDataset) {
         let categories = Object.keys(this.activeDataset);
-        if (categories.length>1) {
-          categories = categories.filter((categoriy) => { return categoriy !== 'None' });
-          categories.push('All categories')
-          return categories
-        }
+        categories = categories.filter((categoriy) => { return categoriy !== 'None' });
+        categories.push('All categories')
+        return categories
       }
       return null
     },
     indicatorSubCategories() {
       if(this.activeCategory !== 'All categories') {
         let categories = Object.keys(this.activeDataset[this.activeCategory]);
-        if (categories.length>1) {
-          categories = categories.filter((categoriy) => { return categoriy !== 'none' && categoriy !== 'None' });
-          categories.push('All subcategories')
-          return categories
-        }
+        categories = categories.filter((categoriy) => { return categoriy !== 'none' && categoriy !== 'None' });
+        categories.push('All subcategories')
+        return categories
       }
       return null
     },
@@ -302,7 +298,7 @@ export default {
     activeIndicators() {
       let indicatorsArray = [];
       if(this.activeCategory && this.activeCategory !== 'All categories') {
-        if(this.activeSubCategory && this.activeSubCategory !== 'All categories') {
+        if(this.activeSubCategory && this.activeSubCategory !== 'All subcategories') {
           return this.getSubcategoryIndicators(this.activeCategory, this.activeSubCategory)
         }
         for(let subCategory in this.activeDataset[this.activeCategory]) {
@@ -372,7 +368,7 @@ export default {
       return indicatorsList
     },
     changeCategory() {
-      this.activeSubCategory = ''
+      this.activeSubCategory = 'All subcategories'
     },
     emitIndicatorChange(indicator) {
       this.$emit('indicatorChange', indicator)
@@ -386,7 +382,9 @@ export default {
     },
     hideFullList() {
       if(this.searchString === '') {
-        this.activeSearch = false;
+        setTimeout(() => {
+          this.activeSearch = false;
+        }, 200);
       }
     },
     setActiveIndicatorFromFullList(indicator) {
@@ -475,9 +473,6 @@ export default {
   max-width: 60%;
   margin-right: 0;
 }
-.cursor-pointer {
-  cursor: pointer;
-}
 .active-indicator-info {
   padding-top: 8px !important;
   max-height: calc(100vh - 410px);
@@ -491,6 +486,9 @@ export default {
   top: 5px;
   right: 5px;
   z-index: 5;
+}
+.theme--light.v-list-item--active.dataset-item::before {
+  opacity: 0;
 }
 
 </style>
