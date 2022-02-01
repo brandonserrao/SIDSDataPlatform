@@ -63,7 +63,7 @@ export default {
     return {
       regionClass:'',
       backgroundData: {
-        'background-image': 'url(/SIDSDataPlatform/static/media/portfolio-maps/All.png)'
+        'background-image': 'url(/static/media/portfolio-maps/All.png)'
       },
       mapClicks: {
         'All': {
@@ -151,7 +151,7 @@ export default {
       if(region === 'All') {
         regionToSet = 'All';
       }
-      let img = '/SIDSDataPlatform/static/media/portfolio-maps/' + regionToSet + '.png'
+      let img = '/static/media/portfolio-maps/' + regionToSet + '.png'
       var img_tag = new Image();
       // when preload is complete, apply the image to the div
       img_tag.onload = function () {
@@ -180,27 +180,27 @@ export default {
   cursor: pointer;
   flex-direction: column;
   height: calc(100vh - 237px);
-  max-height: 580px;
-  background-size: 95%;
+  max-height: 640px;
+  background-size:100%;
   width: 100%;
-  background-position: 50% -65px;
+  background-position: 50% -3vh;
   transition: 700ms;
   margin-bottom: 8px;
 }
 .map-AIS {
-  background-size: 115%;
+  background-size:115%;
   background-position-x: 50%;
-  background-position-y: -100px;
+  background-position-y: -8vh;
 }
 .map-Caribbean {
-  background-size: 134%;
+  background-size:134%;
   background-position-x: -35%;
-  background-position-y: -60px;
+  background-position-y: -8vh;
 }
 .map-Pacific {
-  background-size: 120%;
+  background-size:120%;
   background-position-x: 210%;
-  background-position-y: -140px;
+  background-position-y: -12vh;
 }
 .map_zones {
   height: 100%
@@ -227,12 +227,42 @@ export default {
   flex-grow: 0;
 }
 
-@media all and (max-width:1264px) {
+
+@media all and (min-width:961px) {
   .map {
-    height: 300px;
-    max-height: 720px;
+    min-height: 380px;
+    max-height: calc(100vh - 460px);
+    background-position: 50% 3vh;
+  }
+  .map-AIS {
+    background-size:115%;
+    background-position-x: 50%;
+    background-position-y: -1vh;
+  }
+  .map-Caribbean {
+    background-size:134%;
+    background-position-x: -35%;
+    background-position-y: 2vh;
+  }
+  .map-Pacific {
+    background-size:120%;
+    background-position-x: 210%;
+    background-position-y: -5vh;
   }
 }
+
+@media all and (min-width:1264px) {
+  .map {
+    min-height: 550px;
+    max-height: calc(100vh - 200px);
+  }
+}
+@media all and (min-width:1400px) {
+  .map {
+    max-height: calc(100vh - 260px);
+  }
+}
+
 @media all and (max-width:960px) {
   .map {
     background-image:none !important;
