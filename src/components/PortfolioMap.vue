@@ -230,7 +230,7 @@ export default {
 
 @media all and (min-width:961px) {
   .map {
-    min-height: 380px;
+    min-height: 350px;
     max-height: calc(100vh - 460px);
     background-position: 50% 3vh;
   }
