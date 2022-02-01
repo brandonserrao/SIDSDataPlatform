@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as d3 from 'd3';
-
+import { datasetMeta } from '@/assets/datasets/datasetMeta'
 
 const API_URL = 'https://raw.githubusercontent.com/Ben-Keller/smallislands/main/data';
 const NEW_API_URl = 'https://raw.githubusercontent.com/SIDS-Dashboard/SIDSDataPlatform/main'
@@ -48,8 +48,10 @@ async function loadAllKeyData () {
 }
 
 async function loadDatasetsList() {
-  const resp = await axios.get(`${NEW_API_URl_2}/datasetMeta.json`)
-  return resp.data;
+  return datasetMeta
+  // const resp = await axios.get(`${NEW_API_URl_2}/indicators/datasetMeta.json`);
+  // console.log(resp.data, JSON.parse(resp.data))
+  // return resp.data;
 }
 
 
