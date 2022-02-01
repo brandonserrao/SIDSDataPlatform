@@ -187,21 +187,6 @@ export default {
   transition: 700ms;
   margin-bottom: 8px;
 }
-.map-AIS {
-  background-size:115%;
-  background-position-x: 50%;
-  background-position-y: -8vh;
-}
-.map-Caribbean {
-  background-size:134%;
-  background-position-x: -35%;
-  background-position-y: -8vh;
-}
-.map-Pacific {
-  background-size:120%;
-  background-position-x: 210%;
-  background-position-y: -12vh;
-}
 .map_zones {
   height: 100%
 }
@@ -255,6 +240,21 @@ export default {
   .map {
     min-height: 550px;
     max-height: calc(100vh - 200px);
+  }
+  .map-AIS {
+    background-size:115%;
+    background-position-x: 50%;
+    background-position-y: -8vh;
+  }
+  .map-Caribbean {
+    background-size:134%;
+    background-position-x: -35%;
+    background-position-y: -8vh;
+  }
+  .map-Pacific {
+    background-size:120%;
+    background-position-x: 210%;
+    background-position-y: -12vh;
   }
 }
 @media all and (min-width:1400px) {
