@@ -10,14 +10,14 @@
     </v-btn>
     <v-card flat>
       <v-text-field v-if="!dataset"
-        class="ml-2 mr-2"
+        class="search-input ml-2 mr-2"
         dense
         v-model="searchString"
         @focus="showFullList"
         @blur="hideFullList"
         hide-details
         @click:append="clearFullSearch"
-        append-icon="mdi-close"
+        :append-icon="searchString!=='' ? 'mdi-close' : ''"
         prepend-icon="mdi-magnify"
       ></v-text-field>
 
@@ -47,6 +47,8 @@
                 {{item.Indicator}}
               </v-list-item-title>
               <v-list-item-content class="inicator-item_description">
+
+                  {{item}}
                 {{item.Definition}}
               </v-list-item-content>
             </v-list-item>
@@ -81,15 +83,19 @@
               <v-list-item
                 v-show="!dataset || dataset === item"
                 class="list-scrollabe_item dataset-item"
-                :key="i"
+                :class="{'dataset-item-active':dataset === item}"
+                :key="item"
                 v-bind="attrs"
                 v-on="on"
                 @click="toggleDataset(item)"
               >
+                <v-list-item-icon class="dataset-item-icon" v-show="dataset === item">
+                  <v-icon>mdi-arrow-left</v-icon>
+                </v-list-item-icon>
                 <v-list-item-content>
                   <v-img
                     contain
-                    max-height="50"
+                    :max-height="dataset === item ? 40 :50 "
                     :src="`/SIDSDataPlatform/static/media/datasets/${item}.png`"
                   ></v-img>
                 </v-list-item-content>
@@ -119,26 +125,27 @@
     <v-select
       v-if="dataset && indicatorCategories"
       class="ml-2 mr-2"
+      dense
       v-model="activeCategory"
       hide-details
       @change="changeCategory"
       :items="indicatorCategories"
-      label="Categories"
     ></v-select>
     <v-select
       v-if="dataset && indicatorSubCategories"
       class="ml-2 mr-2"
+      dense
       hide-details
       v-model="activeSubCategory"
       :items="indicatorSubCategories"
-      label="Subcategories"
     ></v-select>
     <v-text-field v-if="dataset"
-        class="ml-2 mr-2"
+        class="search-input ml-2 mr-2 mb-2"
         v-model="deepSearch"
-        label="Search indicators"
         hide-details
-        append-icon="mdi-close"
+        dense
+        :append-icon="searchString!=='' ? 'mdi-close' : ''"
+        prepend-icon="mdi-magnify"
         @click:append="clearDeepSearch"
     ></v-text-field>
     <v-list v-if="dataset" dense :class="{'list-short' : activeIndicator}" class="list-indicators list-scrollabe">
@@ -290,7 +297,7 @@ export default {
       });
       if(this.searchString !=='') {
         return indicatorsArray.filter(indicator => {
-          return indicator.Indicator.includes(this.searchString);
+          return indicator.Dataset !== 'key' && indicator.Indicator.toLowerCase().includes(this.searchString.toLowerCase());
         })
       }
       return indicatorsArray;
@@ -330,7 +337,7 @@ export default {
       });
       if(this.deepSearch !== '') {
         return indicatorsWithMetaArray.filter(indicator => {
-          return indicator.Indicator.includes(this.deepSearch);
+          return indicator.Indicator.toLowerCase().includes(this.deepSearch.toLowerCase());
         })
       }
       return indicatorsWithMetaArray;
@@ -418,7 +425,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .list-scrollabe {
   overflow-y: scroll;
 }
@@ -433,10 +440,13 @@ export default {
   max-height: calc(100vh - 200px);
 }
 .list-short {
-  max-height: calc(100vh - 510px);
+  max-height: calc(50vh - 128px);
 }
 .list-scrollabe_item {
   height: 66px;
+}
+.list-scrollabe_item.dataset-item-active {
+  height: 56px;
 }
 .inicator-item {
   display: flex;
@@ -475,7 +485,7 @@ export default {
 }
 .active-indicator-info {
   padding-top: 8px !important;
-  max-height: calc(100vh - 410px);
+  max-height: calc(50vh - 70px);
   overflow-y: scroll;
 }
 .indicators-nav {
@@ -490,5 +500,17 @@ export default {
 .theme--light.v-list-item--active.dataset-item::before {
   opacity: 0;
 }
-
+.theme--light.v-list-item--active.v-list-item:hover::before {
+  opacity: 0.04;
+}
+.dataset-item-icon {
+  margin: auto 10px auto 0px !important;
+}
+.search-input {
+  margin: 0;
+}
+.search-input .v-input__prepend-outer{
+  margin: auto 0px auto 0 !important;
+  padding-top: 7px;
+}
 </style>
