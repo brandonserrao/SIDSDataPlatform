@@ -492,7 +492,7 @@ export default {
   padding: relative;
 }
 .close-button {
-  position: absolute;
+  position: absolute !important;
   top: 5px;
   right: 5px;
   z-index: 5;
