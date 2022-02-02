@@ -73,7 +73,7 @@
       <v-col class="p-0 d-flex align-center" md="4" cols="5">
         <v-img
           contain
-          :src="`/static/media/profiles-maps/${id}.png`"
+          :src="`/SIDSDataPlatform/static/media/profiles-maps/${id}.png`"
           height="250"
         />
       </v-col>
@@ -81,7 +81,7 @@
         <v-img
           cover
           height="100%"
-          :src="`/static/media/country-photos/${id}.jpg`"
+          :src="`/SIDSDataPlatform/static/media/country-photos/${id}.jpg`"
         ></v-img>
       </v-col>
     </v-row>
