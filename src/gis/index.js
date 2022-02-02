@@ -39,7 +39,15 @@ export default class Map {
       ...constants.mapOptions,
     });
 
-    this.Draw = new MapboxDraw(); //for the mapbox drawing functionality, used in region analysis/drawing polygons
+    //for the mapbox drawing functionality, used in region analysis/drawing polygons
+    this.Draw = new MapboxDraw({
+      displayControlsDefault: false,
+      // Select which mapbox-gl-draw control buttons to add to the map.
+      controls: {
+        polygon: true,
+        trash: true,
+      },
+    });
 
     this.map.on("load", () => {
       this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
@@ -55,9 +63,9 @@ export default class Map {
       this.getBasemapLabels();
 
       //TESTING - reimplementing Draw functionality
-      this.map.addControl(this.Draw, "top-right"); //ui buttons for drawing
+      this.map.addControl(this.Draw, "bottom-right"); //ui buttons for drawing
       this._initDrawInfoControl(); //display area for region analysis info
-      this._addDrawListeners();
+      this._addDrawListeners(this);
     });
 
     //for debugging--------------------
@@ -285,28 +293,48 @@ export default class Map {
   _initDrawInfoControl() {
     console.log("InitDrawInfoControl");
     const drawInfoControl = new DrawInfoControl();
-    this.map.addControl(drawInfoControl, "bottom-left");
+    this.map.addControl(drawInfoControl, "bottom-right");
   }
-  _addDrawListeners() {
+  _addDrawListeners(mapClassInstance) {
     //taken from oldcode implementation in drawFunc.js
-    this.map.on("draw.create", drawCreate);
-    this.map.on("draw.delete", drawDelete);
-    this.map.on("draw.update", drawUpdate);
+    mapClassInstance.map.on("draw.create", drawCreate);
+    mapClassInstance.map.on("draw.delete", drawDelete);
+    mapClassInstance.map.on("draw.update", drawUpdate);
+    mapClassInstance.map.on("draw.modechange", drawModeChange);
 
     function drawUpdate() {
       console.log("drawUpdate");
     }
+    function drawModeChange(e) {
+      console.log("drawModeChange to", e.mode);
+      if (e.mode === "simple_select") {
+        console.log("deletAll features before:", e.mode);
+        mapClassInstance.Draw.deleteAll();
+      }
+    }
 
     function drawDelete() {
       console.log("drawDelete");
-      this.map.setFilter(globals.currentGeojsonLayers.hexSize, null); //map.setFilter(currentGeojsonLayers.hexSize, null);
+
+      mapClassInstance.map.setFilter(globals.currentLayerState.hexSize, null); //map.setFilter(currentGeojsonLayers.hexSize, null);
+
+      let drawInfoDiv = document.getElementById("draw-info-control");
+      drawInfoDiv.innerHTML = ""; //clear the drawInfoDiv of old content
+      drawInfoDiv.style.display = "none";
+
+      mapClassInstance.Draw.deleteAll(); //delete all drawn features ie. polygons
     }
 
     function drawCreate(e) {
       console.log("drawCreate");
       //e.preventDefault()
       //e.stopPropogation()
-      console.log("Drawn Feature Count: ", this.Draw.getAll().features.length);
+      console.log(
+        "Drawn Feature Count: ",
+        mapClassInstance.Draw.getAll().features.length
+      );
+      //clear any previous draw filter
+      mapClassInstance.map.setFilter(globals.currentLayerState.hexSize, null);
 
       let createdPolygon = e.features[0];
       let boundBox = bbox(createdPolygon);
@@ -314,14 +342,14 @@ export default class Map {
       let SW = [boundBox[0], boundBox[1]];
       let NE = [boundBox[2], boundBox[3]];
 
-      let NEPointPixel = this.map.project(NE);
-      let SWPointPixel = this.map.project(SW);
+      let NEPointPixel = mapClassInstance.map.project(NE);
+      let SWPointPixel = mapClassInstance.map.project(SW);
 
       //use mapbox function to first cull features to those within the boundBox of the drawn polygon
-      let features = this.map.queryRenderedFeatures(
+      let features = mapClassInstance.map.queryRenderedFeatures(
         [SWPointPixel, NEPointPixel],
         {
-          layers: [globals.currentGeojsonLayers.hexSize],
+          layers: [globals.currentLayerState.hexSize],
         }
       );
       console.log("queryRenderedFeatures: ", features);
@@ -342,23 +370,27 @@ export default class Map {
 
         //console.log(filter)
 
-        this.map.setFilter(globals.currentGeojsonLayers.hexSize, filter); //sets a rendering filter, formatted based on mapbox filter spec
+        mapClassInstance.map.setFilter(
+          globals.currentLayerState.hexSize,
+          filter
+        ); //sets a rendering filter, formatted based on mapbox filter spec
 
-        this.map.once("idle", function () //e
+        mapClassInstance.map.once("idle", function () //e
         {
           let info = [];
-          let onscreenFeatures = this.map.queryRenderedFeatures({
-            layers: [globals.currentGeojsonLayers.hexSize],
+          let onscreenFeatures = mapClassInstance.map.queryRenderedFeatures({
+            layers: [globals.currentLayerState.hexSize],
           });
 
           //$("#draw-sidebar").show(); //toggle on display area for the info
           let drawInfoDiv = document.getElementById("draw-info-control");
+          drawInfoDiv.innerHTML = ""; //clear the drawInfoDiv of old content
           drawInfoDiv.style.display = "block";
           drawInfoDiv.style.height = "auto"; // drawInfoDiv.style.height = "100px";
           drawInfoDiv.style.width = "200px";
 
           onscreenFeatures.forEach(function (x) {
-            info.push(x.properties[globals.currentGeojsonLayers.dataLayer]);
+            info.push(x.properties[globals.currentLayerState.dataLayer]);
           });
 
           let max = Math.max(...info);
@@ -370,52 +402,24 @@ export default class Map {
           let mean = total / info.length;
 
           //creating the info elements to be appended as children in the control
-          let titleText = document
-            .createElement("p")
-            .append(`<b>Placeholder for legendData.desc value</b>`);
-          let meanText = document
-            .createElement("div")
-            .append(
-              `Mean of Selected: ${this.nformatter(mean, 2)} PlaceholderUnits`
-            );
-          let maxText = document
-            .createElement("div")
-            .append(`Max of Selected: ${max} PlaceholderUnits`);
-          let minText = document
-            .createElement("div")
-            .append(`Min of Selected: ${min} PlaceholderUnits`);
+          let titleText = document.createElement("div");
+          titleText.append(`Placeholder for legendData.desc value`);
+          let meanText = document.createElement("div");
+          meanText.append(
+            `Mean of Selected: ${mapClassInstance.nFormatter(
+              mean,
+              2
+            )} PlaceholderUnits`
+          );
+          let maxText = document.createElement("div");
+          maxText.append(`Max of Selected: ${max} PlaceholderUnits`);
+          let minText = document.createElement("div");
+          minText.append(`Min of Selected: ${min} PlaceholderUnits`);
 
-          drawInfoDiv.appendChild(titleText);
-          drawInfoDiv.appendChild(meanText);
-          drawInfoDiv.appendChild(maxText);
-          drawInfoDiv.appendChild(minText);
-
-          // let sidebarHolder = document.getElementById("sidebar-text");
-          // let title = document.getElementById("sideTitle");
-          // let maxDiv = document.getElementById("sideMax");
-          // let minDiv = document.getElementById("sideMin");
-          // let meanDiv = document.getElementById("sideMean");
-
-          /*title.innerHTML = ''
-            maxDiv.innerHTML = "";
-            minDiv.innerHTML = "";
-            meanDiv.innerHTML = ""; */
-
-          //current data layer's fieldname to context the info text/numbers
-          // let legData = Vue._.find(allLayers, [
-          //   "field_name",
-          //   globals.currentGeojsonLayers.dataLayer,
-          // ]);
-          // title.innerHTML = "<b>" + legData.desc + "</b>";
-          // maxDiv.innerHTML = "Max of Selected: " + max + " " + legData.units;
-          // minDiv.innerHTML = "Min of Selected: " + min + " " + legData.units;
-          // meanDiv.innerHTML =
-          //   "Mean of Selected: " + nFormatter(mean, 2) + " " + legData.units;
-
-          // sidebarHolder.appendChild(title);
-          // sidebarHolder.appendChild(maxDiv);
-          // sidebarHolder.appendChild(minDiv);
-          // sidebarHolder.appendChild(meanDiv);
+          drawInfoDiv.append(titleText);
+          drawInfoDiv.append(meanText);
+          drawInfoDiv.append(maxText);
+          drawInfoDiv.append(minText);
         });
       } else {
         alert(

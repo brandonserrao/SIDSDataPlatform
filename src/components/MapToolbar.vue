@@ -7,10 +7,9 @@
       <div class="col-lg-9 HACK"></div>
       <div class="col-lg-3 HACK">
         <div class="menu-box col-flex space-evely align-items-center">
-          <div style="font-weight: 600; color: white; font-size: 18px">
+          <!-- <div style="font-weight: 600; color: white; font-size: 18px">
             View
-          </div>
-
+          </div> -->
           <div class="row-flex full-width">
             <div class="col-flex space-evenly">
               <!-- Country Select Menu -->
