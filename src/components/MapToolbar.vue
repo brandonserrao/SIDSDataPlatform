@@ -111,9 +111,7 @@
                   class="icon resolution-icon hex5"
                   @click="toggleMenu(1)"
                 ></div>
-                <div class="description hover">
-                  Resolution: Select Resolution
-                </div>
+                <div class="description hover">Change Data Resolution</div>
                 <div class="menu-drop row-flex display-none menu-big">
                   <div
                     class="col-flex"
@@ -310,7 +308,7 @@
                   class="icon color-icon color-icon-1"
                   @click="toggleMenu(2)"
                 ></div>
-                <div class="description hover">Color: Select Color</div>
+                <div class="description hover">Palette Switcher</div>
                 <div
                   class="
                     menu-drop
@@ -486,7 +484,7 @@
                   class="icon basemap-icon-handle basemap-icon"
                   @click="toggleMenu(3)"
                 ></div>
-                <div class="description hover">Basemap: Select Basemap</div>
+                <div class="description hover">Basemap Switch</div>
                 <div
                   class="
                     menu-drop
@@ -611,7 +609,7 @@
                   class="icon add-boundaries-icon"
                   @click="toggleMenu(4)"
                 ></div>
-                <div class="description hover">Boundaries</div>
+                <div class="description hover">Administrative Boundaries</div>
                 <div class="menu-drop row-flex display-none menu-big">
                   <div
                     class="col-flex"
@@ -762,7 +760,7 @@
                   class="icon twoD-icon display-none"
                   @click="handleHeightChange('twoD', 'threeD')"
                 ></div>
-                <div class="description hover">3D 2D</div>
+                <div class="description hover">Toggle 3D</div>
                 <div
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>
@@ -771,7 +769,7 @@
               <!-- Opacity Select Menu -->
               <div class="menu row-flex">
                 <div class="icon opacity-icon" @click="toggleMenu(6)"></div>
-                <div class="description hover">Opacity</div>
+                <div class="description hover">Opacity Slider</div>
                 <div class="menu-drop row-flex align-items-center display-none">
                   <div
                     class="row-flex align-items-center"
@@ -809,7 +807,7 @@
                   class="icon aplus-icon"
                   @click="handleLabelsChange('aplus', 'aminus')"
                 ></div>
-                <div class="description hover">Map Labels: Toggle On/Off</div>
+                <div class="description hover">Toggle Map Labels</div>
                 <div
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>

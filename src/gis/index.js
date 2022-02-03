@@ -101,6 +101,7 @@ export default class Map {
     );
   }
   _addPointSources() {
+    console.log(`_addPointSources()`);
     let map = this.map; //patching map reference
     //pulls in the pointdata about airports volcanoes etc
     console.log("d3.json fetching pointdata geojson file");
@@ -113,7 +114,7 @@ export default class Map {
     });
   }
   _addVectorSources() {
-    // console.log(`_addVectorSources()`);
+    console.log(`_addVectorSources()`);
     let map = this.map; //patching map reference
     // console.log(`vector sources: ${Object.keys(globals.sources)}`);
 
