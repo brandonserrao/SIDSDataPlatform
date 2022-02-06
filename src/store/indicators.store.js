@@ -36,7 +36,10 @@ export default {
     },
     async getMeta({ state, commit }) {
       if(!state.allKeyData){
-        const meta = await service.loadIndicatorsMeta();
+        let meta = await service.loadIndicatorsMeta();
+        meta = Object.keys(meta)
+          .filter( indicatorCode => meta[indicatorCode]['Indicator'])
+          .reduce( (res, indicatorCode) => (res[indicatorCode] = meta[indicatorCode], res), {} );
         commit("setMeta", meta);
       }
     }

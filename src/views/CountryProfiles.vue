@@ -301,6 +301,7 @@ export default {
   }),
   computed:{
     activeCountryProfile() {
+      console.log(this.countries)
       return this.countries.find(country => country.id === this.country);
     },
     graphCountriesProfiles() {

@@ -8,7 +8,7 @@
       <v-row class="mt-0 bars-container" justify="center">
         <div class="sdg-goal" v-for="(goal, index) in sdgs" :key="goal">
           <img
-            :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${parseGoalNumber(index)}.png`"
+            :src="require(`@/assets/media/goals-icons/SDGs/${index+1}.png`)"
             height="56"
             width="56"
             >
@@ -137,9 +137,18 @@ export default {
       bars.append('rect')
           .attr('class', 'bar')
           .attr("x", function (d) { return (x(d) + x.bandwidth() / 16) + 8; })
-          .attr("y", function (d) { return rootThis.y1(rootThis.projectNamesObject[d]); })
+          .attr("y", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return rootThis.barsHeight
+            }
+            return rootThis.y1(rootThis.projectNamesObject[d]); })
           .attr("width", x.bandwidth() / 4)
-          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]); })
+          .attr("height", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return 0
+            }
+            return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
+          })
           .attr("fill", function (d, i) { return rootThis.colors[i] })
 
 
@@ -152,9 +161,18 @@ export default {
       bars2.append('rect')
           .attr('class', 'bar2')
           .attr("x", function (d) { return (x2(d) + x2.bandwidth() / 2.2) + 8; })
-          .attr("y", function (d) { return rootThis.y2(rootThis.budgetNamesObject[d]); })
+          .attr("y", function (d) {
+            if(rootThis.budgetNamesObject[d] === 0) {
+              return rootThis.barsHeight
+            }
+            return rootThis.y2(rootThis.budgetNamesObject[d]); })
           .attr("width", x2.bandwidth() / 4)
-          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]); })
+          .attr("height", function (d) {
+            if(rootThis.budgetNamesObject[d] === 0) {
+              return 0
+            }
+            return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]);
+          })
           .attr("fill", function (d, i) { return rootThis.colors[i] })
           .style("opacity", 0.5);
 
@@ -168,7 +186,12 @@ export default {
           .attr("x", function (d) { return x(d) - 6; })
           .attr("y", function (d) { return rootThis.y1(rootThis.projectNamesObject[d]) - 30; })
           .attr("width", x.bandwidth())
-          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]) + 30; })
+          .attr("height", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return 0
+            }
+            return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]) + 30;
+          })
           .attr("opacity", 0)
           .each((data, index, list) => {
             tippy(list[index], {
@@ -253,13 +276,6 @@ export default {
           .attr("text-anchor", "middle");
 
     },
-    parseGoalNumber(number) {
-      let goalNmber = (number + 1).toString();
-      if(goalNmber.length < 2) {
-        goalNmber = '0' + goalNmber;
-      }
-      return goalNmber
-    },
     updateBars() {
       let rootThis = this;
 
@@ -277,9 +293,15 @@ export default {
         .transition()
         .duration(750)
         .attr("height", function (d) {
-            return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
+          if(rootThis.projectNamesObject[d] === 0) {
+            return 0
+          }
+          return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
         })
         .attr("y", function (d) {
+          if(rootThis.projectNamesObject[d] === 0) {
+            return rootThis.barsHeight
+          }
             return rootThis.y1(rootThis.projectNamesObject[d]);
         })
 
@@ -287,9 +309,15 @@ export default {
         .transition()
         .duration(750)
         .attr("height", function (d) {
+          if(rootThis.budgetNamesObject[d] === 0) {
+            return 0
+          }
           return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]);
         })
         .attr("y", function (d) {
+          if(rootThis.budgetNamesObject[d] === 0) {
+            return rootThis.barsHeight
+          }
           return rootThis.y2(rootThis.budgetNamesObject[d]);
         })
 

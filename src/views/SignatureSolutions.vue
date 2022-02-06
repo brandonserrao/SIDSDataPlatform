@@ -10,7 +10,7 @@
           <img
           height="56"
           width="144"
-          :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SSicons/1x/${imageNames[index]}SS.png`">
+          :src="require(`@/assets/media/goals-icons/SS/${index+1}.png`)">
         </div>
       </v-row>
     </div>
@@ -37,7 +37,6 @@ export default {
   data() {
     return {
       id: this._uid,
-      imageNames:['poverty', 'governance', 'resilience', 'environment', 'energy', 'gender'],
       svgContainer: null,
       colors: ["#E3253C", "#0076B0", "#F26A2C", "#417F45", "#FAB715",
         "#EF412C", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8", "#F4F5F8",
@@ -128,9 +127,18 @@ export default {
       bars.append('rect')
           .attr('class', 'bar')
           .attr("x", function (d) { return (x(d) + x.bandwidth() / 2) - 24; })
-          .attr("y", function (d) { return rootThis.y1(rootThis.projectNamesObject[d]); })
+          .attr("y", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return rootThis.barsHeight
+            }
+            return rootThis.y1(rootThis.projectNamesObject[d]); })
           .attr("width", x.bandwidth() / 11)
-          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]); })
+          .attr("height", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return 0
+            }
+            return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
+          })
           .attr("fill", function (d, i) { return rootThis.colors[i] })
 
 
@@ -143,9 +151,18 @@ export default {
       bars2.append('rect')
           .attr('class', 'bar2')
           .attr("x", function (d) { return (x2(d) + x2.bandwidth() / 2) + 8; })
-          .attr("y", function (d) { return rootThis.y2(rootThis.budgetNamesObject[d]); })
+          .attr("y", function (d) {
+            if(rootThis.budgetNamesObject[d] === 0) {
+              return rootThis.barsHeight
+            }
+            return rootThis.y2(rootThis.budgetNamesObject[d]); })
           .attr("width", x.bandwidth() / 11)
-          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]); })
+          .attr("height", function (d) {
+            if(rootThis.budgetNamesObject[d] === 0) {
+              return 0
+            }
+            return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]);
+          })
           .attr("fill", function (d, i) { return rootThis.colors[i] })
           .style("opacity", 0.5);
 
@@ -241,9 +258,15 @@ export default {
         .transition()
         .duration(750)
         .attr("height", function (d) {
-            return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
+          if(rootThis.projectNamesObject[d] === 0) {
+            return 0
+          }
+          return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
         })
         .attr("y", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return rootThis.barsHeight
+            }
             return rootThis.y1(rootThis.projectNamesObject[d]);
         })
 
@@ -251,9 +274,15 @@ export default {
         .transition()
         .duration(750)
         .attr("height", function (d) {
+          if(rootThis.budgetNamesObject[d] === 0) {
+            return 0
+          }
           return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]);
         })
         .attr("y", function (d) {
+          if(rootThis.budgetNamesObject[d] === 0) {
+            return rootThis.barsHeight
+          }
           return rootThis.y2(rootThis.budgetNamesObject[d]);
         })
 

@@ -8,7 +8,7 @@
       <v-row class="mt-0 bars-container" justify="center">
         <div class="samoa-goal" v-for="(goal, index) in samoaPriorities" :key="goal">
           <img
-          :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${index+1}samoaIcons.png`"
+          :src="require(`@/assets/media/goals-icons/SAMOA/${index+1}.png`)"
           height="56"
           width="56"
           >
@@ -138,9 +138,18 @@ export default {
       bars.append('rect')
           .attr('class', 'bar')
           .attr("x", function (d) { return (x(d) + x.bandwidth() / 16) + 8; })
-          .attr("y", function (d) { return rootThis.y1(rootThis.projectNamesObject[d]); })
+          .attr("y", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return rootThis.barsHeight
+            }
+          return rootThis.y1(rootThis.projectNamesObject[d]); })
           .attr("width", x.bandwidth() / 4)
-          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]); })
+          .attr("height", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return 0
+            }
+            return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
+          })
           .attr("fill", function (d, i) { return rootThis.colors[i] })
 
 
@@ -153,9 +162,19 @@ export default {
       bars2.append('rect')
           .attr('class', 'bar2')
           .attr("x", function (d) { return (x2(d) + x2.bandwidth() / 2.2) + 8; })
-          .attr("y", function (d) { return rootThis.y2(rootThis.budgetNamesObject[d]); })
+          .attr("y", function (d) {
+            if(rootThis.budgetNamesObject[d] === 0) {
+              return rootThis.barsHeight
+            }
+            return rootThis.y2(rootThis.budgetNamesObject[d]);
+          })
           .attr("width", x2.bandwidth() / 4)
-          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]); })
+          .attr("height", function (d) {
+            if(rootThis.budgetNamesObject[d] === 0) {
+              return 0
+            }
+            return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]);
+          })
           .attr("fill", function (d, i) { return rootThis.colors[i] })
           .style("opacity", 0.5);
 
@@ -251,20 +270,34 @@ export default {
       d3.selectAll(".bar")
         .transition()
         .duration(750)
+
         .attr("height", function (d) {
-            return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
+          if(rootThis.projectNamesObject[d] === 0) {
+            return 0
+          }
+          return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
         })
         .attr("y", function (d) {
+          if(rootThis.projectNamesObject[d] === 0) {
+            return rootThis.barsHeight
+          }
             return rootThis.y1(rootThis.projectNamesObject[d]);
         })
 
       d3.selectAll(".bar2")
         .transition()
         .duration(750)
+
         .attr("height", function (d) {
+          if(rootThis.budgetNamesObject[d] === 0) {
+            return 0
+          }
           return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]);
         })
         .attr("y", function (d) {
+          if(rootThis.budgetNamesObject[d] === 0) {
+            return rootThis.barsHeight
+          }
           return rootThis.y2(rootThis.budgetNamesObject[d]);
         })
 
