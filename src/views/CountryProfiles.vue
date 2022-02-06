@@ -1,6 +1,6 @@
 <template>
   <div class="mt-xs-0 mt-sm-0 mt-md-5 mt-lg-5 mt-xl-5">
-    <v-row class="profile-header-row" :style="isMobile ? {'background-image': `url(${activeCountryProfile.photo})`} : {}" justify="center">
+    <v-row class="profile-header-row d-none-print" :style="isMobile ? {'background-image': `url(${activeCountryProfile.photo})`} : {}" justify="center">
       <v-col cols="12" offset-md="1" md="4" offset-lg="3" lg="3">
         <h2 class="page-header country-profile-header">Country profile</h2>
       </v-col>
@@ -43,6 +43,9 @@
         </div>
       </v-col>
     </v-row>
+    <h1 class="d-none d-block-print">
+      {{activeCountryProfile.Country}}
+    </h1>
     <v-row class="mt-xs-0 mt-sm-0" justify="center" dense>
       <v-col class="pt-xs-0 pt-sm-0" cols="12">
         <country-info-bar
@@ -50,7 +53,7 @@
         />
       </v-col>
     </v-row>
-    <v-row class="d-none d-md-flex" justify="center">
+    <v-row class="d-none d-md-flex d-none-print" justify="center">
       <v-col cols="11" md="6">
         <div class="select">
           <v-select
@@ -89,29 +92,29 @@
         </div>
       </v-col>
     </v-row>
-    <v-row class="d-none d-md-flex" justify="center">
-      <v-col md="6" lg="4">
+    <v-row class="d-none d-md-flex d-flex-print" justify="center">
+      <v-col cols="6" md="6" lg="4">
         <profiles-spider-chart
           headerText="Climate Action"
           :graphOptions="graphOptions.Climate"
           pillarName="Climate"
           :activeCountries="graphCountriesProfiles"/>
       </v-col>
-      <v-col md="6" lg="4">
+      <v-col cols="6" md="6" lg="4">
         <profiles-spider-chart
           headerText="Blue Economy"
           :graphOptions="graphOptions.Blue"
           pillarName="Blue"
           :activeCountries="graphCountriesProfiles"/>
       </v-col>
-      <v-col md="6" lg="4">
+      <v-col cols="6" md="6" lg="4">
         <profiles-spider-chart
           headerText="Digital Transformation"
           :graphOptions="graphOptions.Digital"
           pillarName="Digital"
           :activeCountries="graphCountriesProfiles"/>
       </v-col>
-      <v-col md="6" lg="4">
+      <v-col cols="6" md="6" lg="4">
         <profiles-spider-chart
           headerText="Multidimensional Vulnerability"
           :graphOptions="graphOptions.MVI2"
@@ -123,7 +126,7 @@
           :countryId="country"/>
       </v-col>
     </v-row>
-    <v-row justify="center" class="d-md-none">
+    <v-row justify="center" class="d-none-print d-md-none">
       <v-col cols="11">
         <v-tabs
           v-model="tab"
@@ -175,7 +178,7 @@
 
       </v-col>
     </v-row>
-    <v-row class="d-flex d-md-none" justify="center">
+    <v-row class="d-flex d-none-print d-md-none" justify="center">
       <v-col cols="11" md="6">
         <div class="select">
           <v-select
@@ -218,7 +221,7 @@
       <v-col cols="2">
         <v-btn
           rounded
-          class="ma-2"
+          class="ma-2 d-none-print"
           @click="exportCSV"
           color="primary"
         >
@@ -334,7 +337,6 @@ export default {
         }
         return 0;
       })
-      console.log(filter)
       return filter
     },
     isMobile() {

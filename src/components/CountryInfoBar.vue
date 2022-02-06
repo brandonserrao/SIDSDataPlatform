@@ -54,6 +54,7 @@
       </v-col>
       <v-col class="p-0 d-flex align-center" md="4" cols="5">
         <v-img
+          class="bg-printable"
           contain
           :src="require(`@/assets/media/profiles-maps/${country.id}.png`)"
           height="250"
@@ -61,6 +62,7 @@
       </v-col>
       <v-col class="p-0 align-center d-none d-md-block" cols="4">
         <v-img
+          class="bg-printable"
           cover
           :src="require(`@/assets/media/country-photos/${country.id}.jpg`)"
           height="250"
