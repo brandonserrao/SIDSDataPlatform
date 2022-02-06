@@ -63,7 +63,7 @@ export default {
     return {
       regionClass:'',
       backgroundData: {
-        'background-image': 'url(/SIDSDataPlatform/static/media/portfolio-maps/All.png)'
+        'background-image': 'url(@/assets/media/portfolio-maps/All.png)'
       },
       mapClicks: {
         'All': {
@@ -151,7 +151,7 @@ export default {
       if(region === 'All') {
         regionToSet = 'All';
       }
-      let img = '/SIDSDataPlatform/static/media/portfolio-maps/' + regionToSet + '.png'
+      let img = '@/assets/media/portfolio-maps/' + regionToSet + '.png'
       var img_tag = new Image();
       // when preload is complete, apply the image to the div
       img_tag.onload = function () {

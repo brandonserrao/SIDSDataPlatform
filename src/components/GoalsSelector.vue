@@ -7,19 +7,6 @@
           @change="emitTypeChange"
           mandatory
         >
-          <!-- <v-tooltip
-            top
-            v-for="(item, i) in goalTypes"
-            :key="i"
-            eager
-            max-width="400"
-            nudge-right="106"
-            :nudge-top="20 + (40*i)"
-            content-class="indicator-tooltip"
-            allow-overflow
-          >
-           <template v-slot:activator="{ on, attrs }"> -->
-
           <v-list-item
             v-for="(item, i) in goalTypes"
             :value="item.value"
@@ -30,20 +17,6 @@
               <v-list-item-title v-text="item.name"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <!-- </template> -->
-          <!-- <v-card class="tooltip-card">
-            <v-card-title>
-              <v-img
-                class="tooltip-card_img"
-                max-width="160"
-                :src="item.headerImg"
-              ></v-img>
-            </v-card-title>
-            <v-card-text>
-              {{item.description}}
-            </v-card-text>
-          </v-card> -->
-          <!-- </v-tooltip> -->
         </v-list-item-group>
       </v-list>
     </v-col>
@@ -76,18 +49,6 @@
               />
             </template>
             <div class="goals-selector-tooltip-content">
-              <!-- <v-tooltip
-                right
-                  v-for="(n, index) in activeGoalTypes"
-                  :key="n"
-                eager
-                :nudge-right="(5 - index%6) * 56 || 6"
-                :nudge-top="getGoalsTooltipNudgeTop(index)"
-                max-width="380"
-                content-class="indicator-tooltip"
-                allow-overflow
-              >
-                <template v-slot:activator="{ on, attrs }"> -->
               <img
                 v-for="(n, index) in activeGoalTypes"
                 :key="n"
@@ -97,16 +58,6 @@
                 :width="activeGoalType === 'signature-solutions' ? 240 : 80"
 
               />
-              <!-- </template>
-                <v-card>
-                  <v-card-title class="coal-title">
-                    {{goalDescriptions[n].title}}
-                  </v-card-title>
-                  <v-card-text>
-                    {{goalDescriptions[n].content}}
-                  </v-card-text>
-                </v-card>
-              </v-tooltip> -->
             </div>
           </v-menu>
         </v-slide-item>
@@ -396,11 +347,11 @@ export default {
   methods: {
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
-        return `/SIDSDataPlatform/static/media/goals-icons/SDGs/${index+1}.png`
+        return require(`@/assets/media/goals-icons/SDGs/${index+1}.png`)
       } else if (this.activeGoalType === "samoa") {
-        return `/SIDSDataPlatform/static/media/goals-icons/SAMOA/${index+1}.png`
+        return require(`@/assets/media/goals-icons/SAMOA/${index+1}.png`)
       } else if (this.activeGoalType === "signature-solutions") {
-        return `/SIDSDataPlatform/static/media/goals-icons/SS/${index+1}.png`
+        return require(`@/assets/media/goals-icons/SS/${index+1}.png`)
       }
     },
     goalUpdateNext() {

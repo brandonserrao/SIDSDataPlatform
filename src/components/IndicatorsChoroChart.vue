@@ -1,7 +1,7 @@
 <template>
   <div class="choro">
     <div id="choro_legend_container">
-      <img id="regionLegend" src="/SIDSDataPlatform/static/media/choro-legend.jpeg" style="margin-top:-15">
+      <img id="regionLegend" src="@/assets/media/choro-legend.jpeg" style="margin-top:-15">
     </div>
     <div class="spiderbox" style="height:0;margin:0;">
       <div id="indexSpider" class="radarChart" style="text-align:center;height:0"></div>

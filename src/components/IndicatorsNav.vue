@@ -96,7 +96,7 @@
                   <v-img
                     contain
                     :max-height="dataset === item ? 40 :50 "
-                    :src="`/SIDSDataPlatform/static/media/datasets/${item}.png`"
+                    :src="require(`@/assets/media/datasets/${item}.png`)"
                   ></v-img>
                 </v-list-item-content>
               </v-list-item>
@@ -106,7 +106,7 @@
               <v-img
                 contain
                 max-height="50"
-                :src="`/SIDSDataPlatform/static/media/datasets/${item}.png`"
+                :src="require(`@/assets/media/datasets/${item}.png`)"
               ></v-img>
               <v-card-title class="mb-1 active-indicator_header">{{datasetMeta[item.name] ? datasetMeta[item.name]['Dataset Name'] : ''}}</v-card-title>
               <v-card-text>
@@ -473,8 +473,8 @@ export default {
   word-break: break-word;
 }
 .indicator-tooltip {
-  background: none;
-  padding: 0;
+  background: none !important;
+  padding: 0 !important;
 }
 .active-dimension{
   margin-right: auto;

@@ -1,19 +1,19 @@
 <template>
   <header class="header">
   <video class="header_video d-none d-lg-block" autoplay muted loop>
-    <source src="/SIDSDataPlatform/static/media/videos/header-xl.webm" type="video/webm">
+    <source src="@/assets/media/videos/header-xl.webm" type="video/webm">
   </video>
   <video class="header_video d-none d-md-block d-lg-none" autoplay muted loop>
-    <source src="/SIDSDataPlatform/static/media/videos/header-md.webm" type="video/webm">
+    <source src="@/assets/media/videos/header-md.webm" type="video/webm">
   </video>
   <video class="header_video d-block d-md-none" autoplay muted loop>
-    <source src="/SIDSDataPlatform/static/media/videos/header-sm.webm" type="video/webm">
+    <source src="@/assets/media/videos/header-sm.webm" type="video/webm">
   </video>
     <div class="d-none d-md-block d-lg-block d-xl-block header-bar">
       <a href="https://data.undp.org/" target="_blank">
         <img
           class="header-bar_logo"
-          src="/SIDSDataPlatform/static/media/logo.png"
+          src="@/assets/media/logo.png"
           alt="UNDP COVID19 Data Futures Platform Logo">
       </a>
     </div>
@@ -27,11 +27,11 @@
           development based on three pillars: Climate Action, Blue Economy, and Digital Transformation. </p>
     </main>
     <a class="header_button-down d-none d-md-block" href="#content">
-      <img alt="Arrow Down Icon" src="/SIDSDataPlatform/static/media/icons/arrow-down.png">
+      <img alt="Arrow Down Icon" src="@/assets/media/icons/arrow-down.png">
     </a>
     <img
       class="d-block d-md-none header-bar_logo-mobile"
-      src="/SIDSDataPlatform/static/media/RFSIDS.png"
+      src="@/assets/media/RFSIDS.png"
       alt="Rising Up For Small Islands Developing States Logo"/>
   </header>
 </template>
