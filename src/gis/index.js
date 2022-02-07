@@ -11,6 +11,10 @@ import mapboxgl from "@/gis/mapboxgl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+// import Compare from "mapbox-gl-compare"; //https://github.com/mapbox/mapbox-gl-compare/issues/1
+import "mapbox-gl-compare"; //expecting mapboxgl to be present on window object, result in Compare attached to window.mapboxgl.Compare
+import "mapbox-gl-compare/dist/mapbox-gl-compare.css";
+
 import * as d3 from "d3";
 import chroma from "chroma-js";
 import Chart from "chart.js";
@@ -30,14 +34,40 @@ Vue.use(VueLodash, { name: "custom", lodash: lodash });
 // import map from "core-js/fn/array/map";
 
 export default class Map {
-  constructor(container) {
+  constructor(containerId, leftMapContainerId, rightMapContainerId) {
     mapboxgl.accessToken =
       "pk.eyJ1Ijoic2ViYXN0aWFuLWNoIiwiYSI6ImNpejkxdzZ5YzAxa2gyd21udGpmaGU0dTgifQ.IrEd_tvrl6MuypVNUGU5SQ";
 
+    /* this.map = new mapboxgl.Map({
+      //main map currently used for all our usage
+      containerId, // container ID
+      ...constants.mapOptions,
+    }); */
+
+    //testing implementation of comparison swiper------------------------
+    //main map currently used for all our usage
     this.map = new mapboxgl.Map({
-      container, // container ID
+      container: leftMapContainerId,
       ...constants.mapOptions,
     });
+    //adding the 2nd map instance used for comparison/swipe features
+    this.map2 = new mapboxgl.Map({
+      container: rightMapContainerId,
+      ...constants.mapOptions,
+    });
+    /* 
+    console.log("this.map");
+    console.log(this.map);
+    console.log("this.map2");
+    console.log(this.map2);
+    console.log("containerId");
+    console.log(containerId);
+
+    this.mapCompare = new Compare(this.map, this.map2, containerId, {
+      mousemove: true,
+      orientation: "vertical",
+    }); */
+    //---------------------------------------------------------------------
 
     //for the mapbox drawing functionality, used in region analysis/drawing polygons
     this.Draw = new MapboxDraw({
@@ -50,6 +80,8 @@ export default class Map {
     });
 
     this.map.on("load", () => {
+      // this._createMapComparison(this);
+
       this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
       this._removeUnusedLayers();
       // this._createMiniMap();
@@ -62,10 +94,20 @@ export default class Map {
       this._addVectorSources();
       this.getBasemapLabels();
 
-      //TESTING - reimplementing Draw functionality
-      this.map.addControl(this.Draw, "bottom-right"); //ui buttons for drawing
+      // this.map.addControl(this.Draw, "bottom-right"); //ui buttons for drawing//TESTING - reimplementing Draw functionality
+      document
+        .getElementById("drawControls")
+        .appendChild(this.Draw.onAdd(this.map));
+      /*  document
+        .getElementsByClassName("mapbox-gl-draw_polygon-active")[0]
+        .addEventListener("click", () => {
+          console.log("onclick drawpolygon fired");
+          document.getElementsByClassName[0].classList.add("display-none");
+        }); */
+
       this._initDrawInfoControl(); //display area for region analysis info
       this._addDrawListeners(this);
+      this._setupComparison(containerId, this.map, this.map2);
     });
 
     //for debugging--------------------
@@ -83,6 +125,31 @@ export default class Map {
 
   //Map class methods:
   //A) map initialization methods----------------------------------------------------------------------------
+  /* _createMapComparison(mapClassInstance) {
+  } */
+
+  _setupComparison(containerId, map1Instance, map2Instance) {
+    console.log("this.map");
+    console.log(map1Instance);
+    console.log("this.map2");
+    console.log(map2Instance);
+    console.log("containerId");
+    console.log(containerId);
+
+    /* let comp = Compare();
+    console.log(comp.prototypeMethod());
+    console.log(comp.property);
+    console.log(Compare); */
+    this.mapCompare = new mapboxgl.Compare(
+      map1Instance,
+      map2Instance,
+      containerId,
+      {
+        // mousemove: true,
+        // orientation: "vertical",
+      }
+    );
+  }
 
   _createMiniMap() {
     this.minimap = new mapboxgl.Minimap({
@@ -308,6 +375,10 @@ export default class Map {
     }
     function drawModeChange(e) {
       console.log("drawModeChange to", e.mode);
+      document
+        .getElementsByClassName("close-menu")[0]
+        .classList.add("display-none");
+
       if (e.mode === "simple_select") {
         console.log("deletAll features before:", e.mode);
         mapClassInstance.Draw.deleteAll();
@@ -386,7 +457,8 @@ export default class Map {
           //$("#draw-sidebar").show(); //toggle on display area for the info
           let drawInfoDiv = document.getElementById("draw-info-control");
           drawInfoDiv.innerHTML = ""; //clear the drawInfoDiv of old content
-          drawInfoDiv.style.display = "block";
+          // drawInfoDiv.style.display = "block";
+          drawInfoDiv.classList.remove("display-none");
           drawInfoDiv.style.height = "auto"; // drawInfoDiv.style.height = "100px";
           drawInfoDiv.style.width = "200px";
 
@@ -1812,7 +1884,8 @@ export default class Map {
     //toggle the custom control displaying value display off
     // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     let clickDiv = document.getElementById("on-click-control");
-    clickDiv.style.display = "none";
+    clickDiv.classList.add("display-none");
+    // clickDiv.style.display = "none";
     clickDiv.innerHTML = "";
   }
   clearHexHighlight() {
@@ -1828,7 +1901,7 @@ export default class Map {
 
     // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     let clickDiv = document.getElementById("on-click-control");
-    clickDiv.style.display = "block";
+    clickDiv.classList.remove("display-none"); // clickDiv.style.display = "block";
     // clickDiv.style.height = "100px";
     clickDiv.style.height = "auto";
     clickDiv.style.width = "200px";
@@ -1897,7 +1970,7 @@ export default class Map {
   addAdminClick(e, adminLayerId) {
     // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     let clickDiv = document.getElementById("on-click-control");
-    clickDiv.style.display = "block";
+    clickDiv.classList.remove("display-none"); // clickDiv.style.display = "block";
     clickDiv.style.height = "auto";
     // clickDiv.style.height = "100px";
     clickDiv.style.width = "200px";

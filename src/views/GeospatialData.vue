@@ -44,7 +44,26 @@
       @toggle-3D="toggle3D()"
       @toggle-labels="toggleLabels($event)"
     />
-    <div id="map">
+
+    <div id="mapsContainer">
+      <div id="map">
+        <div class="loader-gis-modal">
+          <grid-loader
+            class="loader-gis display-none"
+            :loading="gisLoader.loading"
+            :color="gisLoader.color"
+            :size="gisLoader.size"
+          ></grid-loader>
+        </div>
+      </div>
+
+      <div id="map2"></div>
+    </div>
+    <!-- <div id="comparison-container" class="display-none">
+        <div id="leftMap" class="comparison_map"></div>
+        <div id="rightMap" class="comparison_map"></div>
+      </div> -->
+    <!-- <div id="map">
       <div class="loader-gis-modal">
         <grid-loader
           class="loader-gis display-none"
@@ -53,7 +72,7 @@
           :size="gisLoader.size"
         ></grid-loader>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -472,7 +491,7 @@ export default {
     },
   },
   mounted() {
-    this.map = new GIS("map");
+    this.map = new GIS("#mapsContainer", "map", "map2");
 
     let collapseBtn = document.getElementsByClassName("collapse-btn")[0];
     collapseBtn.addEventListener("click", function () {
@@ -558,6 +577,8 @@ export default {
 .map-container {
   position: relative;
   padding: 0 !important;
+  height: 100%;
+  width: 100%;
 }
 .data-controller {
   position: absolute;
@@ -630,7 +651,8 @@ export default {
 
 /* onclick of hexes mapbox control bottom-right */
 .my-custom-control {
-  display: none;
+  display: block;
+  /* display: none; */
   background-color: rgba(221, 221, 221, 0.9);
   height: 0px;
   width: 0px;
@@ -677,5 +699,25 @@ export default {
   opacity: 0;
   z-index: -999;
   pointer-events: none;
+}
+
+.mapbox-gl-draw_polygon.active,
+.mapbox-gl-draw_polygon.active:hover {
+  background-color: rgb(42, 155, 42);
+}
+
+#mapsContainer {
+  /* position: relative; */
+  /*  height: 100%;
+  width: 100%; */
+}
+#mapsContainer #map,
+#mapsContainer #map2 {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  /* height: 100vh; */
 }
 </style>
