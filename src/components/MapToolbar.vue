@@ -738,8 +738,7 @@
                         <div
                           style="margin-top: 12px; font-size: 12px; width: 80%"
                         >
-                          Draw mode is a nice mode in which you draw some
-                          polygons and triangles really great.
+                          Toggles the display of administrative boundaries.
                         </div>
                       </div>
                     </div>
@@ -813,6 +812,197 @@
                 ></div>
               </div>
             </div>
+          </div>
+
+          <!-- Bottom half of toolbar  -->
+          <div class="row-flex">
+            <div class="col-flex space-evenly">
+              <div class="menu row-flex">
+                <!-- Raster Calculator -->
+                <div class="icon calculator-icon" @click="toggleMenu(8)"></div>
+                <div class="description hover">Calculator</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="raster-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+
+              <!-- Bivariate Mode -->
+              <div class="menu row-flex">
+                <div
+                  class="icon bivariate-mode-icon"
+                  @click="handleBivariateMode()"
+                ></div>
+                <div class="description hover">Bivariate</div>
+                <!-- <div class="menu-drop row-flex align-items-center display-none bivariate menu-with-blue">
+                      <div class="row-flex align-items-center" style="height: 40px;margin:0 6px 0 0;">
+                        <div class="row-flex" style="font-weight: bold; padding-left: 10px;line-height:40px;margin:0 10px 0 0;height: 40px;width:200px;background-color:#DFDFDF;">Bivariate Mode Enabled</div>
+                        <div class="info-nobg-icon"></div>
+                      </div>
+                    </div> 
+                <div class="blue-box blue-box-bivariate display-none"></div>-->
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="bivariate-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+
+              <!-- Draw Menu -->
+              <div class="menu row-flex">
+                <div class="icon draw-icon" @click="toggleMenu(10)"></div>
+                <!-- <div class="icon draw-icon" onClick="handleDrawMenu()"></div> -->
+                <div class="description hover">Draw</div>
+                <!-- <div class="menu-drop row-flex display-none menu-big menu-with-blue" id="draw-menu">
+                  
+                      <div class="col-flex align-items-center" style="height:auto; width:auto;">
+                        <div class="row-flex align-items-center space-evenly" style="border-top-left-radius:5px; height:52px; width: 280px;background-color:#C4C4C4;">
+                          <div class="row-flex" style="margin-left: 15px; line-height:52px; font-weight:bold; font-size:16px;">Draw Mode - Region Analysis</div>
+                          <div class="info-nobg-icon"></div>
+                        </div>
+                        <div class="col-flex align-items-center" style="width:280px;background-color:#C4C4C4;border-bottom-left-radius:5px; border-bottom-right-radius:5px;">
+                          <div class="row-flex space-between align-items-center" style="height:30px;width:250px;background-color:#DFDFDF">
+                            <div style="font-weight:bold; margin:0 10px;" id='drawControls'>Region Polygon 1</div>
+                            <div style="margin:0 10px 0 0;"><i>edit</i></div>
+                          </div>
+                          <div class="row-flex align-items-center" style="margin-top:5px; width:250px;height:90px">
+                             <div style="margin:0 10px">Draw a polygon for regional analysis.</div>
+                          </div>
+                          <div class="row-flex align-items-center space-evenly" style="margin: 10px 0;width:250px;height:30px;background-color:#DFDFDF;border-radius:5px;">
+                            <div style="color:#949494;margin:0 10px;">Add polygon to compares</div>
+                            <div class="grey-plus-icon"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-flex">
+                        <div class="col-flex" style="width:6px;height:52px;background-color:#C4C4C4"></div>
+                      </div>
+                    </div>
+                    <div class="blue-box blue-box-draw display-none"></div> -->
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="draw-menu"
+                >
+                  Placeholder Draw Menu content
+                  <div id="drawControls"></div>
+                </div>
+              </div>
+
+              <!-- Download Menu -->
+              <div class="menu row-flex">
+                <div class="icon download-icon" @click="toggleMenu(11)"></div>
+                <div class="description hover">Download</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="download-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+            </div>
+
+            <div class="col-flex">
+              <!-- Upload Menu -->
+              <div class="menu row-flex">
+                <div class="icon upload-icon" @click="toggleMenu(12)"></div>
+                <div class="description hover">Upload</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="upload-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+
+              <!-- Dual Mode -->
+              <div class="menu row-flex">
+                <div
+                  class="icon dual-mode-icon"
+                  onClick="handleDualMode()"
+                ></div>
+                <div class="description hover">Dual Mode</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="dual-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+
+              <!-- Voronoi -->
+              <div class="menu row-flex">
+                <div
+                  class="icon tbd-icon"
+                  id="voro"
+                  @click="toggleMenu(14)"
+                ></div>
+                <div class="description hover">Unused Voroni</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="voronoi-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+
+              <!-- Info Menu -->
+              <div class="menu row-flex">
+                <div class="icon info-icon" @click="toggleMenu(15)"></div>
+                <div class="description hover">Info</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="info-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+            </div>
+            <!-- </div>
+            </div> -->
+            <!--end sidebar!-->
           </div>
         </div>
       </div>
@@ -1096,6 +1286,12 @@ export default {
         infoIconBlue[i].classList.add("display-none");
         infoNoBgIconBlue[i].classList.remove("display-none");
       }
+
+      //hide information controls when done using tools from toolbar
+      let drawInfoControl = document
+        .getElementById("draw-info-control")
+        .classList.add("display-none");
+      console.log(drawInfoControl);
     },
     //handles open/closing related behaviour for specified sidebar menu button
     toggleMenu(index) {
@@ -2196,5 +2392,9 @@ body {
 
 .display-none {
   display: none;
+}
+
+.display-block {
+  display: block;
 }
 </style>

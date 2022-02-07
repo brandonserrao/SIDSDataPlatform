@@ -24,6 +24,7 @@
     "install": "^0.13.0",
     "jquery": "^3.6.0",
     "mapbox-gl": "^1.13.0",
+    "mapbox-gl-compare": "^0.4.0",
     "mapbox.minimap": "^0.3.0",
     "material-design-lite": "^1.3.0",
     "npm": "^8.1.4",
