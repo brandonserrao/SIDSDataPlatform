@@ -72,16 +72,18 @@
       </v-col>
       <v-col class="p-0 d-flex align-center" md="4" cols="5">
         <v-img
+          class="bg-printable"
           contain
-          :src="`/SIDSDataPlatform/static/media/profiles-maps/${id}.png`"
+          :src="require(`@/assets/media/profiles-maps/${id}.png`)"
           height="250"
         />
       </v-col>
       <v-col class="p-0 align-center d-none d-md-block" cols="4">
         <v-img
+          class="bg-printable"
           cover
+          :src="require(`@/assets/media/country-photos/${id}.jpg`)"
           height="100%"
-          :src="`/SIDSDataPlatform/static/media/country-photos/${id}.jpg`"
         ></v-img>
       </v-col>
     </v-row>

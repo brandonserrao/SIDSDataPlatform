@@ -14,7 +14,6 @@ export default {
       state.indicatorsMetadata = data;
     },
     setCountryProfile(state, {profile , id}) {
-      console.log(id)
       state.profiles[id] = profile;
     }
   },
@@ -27,9 +26,9 @@ export default {
     },
     async getCountryProfile({ state, commit }, id) {
       if(!state.profiles[id]){
-        let county = state.sidsList.find(sids => sids.id === id)
-        const profile = await service.loadCountryProfile(county.iso);
-        console.log(profile)
+        let country = state.sidsList.find(sids => sids.id === id)
+        const profile = await service.loadCountryProfile(country.iso);
+        profile.sidsData = country;
         commit("setCountryProfile", {profile, id});
       }
     }

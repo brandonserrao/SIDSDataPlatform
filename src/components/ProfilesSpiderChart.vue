@@ -3,18 +3,17 @@
       <h4 class="block-subheader text-center"
         :style="{color: graphOptions.textColor}">
         {{graphOptions.headerText}}
-        {{graphData}}
       </h4>
-      <!-- <div class="d-none" v-for="(axis, index) in graphRanks[0].axes" :id="`${pillarName}${index}`" :key="index">
+      <div class="d-none" v-for="(axis, index) in ranks[0].axes" :id="`${pillarName}${index}`" :key="index">
         <profiles-spider-chart-tooltip
           :header="axis.axis"
           :rank="axis.value"
-          :value="graphData[0].axes[index].value"
-          :source="keyMetadata[axis.axis].source"
-          :definition="keyMetadata[axis.axis].longDefinition"
-          :link="keyMetadata[axis.axis].sourceLink"
+          :value="values[0].axes[index].value"
+          :source="indicatorsMetadata[axis.code].source"
+          :definition="indicatorsMetadata[axis.code].longDefinition"
+          :link="indicatorsMetadata[axis.code].sourceLink"
         />
-      </div> -->
+      </div>
     <div :id="`graph${pillarName}${postfix}`">
     </div>
   </div>
@@ -24,19 +23,21 @@
 import * as d3 from 'd3';
 import { mapState } from 'vuex';
 import tippy from 'tippy.js';
-// import ProfilesSpiderChartTooltip from '@/components/ProfilesSpiderChartTooltip';
+import ProfilesSpiderChartTooltip from '@/components/ProfilesSpiderChartTooltip';
 import format from '@/mixins/format.mixin'
 
 export default {
   name: 'ProfilesSpiderChart',
   components:{
-    // ProfilesSpiderChartTooltip
+    ProfilesSpiderChartTooltip
   },
   mixins:[format],
   props: {
-    activeCountries: {
-      type: Array,
-      default: ()=>[]
+    ranks: {
+      type: Array
+    },
+    values: {
+      type: Array
     },
     pillarName: {
       type: String,
@@ -79,21 +80,21 @@ export default {
   }),
   computed:{
     ...mapState({
-      allKeyData: state => state.sids.allKeyData,
-      keyMetadata: state => state.sids.keyMetadata
+      profiles: state => state.profiles.profiles,
+      indicatorsMetadata: state => state.profiles.indicatorsMetadata
     }),
-    graphData() {
-      return this.activeCountries.map(country => {
-        return {
-          name:country.id,
-          axes: country[this.pillarName]
-        }
-      })
-    },
+    // graphData() {
+    //   return this.activeCountries.map(country => {
+    //     return {
+    //       name:country.id,
+    //       axes: country[this.pillarName]
+    //     }
+    //   })
+    // },
     // graphRanks() {
     //   let rankName = `${this.pillarName}Rank`;
-    //   if(this.pillarName === 'MVI2') {
-    //     rankName = 'MVI2'
+    //   if(this.pillarName === 'MVI') {
+    //     rankName = 'MVI'
     //   }
     //   return this.activeCountries.map(country => {
     //     return {
@@ -102,20 +103,20 @@ export default {
     //     }
     //   })
     // },
-    // fullGraphOptions(){
-    //   return Object.assign({} ,this.defaultGraphOptions, this.graphOptions);
-    // },
-    // maxAxisValue() {
-    //   return this.graphRanks.reduce((maxCountriesValue, country)=>{
-    //     const currentCountryMax = country.axes.reduce((maxAxesValue, axe)=>{
-    //       if(isNaN(parseInt(axe.value))) {
-    //         return maxAxesValue
-    //       }
-    //       return maxAxesValue > axe.value ? maxAxesValue : axe.value;
-    //     }, this.fullGraphOptions.maxValue);
-    //     return maxCountriesValue > currentCountryMax ? maxCountriesValue : currentCountryMax;
-    //   }, this.fullGraphOptions.maxValue);
-    // }
+    fullGraphOptions(){
+      return Object.assign({} ,this.defaultGraphOptions, this.graphOptions);
+    },
+    maxAxisValue() {
+      return this.ranks.reduce((maxCountriesValue, country)=>{
+        const currentCountryMax = country.axes.reduce((maxAxesValue, axe)=>{
+          if(isNaN(parseInt(axe.value))) {
+            return maxAxesValue
+          }
+          return maxAxesValue > axe.value ? maxAxesValue : axe.value;
+        }, this.fullGraphOptions.maxValue);
+        return maxCountriesValue > currentCountryMax ? maxCountriesValue : currentCountryMax;
+      }, this.fullGraphOptions.maxValue);
+    }
   },
   methods:{
     drawGraph(){
@@ -147,7 +148,7 @@ export default {
         });
       }
 
-      let allAxis = this.graphRanks[0].axes.map((i) => i.axis),  //Names of each axis
+      let allAxis = this.ranks[0].axes.map((i) => i.axis),  //Names of each axis
       total = allAxis.length,          //The number of different axes
       radius = Math.min(this.fullGraphOptions.w / 2, this.fullGraphOptions.h / 2),   //Radius of the outermost circle
       angleSlice = Math.PI * 2 / total,    //The width in radians of each "slice"
@@ -158,7 +159,7 @@ export default {
       HALF_PI = Math.PI / 2;
 
       //Scale for the radius
-      if (this.pillarName == "MVI2" || this.pillarName=="customIndex") {
+      if (this.pillarName == "MVI" || this.pillarName=="customIndex") {
         rScale = rScaleNormal;
       } else {
         rScale = d3.scaleLinear()
@@ -217,7 +218,7 @@ export default {
         .style("font-size", "10px")
         .attr("fill", "black")
 
-      if (this.pillarName == "MVI2"||this.pillarName=="customIndex") {
+      if (this.pillarName == "MVI"||this.pillarName=="customIndex") {
         axisGrid.selectAll(".axisLabel").text(d => this.nFormatter(this.maxAxisValue * d / this.fullGraphOptions.levels))
       }
       else {
@@ -254,7 +255,7 @@ export default {
           .call(wrap, this.fullGraphOptions.wrapWidth)
           .style("pointer-events","auto")
           .attr("id", (d, i) => `${this.pillarName}axis${i}`)
-          this.graphRanks[0].axes.map((axis, i) => {
+          this.ranks[0].axes.map((axis, i) => {
             tippy(`#${this.pillarName}axis${i}`, {
               content() {
                 const template = document.getElementById(`${rootThis.pillarName}${i}`);
@@ -274,7 +275,7 @@ export default {
         .angle((d, i) => i * angleSlice);
 
       let blobWrapper = g.selectAll(".radarWrapper")
-        .data(this.graphRanks)
+        .data(this.ranks)
         .enter().append("g")
         .attr("class", "radarWrapper");
 
@@ -314,7 +315,7 @@ export default {
             .transition()
             .style('display', 'block')
             .text(function () {
-              return rootThis.allKeyData[d.name]["Profile"].Country
+              return rootThis.profiles[d.name]["sidsData"].name
             });
         })
         .on('mouseout', () => {
@@ -360,7 +361,7 @@ export default {
 
       //Wrapper for the invisible circles on top
       const blobCircleWrapper = g.selectAll(".radarCircleWrapper")
-        .data(rootThis.graphRanks)
+        .data(rootThis.ranks)
         .enter().append("g")
         .attr("class", "radarCircleWrapper");
 
@@ -375,7 +376,7 @@ export default {
         .style("fill", "none")
         .style("pointer-events", "all")
         .on("mouseover", function (d) {
-              if(rootThis.pillarName !== 'MVI2'){
+              if(rootThis.pillarName !== 'MVI'){
                 tooltip
                   .attr('x', this.cx.baseVal.value)
                   .attr('y', this.cy.baseVal.value - 10)
@@ -391,7 +392,7 @@ export default {
                   tooltip.transition()
                     .style('display', 'block')
                     .text(function () {
-                      let value = rootThis.graphData[0].axes.filter(obj => { return obj.axis === d.axis })[0].value
+                      let value = rootThis.values[0].axes.filter(obj => { return obj.axis === d.axis })[0].value
                       if (isNaN(value)) {
                         return value   + ", " + rootThis.rankFormat(d.value.toString()) + rootThis.fullGraphOptions.unit
                       }
@@ -416,7 +417,7 @@ export default {
 
               if (this.fullGraphOptions.legend !== false && typeof this.fullGraphOptions.legend === "object") {
                 let legendZone = svgLegend;//.append('g');
-                let names = this.graphRanks.map(el => el.name);
+                let names = this.ranks.map(el => el.name);
                 let legend = legendZone.append("g")
                   //.attr("class", "legend")
                   .attr("height", 40)
@@ -448,7 +449,7 @@ export default {
     },
   },
   watch: {
-    activeCountries() {
+    ranks() {
       this.$nextTick(this.drawGraph);
     }
   },

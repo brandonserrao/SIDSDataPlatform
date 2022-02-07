@@ -60,18 +60,19 @@
             ></v-select>
             </div>
           </v-col>
-          <v-col class="d-block d-lg-none" cols='5'  md="6" lg="12">
+          <v-col cols='5'  md="6" lg="12">
+            <v-divider class="mt-2 d-none d-lg-block mb-2"></v-divider>
             <div class="select">
-            <label class="input-label">Region</label>
-            <v-select
-              rounded
-              hide-details
-              dense
-              :value="region"
-              @change="updateRegion"
-              :items="regionsToSelect"
-              outlined
-            ></v-select>
+              <label class="input-label">Funding categories</label>
+              <v-select
+                rounded
+                hide-details
+                dense
+                :value="fundingCategory"
+                @change="setCategory"
+                :items="fundingCategoriesTypes"
+                outlined
+              ></v-select>
             </div>
           </v-col>
         </v-row>
@@ -86,18 +87,17 @@
               ></portfolio-pie-chart>
           </v-col>
         </v-row>
-        <v-divider class="mt-2 d-none d-lg-block mb-2"></v-divider>
         <v-row dense justify="center">
-          <v-col cols='5'  md="6" lg="12">
+          <v-col class="d-block d-lg-none"  cols='5'  md="6" lg="12">
             <div class="select">
-              <label class="input-label">Funding categories</label>
+              <label class="input-label">Region</label>
               <v-select
                 rounded
                 hide-details
                 dense
-                :value="fundingCategory"
-                @change="setCategory"
-                :items="fundingCategoriesTypes"
+                :value="region"
+                @change="updateRegion"
+                :items="regionsToSelect"
                 outlined
               ></v-select>
             </div>

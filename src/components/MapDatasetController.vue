@@ -285,7 +285,7 @@ export default {
           name: "SIDS offer Pillars",
           value: "pillars",
           headerImg:
-            "/SIDSDataPlatform/static/media/goals-icons/sidsOfferPillars.png",
+            require("@/assets/media/goals-icons/sidsOfferPillars.png"),
           description:
             "UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.",
         },
@@ -293,7 +293,7 @@ export default {
           name: "SDGs",
           value: "sdgs",
           headerImg:
-            "/SIDSDataPlatform/static/media/goals-icons/SDGs.png",
+            require("@/assets/media/goals-icons/SDGs.png"),
           description:
           "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
 
@@ -302,7 +302,7 @@ export default {
           name: "SAMOA Pathway",
           value: "samoaPriorities",
           headerImg:
-            "/SIDSDataPlatform/static/media/goals-icons/samoaPathway.png",
+            require("@/assets/media/goals-icons/samoaPathway.png"),
           description:
           "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
         },
@@ -312,21 +312,21 @@ export default {
         {
           name: "Blue Economy",
           value: "blue",
-          icon: "/SIDSDataPlatform/static/media/goals-icons/pillars/blueEconomy.png",
+          icon: require("@/assets/media/goals-icons/pillars/blueEconomy.png"),
           description:
             "Harnessing the blue economy through an integrated approach rooted in sustainable finance and development.",
         },
         {
           name: "Climate Action",
           value: "climate",
-          icon: "/SIDSDataPlatform/static/media/goals-icons/pillars/climateAction.png",
+          icon: require("@/assets/media/goals-icons/pillars/climateAction.png"),
           description:
             "Promoting decarbonized and resilient societies through scaled up climate action and enhanced efforts to mobilize climate finance.",
         },
         {
           name: "Digital transformation",
           value: "digital",
-          icon: "/SIDSDataPlatform/static/media/goals-icons/pillars/digitalTransformation.png",
+          icon: require("@/assets/media/goals-icons/pillars/digitalTransformation.png"),
           description:
             "Accelerating digital transformation through a whole-of-society approach that puts people at the centre for inclusive societies and resilient economies.",
         },
@@ -597,9 +597,9 @@ export default {
 
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
-        return `/SIDSDataPlatform/static/media/goals-icons/SDGs/${index+1}.png`
+        return require(`@/assets/media/goals-icons/SDGs/${index+1}.png`)
       } else {
-        return `/SIDSDataPlatform/static/media/goals-icons/SAMOA/${index+1}.png`
+        return require(`@/assets/media/goals-icons/SAMOA/${index+1}.png`)
       }
     },
     goalUpdateNext() {

@@ -70,8 +70,6 @@ export default {
       for(let country in data) {
         let profile = data[country]['Profile'];
         profile.id = country;
-        profile.map = `${'/SIDSDataPlatform/static/media/profiles-maps/' + profile.id + '.png'}`;
-        profile.photo = `${'/SIDSDataPlatform/static/media/country-photos/' + profile.id + '.jpg'}`;
         // profile.code = codes[country]
         countryList.push(profile);
       }

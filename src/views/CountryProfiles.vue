@@ -1,6 +1,6 @@
 <template>
   <div class="mt-xs-0 mt-sm-0 mt-md-5 mt-lg-5 mt-xl-5">
-    <v-row class="profile-header-row" :style="isMobile ? {'background-image': `url(${activeCountryProfile.photo})`} : {}" justify="center">
+    <v-row class="profile-header-row d-none-print" :style="isMobile ? {'background-image': `url(${require(`@/assets/media/country-photos/${activeCountryProfile.id}.jpg`)})`} : {}" justify="center">
       <v-col cols="12" offset-md="1" md="4" offset-lg="3" lg="3">
         <h2 class="page-header country-profile-header">Country profile</h2>
       </v-col>
@@ -41,6 +41,9 @@
         </div>
       </v-col>
     </v-row>
+    <h1 class="d-none d-block-print">
+      {{activeCountryProfile.Country}}
+    </h1>
     <v-row class="mt-xs-0 mt-sm-0" justify="center" dense>
       <v-col class="pt-xs-0 pt-sm-0" cols="12">
         <country-info-bar
@@ -50,7 +53,7 @@
         />
       </v-col>
     </v-row>
-    <v-row class="d-none d-md-flex" justify="center">
+    <v-row class="d-none d-md-flex d-none-print" justify="center">
       <v-col cols="11" md="6">
         <div class="select">
           <v-select
@@ -89,19 +92,20 @@
         </div>
       </v-col>
     </v-row>
-    <v-row class="d-none d-md-flex" justify="center">
+    <v-row v-if="graphRankData && graphValueData" class="d-none d-md-flex" justify="center">
       <v-col v-for="pillar in pillars" :key="pillar" md="6" lg="4">
         <profiles-spider-chart
           :graphOptions="graphOptions[pillar]"
           :pillarName="pillar"
-          :activeCountries="graphValueData"/>
+          :ranks="graphRankData[pillar]"
+          :values="graphValueData[pillar]"/>
       </v-col>
       <v-col md="6" lg="4">
         <!-- <profiles-finance
           :countryId="activeCountryId"/> -->
       </v-col>
     </v-row>
-    <!-- <v-row justify="center" class="d-md-none">
+    <!-- <v-row justify="center" class="d-none-print d-md-none">
       <v-col cols="11">
         <v-tabs
           v-model="tab"
@@ -153,7 +157,7 @@
 
       </v-col>
     </v-row> -->
-    <v-row class="d-flex d-md-none" justify="center">
+    <v-row class="d-flex d-none-print d-md-none" justify="center">
       <v-col cols="11" md="6">
         <div class="select">
           <v-select
@@ -196,7 +200,7 @@
       <v-col cols="2">
         <v-btn
           rounded
-          class="ma-2"
+          class="ma-2 d-none-print"
           @click="exportCSV"
           color="primary"
         >
@@ -230,7 +234,7 @@ export default {
     region:'All SIDS',
     regions:["All SIDS", "Caribbean", "AIS", "Pacific"],
     colorScheme: ["#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"],
-    pillars:['Climate', 'Blue', 'Digital', 'MVI2'],
+    pillars:['Climate', 'Blue', 'Digital', 'MVI'],
     tab:'Climate',
     tabs:['Climate','Blue Economy','Digital Transformation','Vulnerability','Finance'],
     rgbaColorScheme:['rgba(237, 201, 81, 0.4)','rgba(204, 51, 63, 0.4)','rgba(0, 160, 176, 0.4)','rgba(255, 255, 255, 0.4)'],
@@ -269,7 +273,7 @@ export default {
         color: d3.scaleOrdinal().range(["#F58220", "#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"]),
         textColor: "#F58220"
       },
-      MVI2: {
+      MVI: {
         header:'Multidimensional Vulnerability',
         w: 320,
         h: 200,
@@ -303,10 +307,44 @@ export default {
       }
     },
     graphValueData() {
-      return [this.activeCountryId, ...this.compareIdsList].map(id => {
-        this.profiles[id].id = id
-        return this.profiles[id]
+      let result = {};
+      let countriesList = [this.activeCountryId, ...this.compareIdsList];
+      this.pillars.map(pillar => {
+        result[pillar] = countriesList.map(countyId => {
+          let countyAxes = this.profiles[countyId][pillar].map(axis => {
+            return {
+              axis: this.indicatorsMetadata[axis.axis].indicator,
+              value: axis.value,
+              code: axis.axis
+            }
+          })
+          return {
+            name: countyId,
+            axes: countyAxes
+          }
+        })
       })
+      return result
+    },
+    graphRankData() {
+      let result = {};
+      let countriesList = [this.activeCountryId, ...this.compareIdsList];
+      this.pillars.map(pillar => {
+        result[pillar] = countriesList.map(countyId => {
+          let countyAxes = this.profiles[countyId][pillar].map(axis => {
+            return {
+              axis: this.indicatorsMetadata[axis.axis].indicator,
+              value: axis.globalRank,
+              code: axis.axis
+            }
+          })
+          return {
+            name: countyId,
+            axes: countyAxes
+          }
+        })
+      })
+      return result
     },
     activeCountryProfile() {
       return this.profiles[this.activeCountryId];
@@ -421,7 +459,7 @@ export default {
       })
     },
     removeCountry(countryId) {
-      this.setCompareCountries(this.compare.filter(compareCountryId => compareCountryId !== countryId))
+      this.setCompareCountries(this.compareIdsList.filter(compareCountryId => compareCountryId !== countryId))
     },
     getColor(index) {
       return this.colorScheme[index%4];
@@ -433,10 +471,11 @@ export default {
   async beforeRouteEnter(to, from, next) {
     try {
       await store.dispatch('profiles/getCountryProfile', to.params.country);
-
-      await Promise.all(to.query.compare.split(',').map(async (id) => {
-        await store.dispatch('profiles/getCountryProfile', id);
-      }));
+      if(to.query.compare) {
+        await Promise.all(to.query.compare.split(',').map(async (id) => {
+          await store.dispatch('profiles/getCountryProfile', id);
+        }));
+      }
       next()
     } catch (e) {
       next(from)
@@ -445,10 +484,11 @@ export default {
   async beforeRouteUpdate(to, from, next) {
     try {
       await store.dispatch('profiles/getCountryProfile', to.params.country);
-
-      await Promise.all(to.query.compare.split(',').map(async (id) => {
-        await store.dispatch('profiles/getCountryProfile', id);
-      }));
+      if(to.query.compare) {
+        await Promise.all(to.query.compare.split(',').map(async (id) => {
+          await store.dispatch('profiles/getCountryProfile', id);
+        }));
+      }
       next()
     } catch (e) {
       next(from)
