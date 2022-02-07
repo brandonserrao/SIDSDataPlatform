@@ -1,0 +1,16 @@
+@media print {
+  body .v-application .d-none-print {
+    display: none !important;
+  }
+  body .v-application .d-block-print {
+    display: block !important;
+  }
+  body .v-application .d-flex-print {
+    display: flex !important;
+  }
+}
+
+.bg-printable {
+  -webkit-print-color-adjust: exact !important;   /* Chrome, Safari, Edge */
+  color-adjust: exact !important;                 /*Firefox*/
+}
