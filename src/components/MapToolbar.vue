@@ -676,7 +676,7 @@
                             name="admin-region"
                             value="admin-region-one"
                             @change="
-                              handleBoundryChange('change-boundary', {
+                              handleBoundryChange('select-boundary-layer', {
                                 'admin1-overlay': $event.target.checked,
                               })
                             "
@@ -694,7 +694,7 @@
                             name="admin-region"
                             value="admin-region-two"
                             @change="
-                              handleBoundryChange('change-boundary', {
+                              handleBoundryChange('select-boundary-layer', {
                                 'admin2-overlay': $event.target.checked,
                               })
                             "
@@ -946,7 +946,7 @@
               <div class="menu row-flex">
                 <div
                   class="icon dual-mode-icon"
-                  onClick="handleDualMode()"
+                  @click="handleDualMode()"
                 ></div>
                 <div class="description hover">Dual Mode</div>
                 <div
@@ -1040,11 +1040,13 @@ export default {
 
   methods: {
     //A) emit update - interpret and emit the desired interaction and necessary data to the parent (GeospatialData.vue)
-    handleGisMenuChange(change_type, object) {
+    handleGisMenuChange(change_type, object = null) {
       //determine type of menuchange based on eventType
 
       //display loader spinner
-      if (!(change_type === "change-opacity")) {
+      if (!["change-opacity", "toggle-dualmode"].includes(change_type)) {
+        console.log(change_type);
+        console.log("show spinner for longer GISMenuChange behaviour");
         //repainting opacity expected to be near-instantaneous so not require significant loading time
         let spinner = document.getElementsByClassName("loader-gis")[0];
         let modal = document.getElementsByClassName("loader-gis-modal")[0];
@@ -1084,7 +1086,11 @@ export default {
         let label = object.label;
         let labelObject = { label: label };
         this.$emit(change_type, labelObject);
+      } else if (change_type === "toggle-dualmode") {
+        console.log("toggle-dualmode emitting");
+        this.$emit("toggle-dualmode", object);
       } else if (change_type === "select-boundary-layer") {
+        console.log("select-boundary-layer emitting");
         this.$emit("select-boundary-layer", object);
       } else {
         alert(`${change_type} not yet handled by handleGisMenuChange`);
@@ -1121,8 +1127,9 @@ export default {
       }
     },
 
-    handleBoundryChange(object) {
+    handleBoundryChange(change_type, object) {
       // this.$emit("select-boundary-layer", object);
+      console.log("handleBoundryChange");
       this.handleGisMenuChange("select-boundary-layer", object);
     },
 
@@ -1238,6 +1245,11 @@ export default {
         "icon color-icon " + image;
 
       this.handleGisMenuChange("select-color", { color: text });
+    },
+
+    handleDualMode() {
+      console.log("handleDualMode");
+      this.handleGisMenuChange("toggle-dualmode");
     },
 
     //C) UI manipulation - functions that only change the UI-------------------------------------

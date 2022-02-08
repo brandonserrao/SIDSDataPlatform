@@ -43,6 +43,7 @@
       @toggle-legend="toggleLegend()"
       @toggle-3D="toggle3D()"
       @toggle-labels="toggleLabels($event)"
+      @toggle-dualmode="toggleDualMode()"
     />
 
     <div id="mapsContainer">
@@ -112,7 +113,6 @@ export default {
   },
   methods: {
     //A) Interfaces for the Map class
-
     changeBasemap(object) {
       this.map.changeBasemap(object);
     },
@@ -130,6 +130,9 @@ export default {
     },
     toggleLabels(labelObject) {
       this.map.addLabels(labelObject);
+    },
+    toggleDualMode() {
+      this.map.toggleMapboxGLCompare();
     },
     toggleLegend() {
       this.displayLegend = !this.displayLegend;
@@ -162,6 +165,8 @@ export default {
 
     //B) Main functions
     addBoundaryLayer(object) {
+      console.log("addBoundaryLayer:");
+      console.log(object);
       let map = this.map; //patches reference to where map stored in component
       //taken from old code
       let pointsLayers = [
@@ -188,6 +193,14 @@ export default {
       let layerNames = Object.keys(object); //what layer is being added
       let checkedBool = Object.values(object)[0]; //true or false if layerName
       let layerName = layerNames[0];
+      console.log(
+        "layerNames",
+        layerNames,
+        "checkedBool",
+        checkedBool,
+        "layerName",
+        layerName
+      );
 
       //if checkedBool === true, then Add
       //else if checkedBool === false, then remove
@@ -373,6 +386,10 @@ export default {
           }
         }
       }
+
+      map.map.once("idle", () => {
+        map.hideSpinner();
+      });
     },
 
     updateMap(activeDataset, activeLayer) {

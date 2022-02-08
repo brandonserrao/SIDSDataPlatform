@@ -3,6 +3,7 @@ import constants from "@/gis/static/constants.js";
 //taken from old code
 
 const globals = {
+  compareMode: null,
   drawingMode: null,
   firstSymbolId: "tunnel-oneway-arrow-blue",
   basemapLabels: [], //current basemap labels, for use in addLabels -> the toggling of the labels of a current basemap style
