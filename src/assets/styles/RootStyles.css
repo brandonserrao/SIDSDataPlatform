@@ -39,8 +39,8 @@
   src: local("Proxima Nova Semibold"),
        local("ProximaNova-Semibold"),
        url('/SIDSDataPlatform/static/Proxima-Nova/Proxima Nova Semibold.otf')  format("otf"),
-       url('/SIDSDataPlatform/static/Proxima-Nova/proximanova_semibold-webfont.woff')  format("woff"),
-       url('/SIDSDataPlatform/static/Proxima-Nova/proximanova_semibold-webfont.woff2')  format("woff2");
+       url('/SIDSDataPlatform/static/Proxima-Nova/proximanova-semibold-webfont.woff')  format("woff"),
+       url('/SIDSDataPlatform/static/Proxima-Nova/proximanova-semibold-webfont.woff2')  format("woff2");
   font-weight: 600;
 }
 @font-face {
@@ -48,8 +48,8 @@
   src: local("Proxima Nova RegularItalic"),
        local("ProximaNova-RegularItalic"),
        url('/SIDSDataPlatform/static/Proxima-Nova/Proxima Nova RegularItalic.otf')  format("otf"),
-       url('/SIDSDataPlatform/static/Proxima-Nova/proximanova_regularitalic-webfont.woff')  format("woff"),
-       url('/SIDSDataPlatform/static/Proxima-Nova/proximanova_regularitalic-webfont.woff2')  format("woff2");
+       url('/SIDSDataPlatform/static/Proxima-Nova/proximanova-regularitalic-webfont.woff')  format("woff"),
+       url('/SIDSDataPlatform/static/Proxima-Nova/proximanova-regularitalic-webfont.woff2')  format("woff2");
   font-weight: 400;
   font-style: italic, oblique;
 }
