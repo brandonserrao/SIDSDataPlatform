@@ -45,6 +45,7 @@ export default class Map {
     }); */
 
     //testing implementation of comparison swiper------------------------
+    this.containerId = containerId; //containerId of the div that contains the primary map1 and the secondary map2; a necessary arg for the mapboxglCompare plugin
     //main map currently used for all our usage
     this.map = new mapboxgl.Map({
       container: leftMapContainerId,
@@ -107,7 +108,12 @@ export default class Map {
 
       this._initDrawInfoControl(); //display area for region analysis info
       this._addDrawListeners(this);
-      this._setupComparison(containerId, this.map, this.map2);
+
+      // this._setupComparison(containerId, this.map, this.map2);
+      this._createComparison(containerId, this.map, this.map2);
+      this.removeComparison(); //!! creating and immediately removing as my attempt to instantiate
+      //  the comparison via the toolbar button later on (with toolbar button click) results in
+      //  map2 having diferent dimensions for some reason not immediately apparent
     });
 
     //for debugging--------------------
@@ -127,14 +133,27 @@ export default class Map {
   //A) map initialization methods----------------------------------------------------------------------------
   /* _createMapComparison(mapClassInstance) {
   } */
-
-  _setupComparison(containerId, map1Instance, map2Instance) {
+  toggleMapboxGLCompare() {
+    console.log("globals.compareMode", globals.compareMode);
+    if (!globals.compareMode) {
+      console.log("_createComparison");
+      this._createComparison(this.containerId, this.map, this.map2);
+    } else {
+      console.log("removeComparison");
+      this.removeComparison();
+    }
+    globals.compareMode = !globals.compareMode;
+  }
+  _createComparison(containerId, map1Instance, map2Instance) {
+    /* 
     console.log("this.map");
     console.log(map1Instance);
     console.log("this.map2");
     console.log(map2Instance);
     console.log("containerId");
-    console.log(containerId);
+    console.log(containerId); */
+
+    document.getElementById("map2").classList.remove("display-none"); //enabling show the comparison map
 
     /* let comp = Compare();
     console.log(comp.prototypeMethod());
@@ -149,6 +168,11 @@ export default class Map {
         // orientation: "vertical",
       }
     );
+  }
+  removeComparison() {
+    this.mapCompare.remove(); //remove the  mapboxgl.Compare from the webpage
+    document.getElementById("map2").classList.add("display-none"); //enabling show the comparison map //turn off displaying of the secondary map used for comparison
+    //!? does it continue rendering and using system resources?
   }
 
   _createMiniMap() {
@@ -1413,6 +1437,15 @@ export default class Map {
   recolorBasedOnWhatsOnPage() {
     console.log(`recolorBasedOnWhatsOnPage()`);
     let map = this.map;
+    if (!map.getLayer(globals.currentLayerState.hexSize)) {
+      //check for existence of the layer before attempting to update it
+      console.warn(
+        "!!!map does not have the current layer:",
+        globals.currentLayerState.hexSize
+      );
+      return;
+    }
+
     var features = map.queryRenderedFeatures({
       layers: [globals.currentLayerState.hexSize],
     });
