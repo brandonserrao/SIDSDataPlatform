@@ -27,10 +27,20 @@ import format from '@/mixins/format.mixin'
 export default {
   name: 'PortfolioSDGSTooltip',
   mixins:[format],
-  props: ['header','data'],
+  props: ['header','data', 'year'],
   data() {
     return {
-      headers: [
+    }
+  },
+  computed: {
+    dataWithIDs() {
+      return this.data.map((item, index) => {
+         item.subId = this.header+index;
+         return item
+      })
+    },
+    headers() {
+      let headers = [
         {
           text: 'Country',
           align: 'start',
@@ -41,15 +51,14 @@ export default {
         sortable: false, },
         { text: 'Project title', value: 'title',
         sortable: false, },
-      ]
-    }
-  },
-  computed: {
-    dataWithIDs() {
-      return this.data.map((item, index) => {
-         item.subId = this.header+index;
-         return item
-      })
+      ];
+      if(this.year === 'all') {
+        headers.push({
+          text: 'Year', value: 'year',
+          sortable: false
+        })
+      }
+      return headers
     }
   }
 }
