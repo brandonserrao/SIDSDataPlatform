@@ -334,7 +334,7 @@ export default {
           let countyAxes = this.profiles[countyId][pillar].map(axis => {
             return {
               axis: this.indicatorsMetadata[axis.axis].indicator,
-              value: axis.globalRank,
+              value: axis.globalRank || axis.value,
               code: axis.axis
             }
           })
@@ -429,7 +429,7 @@ export default {
       }
 
       let countryExport = []
-      const pillars = ["MVI2", "ClimateRank", "BlueRank", "DigitalRank", "Blue", "Climate", "Digital"];
+      const pillars = ["MVI", "ClimateRank", "BlueRank", "DigitalRank", "Blue", "Climate", "Digital"];
       generateTextDataCVS.call(this, 'Profile');
       pillars.map(pillar => {
         generateAxisDataCVS.call(this, pillar)
