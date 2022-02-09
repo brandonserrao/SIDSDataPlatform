@@ -123,7 +123,8 @@ export default {
       this.map.changeColor(object);
     },
     selectCountry(selection) {
-      this.map.zoomToCountry(selection);
+      this.map.zoomToCountry(selection); //focus tightly on the country using its bbox
+      this.map.setMapBounds(selection.bb); //lock using map.setMaxBounds(countryBBox or similar) with a buffer to allow panning within relevant surrounding area (EEZ assumed)
     },
     toggle3D() {
       this.map.add3D();

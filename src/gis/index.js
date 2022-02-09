@@ -579,6 +579,16 @@ export default class Map {
       }
     });
   }
+  setMapBounds(bbox) {
+    let buffer = 1.5; //degrees to expand the bounding box on all sides //should allow enough buffer room to cover the EEZ of 200naut.miles/~370km/~3deg@110km each
+    let expandedBBox = [
+      [bbox[0][0] - buffer, bbox[0][1] - buffer], //west, south
+      [bbox[1][0] + buffer, bbox[1][1] + buffer], //east, north
+    ];
+    console.log("setMapBounds", expandedBBox);
+    this.map.setMaxBounds(expandedBBox);
+    this.map2.setMaxBounds(expandedBBox);
+  }
   //manages the change when you chang the resolution
   changeHexagonSize(resolutionObject) {
     let map = this.map;
