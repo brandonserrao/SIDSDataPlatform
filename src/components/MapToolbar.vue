@@ -70,6 +70,7 @@
                         :name="name.NAME_0"
                         :id="name.GID_0"
                         :flagCode="name.flagCode"
+                        :bbox="name.bbox"
                         @option-select="handleCountryChange($event)"
                       ></country-selector-option>
                     </div>
@@ -1059,6 +1060,7 @@ export default {
         //value will be country name; returning the names.js object of sids info
         let name = object.text;
         let countryObject = this.sidsByName[name];
+        console.log("handleGISMenuChange countryObject", countryObject);
         this.$emit(change_type, countryObject);
         document.getElementsByClassName("country-name")[0].textContent = name;
       } else if (change_type === "select-resolution") {
