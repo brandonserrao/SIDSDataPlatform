@@ -15,7 +15,7 @@
         </div>
       </v-row>
       <div class="d-none" v-for="(goal, index) in sdgs" :id="'SDGtooltip'+ index" :key="index">
-        <portfolio-tooltip :header="goal" :data="getSDGSTooltipData(goal)"/>
+        <portfolio-tooltip :year="year" :header="goal" :data="tooltipData[goal]"/>
       </div>
     </div>
     <v-col class="d-block d-lg-none text-center block-subheader" cols='12'>
@@ -101,6 +101,15 @@ export default {
     budgetCount() {
       return this.barsData.map(data => data.budget)
     },
+    tooltipData() {
+      let res = {}
+      this.sdgs.map(sdg => {
+        res[sdg] = this.filteredProjects.filter((project) => {
+          return project.sdg && project.sdg.includes(sdg)
+        });
+      })
+      return res
+    }
   },
   methods: {
     initBars() {
@@ -367,7 +376,11 @@ export default {
                 return rootThis.nFormatter(rootThis.budgetNamesObject[d]).concat(" USD");
               }
             })
-
+        let hoverbars = this.svgContainer.selectAll('.hoverbar');
+        hoverbars.each(function (data, index) {
+          let content = document.getElementById(`SDGtooltip${index}`);
+          this._tippy.setContent(content.innerHTML)
+        })
     },
     getBarLabelsY(d, i, type) {
       if (i == 0) {
@@ -409,11 +422,11 @@ export default {
       if (type == "budg") { return 100 - budgVal - offset }
       else if (type == "proj") { return 100 - projVal - offset }
     },
-    getSDGSTooltipData(sdg) {
-      return this.filteredProjects.filter((project) => {
-        return project.sdg && project.sdg.includes(sdg)
-      });
-    }
+    // getSDGSTooltipData(sdg) {
+    //   return this.filteredProjects.filter((project) => {
+    //     return project.sdg && project.sdg.includes(sdg) && (this.year === 'all' || project.year === this.year)
+    //   });
+    // }
   },
   mounted() {
     // this.svgWidth = this.$el.offsetWidth;

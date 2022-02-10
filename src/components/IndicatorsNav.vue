@@ -47,8 +47,6 @@
                 {{item.Indicator}}
               </v-list-item-title>
               <v-list-item-content class="inicator-item_description">
-
-                  {{item}}
                 {{item.Definition}}
               </v-list-item-content>
             </v-list-item>
@@ -132,7 +130,7 @@
       :items="indicatorCategories"
     ></v-select>
     <v-select
-      v-if="dataset && indicatorSubCategories"
+      v-if="dataset && indicatorSubCategories && indicatorSubCategories.length > 1"
       class="ml-2 mr-2"
       dense
       hide-details
@@ -148,49 +146,51 @@
         prepend-icon="mdi-magnify"
         @click:append="clearDeepSearch"
     ></v-text-field>
-    <v-list v-if="dataset" dense :class="{'list-short' : activeIndicator}" class="list-indicators list-scrollabe">
-      <v-list-item-group
-        :value="activeIndicatorCode"
-      >
-        <template v-for="(indicator, i) in activeIndicatorsWithMeta">
+    <v-virtual-scroll
+      v-if="dataset"
+      :items="activeIndicatorsWithMeta"
+      :height="inticatorsListHeight"
+      itemHeight="69"
+    >
+    <template v-slot:default="{ item, index }">
+
           <v-tooltip
             right
             open-delay="300"
             transition="none"
             max-width="250"
-            :key="indicator['Indicator Code']"
+            :key="item['Indicator Code']"
             content-class="indicator-tooltip"
            >
             <template v-slot:activator="{ on, attrs }">
               <v-list-item
                 class="inicator-item"
-                :class="{'blue lighten-5': indicator['Indicator Code'] === activeIndicatorCode}"
+                :class="{'blue lighten-5': item['Indicator Code'] === activeIndicatorCode}"
                 v-bind="attrs"
                 v-on="on"
-                @click="emitIndicatorChange(indicator['Indicator Code'])"
+                @click="emitIndicatorChange(item['Indicator Code'])"
               >
                 <v-list-item-title class="inicator-item_header mt-2">
-                  {{indicator.Indicator}}
+                  {{item.Indicator}}
                 </v-list-item-title>
                 <v-list-item-content class="inicator-item_description">
-                  {{indicator.Definition}}
+                  {{item.Definition}}
                 </v-list-item-content>
               </v-list-item>
-              <v-divider v-if="dataset && i!== activeIndicatorsWithMeta.length" :key="'divider' + i"></v-divider>
+              <v-divider v-if="dataset && index!== activeIndicatorsWithMeta.length" :key="'divider' + index"></v-divider>
             </template>
             <v-card class="tooltip-card">
-              <v-card-title class="mb-1 active-indicator_header">{{indicator.Indicator}}</v-card-title>
+              <v-card-title class="mb-1 active-indicator_header">{{item.Indicator}}</v-card-title>
               <v-card-text>
-                <div class="mb-1">{{indicator.Dimension}}</div>
+                <div class="mb-1">{{item.Dimension}}</div>
                 <v-divider class="mb-1 mt-1"></v-divider>
-                <b>Source:</b>{{indicator.Source}} <br/>
-                <a :href="indicator.Link" target="_blank">Link</a>
+                <b>Source:</b>{{item.Source}} <br/>
+                <a :href="item.Link" target="_blank">Link</a>
               </v-card-text>
             </v-card>
           </v-tooltip>
         </template>
-      </v-list-item-group>
-    </v-list>
+    </v-virtual-scroll>
   </v-card>
     <v-card flat class="mt-2" v-if="activeIndicator">
       <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.Indicator}}</v-card-title>
@@ -349,6 +349,18 @@ export default {
           dimension: this.indicatorsMeta[code].Dimension
         }
       })
+    },
+    inticatorsListHeight() {
+      let height = '100vh',
+      substraction = 200;
+      if(this.activeIndicator) {
+        height = '50vh'
+        substraction = 128
+      }
+      if(this.activeCategory && this.indicatorSubCategories &&  this.indicatorSubCategories.length>1) {
+        substraction+=40
+      }
+      return `calc(${height} - ${substraction}px)`
     }
   },
   methods: {
