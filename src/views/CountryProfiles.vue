@@ -42,7 +42,7 @@
       </v-col>
     </v-row>
     <h1 class="d-none d-block-print">
-      {{activeCountryProfile.Country}}
+      {{activeCountry.name}}
     </h1>
     <v-row class="mt-xs-0 mt-sm-0" justify="center" dense>
       <v-col class="pt-xs-0 pt-sm-0" cols="12">
@@ -92,15 +92,15 @@
         </div>
       </v-col>
     </v-row>
-    <v-row v-if="graphRankData && graphValueData" class="d-none d-md-flex" justify="center">
-      <v-col v-for="pillar in pillars" :key="pillar" md="6" lg="4">
+    <v-row v-if="graphRankData && graphValueData" class="d-flex-print d-none d-md-flex" justify="center">
+      <v-col v-for="pillar in pillars" :key="pillar" cols="5" md="6" lg="4">
         <profiles-spider-chart
           :graphOptions="graphOptions[pillar]"
           :pillarName="pillar"
           :ranks="graphRankData[pillar]"
           :values="graphValueData[pillar]"/>
       </v-col>
-      <v-col md="6" lg="4">
+      <v-col cols="12" md="6" lg="4">
         <profiles-finance
           :countryId="activeCountryId"/>
       </v-col>

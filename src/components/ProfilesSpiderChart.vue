@@ -2,7 +2,7 @@
   <div class="graph-container">
       <h4 class="block-subheader text-center"
         :style="{color: graphOptions.textColor}">
-        {{graphOptions.headerText}}
+        {{graphOptions.header}}
       </h4>
       <div class="d-none" v-for="(axis, index) in ranks[0].axes" :id="`${pillarName}${index}`" :key="index">
         <profiles-spider-chart-tooltip
