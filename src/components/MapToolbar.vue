@@ -10,7 +10,7 @@
           <!-- <div style="font-weight: 600; color: white; font-size: 18px">
             View
           </div> -->
-          <div class="row-flex full-width">
+          <div class="row-flex full-width view-tools">
             <div class="col-flex space-evenly">
               <!-- Country Select Menu -->
               <div class="menu row-flex">
@@ -816,7 +816,7 @@
           </div>
 
           <!-- Bottom half of toolbar  -->
-          <div class="row-flex">
+          <div class="row-flex analysis-tools">
             <div class="col-flex space-evenly">
               <!-- Raster Calculator -->
               <div class="menu row-flex display-none">
