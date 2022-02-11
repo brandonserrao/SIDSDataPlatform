@@ -499,19 +499,17 @@ export default class Map {
           let mean = total / info.length;
 
           //creating the info elements to be appended as children in the control
+          let Units = document.getElementById("legendTitle").textContent;
           let titleText = document.createElement("div");
-          titleText.append(`Placeholder for legendData.desc value`);
+          titleText.append(`Regional Statistics:`);
           let meanText = document.createElement("div");
           meanText.append(
-            `Mean of Selected: ${mapClassInstance.nFormatter(
-              mean,
-              2
-            )} PlaceholderUnits`
+            `Mean: ${mapClassInstance.nFormatter(mean, 2)} ${Units}`
           );
           let maxText = document.createElement("div");
-          maxText.append(`Max of Selected: ${max} PlaceholderUnits`);
+          maxText.append(`Max: ${max} ${Units}`);
           let minText = document.createElement("div");
-          minText.append(`Min of Selected: ${min} PlaceholderUnits`);
+          minText.append(`Min: ${min} ${Units}`);
 
           drawInfoDiv.append(titleText);
           drawInfoDiv.append(meanText);

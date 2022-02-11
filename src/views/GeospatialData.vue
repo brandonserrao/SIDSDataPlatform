@@ -124,7 +124,7 @@ export default {
     },
     selectCountry(selection) {
       this.map.zoomToCountry(selection); //focus tightly on the country using its bbox
-      this.map.setMapBounds(selection.bb); //lock using map.setMaxBounds(countryBBox or similar) with a buffer to allow panning within relevant surrounding area (EEZ assumed)
+      // this.map.setMapBounds(selection.bb); //lock using map.setMaxBounds(countryBBox or similar) with a buffer to allow panning within relevant surrounding area (EEZ assumed)
     },
     toggle3D() {
       this.map.add3D();
@@ -137,6 +137,15 @@ export default {
     },
     toggleLegend() {
       this.displayLegend = !this.displayLegend;
+    },
+    toggleDatasetController() {
+      console.log("collapse-btn onclick firing");
+      let dataController =
+        document.getElementsByClassName("data-controller")[0];
+      dataController.classList.toggle("collapsed");
+
+      let collapseBtn = document.getElementsByClassName("collapse-btn")[0];
+      collapseBtn.classList.toggle("collapsed");
     },
     changeResolution(object) {
       if (!(this.activeDatasetName === "Ocean Data")) {
@@ -512,13 +521,7 @@ export default {
     this.map = new GIS("#mapsContainer", "map", "map2");
 
     let collapseBtn = document.getElementsByClassName("collapse-btn")[0];
-    collapseBtn.addEventListener("click", function () {
-      console.log("collapse-btn onclick firing");
-      document
-        .getElementsByClassName("data-controller")[0]
-        .classList.toggle("collapsed");
-      this.classList.toggle("collapsed");
-    });
+    collapseBtn.addEventListener("click", this.toggleDatasetController);
   },
 };
 </script>

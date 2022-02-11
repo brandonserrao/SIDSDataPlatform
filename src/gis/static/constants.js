@@ -1,4 +1,11 @@
 const constants = {
+  filepath: {
+    //dirpath+attributeID+resolution+pathtemplate+sas = mvt tile path
+    vectorTilesDirPath:
+      "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vtiles2/",
+    vectorTilesPathTemplate: "{z}/{x}/{y}.pbf",
+    SAS: "?sv=2020-08-04&st=2022-01-06T07%3A39%3A53Z&se=2023-01-07T07%3A39%3A00Z&sr=c&sp=racwl&sig=uN7Z2aqOpU9upKl2zP4hEh1VfgMVwYixgml8uS216g8%3D",
+  },
   sourceURLs: {
     hex1: "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/hex1/{z}/{x}/{y}.pbf?sv=2020-08-04&st=2022-01-06T07%3A39%3A53Z&se=2023-01-07T07%3A39%3A00Z&sr=c&sp=racwl&sig=uN7Z2aqOpU9upKl2zP4hEh1VfgMVwYixgml8uS216g8%3D",
     hex5: "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vectortiles/hex5/{z}/{x}/{y}.pbf?sv=2020-08-04&st=2022-01-06T07%3A39%3A53Z&se=2023-01-07T07%3A39%3A00Z&sr=c&sp=racwl&sig=uN7Z2aqOpU9upKl2zP4hEh1VfgMVwYixgml8uS216g8%3D",
