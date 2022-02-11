@@ -862,8 +862,8 @@
                 </div>
               </div>
 
-              <!-- Draw Menu -->
-              <div class="menu row-flex">
+              <!-- Draw Menu hidden due to unresolved issue (see github link on trello) -->
+              <div class="menu row-flex display-none">
                 <div class="icon draw-icon" @click="toggleMenu(10)"></div>
                 <!-- <div class="icon draw-icon" onClick="handleDrawMenu()"></div> -->
                 <div class="description hover">Custom Regional Analysis</div>
