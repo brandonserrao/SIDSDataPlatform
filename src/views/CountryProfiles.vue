@@ -93,7 +93,7 @@
       </v-col>
     </v-row>
     <v-row v-if="graphRankData && graphValueData" class="d-flex-print d-none d-md-flex" justify="center">
-      <v-col v-for="pillar in pillars" :key="pillar" cols="5" md="6" lg="4">
+      <v-col v-for="pillar in pillars" :key="pillar" cols="6" md="6" lg="4">
         <profiles-spider-chart
           :graphOptions="graphOptions[pillar]"
           :pillarName="pillar"
@@ -174,14 +174,29 @@
     </v-row>
     <v-row class="d-none d-md-flex" justify="center">
       <v-col cols="2">
-        <v-btn
-          rounded
-          class="ma-2 d-none-print"
-          @click="exportCSV"
-          color="primary"
-        >
-          Export to CSV
-        </v-btn>
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              rounded
+              class="ma-2 d-none-print"
+              color="primary"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Export
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item-group>
+              <v-list-item @click="exportCSV">
+                <v-list-item-title>Summary CSV</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="exportPDF">
+                <v-list-item-title>Summary PDF</v-list-item-title>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-menu>
       </v-col>
     </v-row>
   </div>
@@ -338,6 +353,9 @@ export default {
     },
   },
   methods:{
+    exportPDF() {
+      window.print();
+    },
     exportCSV() {
       // TODO: move export to mixins
       function convertToCSV(objArray,note) {

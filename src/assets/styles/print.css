@@ -8,6 +8,10 @@
   body .v-application .d-flex-print {
     display: flex !important;
   }
+
+  body {
+    transform: scale(1);
+  }
 }
 
 .bg-printable {
