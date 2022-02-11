@@ -563,7 +563,16 @@ export default {
     display: none;
   }
 }
-/*  */
+
+/* landscape for devices smaller than laptops */
+@media (orientation: landscape) and (max-width: 1200px) {
+  .analysis-tools {
+    display: none !important;
+    /* used to hide analysis tools from mobile devices */
+  }
+}
+
+/* */
 @media (orientation: landscape) {
   .landscape-enforcer {
     display: none;
