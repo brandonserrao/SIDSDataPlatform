@@ -71,14 +71,17 @@ export default class Map {
     //---------------------------------------------------------------------
 
     //for the mapbox drawing functionality, used in region analysis/drawing polygons
-    this.Draw = new MapboxDraw({
-      displayControlsDefault: false,
-      // Select which mapbox-gl-draw control buttons to add to the map.
-      controls: {
-        polygon: true,
-        trash: true,
-      },
-    });
+    this.drawModeDisabled = false;
+    if (this.drawModeDisabled) {
+      this.Draw = new MapboxDraw({
+        displayControlsDefault: false,
+        // Select which mapbox-gl-draw control buttons to add to the map.
+        controls: {
+          polygon: true,
+          // trash: true,
+        },
+      });
+    }
 
     this.map.on("load", () => {
       // this._createMapComparison(this);
@@ -96,18 +99,14 @@ export default class Map {
       this.getBasemapLabels();
 
       // this.map.addControl(this.Draw, "bottom-right"); //ui buttons for drawing//TESTING - reimplementing Draw functionality
-      document
-        .getElementById("drawControls")
-        .appendChild(this.Draw.onAdd(this.map));
-      /*  document
-        .getElementsByClassName("mapbox-gl-draw_polygon-active")[0]
-        .addEventListener("click", () => {
-          console.log("onclick drawpolygon fired");
-          document.getElementsByClassName[0].classList.add("display-none");
-        }); */
+      if (this.drawModeDisabled) {
+        document
+          .getElementById("drawControls")
+          .appendChild(this?.Draw.onAdd(this.map));
 
-      this._initDrawInfoControl(); //display area for region analysis info
-      this._addDrawListeners(this);
+        this._initDrawInfoControl(); //display area for region analysis info
+        this._addDrawListeners(this);
+      }
 
       // this._setupComparison(containerId, this.map, this.map2);
       this._createComparison(containerId, this.map, this.map2);
