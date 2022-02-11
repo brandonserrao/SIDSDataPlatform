@@ -1309,7 +1309,7 @@ export default {
       //hide information controls when done using tools from toolbar
       let drawInfoControl = document
         .getElementById("draw-info-control")
-        .classList.add("display-none");
+        ?.classList.add("display-none");
       console.log(drawInfoControl);
     },
     //handles open/closing related behaviour for specified sidebar menu button
