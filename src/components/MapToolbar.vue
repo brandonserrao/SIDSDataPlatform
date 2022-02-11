@@ -818,8 +818,8 @@
           <!-- Bottom half of toolbar  -->
           <div class="row-flex">
             <div class="col-flex space-evenly">
-              <div class="menu row-flex">
-                <!-- Raster Calculator -->
+              <!-- Raster Calculator -->
+              <div class="menu row-flex display-none">
                 <div class="icon calculator-icon" @click="toggleMenu(8)"></div>
                 <div class="description hover">Calculator</div>
                 <div
@@ -836,7 +836,7 @@
               </div>
 
               <!-- Bivariate Mode -->
-              <div class="menu row-flex">
+              <div class="menu row-flex display-none">
                 <div
                   class="icon bivariate-mode-icon"
                   @click="handleBivariateMode()"
@@ -908,7 +908,7 @@
               </div>
 
               <!-- Download Menu -->
-              <div class="menu row-flex">
+              <div class="menu row-flex display-none">
                 <div class="icon download-icon" @click="toggleMenu(11)"></div>
                 <div class="description hover">Download Geodata</div>
                 <div
@@ -927,7 +927,7 @@
 
             <div class="col-flex">
               <!-- Upload Menu -->
-              <div class="menu row-flex">
+              <div class="menu row-flex display-none">
                 <div class="icon upload-icon" @click="toggleMenu(12)"></div>
                 <div class="description hover">Upload Geodata</div>
                 <div
@@ -964,7 +964,7 @@
               </div>
 
               <!-- Voronoi -->
-              <div class="menu row-flex">
+              <div class="menu row-flex display-none">
                 <div
                   class="icon tbd-icon"
                   id="voro"
@@ -985,7 +985,7 @@
               </div>
 
               <!-- Info Menu -->
-              <div class="menu row-flex">
+              <div class="menu row-flex display-none">
                 <div class="icon info-icon" @click="toggleMenu(15)"></div>
                 <div class="description hover">Info about this product</div>
                 <div
@@ -1252,6 +1252,11 @@ export default {
     handleDualMode() {
       console.log("handleDualMode");
       this.handleGisMenuChange("toggle-dualmode");
+    },
+
+    handleBivariateMode() {
+      console.warn("handleBivariateMode not yet implemented");
+      // this.handleGisMenuChange("toggle-bivariate");
     },
 
     //C) UI manipulation - functions that only change the UI-------------------------------------
