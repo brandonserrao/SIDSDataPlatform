@@ -109,7 +109,7 @@ export default class Map {
       }
 
       // this._setupComparison(containerId, this.map, this.map2);
-      this._createComparison(containerId, this.map, this.map2);
+      this.createComparison(containerId, this.map, this.map2);
       this.removeComparison(); //!! creating and immediately removing as my attempt to instantiate
       //  the comparison via the toolbar button later on (with toolbar button click) results in
       //  map2 having diferent dimensions for some reason not immediately apparent
@@ -130,34 +130,21 @@ export default class Map {
 
   //Map class methods:
   //A) map initialization methods----------------------------------------------------------------------------
-  /* _createMapComparison(mapClassInstance) {
-  } */
+
   toggleMapboxGLCompare() {
     console.log("globals.compareMode", globals.compareMode);
     if (!globals.compareMode) {
-      console.log("_createComparison");
-      this._createComparison(this.containerId, this.map, this.map2);
+      console.log("createComparison");
+      this.createComparison(this.containerId, this.map, this.map2);
     } else {
       console.log("removeComparison");
       this.removeComparison();
     }
     globals.compareMode = !globals.compareMode;
   }
-  _createComparison(containerId, map1Instance, map2Instance) {
-    /* 
-    console.log("this.map");
-    console.log(map1Instance);
-    console.log("this.map2");
-    console.log(map2Instance);
-    console.log("containerId");
-    console.log(containerId); */
-
+  createComparison(containerId, map1Instance, map2Instance) {
     document.getElementById("map2").classList.remove("display-none"); //enabling show the comparison map
 
-    /* let comp = Compare();
-    console.log(comp.prototypeMethod());
-    console.log(comp.property);
-    console.log(Compare); */
     this.mapCompare = new mapboxgl.Compare(
       map1Instance,
       map2Instance,
@@ -167,6 +154,8 @@ export default class Map {
         // orientation: "vertical",
       }
     );
+    map2Instance.setCenter(map1Instance.getCenter());
+    map2Instance.setZoom(map1Instance.getZoom());
   }
   removeComparison() {
     this.mapCompare.remove(); //remove the  mapboxgl.Compare from the webpage
@@ -229,8 +218,8 @@ export default class Map {
             "line-color": "orange",
             "line-width": 1,
           },
-        },
-        globals.firstSymbolId
+        }
+        // globals.firstSymbolId
       );
     }
 
@@ -1082,7 +1071,7 @@ export default class Map {
     }
 
     //update state
-    globals.currentLayerState.dataLayer = activeLayer.Field_Name;
+    globals.currentLayerState.dataLayer = activeLayer.Field_Name; //corresponds to the attributeId
     globals.currentLayerState.hexSize = "ocean";
     //ocean-specific layer state values hardcoded
     //ocean data uses pre-decided breaks and color;
@@ -1102,40 +1091,49 @@ export default class Map {
       if (this.map.getLayer(constants.userLayers[layer])) {
         this.map.removeLayer(constants.userLayers[layer]);
       }
+      // if (this.map2.getLayer(constants.userLayers[layer])) {
+      //   this.map2.removeLayer(constants.userLayers[layer]);
+      // }
     }
 
-    //add the layer
-    this.map.addLayer(
-      {
-        id: "ocean",
-        type: "fill",
-        source: "ocean",
-        "source-layer": "oceans",
-        layout: {
-          visibility: "visible",
-        },
-        filter: ["<", "depth", 0],
-        paint: {
-          "fill-color": [
-            "interpolate",
-            ["linear"],
-            ["get", "depth"],
-            -4841,
-            "#08519c",
-            -3805,
-            "#3182bd",
-            -2608,
-            "#6baed6",
-            -1090,
-            "#bdd7e7",
-            1322,
-            "#eff3ff",
-          ],
-          "fill-opacity": globals.opacity, //0.8,
-        },
+    let layerOptions = {
+      id: "ocean",
+      type: "fill",
+      source: "ocean",
+      "source-layer": "oceans",
+      layout: {
+        visibility: "visible",
       },
-      globals.firstSymbolId
-    );
+      filter: ["<", "depth", 0],
+      paint: {
+        "fill-color": [
+          "interpolate",
+          ["linear"],
+          ["get", "depth"],
+          -4841,
+          "#08519c",
+          -3805,
+          "#3182bd",
+          -2608,
+          "#6baed6",
+          -1090,
+          "#bdd7e7",
+          1322,
+          "#eff3ff",
+        ],
+        "fill-opacity": globals.opacity, //0.8,
+      },
+    };
+    //add the layer
+    this.map.addLayer(layerOptions, globals.firstSymbolId);
+
+    //NEW - adding Source and Layer for new format of data-----------------------------
+    // this.map2.addSource(
+    //   "ocean",
+    //   this.createSourceObj(activeLayer.Field_Name, "ocean")
+    // );
+    // this.map2.addLayer(layerOptions, globals.firstSymbolId);
+    //---------------------------------------------------------------------------------
 
     setTimeout(() => {
       var features = this.map.queryRenderedFeatures({
@@ -1933,10 +1931,12 @@ export default class Map {
   }
   clearHexHighlight() {
     if (this.map.getLayer("clickedone")) {
-      console.log(`removing highlight`);
+      console.log(`map:removing highlight`);
       this.map.removeLayer("clickedone");
       this.clearOnClickQuery(); //to remove the onClickQuery div
     }
+    let clickDiv = document.getElementById("on-click-control");
+    clickDiv.classList.add("display-none");
   }
   onDataClick(clicked) {
     console.log(`onDataClick clicked object:`);
@@ -2175,6 +2175,39 @@ export default class Map {
   }
 
   //D) Utility Functions - static code with no major logic which supports major functions-----------------------------------
+  createSourceObj(attributeIdStr, resolutionStr) {
+    let promoteId;
+    if (attributeIdStr.includes("hex")) {
+      promoteId = "hexid";
+    } else if (attributeIdStr === "admin0") {
+      promoteId = "GID_0";
+    } else if (attributeIdStr === "admin1") {
+      promoteId = "GID_1";
+    } else if (attributeIdStr === "admin2") {
+      promoteId = "GID_2";
+    } else {
+      console.warn("promoteId not attached to layer");
+    }
+
+    let sourceURI = this.constructSourceURI(attributeIdStr, resolutionStr);
+    let sourceObj = {
+      type: "vector",
+      tiles: [sourceURI],
+      promoteId: promoteId,
+    };
+    return sourceObj;
+  }
+  constructSourceURI(attributeIdStr, resolutionStr) {
+    //dirpath+attributeID+resolution+pathtemplate+sas = mvt tile path
+    let fragments = constants.filepaths;
+    let uriString =
+      fragments.vectorTilesDirPath +
+      attributeIdStr +
+      resolutionStr +
+      fragments.vectorTilesPathTemplate +
+      fragments.filepathsSAS;
+    return uriString;
+  }
 
   getUniqueFeatures(array, comparatorProperty) {
     //taken directly from old code
