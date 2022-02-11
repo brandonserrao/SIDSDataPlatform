@@ -723,42 +723,46 @@ export default class Map {
       });
       //re-add the current layer, with appropriate filtering
       let cls = globals.currentLayerState;
-      map.addLayer(
-        {
-          id: cls.hexSize,
-          type: "fill",
-          source: cls.hexSize,
-          "source-layer": currentSource.layer,
-          layout: {
-            visibility: "visible",
+      try {
+        map.addLayer(
+          {
+            id: cls.hexSize,
+            type: "fill",
+            source: cls.hexSize,
+            "source-layer": currentSource.layer,
+            layout: {
+              visibility: "visible",
+            },
+            paint: {
+              "fill-opacity": globals.opacity, //0.8
+              "fill-color": [
+                "interpolate",
+                ["linear"],
+                ["get", cls.dataLayer],
+                cls.breaks[0],
+                cls.color[0],
+                cls.breaks[1],
+                cls.color[1],
+                cls.breaks[2],
+                cls.color[2],
+                cls.breaks[3],
+                cls.color[3],
+                cls.breaks[4],
+                cls.color[4],
+              ],
+            },
           },
-          paint: {
-            "fill-opacity": globals.opacity, //0.8
-            "fill-color": [
-              "interpolate",
-              ["linear"],
-              ["get", cls.dataLayer],
-              cls.breaks[0],
-              cls.color[0],
-              cls.breaks[1],
-              cls.color[1],
-              cls.breaks[2],
-              cls.color[2],
-              cls.breaks[3],
-              cls.color[3],
-              cls.breaks[4],
-              cls.color[4],
-            ],
-          },
-        },
-        globals.firstSymbolId
-      );
+          globals.firstSymbolId
+        );
 
-      let filterString = cls.dataLayer === "depth" ? "<=" : ">=";
-      map.setFilter(cls.hexSize, [filterString, cls.dataLayer, 0]);
+        let filterString = cls.dataLayer === "depth" ? "<=" : ">=";
+        map.setFilter(cls.hexSize, [filterString, cls.dataLayer, 0]);
 
-      map.moveLayer("allsids", globals.firstSymbolId); //ensure allsids outline ontop
-
+        map.moveLayer("allsids", globals.firstSymbolId); //ensure allsids outline ontop
+      } catch (err) {
+        console.warn("attempted while no data layer is loaded on main map");
+        console.warn(err.stack); //placed to catch error when attempted while no data layer is loaded on main map
+      }
       self.hideSpinner();
     });
   }
@@ -913,67 +917,72 @@ export default class Map {
         return o.name === globals.currentLayerState.hexSize;
       });
 
-      map.addLayer(
-        {
-          id: id,
-          type: "fill-extrusion",
-          source: globals.currentLayerState.hexSize,
-          "source-layer": current.layer,
-          layout: {
-            visibility: "visible",
+      try {
+        map.addLayer(
+          {
+            id: id,
+            type: "fill-extrusion",
+            source: globals.currentLayerState.hexSize,
+            "source-layer": current.layer,
+            layout: {
+              visibility: "visible",
+            },
+
+            paint: {
+              "fill-extrusion-color": [
+                "interpolate",
+                ["linear"],
+                ["get", globals.currentLayerState.dataLayer],
+                globals.currentLayerState.breaks[0],
+                globals.currentLayerState.color[0],
+                globals.currentLayerState.breaks[1],
+                globals.currentLayerState.color[1],
+                globals.currentLayerState.breaks[2],
+                globals.currentLayerState.color[2],
+                globals.currentLayerState.breaks[3],
+                globals.currentLayerState.color[3],
+                globals.currentLayerState.breaks[4],
+                globals.currentLayerState.color[4],
+              ],
+              "fill-extrusion-height": [
+                "interpolate",
+                ["linear"],
+                ["get", globals.currentLayerState.dataLayer],
+                globals.currentLayerState.breaks[0],
+                0,
+                globals.currentLayerState.breaks[1],
+                500,
+                globals.currentLayerState.breaks[2],
+                5000,
+                globals.currentLayerState.breaks[3],
+                11000,
+                globals.currentLayerState.breaks[4],
+                50000,
+              ],
+
+              "fill-extrusion-base": !(
+                globals.currentLayerState.dataLayer === "depth"
+              )
+                ? 0
+                : 0,
+              "fill-extrusion-opacity": 1,
+            },
           },
+          globals.firstSymbolId
+        );
 
-          paint: {
-            "fill-extrusion-color": [
-              "interpolate",
-              ["linear"],
-              ["get", globals.currentLayerState.dataLayer],
-              globals.currentLayerState.breaks[0],
-              globals.currentLayerState.color[0],
-              globals.currentLayerState.breaks[1],
-              globals.currentLayerState.color[1],
-              globals.currentLayerState.breaks[2],
-              globals.currentLayerState.color[2],
-              globals.currentLayerState.breaks[3],
-              globals.currentLayerState.color[3],
-              globals.currentLayerState.breaks[4],
-              globals.currentLayerState.color[4],
-            ],
-            "fill-extrusion-height": [
-              "interpolate",
-              ["linear"],
-              ["get", globals.currentLayerState.dataLayer],
-              globals.currentLayerState.breaks[0],
-              0,
-              globals.currentLayerState.breaks[1],
-              500,
-              globals.currentLayerState.breaks[2],
-              5000,
-              globals.currentLayerState.breaks[3],
-              11000,
-              globals.currentLayerState.breaks[4],
-              50000,
-            ],
+        let filterString =
+          globals.currentLayerState.dataLayer === "depth" ? "<" : ">=";
 
-            "fill-extrusion-base": !(
-              globals.currentLayerState.dataLayer === "depth"
-            )
-              ? 0
-              : 0,
-            "fill-extrusion-opacity": 1,
-          },
-        },
-        globals.firstSymbolId
-      );
-
-      let filterString =
-        globals.currentLayerState.dataLayer === "depth" ? "<" : ">=";
-
-      map.setFilter(id, [
-        filterString, // ">="
-        globals.currentLayerState.dataLayer,
-        0,
-      ]);
+        map.setFilter(id, [
+          filterString, // ">="
+          globals.currentLayerState.dataLayer,
+          0,
+        ]);
+      } catch (err) {
+        console.warn("attempted while no data layer loaded on map");
+        console.warn(err.stack);
+      }
       map.easeTo({
         center: map.getCenter(),
         pitch: 55,
@@ -1907,18 +1916,27 @@ export default class Map {
     }
     for (let id of ["clickedone", "highlightS", "joined"]) {
       console.log(`removing existing source and layer for: ${id}`);
-      if (
-        //this.map.
-        mapClassInstance.getSource(id)
-      ) {
-        if (id === "highlightS") {
-          //special case for naming convention
-          mapClassInstance.removeLayer("highlight");
-          mapClassInstance.removeSource(id);
-        } else {
-          mapClassInstance.removeLayer(id);
-          mapClassInstance.removeSource(id);
+      try {
+        if (
+          //this.map.
+          mapClassInstance.getSource(id)
+        ) {
+          if (id === "highlightS") {
+            //special case for naming convention
+            mapClassInstance.removeLayer("highlight");
+            mapClassInstance.removeSource(id);
+          } else {
+            if (mapClassInstance.getLayer(id)) {
+              mapClassInstance.removeLayer(id);
+            }
+            if (mapClassInstance.getSource(id)) {
+              mapClassInstance.removeSource(id);
+            }
+          }
         }
+      } catch (err) {
+        console.warn(`attempted to remove ${id} from map`);
+        console.warn(err.stack);
       }
     }
 
