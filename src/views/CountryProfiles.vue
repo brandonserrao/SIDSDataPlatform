@@ -1,6 +1,6 @@
 <template>
   <div class="mt-xs-0 mt-sm-0 mt-md-5 mt-lg-5 mt-xl-5">
-    <v-row class="profile-header-row d-none-print" :style="isMobile ? {'background-image': `url(${require(`@/assets/media/country-photos/${activeCountryProfile.id}.jpg`)})`} : {}" justify="center">
+    <v-row class="profile-header-row d-none-print" :style="isMobile ? {'background-image': `url(${require(`@/assets/media/country-photos/${activeCountryId}.jpg`)})`} : {}" justify="center">
       <v-col cols="12" offset-md="1" md="4" offset-lg="3" lg="3">
         <h2 class="page-header country-profile-header">Country profile</h2>
       </v-col>
@@ -10,7 +10,7 @@
           class="country-select"
           :value="activeCountryId"
           @change="selectCountry"
-          :items="sidsListFiltered"
+          :items="sidsListFilteredNoAverage"
           hide-selected
           menu-props='{auto:false}'
           item-text="name"
@@ -101,11 +101,11 @@
           :values="graphValueData[pillar]"/>
       </v-col>
       <v-col md="6" lg="4">
-        <!-- <profiles-finance
-          :countryId="activeCountryId"/> -->
+        <profiles-finance
+          :countryId="activeCountryId"/>
       </v-col>
     </v-row>
-    <!-- <v-row justify="center" class="d-none-print d-md-none">
+    <v-row justify="center" class="d-none-print d-md-none">
       <v-col cols="11">
         <v-tabs
           v-model="tab"
@@ -117,46 +117,22 @@
           </v-tab>
         </v-tabs>
         <v-tabs-items class="mt-4 graph-tabs" v-model="tab">
-          <v-tab-item>
+          <v-tab-item  v-for="pillar in pillars" :key="pillar">
             <profiles-spider-chart
-              headerText="Climate Action"
-              :graphOptions="graphOptions.Climate"
-              pillarName="Climate"
+              :graphOptions="graphOptions[pillar]"
+              :pillarName="pillar"
+              :ranks="graphRankData[pillar]"
               postfix="mobile"
-              :activeCountries="graphCountriesProfiles"/>
+              :values="graphValueData[pillar]"/>
           </v-tab-item>
           <v-tab-item>
-            <profiles-spider-chart
-              headerText="Blue Economy"
-              :graphOptions="graphOptions.Blue"
-              pillarName="Blue"
-              postfix="mobile"
-              :activeCountries="graphCountriesProfiles"/>
-          </v-tab-item>
-          <v-tab-item>
-            <profiles-spider-chart
-              headerText="Digital Transformation"
-              :graphOptions="graphOptions.Digital"
-              pillarName="Digital"
-              postfix="mobile"
-              :activeCountries="graphCountriesProfiles"/>
-          </v-tab-item>
-          <v-tab-item>
-            <profiles-spider-chart
-              headerText="Multidimensional Vulnerability"
-              :graphOptions="graphOptions.MVI2"
-              pillarName="MVI2"
-              postfix="mobile"
-              :activeCountries="graphCountriesProfiles"/>
-          </v-tab-item>
-          <v-tab-item>
-              <profiles-finance
-                :countryId="country"/>
+            <profiles-finance
+              :countryId="activeCountryId"/>
           </v-tab-item>
         </v-tabs-items>
 
       </v-col>
-    </v-row> -->
+    </v-row>
     <v-row class="d-flex d-none-print d-md-none" justify="center">
       <v-col cols="11" md="6">
         <div class="select">
@@ -216,7 +192,7 @@ import flagGodes from '@/assets/flagCodes.js'
 
 import CountryInfoBar from '@/components/CountryInfoBar.vue'
 import ProfilesSpiderChart from '@/components/ProfilesSpiderChart.vue'
-// import ProfilesFinance from '@/components/ProfilesFinance.vue'
+import ProfilesFinance from '@/components/ProfilesFinance.vue'
 import * as d3 from 'd3';
 import store from '@/store'
 import { mapState } from 'vuex';
@@ -227,7 +203,7 @@ export default {
   components: {
     CountryInfoBar,
     ProfilesSpiderChart,
-    // ProfilesFinance
+    ProfilesFinance
   },
   data: () => ({
     flagGodes,
@@ -305,6 +281,11 @@ export default {
             country.id === this.activeCountryId
         })
       }
+    },
+    sidsListFilteredNoAverage(){
+      return this.sidsListFiltered.filter(country => {
+        return !country.average
+      })
     },
     graphValueData() {
       let result = {};
@@ -400,29 +381,30 @@ export default {
       }
 
       function generateTextDataCVS(pillarName) {
-        for (let indicator in this.allKeyData[this.country][pillarName]) {
+        for (let indicator in this.profiles[this.activeCountryId][pillarName]) {
+          let indicatorFull = this.profiles[this.activeCountryId][pillarName][indicator]
           let newIndi = {}
-          newIndi.axis = indicator.replace(/,/g, '')
-          newIndi.source = this.keyMetadata[newIndi.axis] && this.keyMetadata[newIndi.axis].sourceName ?
-          this.keyMetadata[newIndi.axis].sourceName.replace(/,/g, '') :
+          newIndi.axis = this.indicatorsMetadata[indicatorFull.axis].indicator.replace(/,/g, '')
+          newIndi.source = this.indicatorsMetadata[indicatorFull.axis] && this.indicatorsMetadata[indicatorFull.axis].source ?
+          this.indicatorsMetadata[indicatorFull.axis].source.replace(/,/g, '') :
           '';
-          this.graphCountriesProfiles.map(countryId => {
-            newIndi[countryId] = this.allKeyData[countryId][pillarName][indicator]
+          [this.activeCountryId, ...this.compareIdsList].map(countryId => {
+            newIndi[countryId] = this.profiles[countryId][pillarName][indicator].value
           })
           countryExport.push(newIndi)
         }
       }
 
       function generateAxisDataCVS(pillarName) {
-        for (let indicator in this.allKeyData[this.country][pillarName]) {
+        for (let indicator in this.profiles[this.activeCountryId][pillarName]) {
+          let indicatorFull = this.profiles[this.activeCountryId][pillarName][indicator]
           let newIndi = {}
-          let el = this.allKeyData[this.country][pillarName][indicator]
-          newIndi.axis = el.axis.replace(/,/g, '')
-          newIndi.source = this.keyMetadata[newIndi.axis] && this.keyMetadata[newIndi.axis].sourceName ?
-          this.keyMetadata[newIndi.axis].sourceName.replace(/,/g, '') :
+          newIndi.axis = this.indicatorsMetadata[indicatorFull.axis].indicator.replace(/,/g, '')
+          newIndi.source = this.indicatorsMetadata[indicatorFull.axis] && this.indicatorsMetadata[indicatorFull.axis].source ?
+          this.indicatorsMetadata[indicatorFull.axis].source.replace(/,/g, '') :
           '';
-          this.graphCountriesProfiles.map(countryId => {
-            newIndi[countryId] = this.allKeyData[countryId][pillarName][indicator].value
+          [this.activeCountryId, ...this.compareIdsList].map(countryId => {
+            newIndi[countryId] = this.profiles[countryId][pillarName][indicator].value
           })
           countryExport.push(newIndi)
         }
@@ -436,11 +418,11 @@ export default {
       });
       generateTextDataCVS.call(this, 'Finance');
 
-      let headers = {}
-      headers.axis = "Indicator"
-      headers.source = "Source"
-      this.graphCountriesProfiles.map(countryId => {
-        headers[countryId] = this.allKeyData[countryId].Profile.Country
+      let headers = {};
+      headers.axis = "Indicator",
+      headers.source = "Source";
+      [this.activeCountryId, ...this.compareIdsList].map(countryId => {
+        headers[countryId] = this.sidsList.find(sids => sids.id === countryId).name
       })
       exportCSVFile(headers, countryExport, "sids_profile_data", "")
     },

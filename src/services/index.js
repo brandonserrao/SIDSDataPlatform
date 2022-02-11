@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as d3 from 'd3';
-import { datasetMeta } from '@/assets/datasets/datasetMeta'
+// import { datasetMeta } from '@/assets/datasets/datasetMeta'
 
 const API_URL = 'https://raw.githubusercontent.com/Ben-Keller/smallislands/main/data';
 const NEW_API_URl = 'https://raw.githubusercontent.com/SIDS-Dashboard/SIDSDataPlatform/main'
@@ -47,11 +47,9 @@ async function loadAllKeyData () {
   return resp.data
 }
 
-async function loadDatasetsList() {
-  return datasetMeta
-  // const resp = await axios.get(`${NEW_API_URl_2}/indicators/datasetMeta.json`);
-  // console.log(resp.data, JSON.parse(resp.data))
-  // return resp.data;
+async function loadDatasetsList(){
+  const resp = await axios.get(`${NEW_API_URl_2}/indicators/datasetMeta.json`);
+  return resp.data;
 }
 
 
@@ -61,7 +59,7 @@ async function loadMetaData () {
   return resp.data
 }
 async function loadFundingCategories () {
-  const resp = await axios.get(`${API_URL}/exports/fundingCategories.json`);
+  const resp = await axios.get(`${NEW_API_URl_2}/portfolio/fundingCategories.json`);
   const result = [];
   for (let category in resp.data) {
     result.push(Object.assign({},resp.data[category],{name:category}));
@@ -69,15 +67,15 @@ async function loadFundingCategories () {
   return result
 }
 async function loadSIDSData () {
-  const resp = await axios.get(`${NEW_API_URl}/data/exports/sids_db.csv`)
+  const resp = await axios.get(`${NEW_API_URl_2}/portfolio/sidsPortfolioData.csv`)
   return d3.csvParse(resp.data)
 }
 async function loadIndicatorsCategories () {
-  const resp = await axios.get(`${process.env.BASE_URL}static/indicatorCategories.json`)
+  const resp = await axios.get(`${NEW_API_URl_2}/indicators/indicatorCategories.json`)
   return resp.data
 }
 async function loadIndicatorsMeta () {
-  const resp = await axios.get(`${process.env.BASE_URL}static/indicatorMeta.json`)
+  const resp = await axios.get(`${NEW_API_URl_2}/indicators/indicatorMeta.json`)
   return resp.data
 }
 async function loadProfileData () {

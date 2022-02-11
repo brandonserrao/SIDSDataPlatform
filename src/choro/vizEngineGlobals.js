@@ -175,19 +175,19 @@ export const isoToIds= {
 //   };
 //
 export const  mviIndicatorsDict = {
-    expConc: "mvi-ldc-XCON-Index-economic",
-    expInst: "mvi-ldc-XIN-Index-economic",
-    agrInst: "mvi-ldc-AIN-Index-economic",
-    agrGDP: "mvi-ldc-AFF-Index-environmental",
-    victims: "mvi-ldc-VIC-Index-environmental",
-    popLECZ: "mvi-ldc-LECZ-Index-geographic",
-    remote: "mvi-ldc-REM-Index-geographic", //"popDry": "%mvi-ldc-DRY-Index-geographic",
-    tourism: "mvi-ST.INT.RCPT.XP.ZS-financial",
-    fdi: "mvi-BX.KLT.DINV.WD.GD.ZS-financial",
-    remit: "mvi-BX.TRF.PWKR.DT.GD.ZS-financial",
+    expConc: "mvi-ldc-XCON-Index",
+    expInst: "mvi-ldc-XIN-Index",
+    agrInst: "mvi-ldc-AIN-Index",
+    agrGDP: "mvi-ldc-AFF-Index",
+    victims: "mvi-ldc-VIC-Index",
+    popLECZ: "mvi-ldc-LECZ-Index",
+    remote: "mvi-ldc-REM-Index", //"popDry": "%mvi-ldc-DRY-Index-geographic",
+    tourism: "mvi-wdi2-ST.INT.RCPT.XP.ZS",
+    fdi: "mvi-wdi-BX.KLT.DINV.WD.GD.ZS",
+    remit: "mvi-wdi-BX.TRF.PWKR.DT.GD.ZS",
   };
 //
-export const indexDict = {"mvi":"mvi-index-index"};
+export const indexDict = {"mvi":"mvi-index"};
 //
 export const mviDimensionColors = {
   Financial: "#0DB14B",

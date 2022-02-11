@@ -4,52 +4,12 @@
       <v-card flat class="overflow background-grey">
           <v-list dense class="indicators-list background-grey"
           >
-            <v-list-item
-            >
+            <v-list-item v-for="(indicator) in financeData" :key="indicator.axis">
               <v-list-item-content class="one-line">
-                <v-list-item-title class="one-line_header" v-text="'Personal remittances, received (% of GDP):'"></v-list-item-title>
-                <v-list-item-subtitle class="one-line_subheader">{{formatNumber(financeData['Personal remittances, received (% of GDP)'])}}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content class="one-line">
-                <v-list-item-title class="one-line_header" v-text="'External debt stocks (% of GNI):'"></v-list-item-title>
-                <v-list-item-subtitle class="one-line_subheader">{{formatNumber(financeData['External debt stocks (% of GNI)'])}}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content class="one-line">
-                <v-list-item-title class="one-line_header" v-text="'Foreign direct investment, net inflows (BoP, current US$):'"></v-list-item-title>
-                <v-list-item-subtitle class="one-line_subheader">{{formatNumber(financeData['Foreign direct investment, net inflows (BoP, current US$)'])}}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content class="one-line">
-                <v-list-item-title class="one-line_header" v-text="'Net ODA received per capita (current US$):'"></v-list-item-title>
-                <v-list-item-subtitle class="one-line_subheader">{{formatNumber(financeData['Net ODA received per capita (current US$)'])}}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content class="one-line">
-                <v-list-item-title class="one-line_header" v-text="'Net ODA received (% of GNI):'"></v-list-item-title>
-                <v-list-item-subtitle class="one-line_subheader">{{formatNumber(financeData['Net ODA received (% of GNI)'])}}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content class="one-line">
-                <v-list-item-title class="one-line_header" v-text="'Trade (% of GDP):'"></v-list-item-title>
-                <v-list-item-subtitle class="one-line_subheader">{{formatNumber(financeData['Trade (% of GDP)'])}}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content class="one-line">
-                <v-list-item-title class="one-line_header" v-text="'GDP (current US$):'"></v-list-item-title>
-                <v-list-item-subtitle class="one-line_subheader">{{formatNumber(financeData['GDP (current US$)'])}}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item><v-list-item>
-              <v-list-item-content class="one-line">
-                <v-list-item-title class="one-line_header" v-text="'GDP per capita (current US$):'"></v-list-item-title>
-                <v-list-item-subtitle class="one-line_subheader">{{formatNumber(financeData['GDP per capita (current US$)'])}}</v-list-item-subtitle>
+                <v-list-item-title class="one-line_header">
+                  {{indicatorsMetadata[indicator.axis].indicator}}
+                </v-list-item-title>
+                <v-list-item-subtitle class="one-line_subheader">{{formatNumber(indicator.value)}}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -60,6 +20,8 @@
 
 <script>
 import { mapState } from 'vuex';
+import format from '@/mixins/format.mixin'
+
 
 export default {
   props: {
@@ -68,12 +30,14 @@ export default {
       default: ''
     }
   },
+  mixins:[format],
   computed:{
     ...mapState({
-      allKeyData: state => state.sids.allKeyData
+      profiles: state => state.profiles.profiles,
+      indicatorsMetadata: state => state.profiles.indicatorsMetadata
     }),
     financeData() {
-      return this.allKeyData[this.countryId].Finance
+      return this.profiles[this.countryId].Finance
     }
   },
   methods: {
@@ -81,7 +45,7 @@ export default {
       if(isNaN(parseInt(number))) {
         return number
       }
-      return number.toLocaleString();
+      return this.nFormatter(number,2);
     }
   }
 }

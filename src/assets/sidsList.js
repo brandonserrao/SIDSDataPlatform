@@ -303,18 +303,21 @@ export default [
     id:'aisAverage',
     name: 'AIS average',
     region:'AIS',
-    iso:''
+    average: true,
+    iso:'AIS'
   },
   {
     id:'caribbeanAverage',
     name: 'Caribbean average',
     region:'Caribbean',
-    iso:''
+    average: true,
+    iso:'Caribbean'
   },
   {
     id:'pacificAverage',
     name: 'Pacific average',
     region:'Pacific',
-    iso:''
+    average: true,
+    iso:'Pacific'
   }
 ]

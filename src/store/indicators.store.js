@@ -70,7 +70,7 @@ export default {
       if(!state.allKeyData){
         let meta = await service.loadIndicatorsMeta();
         meta = Object.keys(meta)
-          .filter( indicatorCode => meta[indicatorCode]['Indicator'])
+          .filter( indicatorCode => meta[indicatorCode].indicator)
           .reduce( (res, indicatorCode) => (res[indicatorCode] = meta[indicatorCode], res), {} );
         commit("setMeta", meta);
       }

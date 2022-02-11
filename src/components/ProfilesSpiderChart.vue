@@ -14,7 +14,7 @@
           :link="indicatorsMetadata[axis.code].sourceLink"
         />
       </div>
-    <div :id="`graph${pillarName}${postfix}`">
+    <div :class="{'mb-1': postfix==='mobile'}" :id="`graph${pillarName}${postfix}`">
     </div>
   </div>
 </template>

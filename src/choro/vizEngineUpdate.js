@@ -29,19 +29,19 @@ export function updateVizEngine(indicatorCode) {
   this.indicatorCode = indicatorCode;
 
   if(this.page=="mvi"){
-    this.indicatorCode = "mvi-index-index";
+    this.indicatorCode = "mvi-index";
   }
 
   if (this.indicatorCode == "region") {
-    this.indicatorCode = "hdr137506-compositeIndices";///temp so has something to attach to data
+    this.indicatorCode = "hdr-137506";///temp so has something to attach to data
   }
   if (Object.keys(indexCodes).includes(this.indicatorCode)) {
     this.vizMode = "index";
-    this.apiCode="indexData-" + indexCodes[this.indicatorCode];
+    this.apiCode="/indices/" + indexCodes[this.indicatorCode];
   } else {
     this.vizMode = "indicator";
     let codeSplit = this.indicatorCode.split("-");
-    this.apiCode="indicatorData-"+codeSplit[codeSplit.length - 1]
+    this.apiCode=`/indicators/${codeSplit[0]}/${this.indicatorCode}`
   }
     // updateVizSliders();
 //   //package selections
@@ -64,7 +64,7 @@ export function updateVizEngine(indicatorCode) {
 //
 //
   d3.json(
-    "https://sids-dashboard.github.io/api/data/"+  this.apiCode + ".json"
+    "https://raw.githubusercontent.com/SIDS-Dashboard/api/main/data"+  this.apiCode + ".json"
   ).then((dat) => {
 
     this.updateLinesAndMap();
@@ -912,7 +912,7 @@ export function updateChoroLegend(quantize) {
       // }
       // else {
 
-      return this.indicatorMeta[this.indicatorCode]["Indicator"]; //["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " +
+      return this.indicatorMeta[this.indicatorCode]["indicator"]; //["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " +
 
       // }
     });
