@@ -693,6 +693,7 @@ export default class Map {
   changeBasemap(selectionObject) {
     let self = this;
     let map = this.map;
+    let map2 = this.map2;
     console.log("selectionObject: ");
     console.log(selectionObject);
     let basemapName = selectionObject.name;
@@ -715,11 +716,13 @@ export default class Map {
     } else {
       console.log(`setting style: ${thisStyle.name}`);
       map.setStyle(thisStyle.uri);
+      map2.setStyle(thisStyle.uri);
     }
 
     for (const i of constants.unwantedMapboxLayers) {
       if (map.getLayer(i)) {
         map.removeLayer(i);
+        map2.removeLayer(i);
       }
     }
 

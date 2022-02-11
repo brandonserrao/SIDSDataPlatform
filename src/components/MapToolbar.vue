@@ -290,8 +290,8 @@
                         <div
                           style="margin-top: 12px; font-size: 12px; width: 80%"
                         >
-                          Toggle administrative boundaries on for areas where
-                          they are available.
+                          Choose different level of aggregation of the data
+                          layer.
                         </div>
                       </div>
                     </div>
@@ -550,12 +550,12 @@
                         "
                         @click="
                           handleBasemapChange(
-                            'Mapbox Satellite Streets',
+                            'Satellite Imagery',
                             'satellite-icon'
                           )
                         "
                       >
-                        <div>Mapbox Satellite Streets</div>
+                        <div>Satellite Imagery</div>
                         <div
                           class="menu-option-icon-satellite satellite-icon"
                           style="margin-right: 10px"
@@ -569,10 +569,10 @@
                           align-items-center
                         "
                         @click="
-                          handleBasemapChange('Mapbox Light', 'satellite-icon')
+                          handleBasemapChange('Light Theme', 'satellite-icon')
                         "
                       >
-                        <div>Mapbox Light</div>
+                        <div>Light Theme</div>
                         <div
                           class="menu-option-icon-satellite satellite-icon"
                           style="margin-right: 10px"
@@ -586,10 +586,10 @@
                           align-items-center
                         "
                         @click="
-                          handleBasemapChange('Mapbox Dark', 'satellite-icon')
+                          handleBasemapChange('Dark Theme', 'satellite-icon')
                         "
                       >
-                        <div>Mapbox Dark</div>
+                        <div>Dark Theme</div>
                         <div
                           class="menu-option-icon-satellite satellite-icon"
                           style="margin-right: 10px"
@@ -807,7 +807,7 @@
                   class="icon aplus-icon"
                   @click="handleLabelsChange('aplus', 'aminus')"
                 ></div>
-                <div class="description hover">Toggle Map Labels</div>
+                <div class="description hover">Toggle on/off Map Labels</div>
                 <div
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>
@@ -866,7 +866,7 @@
               <div class="menu row-flex">
                 <div class="icon draw-icon" @click="toggleMenu(10)"></div>
                 <!-- <div class="icon draw-icon" onClick="handleDrawMenu()"></div> -->
-                <div class="description hover">Draw</div>
+                <div class="description hover">Custom Regional Analysis</div>
                 <!-- <div class="menu-drop row-flex display-none menu-big menu-with-blue" id="draw-menu">
                   
                       <div class="col-flex align-items-center" style="height:auto; width:auto;">
@@ -902,7 +902,7 @@
                   "
                   id="draw-menu"
                 >
-                  Placeholder Draw Menu content
+                  <!-- Placeholder Draw Menu content -->
                   <div id="drawControls"></div>
                 </div>
               </div>
@@ -910,7 +910,7 @@
               <!-- Download Menu -->
               <div class="menu row-flex">
                 <div class="icon download-icon" @click="toggleMenu(11)"></div>
-                <div class="description hover">Download</div>
+                <div class="description hover">Download Geodata</div>
                 <div
                   class="
                     menu-drop
@@ -929,7 +929,7 @@
               <!-- Upload Menu -->
               <div class="menu row-flex">
                 <div class="icon upload-icon" @click="toggleMenu(12)"></div>
-                <div class="description hover">Upload</div>
+                <div class="description hover">Upload Geodata</div>
                 <div
                   class="
                     menu-drop
@@ -949,7 +949,7 @@
                   class="icon dual-mode-icon"
                   @click="handleDualMode()"
                 ></div>
-                <div class="description hover">Dual Mode</div>
+                <div class="description hover">Comparison Slider</div>
                 <div
                   class="
                     menu-drop
@@ -987,7 +987,7 @@
               <!-- Info Menu -->
               <div class="menu row-flex">
                 <div class="icon info-icon" @click="toggleMenu(15)"></div>
-                <div class="description hover">Info</div>
+                <div class="description hover">Info about this product</div>
                 <div
                   class="
                     menu-drop
