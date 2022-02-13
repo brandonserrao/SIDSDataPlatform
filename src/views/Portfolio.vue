@@ -105,7 +105,7 @@
           <v-col cols='5'  md="6" lg="12">
             <div class="select">
               <label class="input-label">Funding sources</label>
-              <v-select
+              <v-autocomplete
                 rounded
                 hide-details
                 dense
@@ -115,7 +115,7 @@
                 item-text="name"
                 item-value="name"
                 outlined
-                ></v-select>
+                ></v-autocomplete>
             </div>
           </v-col>
         </v-row>
@@ -318,7 +318,6 @@ export default {
   },
   methods: {
     setYear(year) {
-
       this.$router.push({query: Object.assign({}, this.$route.query, {year})})
     },
     setCategory(category) {

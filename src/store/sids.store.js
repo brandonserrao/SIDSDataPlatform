@@ -1,5 +1,4 @@
 import service from '@/services'
-import codes from '@/assets/countryCodes'
 
 
 export default {
@@ -8,7 +7,6 @@ export default {
     keyMetadata: null,
     allKeyData: null,
     fundingCategories: null,
-    SIDSData: null,
     SIDSDataWithDonors: null,
     countryList: null
   },
@@ -72,7 +70,7 @@ export default {
       for(let country in data) {
         let profile = data[country]['Profile'];
         profile.id = country;
-        profile.code = codes[country]
+        // profile.code = codes[country]
         countryList.push(profile);
       }
       commit("setCountryList", countryList);

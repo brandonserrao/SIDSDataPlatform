@@ -151,17 +151,17 @@ export default {
   data: function() {
     return {
       dialog:false,
-      mviCodes:["mvi-ldc-VIC-Index-environmental"
-                ,"mvi-ldc-AFF-Index-environmental"
-                ,"mvi-ldc-REM-Index-geographic"
-                ,"mvi-ldc-LECZ-Index-geographic"
+      mviCodes:["mvi-ldc-VIC-Index"
+                ,"mvi-ldc-AFF-Index"
+                ,"mvi-ldc-REM-Index"
+                ,"mvi-ldc-LECZ-Index"
                 ,"popDry"
-                ,"mvi-ldc-XCON-Index-economic"
-                ,"mvi-ldc-XIN-Index-economic"
-                ,"mvi-ldc-AIN-Index-economic"
-                ,"mvi-ST.INT.RCPT.XP.ZS-financial"
-                ,"mvi-BX.TRF.PWKR.DT.GD.ZS-financial"
-                ,"mvi-BX.KLT.DINV.WD.GD.ZS-financial"
+                ,"mvi-ldc-XCON-Index"
+                ,"mvi-ldc-XIN-Index"
+                ,"mvi-ldc-AIN-Index"
+                ,"mvi-wdi2-ST.INT.RCPT.XP.ZS"
+                ,"mvi-wdi-BX.TRF.PWKR.DT.GD.ZS"
+                ,"mvi-wdi-BX.KLT.DINV.WD.GD.ZS"
       ],
       region: 'All',
       regions:[

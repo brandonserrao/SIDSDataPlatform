@@ -3,11 +3,15 @@ import service from '@/services'
 export default {
   namespaced: true,
   state: {
+    datasetsList: null,
     indicatorsCategories: null,
     indicatorsMeta: null,
     profileData: null,
   },
   mutations: {
+    setDatasetsList(state, data) {
+      state.datasetsList = data;
+    },
     setCategories(state, data) {
       state.indicatorsCategories = data;
       console.log(data, '1')
@@ -22,6 +26,34 @@ export default {
     },
   },
   actions: {
+    async getDatasetsList({ state, commit }) {
+      if(!state.datasetsList){
+        const datasetsData = await service.loadDatasetsList();
+        let datasetsList = [];
+        for(let datasetCode in datasetsData) {
+          let dataset = datasetsData[datasetCode];
+          dataset.code = datasetCode;
+          datasetsList.push(dataset);
+        }
+        datasetsList.sort(function (a, b) {
+          if (a.priority < b.priority) {
+            return 1;
+          }
+          if (a.priority > b.priority) {
+            return -1;
+          }
+          if (a['Dataset Name'] > b['Dataset Name']) {
+            return 1;
+          }
+          if (a['Dataset Name'] < b['Dataset Name']) {
+            return -1;
+          }
+          return 0;
+        });
+        commit("setDatasetsList", datasetsList);
+        console.log(datasetsList)
+      }
+    },
     async getProfileData({ state, commit }) {
       if(!state.profileData){
         const profileData = await service.loadProfileData();
@@ -38,7 +70,7 @@ export default {
       if(!state.allKeyData){
         let meta = await service.loadIndicatorsMeta();
         meta = Object.keys(meta)
-          .filter( indicatorCode => meta[indicatorCode]['Indicator'])
+          .filter( indicatorCode => meta[indicatorCode].indicator)
           .reduce( (res, indicatorCode) => (res[indicatorCode] = meta[indicatorCode], res), {} );
         commit("setMeta", meta);
       }

@@ -171,7 +171,7 @@
       </v-row>
       <v-row dense>
         <v-col>
-          <v-select
+          <v-autocomplete
             rounded
             class="map-input"
             dense
@@ -183,7 +183,7 @@
             label="Dataset"
             @input="emitUpdate"
             outlined
-          ></v-select>
+          ></v-autocomplete>
         </v-col>
       </v-row>
       <v-row class="spacing-row" v-if="activeDataset && activeDataset.type === 'layers'" dense>

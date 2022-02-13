@@ -23,7 +23,7 @@
 
     <v-virtual-scroll
       v-if="activeSearch"
-      :items="allIndicators"
+      :items="allindicators"
       height="calc(100vh - 70px)"
       itemHeight="69"
     >
@@ -33,7 +33,7 @@
           open-delay="300"
           max-width="250"
           transition="none"
-          :key="item.Indicator"
+          :key="item.indicator"
           content-class="indicator-tooltip"
          >
           <template v-slot:activator="{ on, attrs }">
@@ -41,26 +41,24 @@
               class="inicator-item"
               v-bind="attrs"
               v-on="on"
-              @click="emitIndicatorChange(item['Indicator Code'])"
+              @click="emitindicatorChange(item['indicatorCode'])"
             >
               <v-list-item-title class="inicator-item_header mt-2">
-                {{item.Indicator}}
+                {{item.indicator}}
               </v-list-item-title>
               <v-list-item-content class="inicator-item_description">
-
-                  {{item}}
-                {{item.Definition}}
+                {{item.def}}
               </v-list-item-content>
             </v-list-item>
             <v-divider></v-divider>
           </template>
           <v-card class="tooltip-card">
-            <v-card-title class="mb-1 active-indicator_header">{{item.Indicator}}</v-card-title>
+            <v-card-title class="mb-1 active-indicator_header">{{item.indicator}}</v-card-title>
             <v-card-text>
-              <div class="mb-1">{{item.Dimension}}</div>
-              {{item.Definition}}
+              <div class="mb-1">{{item.dim}}</div>
+              {{item.def}}
               <v-divider class="mb-1 mt-1"></v-divider>
-              <b>Source:</b>{{item.Source}} <br/>
+              <b>Source:</b>{{item.source}} <br/>
               <a :href="item.Link" target="_blank">Link</a>
             </v-card-text>
           </v-card>
@@ -111,7 +109,7 @@
               <v-card-title class="mb-1 active-indicator_header">{{datasetMeta[item.name] ? datasetMeta[item.name]['Dataset Name'] : ''}}</v-card-title>
               <v-card-text>
                 <div class="mb-1">
-                  {{datasetMeta[item.name] ? datasetMeta[item.name]['# of Indicators'] : ''}} indicators
+                  {{datasetMeta[item.name] ? datasetMeta[item.name]['# of indicators'] : ''}} indicators
                   {{datasetMeta[item.name] ? datasetMeta[item.name]['SIDS Coverage'] : ''}} SIDS
 
                 </div>
@@ -132,7 +130,7 @@
       :items="indicatorCategories"
     ></v-select>
     <v-select
-      v-if="dataset && indicatorSubCategories"
+      v-if="dataset && indicatorSubCategories && indicatorSubCategories.length > 1"
       class="ml-2 mr-2"
       dense
       hide-details
@@ -148,52 +146,54 @@
         prepend-icon="mdi-magnify"
         @click:append="clearDeepSearch"
     ></v-text-field>
-    <v-list v-if="dataset" dense :class="{'list-short' : activeIndicator}" class="list-indicators list-scrollabe">
-      <v-list-item-group
-        :value="activeIndicatorCode"
-      >
-        <template v-for="(indicator, i) in activeIndicatorsWithMeta">
+    <v-virtual-scroll
+      v-if="dataset"
+      :items="activeIndicatorsWithMeta"
+      :height="inticatorsListHeight"
+      itemHeight="69"
+    >
+    <template v-slot:default="{ item, index }">
+
           <v-tooltip
             right
             open-delay="300"
             transition="none"
             max-width="250"
-            :key="indicator['Indicator Code']"
+            :key="item['indicatorCode']"
             content-class="indicator-tooltip"
            >
             <template v-slot:activator="{ on, attrs }">
               <v-list-item
                 class="inicator-item"
-                :class="{'blue lighten-5': indicator['Indicator Code'] === activeIndicatorCode}"
+                :class="{'blue lighten-5': item['indicatorCode'] === activeIndicatorCode}"
                 v-bind="attrs"
                 v-on="on"
-                @click="emitIndicatorChange(indicator['Indicator Code'])"
+                @click="emitindicatorChange(item['indicatorCode'])"
               >
                 <v-list-item-title class="inicator-item_header mt-2">
-                  {{indicator.Indicator}}
+                  {{item.indicator}}
                 </v-list-item-title>
                 <v-list-item-content class="inicator-item_description">
-                  {{indicator.Definition}}
+                  {{item.def}}
                 </v-list-item-content>
               </v-list-item>
-              <v-divider v-if="dataset && i!== activeIndicatorsWithMeta.length" :key="'divider' + i"></v-divider>
+              <v-divider v-if="dataset && index!== activeIndicatorsWithMeta.length" :key="'divider' + index"></v-divider>
             </template>
             <v-card class="tooltip-card">
-              <v-card-title class="mb-1 active-indicator_header">{{indicator.Indicator}}</v-card-title>
+              <v-card-title class="mb-1 active-indicator_header">{{item.indicator}}</v-card-title>
               <v-card-text>
-                <div class="mb-1">{{indicator.Dimension}}</div>
+                <div class="mb-1">{{item.dim}}</div>
                 <v-divider class="mb-1 mt-1"></v-divider>
-                <b>Source:</b>{{indicator.Source}} <br/>
-                <a :href="indicator.Link" target="_blank">Link</a>
+                <b>Source:</b>{{item.source}} <br/>
+                <a :href="item.Link" target="_blank">Link</a>
               </v-card-text>
             </v-card>
           </v-tooltip>
         </template>
-      </v-list-item-group>
-    </v-list>
+    </v-virtual-scroll>
   </v-card>
     <v-card flat class="mt-2" v-if="activeIndicator">
-      <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.Indicator}}</v-card-title>
+      <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.indicator}}</v-card-title>
       <v-card-text class="active-indicator-info">
         <div class="mb-1 d-flex">
           <div class="active-dimension"> {{activeIndicatorDimension}} </div>
@@ -202,14 +202,14 @@
             :value="activeIndicatorCode"
             item-text="dimension"
             item-value="code"
-            @change="emitIndicatorChange"
+            @change="emitindicatorChange"
             label="Dimension"
             dense
           ></v-select>
         </div>
-        {{activeIndicator.Definition}}
+        {{activeIndicator.def}}
         <v-divider class="mb-1 mt-1"></v-divider>
-        <b>Source:</b>{{activeIndicator.Source}} <br/>
+        <b>Source:</b>{{activeIndicator.source}} <br/>
         <a :href="activeIndicator.Link" target="_blank">Link</a>
       </v-card-text>
     </v-card>
@@ -221,7 +221,7 @@ import { datasetMeta } from '@/assets/datasets/datasetMeta';
 
 
 export default {
-  name: 'IndicatorsNav',
+  name: 'indicatorsNav',
   props:['activeIndicatorCode'],
   data() {
     return {
@@ -285,19 +285,19 @@ export default {
       }
       return null
     },
-    allIndicators() {
+    allindicators() {
       let indicatorsArray = [];
       for(let indicator in this.indicatorsMeta) {
         indicatorsArray.push(this.indicatorsMeta[indicator])
       }
       indicatorsArray.sort(function(a, b) {
-          var textA = a.Indicator.toUpperCase();
-          var textB = b.Indicator.toUpperCase();
+          var textA = a.indicator.toUpperCase();
+          var textB = b.indicator.toUpperCase();
           return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
       });
       if(this.searchString !=='') {
         return indicatorsArray.filter(indicator => {
-          return indicator.Dataset !== 'key' && indicator.Indicator.toLowerCase().includes(this.searchString.toLowerCase());
+          return indicator.Dataset !== 'key' && indicator.indicator.toLowerCase().includes(this.searchString.toLowerCase());
         })
       }
       return indicatorsArray;
@@ -306,15 +306,15 @@ export default {
       let indicatorsArray = [];
       if(this.activeCategory && this.activeCategory !== 'All categories') {
         if(this.activeSubCategory && this.activeSubCategory !== 'All subcategories') {
-          return this.getSubcategoryIndicators(this.activeCategory, this.activeSubCategory)
+          return this.getSubcategoryindicators(this.activeCategory, this.activeSubCategory)
         }
         for(let subCategory in this.activeDataset[this.activeCategory]) {
-          indicatorsArray = indicatorsArray.concat(this.getSubcategoryIndicators(this.activeCategory, subCategory))
+          indicatorsArray = indicatorsArray.concat(this.getSubcategoryindicators(this.activeCategory, subCategory))
         }
       } else {
         for(let category in this.activeDataset) {
           for(let subCategory in this.activeDataset[category]) {
-            indicatorsArray = indicatorsArray.concat(this.getSubcategoryIndicators(category, subCategory))
+            indicatorsArray = indicatorsArray.concat(this.getSubcategoryindicators(category, subCategory))
           }
         }
       }
@@ -324,6 +324,7 @@ export default {
       let indicatorsWithMetaArray = this.activeIndicators.map(codesArray => {
         codesArray.map(code =>  {
           let metaData = this.indicatorsMeta[code];
+          console.log(this.indicatorsMeta, 'metadata')
           metaData.codesArray = codesArray;
         })
         let metaData = this.indicatorsMeta[codesArray[0]];
@@ -331,13 +332,13 @@ export default {
         return metaData;
       })
       indicatorsWithMetaArray.sort(function(a, b) {
-          var textA = a.Indicator.toUpperCase();
-          var textB = b.Indicator.toUpperCase();
+          var textA = a.indicator.toUpperCase();
+          var textB = b.indicator.toUpperCase();
           return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
       });
       if(this.deepSearch !== '') {
         return indicatorsWithMetaArray.filter(indicator => {
-          return indicator.Indicator.toLowerCase().includes(this.deepSearch.toLowerCase());
+          return indicator.indicator.toLowerCase().includes(this.deepSearch.toLowerCase());
         })
       }
       return indicatorsWithMetaArray;
@@ -346,9 +347,21 @@ export default {
       return this.activeIndicator.codesArray.map(code => {
         return {
           code,
-          dimension: this.indicatorsMeta[code].Dimension
+          dimension: this.indicatorsMeta[code].dim
         }
       })
+    },
+    inticatorsListHeight() {
+      let height = '100vh',
+      substraction = 200;
+      if(this.activeIndicator) {
+        height = '50vh'
+        substraction = 128
+      }
+      if(this.activeCategory && this.indicatorSubCategories &&  this.indicatorSubCategories.length>1) {
+        substraction+=40
+      }
+      return `calc(${height} - ${substraction}px)`
     }
   },
   methods: {
@@ -367,7 +380,7 @@ export default {
       this.activeSubCategory = 'All subcategories';
       this.dataset = name;
     },
-    getSubcategoryIndicators(category, subCategory) {
+    getSubcategoryindicators(category, subCategory) {
       let indicatorsList = [];
       for(let indicator in this.activeDataset[category][subCategory]) {
         indicatorsList.push(this.activeDataset[category][subCategory][indicator]);
@@ -377,12 +390,12 @@ export default {
     changeCategory() {
       this.activeSubCategory = 'All subcategories'
     },
-    emitIndicatorChange(indicator) {
+    emitindicatorChange(indicator) {
       this.$emit('indicatorChange', indicator)
     },
-    setActiveIndicator(indicator) {
+    setActiveindicator(indicator) {
       this.activeIndicator = indicator;
-      this.activeIndicatorDimension = indicator.Dimension;
+      this.activeIndicatorDimension = indicator.dim;
     },
     showFullList() {
       this.activeSearch = true;
@@ -394,11 +407,11 @@ export default {
         }, 200);
       }
     },
-    setActiveIndicatorFromFullList(indicator) {
+    setActiveindicatorFromFullList(indicator) {
       this.searchString = '';
       this.activeSearch = false;
-      this.selectDataset(indicator.Dataset);
-      this.setActiveIndicator(indicator);
+      this.selectDataset(indicator.dataset);
+      this.setActiveindicator(indicator);
     },
     clearFullSearch() {
       this.searchString = '';
@@ -410,16 +423,16 @@ export default {
   },
   watch:{
     activeIndicatorCode() {
-      let activeIndicator = this.allIndicators.find(indicator => indicator['Indicator Code'] === this.activeIndicatorCode)
+      let activeIndicator = this.allindicators.find(indicator => indicator['indicatorCode'] === this.activeIndicatorCode)
       if(activeIndicator) {
-        this.setActiveIndicatorFromFullList(activeIndicator)
+        this.setActiveindicatorFromFullList(activeIndicator)
       }
     }
   },
   mounted() {
-    let activeIndicator = this.allIndicators.find(indicator => indicator['Indicator Code'] === this.activeIndicatorCode)
+    let activeIndicator = this.allindicators.find(indicator => indicator['indicatorCode'] === this.activeIndicatorCode)
     if(activeIndicator) {
-      this.setActiveIndicatorFromFullList(activeIndicator)
+      this.setActiveindicatorFromFullList(activeIndicator)
     }
   }
 }

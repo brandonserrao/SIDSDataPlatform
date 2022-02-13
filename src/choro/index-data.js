@@ -1,6 +1,6 @@
 //currently only used when apending rectangles
 export const indexColors = {
-  "mvi-index-index":{
+  "mvi-index":{
     "Financial": "#0DB14B",
     "Economic": "#f0db3a",
     "Geographic": "#CC333F",
@@ -15,36 +15,37 @@ export const indexColors = {
 };
 
 export const indexWeightsDict={
-  "mvi-index-index":{
-    "normalization":true, "subindices":{
+  "mvi-index":{
+    "normalization":true,
+    "subindices":{
       "Financial": {
         "weight":1,
         "subsubindices":{
-          "mvi-ST.INT.RCPT.XP.ZS-financial":1,
-          "mvi-BX.TRF.PWKR.DT.GD.ZS-financial":1,
-          "mvi-BX.KLT.DINV.WD.GD.ZS-financial":1
+          "mvi-wdi2-ST.INT.RCPT.XP.ZS":1,
+          "mvi-wdi-BX.TRF.PWKR.DT.GD.ZS":1,
+          "mvi-wdi-BX.KLT.DINV.WD.GD.ZS":1
         }
       },
       "Economic": {
         "weight":1,
         "subsubindices":{
-          "mvi-ldc-AIN-Index-economic":1,
-          "mvi-ldc-XCON-Index-economic":1,
-          "mvi-ldc-XIN-Index-economic":1
+          "mvi-ldc-AIN-Index":1,
+          "mvi-ldc-XCON-Index":1,
+          "mvi-ldc-XIN-Index":1
         }
       },
       "Geographic": {
         "weight":1,
         "subsubindices":{
-          "mvi-ldc-LECZ-Index-geographic":1,
-          "mvi-ldc-REM-Index-geographic":1
+          "mvi-ldc-LECZ-Index":1,
+          "mvi-ldc-REM-Index":1
         }
       }, //"popDry",
       "Environmental": {
         "weight":1,
         "subsubindices":{
-          "mvi-ldc-VIC-Index-environmental":1,
-          "mvi-ldc-AFF-Index-environmental":1
+          "mvi-ldc-VIC-Index":1,
+          "mvi-ldc-AFF-Index":1
         }
       }
     }
@@ -81,6 +82,6 @@ export const indexWeightsDict={
 };
 
 export const indexCodes = {
-  "mvi-index-index":"mvi",
+  "mvi-index":"mvi",
   "egov-egi-unEGovernmentSurvey":"egov"
 }//,egov,etc.]

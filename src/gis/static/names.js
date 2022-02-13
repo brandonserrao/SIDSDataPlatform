@@ -13,8 +13,8 @@ const names = [
     flagCode: null,
   },
   {
-    NAME_0: "Caribbean Region", //corrected spelling from "Carribean"
-    // NAME_0: "Carribean Region",
+    NAME_0: "Caribbean Region", //corrected spelling from "Caribbean"
+    // NAME_0: "Caribbean Region",
     flag: "	&#128681;",
     bb: [
       [-89.28, 1.43],
