@@ -5,8 +5,6 @@
     id="app"
     fluid
   >
-
-      "builded version!!"
     <root-header class="d-none-print" />
     <v-row no-gutters id="content">
       <v-col class="menu-col d-none-print" cols="0" md="2">
