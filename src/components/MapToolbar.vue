@@ -1012,11 +1012,12 @@
 </template>
 
 <script>
+// import { gis_store } from "../gis/gis_store.js";
 import names from "@/gis/static/names";
 import CountrySelectorOption from "@/components/CountrySelectorOption";
 
 export default {
-  props: ["active_dataset", "active_layer"], //to receive from MapDatasetController via GeospatialData; //currently active_dataset informs handleResolutionChange
+  props: ["active_dataset", "active_layer", "dualModeEnabled"], //to receive from MapDatasetController via GeospatialData; //currently active_dataset informs handleResolutionChange
   name: "MapToolbar",
   components: {
     CountrySelectorOption,
@@ -1024,7 +1025,8 @@ export default {
   data() {
     return {
       names: names, //consider redoing these via props
-      currentCountry: "Search Country or Region", //placeholder text for country select searchbar
+      currentCountry: "Search Country or Region", //placeholder text for country select searchbar,
+      // gis_store,
     };
   },
 
@@ -1042,12 +1044,14 @@ export default {
   methods: {
     //A) emit update - interpret and emit the desired interaction and necessary data to the parent (GeospatialData.vue)
     handleGisMenuChange(change_type, object = null) {
+      // this.gis_store.testIncrement(); // testing use of a store
       //determine type of menuchange based on eventType
 
       //display loader spinner
       if (!["change-opacity", "toggle-dualmode"].includes(change_type)) {
         console.log(change_type);
         console.log("show spinner for longer GISMenuChange behaviour");
+
         //repainting opacity expected to be near-instantaneous so not require significant loading time
         let spinner = document.getElementsByClassName("loader-gis")[0];
         let modal = document.getElementsByClassName("loader-gis-modal")[0];
