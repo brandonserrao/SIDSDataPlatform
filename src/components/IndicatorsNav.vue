@@ -55,7 +55,7 @@
           <v-card class="tooltip-card">
             <v-card-title class="mb-1 active-indicator_header">{{item.indicator}}</v-card-title>
             <v-card-text>
-              <div class="mb-1">{{item.dim}}</div>
+              <div class="mb-1">{{item.units}}</div>
               {{item.def}}
               <v-divider class="mb-1 mt-1"></v-divider>
               <b>Source:</b>{{item.source}} <br/>
@@ -196,7 +196,7 @@
       <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.indicator}}</v-card-title>
       <v-card-text class="active-indicator-info">
         <div class="mb-1 d-flex">
-          <div class="active-dimension"> {{activeIndicatorDimension}} </div>
+          <div class="active-dimension"> {{activeIndicator.units}} </div>
           <v-select class='dimensions-select' v-if="activeIndicatorDimensions.length > 1"
             :items="activeIndicatorDimensions"
             :value="activeIndicatorCode"

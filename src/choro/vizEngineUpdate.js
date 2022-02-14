@@ -912,7 +912,7 @@ export function updateChoroLegend(quantize) {
       // }
       // else {
 
-      return this.indicatorMeta[this.indicatorCode]["indicator"]; //["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " +
+      return `${this.indicatorMeta[this.indicatorCode].indicator} (${this.indicatorMeta[this.indicatorCode].units})`; //["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " +
 
       // }
     });
