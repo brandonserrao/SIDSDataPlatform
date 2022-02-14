@@ -1,4 +1,5 @@
 //local imports---------------------------------------
+// import { gis_store } from "../gis/gis_store.js";
 //import "@/gis/styles/minimap.css";
 // import mapboxMinimap from "mapbox.minimap";
 import filepaths from "@/gis/static/filepaths.js";
@@ -43,6 +44,9 @@ export default class Map {
       containerId, // container ID
       ...constants.mapOptions,
     }); */
+
+    //testing use of a store
+    // this.gis_store = gis_store;
 
     //testing implementation of comparison swiper------------------------
     this.containerId = containerId; //containerId of the div that contains the primary map1 and the secondary map2; a necessary arg for the mapboxglCompare plugin
@@ -192,9 +196,10 @@ export default class Map {
       });
     });
   }
-  _addVectorSources() {
+  _addVectorSources(comparison = false) {
     console.log(`_addVectorSources()`);
-    let map = this.map; //patching map reference
+    let map = !comparison ? this.map : this.map2; //
+    // let map = this.map; //patching map reference
     // console.log(`vector sources: ${Object.keys(globals.sources)}`);
 
     //LOAD SOURCES (VECTOR TILES)
@@ -346,6 +351,10 @@ export default class Map {
     });
   }
   _bindRecolorListeners(mapClassInstance) {
+    if (globals.compareMode) {
+      console.warn("recolor disabled during comparison mode");
+      return;
+    }
     let instance = mapClassInstance;
     console.log(instance);
     //this. out here ref the mapClass instance calling this method
@@ -1069,7 +1078,8 @@ export default class Map {
       this.hideSpinner();
     });
   }
-  addOcean(activeDataset, activeLayer) {
+  addOcean(activeDataset, activeLayer, comparison = false) {
+    let map = !comparison ? this.map : this.map2; //
     this.clearHexHighlight();
     this.remove3d();
 
@@ -1097,8 +1107,8 @@ export default class Map {
     //clear out all userLayers
     console.log(`removing all userLayers`);
     for (var layer in constants.userLayers) {
-      if (this.map.getLayer(constants.userLayers[layer])) {
-        this.map.removeLayer(constants.userLayers[layer]);
+      if (map.getLayer(constants.userLayers[layer])) {
+        map.removeLayer(constants.userLayers[layer]);
       }
       // if (this.map2.getLayer(constants.userLayers[layer])) {
       //   this.map2.removeLayer(constants.userLayers[layer]);
@@ -1134,7 +1144,7 @@ export default class Map {
       },
     };
     //add the layer
-    this.map.addLayer(layerOptions, globals.firstSymbolId);
+    map.addLayer(layerOptions, globals.firstSymbolId);
 
     //NEW - adding Source and Layer for new format of data-----------------------------
     // this.map2.addSource(
@@ -1145,7 +1155,7 @@ export default class Map {
     //---------------------------------------------------------------------------------
 
     setTimeout(() => {
-      var features = this.map.queryRenderedFeatures({
+      var features = map.queryRenderedFeatures({
         layers: ["ocean"],
       });
 
@@ -1165,15 +1175,16 @@ export default class Map {
 
     // this.addLegend(); //TODO doesnt this need the extra params that I added to the addLegend function?
 
-    this.map.once("idle", () => {
+    map.once("idle", () => {
       this.hideSpinner();
     });
   }
-  changeDataOnMap(activeDataset, activeLayer) {
+  changeDataOnMap(activeDataset, activeLayer, comparison = false) {
+    let map = !comparison ? this.map : this.map2; //
+    // let map = this.map;
     let Field_Name = activeLayer.Field_Name; //get the selected layer's Field_Name
     console.log(`changeDataOnMap fired: ${Field_Name}, activeLayer:`);
     console.log();
-    let map = this.map;
 
     this.clearHexHighlight();
 
@@ -1223,8 +1234,8 @@ export default class Map {
       //clear out all userLayers
       console.log(`removing all userLayers`);
       for (var layer in constants.userLayers) {
-        if (this.map.getLayer(constants.userLayers[layer])) {
-          this.map.removeLayer(constants.userLayers[layer]);
+        if (map.getLayer(constants.userLayers[layer])) {
+          map.removeLayer(constants.userLayers[layer]);
         }
       }
 
@@ -1263,7 +1274,7 @@ export default class Map {
     if (!map.getSource("hex5")) {
       //console.log('no source')
       console.log("no hex5 source; re-adding all vector sources");
-      this._addVectorSources();
+      this._addVectorSources(comparison);
     } else {
       //console.log('source!')
     }

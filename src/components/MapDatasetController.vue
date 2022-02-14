@@ -230,8 +230,70 @@
         </v-col>
       </v-row>
       <v-row v-else class="spacing-row"> </v-row>
+
+      <!-- DUPLICATE START for dualmode selector -->
+      <v-row dense v-show="dualModeEnabled">
+        <v-col>
+          <v-select
+            rounded
+            class="map-input"
+            dense
+            hide-details
+            v-model="comparisonDatasetName"
+            :items="filteredDatasets"
+            item-text="name"
+            item-value="name"
+            label="Dataset"
+            @input="emitComparisonUpdate"
+            outlined
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-row
+        v-show="dualModeEnabled"
+        class="spacing-row"
+        v-if="comparisonDataset && comparisonDataset.type === 'layers'"
+        dense
+      >
+        <v-col>
+          <v-select
+            rounded
+            dense
+            hide-details
+            class="map-input"
+            v-model="comparisonLayerName"
+            item-text="Description"
+            item-value="Description"
+            :items="comparisonDataset.layers"
+            label="Layer"
+            @input="emitComparisonUpdate"
+            outlined
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-row
+        v-show="dualModeEnabled"
+        class="spacing-row"
+        v-else-if="comparisonDataset && comparisonDataset.type === 'temporal'"
+        dense
+      >
+        <v-col>
+          <v-slider
+            class="map-input"
+            v-model="comparisonLayerName"
+            :tick-labels="comparisonTicksLabels"
+            :max="comparisonDataset.layers.length - 1"
+            step="1"
+            ticks="always"
+            tick-size="4"
+            @input="emitComparisonUpdate"
+          ></v-slider>
+        </v-col>
+      </v-row>
+      <v-row v-else class="spacing-row" v-show="dualModeEnabled"> </v-row>
+      <!-- DUPLICATE END -->
     </v-card>
-    <v-card class="mb-1 block-info background-grey">
+    <v-card v-show="!dualModeEnabled" class="mb-1 block-info background-grey">
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
@@ -254,6 +316,28 @@
       </v-card-text>
     </v-card>
 
+    <!-- Tab System for Compare/Dual Mode -->
+    <!-- <v-card v-show="dualModeEnabled" class="mb-1 block-info background-grey">
+      Placeholder content
+    </v-card> -->
+    <v-tabs
+      v-model="tabSystem"
+      v-show="dualModeEnabled"
+      class="background-grey"
+    >
+      <!-- <v-tabs-slider color="purple"></v-tabs-slider> -->
+      <v-tab v-for="n in tabs" :key="n">
+        {{ n }}
+      </v-tab>
+    </v-tabs>
+    <v-tabs-items
+      v-model="tabSystem"
+      v-show="dualModeEnabled"
+      class="mb-1 block-info background-grey"
+    >
+      <v-tab-item><v-card flat>Placeholder 1</v-card></v-tab-item>
+      <v-tab-item><v-card flat>Placeholder 2</v-card></v-tab-item>
+    </v-tabs-items>
     <!-- New Legend/Histogram -->
     <!-- <v-card v-if="displayLegend" class="histogram_frame"> -->
     <v-card v-show="displayLegend" class="background-grey histogram_frame">
@@ -279,12 +363,14 @@
 </template>
 
 <script>
+// import { gis_store } from "../gis/gis_store.js";
 import datasets from "@/gis/static/layers";
 
 export default {
   name: "MapDatasetController",
   props: [
     "displayLegend", //"map"
+    "dualModeEnabled",
   ],
   data() {
     return {
@@ -556,6 +642,14 @@ export default {
         },
       },
       layers: [],
+      // gis_store,
+      tabSystem: null, //used for v-model of tabs/tab-items
+      tabs: {
+        leftLayer: "placeholder 1",
+        rightLayer: "placeholder 2",
+      },
+      comparisonDatasetName: null,
+      comparisonLayerName: null,
     };
   },
   computed: {
@@ -604,15 +698,49 @@ export default {
         return this.activeDataset.layers[0];
       }
     },
+
+    comparisonLayer() {
+      console.log(this.comparisonDataset);
+      if (!this.comparisonDataset) return null;
+      if (this.comparisonDataset.type === "temporal") {
+        return this.comparisonDataset.layers[this.comparisonLayerName];
+      } else if (this.comparisonDataset.type === "layers") {
+        return this.comparisonDataset.layers.find(
+          (layer) => layer.Description === this.comparisonLayerName
+        );
+      } else {
+        console.log(this.comparisonDataset.layers[0]);
+        return this.comparisonDataset.layers[0];
+      }
+    },
+    comparisonTicksLabels() {
+      console.log("comparisonTicksLabels()");
+      return this.comparisonDataset.layers.map((layer) => layer.Temporal);
+    },
+    comparisonDataset() {
+      console.log("comparisonDataset()");
+      return this.filteredDatasets.find(
+        (dataset) => dataset.name === this.comparisonDatasetName
+      );
+    },
   },
   methods: {
     /**
      *passes current dataset+layer selection upwards
      */
     emitUpdate() {
+      // this.gis_store.testIncrement();
       // console.log(`emitUpdate of activeDataset and activeLayer`);
       let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
       this.$emit("update", active);
+    },
+    emitComparisonUpdate() {
+      console.warn("emitComparisonUpdate");
+      let active = {
+        dataset: this.comparisonDataset,
+        layer: this.comparisonLayer,
+      }; //package data to pass to parents with update
+      this.$emit("updateComparison", active);
     },
 
     getGoalImage(index) {

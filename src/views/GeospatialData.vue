@@ -28,7 +28,11 @@
       class="data-controller"
       :map="map"
       @update="updateMap($event.dataset, $event.layer)"
+      @updateComparison="
+        updateComparisonMap($event.dataset, $event.layer, true)
+      "
       :displayLegend="displayLegend"
+      :dualModeEnabled="dualModeEnabled"
     />
     <map-toolbar
       class="toolbar"
@@ -40,6 +44,7 @@
       @select-color="changeColor($event)"
       :active_dataset="activeDatasetName"
       :active_layer="activeLayerName"
+      :dualModeEnabled="dualModeEnabled"
       @toggle-legend="toggleLegend()"
       @toggle-3D="toggle3D()"
       @toggle-labels="toggleLabels($event)"
@@ -78,6 +83,7 @@
 </template>
 
 <script>
+// import { gis_store } from "../gis/gis_store.js"; //testing use of a store
 import * as d3 from "d3";
 
 import filepaths from "@/gis/static/filepaths.js";
@@ -102,14 +108,15 @@ export default {
       activeDatasetName: null,
       activeLayerName: null,
       displayLegend: true,
+      dualModeEnabled: null,
       gisLoader: { loading: true, color: "purple", size: "50px" },
+      // gis_store, //testing use of a store
     };
   },
   components: {
     MapDatasetController,
     MapToolbar,
-    // PulseLoader,
-    GridLoader,
+    GridLoader, // PulseLoader,
   },
   methods: {
     //A) Interfaces for the Map class
@@ -133,6 +140,8 @@ export default {
       this.map.addLabels(labelObject);
     },
     toggleDualMode() {
+      this.dualModeEnabled = !this.dualModeEnabled;
+      // console.log("dualModeEnabled:", this.dualModeEnabled);
       this.map.toggleMapboxGLCompare();
     },
     toggleLegend() {
@@ -402,6 +411,76 @@ export default {
       });
     },
 
+    updateComparisonMap(activeDataset, activeLayer) {
+      if (!activeDataset) {
+        console.log("no dataset/layer to updateComparisonMap with");
+      } else {
+        //check for recognized dataset.type
+        switch (activeDataset.type) {
+          case "single": //only contains one layer; pull it from dataset
+            activeLayer = activeDataset.layers[0];
+            break;
+          case "layers": //has multiple datasets -> activeLayer will be truthy
+            break;
+          case "temporal": //has multiple datasets -> activeLayer will be truthy
+            break;
+          default:
+            alert(
+              `Unrecognized case of activeDataset.type: ${activeDataset.type} in updateComparisonMap`
+            );
+        }
+        if (activeLayer) {
+          //display loader spinner
+          console.log("showing loading spinner");
+          let spinner = document.getElementsByClassName("loader-gis")[0];
+          let modal = document.getElementsByClassName("loader-gis-modal")[0];
+          console.log(spinner);
+          spinner.classList.remove("display-none");
+          modal.classList.remove("display-none");
+          console.log(spinner);
+
+          //if ocean dataset or layer selected place resolution indicator to 10km hex option
+          var resolutionOptions =
+            document.getElementsByClassName("resolution-option");
+
+          if (activeLayer.Name === "Ocean Data") {
+            //handle if called while ocean dataset active
+            console.log(
+              `activeLayer.Name: ${activeLayer.Name}; set resolution selector to 10`
+            );
+
+            for (let i = 0; i < resolutionOptions.length; i++) {
+              if (i === 2) {
+                //i = 2 is the hardcoded index for the 10km selector
+                resolutionOptions[i].classList.add("border-blue");
+              } else {
+                resolutionOptions[i].classList.remove("border-blue");
+              }
+            }
+          }
+          console.log(
+            `activeLayer: ${activeLayer.Field_Name} ${activeLayer.Description}`
+          );
+
+          if (activeLayer.Name === "Ocean Data") {
+            if (activeLayer.Field_Name === "depth") {
+              console.log(
+                "updateComparisonMap w/ Ocean Data-Depths: " +
+                  activeLayer.Description
+              );
+              this.map.addOcean(activeDataset, activeLayer, true);
+            } else {
+              console.log(
+                "updateComparsionMap w/ Ocean Data: " + activeLayer.Description
+              );
+              this.map.changeDataOnMap(activeDataset, activeLayer, true);
+            }
+          } else {
+            this.map.changeDataOnMap(activeDataset, activeLayer, true);
+          }
+        }
+      }
+    },
     updateMap(activeDataset, activeLayer) {
       if (!(activeDataset === globals.lastActive.dataset)) {
         // console.log(`dataset changing from ${globals.lastActive.dataset?.name} -> ${activeDataset.name}; resetting color palette;`);
