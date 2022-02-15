@@ -402,13 +402,7 @@ export default {
           name: "SIDS offer Pillars",
           value: "pillars",
           headerImg:
-<<<<<<< HEAD
             require("@/assets/media/goals-icons/sidsOfferPillars.png"),
-=======
-            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png",
-          // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sidsOfferPillars.png",
-          // "../assets/gis/icons/sidsOfferPillars.png", //working on local server
->>>>>>> 25118b111cc9414932109a5b50a687c2f6aa6516
           description:
             "UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.",
         },
@@ -416,13 +410,7 @@ export default {
           name: "SDGs",
           value: "sdgs",
           headerImg:
-<<<<<<< HEAD
             require("@/assets/media/goals-icons/SDGs.png"),
-=======
-            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png",
-          // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/sdgs.png",
-          // "../assets/gis/icons/SDGs.png",
->>>>>>> 25118b111cc9414932109a5b50a687c2f6aa6516
           description:
             "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
         },
@@ -430,12 +418,7 @@ export default {
           name: "SAMOA Pathway",
           value: "samoaPriorities",
           headerImg:
-<<<<<<< HEAD
             require("@/assets/media/goals-icons/samoaPathway.png"),
-=======
-            "https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png",
-          // "https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaPathway.png",
->>>>>>> 25118b111cc9414932109a5b50a687c2f6aa6516
           description:
             "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
         },
