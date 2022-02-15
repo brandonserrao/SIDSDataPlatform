@@ -29,19 +29,19 @@ export function updateVizEngine(indicatorCode) {
   this.indicatorCode = indicatorCode;
 
   if(this.page=="mvi"){
-    this.indicatorCode = "mvi-index-index";
+    this.indicatorCode = "mvi-index";
   }
 
   if (this.indicatorCode == "region") {
-    this.indicatorCode = "hdr137506-compositeIndices";///temp so has something to attach to data
+    this.indicatorCode = "hdr-137506";///temp so has something to attach to data
   }
   if (Object.keys(indexCodes).includes(this.indicatorCode)) {
     this.vizMode = "index";
-    this.apiCode="indexData-" + indexCodes[this.indicatorCode];
+    this.apiCode="/indices/" + indexCodes[this.indicatorCode];
   } else {
     this.vizMode = "indicator";
     let codeSplit = this.indicatorCode.split("-");
-    this.apiCode="indicatorData-"+codeSplit[codeSplit.length - 1]
+    this.apiCode=`/indicators/${codeSplit[0]}/${this.indicatorCode}`
   }
     // updateVizSliders();
 //   //package selections
@@ -64,7 +64,7 @@ export function updateVizEngine(indicatorCode) {
 //
 //
   d3.json(
-    "https://sids-dashboard.github.io/api/data/"+  this.apiCode + ".json"
+    "https://raw.githubusercontent.com/SIDS-Dashboard/api/main/data"+  this.apiCode + ".json"
   ).then((dat) => {
 
     this.updateLinesAndMap();
@@ -338,7 +338,7 @@ export function updateCountrySvgColors(quantize) {
             " shadow countrySvg"
           );
         } catch(e) {
-          console.log(e);
+          console.log(e, this.id);
         }
       });
   }
@@ -548,10 +548,18 @@ export function updateLabels(vizElementAttributes, noData) {
       .transition()
       .duration(1200)
       .attr("x", function () {
-        return vizElementAttributes[this.parentNode.id]["LT"]["x"] + 170;
+        let val = vizElementAttributes[this.parentNode.id]["LT"]["x"] + 10
+        if(rootThis.vizWidth >= 800) {
+          val +=160;
+        }
+        return val;
       })
       .attr("y", function () {
-        return vizElementAttributes[this.parentNode.id]["LT"]["y"];
+        let value = vizElementAttributes[this.parentNode.id]["LT"]["y"];
+        if(rootThis.vizWidth < 800 && this.vizMode === 'index') {
+          value = value*2 + vizElementAttributes[this.parentNode.id]["MRT1"]["height"] - 12;
+        }
+        return value;
       })
       .attr("fill-opacity", function () {
         if (
@@ -599,6 +607,7 @@ export function updateRectangles(vizElementAttributes) {
 }
 //
 export function updateIndexRectangles(vizElementAttributes) {
+  let rootThis = this;
   let subindexList=Object.keys(this.indexWeights["subindices"])
   for(let i=0;i<subindexList.length;i++){
    d3.select(this.sidsMaps)
@@ -609,7 +618,11 @@ export function updateIndexRectangles(vizElementAttributes) {
         return vizElementAttributes[this.parentNode.id]["MRT"+(i)]["x"];
       })
       .attr("y", function () {
-        return vizElementAttributes[this.parentNode.id]["MRT"+(i)]["y"];
+        let value = vizElementAttributes[this.parentNode.id]["MRT"+(i)]["y"]
+        if(rootThis.vizWidth < 800 && this.vizMode === 'index') {
+          value = value*2 + vizElementAttributes[this.parentNode.id]["MRT"+(i)]["height"];
+        }
+        return value;
       })
       .attr("width", function () {
               return vizElementAttributes[this.parentNode.id]["MRT"+(i)]["width"];
@@ -627,7 +640,11 @@ export function updateIndexRectangles(vizElementAttributes) {
          return vizElementAttributes[this.parentNode.id]["RT"]["x"];
        })
        .attr("y", function () {
-         return vizElementAttributes[this.parentNode.id]["RT"]["y"];
+         let value = vizElementAttributes[this.parentNode.id]["RT"]["y"]
+         if(rootThis.vizWidth < 800 && this.vizMode === 'index') {
+           value = value*2 + vizElementAttributes[this.parentNode.id]["MRT"+(i)]["height"];
+         }
+         return value;
        })
        .attr("width", function () {
                return vizElementAttributes[this.parentNode.id]["RT"]["width"];
@@ -693,9 +710,9 @@ export function updateBarAxis() {
   let indicatorDataYear = this.indicatorData["data"][this.indiSelections["year"]],
   barAxis = d3.select(".barAxis");
   const x = d3.scaleLinear();
-  var margin = { left: 160, right: 5 };
+  var margin = { left: this.vizWidth < 800 ? 0 : 160, right: 5 };
   var xAxis = d3.axisTop(x);
-  var width = 440;
+  var width = this.vizWidth < 800 ? this.vizWidth - 40 : 440;
   var height = 90;
 
   let max = Math.max(
@@ -715,7 +732,14 @@ export function updateBarAxis() {
     );
   }
 
-  xAxis.tickFormat(d3.format(".2s"));
+  let absMax=Math.abs(max)
+  if(absMax>1){
+    xAxis.tickFormat(d3.format(".2s"));}
+  else if (absMax<1&& absMax>0.01){
+    xAxis.tickFormat(d3.format(".2n"));}
+  else  if (absMax<0.01 && absMax>0){
+    xAxis.tickFormat(d3.format(".1e"));}
+
   x.domain([min, max]).range([0, width]);
 
   if (
@@ -888,7 +912,7 @@ export function updateChoroLegend(quantize) {
       // }
       // else {
 
-      return this.indicatorMeta[this.indicatorCode]["Indicator"]; //["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " +
+      return `${this.indicatorMeta[this.indicatorCode].indicator} (${this.indicatorMeta[this.indicatorCode].units})`; //["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " +
 
       // }
     });

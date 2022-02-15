@@ -135,21 +135,28 @@ export function filterObject(obj, arr) {
 export function getIsoByName(countryName) {
   return Object.keys(sidsDict).find(key => sidsDict[key] === countryName);
 }
-export function nFormatter(num, digits) {
-  let si = [
+export function nFormatter(num, digits=3) {
+  var si = [
     { value: 1, symbol: "" },
     { value: 1E3, symbol: "k" },
     { value: 1E6, symbol: "M" },
     { value: 1E9, symbol: "B" }
   ];
-  let rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-  let i;
+  var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+  var i;
   for (i = si.length - 1; i > 0; i--) {
     if (num >= si[i].value) {
       break;
     }
   }
-  return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+
+  if (digits>2 || num<0.01){
+    return (num / si[i].value).toPrecision(digits).replace(rx, "$1") + si[i].symbol;
+
+  }
+  else{//this fixes error if digits=2 where it says 3.2e2 B for example
+    return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;//"jab"//(str(num) +  si[i].symbol);
+  }
 }
 
 export function normalizeIndex(val,min,max){

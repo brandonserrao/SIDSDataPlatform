@@ -1,7 +1,7 @@
 <template>
   <div class="choro">
     <div id="choro_legend_container">
-      <img id="regionLegend" src="https://sids-dashboard.github.io/SIDSDataPlatform/images/tempChoroLegend.jpg" style="margin-top:-15">
+      <img id="regionLegend" src="@/assets/media/choro-legend.jpeg" style="margin-top:-15">
     </div>
     <div class="spiderbox" style="height:0;margin:0;">
       <div id="indexSpider" class="radarChart" style="text-align:center;height:0"></div>
@@ -9,7 +9,7 @@
     <div id="choro_map_container">
 
     </div>
-    <div id="timeSeriesContainer" style="width: 900px;display:none">
+    <div id="timeSeriesContainer">
       <!-- <div class="timeSeriesTooltip"></div> -->
     </div>
   </div>
@@ -38,6 +38,7 @@ export default {
     async initChart() {
       let sidsXML = await service.loadSidsSVG();
       let mapLocations = await service.loadMapLocations();
+
       this.choro = new Choro({
         viz:this.chartType,
         year:'recentValue',
@@ -47,16 +48,17 @@ export default {
         indicatorMeta:this.indicatorMeta,
         profileData: this.profileData,
         page:this.page,
+        clickCallback:this.counntryClickCallback,
         selectedIndis:this.mviCodes,
-        vizContainerWidth:'800',
-        vizContainerHeight:'580',
+        vizContainerWidth:(document.body.clientWidth - 40) > 800 ? 800 : (document.body.clientWidth - 40),
+        vizContainerHeight:(document.body.clientWidth - 40) > 800 ? 580 : 1360,
         mapContainerSelector: '#choro_map_container',
         legendContainerSelector:'#choro_legend_container'
       })
     },
-    handleIndicatorSelect() {
-      console.log(this.indicatorCode)
-    },
+    counntryClickCallback(countryCode) {
+      this.$router.push({path:`/country-profiles/${countryCode}`})
+    }
   },
   async mounted() {
     await this.initChart()
@@ -429,7 +431,6 @@ export default {
 
 #choro_legend_container {
   height: 57px;
-  width: 90%;
   overflow: visible;
 }
 
@@ -452,7 +453,17 @@ export default {
   padding: 5px;
   font-size: 12px;
 }
+#timeSeriesContainer {
+  width: 900px;
+  display:none;
+}
 
+@media all and (max-width:960px) {
+  #timeSeriesContainer {
+    width: 100%;
+    display:none;
+  }
+}
 /*# sourceMappingURL=vizEngine.css.map */
 
 </style>

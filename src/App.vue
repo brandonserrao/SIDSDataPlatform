@@ -5,16 +5,16 @@
     id="app"
     fluid
   >
-    <root-header />
+    <root-header class="d-none-print" />
     <v-row no-gutters id="content">
-      <v-col class="menu-col" cols="0" md="2">
+      <v-col class="menu-col d-none-print" cols="0" md="2">
         <nav-menu />
       </v-col>
       <v-col cols="12" md="10">
         <router-view class="root-router" />
       </v-col>
     </v-row>
-    <root-footer />
+    <root-footer class="d-none d-md-flex d-none-print" />
   </v-container>
 </template>
 <script>
@@ -36,6 +36,7 @@ export default {
 @import './assets/styles/buttons.css';
 @import './assets/styles/text.css';
 @import './assets/styles/forms.css';
+@import './assets/styles/print.css';
 @import './choro/vizEngine.css';
 
 html {
@@ -48,7 +49,7 @@ html {
 }
 #content {
   min-height: calc(100vh - 100px);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 .root-router {
   padding: 0 2em 4em;

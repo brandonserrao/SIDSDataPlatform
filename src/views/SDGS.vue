@@ -1,6 +1,6 @@
 <template>
   <v-row :id="'tab'+id" justify="center">
-    <div class="d-none d-md-block">
+    <div class="d-none d-lg-block">
       <v-row class="mb-0 svg-row" justify="center">
         <div class="svg-container">
         </div>
@@ -8,20 +8,20 @@
       <v-row class="mt-0 bars-container" justify="center">
         <div class="sdg-goal" v-for="(goal, index) in sdgs" :key="goal">
           <img
-            :src="`https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${parseGoalNumber(index)}.png`"
+            :src="require(`@/assets/media/goals-icons/SDGs/${index+1}.png`)"
             height="56"
             width="56"
             >
         </div>
       </v-row>
       <div class="d-none" v-for="(goal, index) in sdgs" :id="'SDGtooltip'+ index" :key="index">
-        <portfolio-tooltip :header="goal" :data="getSDGSTooltipData(goal)"/>
+        <portfolio-tooltip :year="year" :header="goal" :data="tooltipData[goal]"/>
       </div>
     </div>
-    <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
+    <v-col class="d-block d-lg-none text-center block-subheader" cols='12'>
       {{projectCount[activeGoal]}} projects
     </v-col>
-    <v-col class="d-block d-md-none text-center block-subheader" cols='12'>
+    <v-col class="d-block d-lg-none text-center block-subheader" cols='12'>
       {{nFormatter(budgetCount[activeGoal])}} budget
     </v-col>
   </v-row>
@@ -101,6 +101,15 @@ export default {
     budgetCount() {
       return this.barsData.map(data => data.budget)
     },
+    tooltipData() {
+      let res = {}
+      this.sdgs.map(sdg => {
+        res[sdg] = this.filteredProjects.filter((project) => {
+          return project.sdg && project.sdg.includes(sdg)
+        });
+      })
+      return res
+    }
   },
   methods: {
     initBars() {
@@ -137,9 +146,18 @@ export default {
       bars.append('rect')
           .attr('class', 'bar')
           .attr("x", function (d) { return (x(d) + x.bandwidth() / 16) + 8; })
-          .attr("y", function (d) { return rootThis.y1(rootThis.projectNamesObject[d]); })
+          .attr("y", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return rootThis.barsHeight
+            }
+            return rootThis.y1(rootThis.projectNamesObject[d]); })
           .attr("width", x.bandwidth() / 4)
-          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]); })
+          .attr("height", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return 0
+            }
+            return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
+          })
           .attr("fill", function (d, i) { return rootThis.colors[i] })
 
 
@@ -152,9 +170,18 @@ export default {
       bars2.append('rect')
           .attr('class', 'bar2')
           .attr("x", function (d) { return (x2(d) + x2.bandwidth() / 2.2) + 8; })
-          .attr("y", function (d) { return rootThis.y2(rootThis.budgetNamesObject[d]); })
+          .attr("y", function (d) {
+            if(rootThis.budgetNamesObject[d] === 0) {
+              return rootThis.barsHeight
+            }
+            return rootThis.y2(rootThis.budgetNamesObject[d]); })
           .attr("width", x2.bandwidth() / 4)
-          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]); })
+          .attr("height", function (d) {
+            if(rootThis.budgetNamesObject[d] === 0) {
+              return 0
+            }
+            return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]);
+          })
           .attr("fill", function (d, i) { return rootThis.colors[i] })
           .style("opacity", 0.5);
 
@@ -168,7 +195,12 @@ export default {
           .attr("x", function (d) { return x(d) - 6; })
           .attr("y", function (d) { return rootThis.y1(rootThis.projectNamesObject[d]) - 30; })
           .attr("width", x.bandwidth())
-          .attr("height", function (d) { return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]) + 30; })
+          .attr("height", function (d) {
+            if(rootThis.projectNamesObject[d] === 0) {
+              return 0
+            }
+            return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]) + 30;
+          })
           .attr("opacity", 0)
           .each((data, index, list) => {
             tippy(list[index], {
@@ -253,13 +285,6 @@ export default {
           .attr("text-anchor", "middle");
 
     },
-    parseGoalNumber(number) {
-      let goalNmber = (number + 1).toString();
-      if(goalNmber.length < 2) {
-        goalNmber = '0' + goalNmber;
-      }
-      return goalNmber
-    },
     updateBars() {
       let rootThis = this;
 
@@ -277,9 +302,15 @@ export default {
         .transition()
         .duration(750)
         .attr("height", function (d) {
-            return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
+          if(rootThis.projectNamesObject[d] === 0) {
+            return 0
+          }
+          return rootThis.barsHeight - rootThis.y1(rootThis.projectNamesObject[d]);
         })
         .attr("y", function (d) {
+          if(rootThis.projectNamesObject[d] === 0) {
+            return rootThis.barsHeight
+          }
             return rootThis.y1(rootThis.projectNamesObject[d]);
         })
 
@@ -287,9 +318,15 @@ export default {
         .transition()
         .duration(750)
         .attr("height", function (d) {
+          if(rootThis.budgetNamesObject[d] === 0) {
+            return 0
+          }
           return rootThis.barsHeight - rootThis.y2(rootThis.budgetNamesObject[d]);
         })
         .attr("y", function (d) {
+          if(rootThis.budgetNamesObject[d] === 0) {
+            return rootThis.barsHeight
+          }
           return rootThis.y2(rootThis.budgetNamesObject[d]);
         })
 
@@ -339,7 +376,11 @@ export default {
                 return rootThis.nFormatter(rootThis.budgetNamesObject[d]).concat(" USD");
               }
             })
-
+        let hoverbars = this.svgContainer.selectAll('.hoverbar');
+        hoverbars.each(function (data, index) {
+          let content = document.getElementById(`SDGtooltip${index}`);
+          this._tippy.setContent(content.innerHTML)
+        })
     },
     getBarLabelsY(d, i, type) {
       if (i == 0) {
@@ -381,11 +422,11 @@ export default {
       if (type == "budg") { return 100 - budgVal - offset }
       else if (type == "proj") { return 100 - projVal - offset }
     },
-    getSDGSTooltipData(sdg) {
-      return this.filteredProjects.filter((project) => {
-        return project.sdg && project.sdg.includes(sdg)
-      });
-    }
+    // getSDGSTooltipData(sdg) {
+    //   return this.filteredProjects.filter((project) => {
+    //     return project.sdg && project.sdg.includes(sdg) && (this.year === 'all' || project.year === this.year)
+    //   });
+    // }
   },
   mounted() {
     // this.svgWidth = this.$el.offsetWidth;

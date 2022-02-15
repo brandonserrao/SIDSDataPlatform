@@ -85,17 +85,58 @@ export const regionsDict = {
 //
 //
 //
-// // sidsSvgToIso= {"antiguaAndBarbuda":"ATG", "aruba":"ABW","bahamas":"BHS","bermuda":"BMU",
-// // "bahrain":"BHR", "barbados":"BRB", "belize":"BLZ", "britishVirginIslands":"VGB","caboVerde":"CPV","caymanIslands":"CYM", "comoros":"COM",
-// // "cuba":"CUB","curacao":"CUW","dominica":"DMA", "dominicanRepublic":"DOM",
-// // "fiji":"FJI" ,"grenada":"GRD", "guineaBissau":"GNB", "guyana":"GUY", "haiti":"HTI",
-// // "jamaica":"JAM", "kiribati":"KIR", "maldives":"MDV", "marshallIslands":"MHL",
-// // "mauritius":"MUS", "micronesia":"FSM", "nauru":"NRU", "palau":"PLW",
-// // "papuaNewGuinea":"PNG", "samoa":"WSM", "saoTomeAndPrincipe":"STP", "seychelles":"SYC",
-// // "singapore":"SGP","sintMaarten":"SXM","solomonIslands":"SLB", "kittsAndNevis":"KNA", "stVincent":"VCT",
-// // "saintLucia":"LCA", "suriname":"SUR", "timorLeste":"TLS","trinidadAndTobago":"TTO",  "tonga":"TON",
-// //            "tuvalu":"TUV","turksAndCaicos":"TCA", "vanuatu":"VUT","anguilla":"AIA","cookIslands":"COK",
-// //            "montserrat":"MSR","tokelau":"TKL", "niue":"NIU"}
+export const isoToIds= {
+  "ATG": "antiguaAndBarbuda",
+  "ABW": "aruba",
+  "BHS": "bahamas",
+  "BMU": "bermuda",
+  "BHR": "bahrain",
+  "BRB": "barbados",
+  "BLZ": "belize",
+  "VGB": "britishVirginIslands",
+  "CPV": "caboVerde",
+  "CYM": "caymanIslands",
+  "COM": "comoros",
+  "CUB": "cuba",
+  "CUW": "curacao",
+  "DMA": "dominica",
+  "DOM": "dominicanRepublic",
+  "FJI": "fiji",
+  "GRD": "grenada",
+  "GNB": "guineaBissau",
+  "GUY": "guyana",
+  "HTI": "haiti",
+  "JAM": "jamaica",
+  "KIR": "kiribati",
+  "MDV": "maldives",
+  "MHL": "marshallIslands",
+  "MUS": "mauritius",
+  "FSM": "micronesia",
+  "NRU": "nauru",
+  "PLW": "palau",
+  "PNG": "papuaNewGuinea",
+  "WSM": "samoa",
+  "STP": "saoTomeAndPrincipe",
+  "SYC": "seychelles",
+  "SGP": "singapore",
+  "SXM": "sintMaarten",
+  "SLB": "solomonIslands",
+  "KNA": "kittsAndNevis",
+  "VCT": "stVincent",
+  "LCA": "saintLucia",
+  "SUR": "suriname",
+  "TLS": "timorLeste",
+  "TTO": "trinidadAndTobago",
+  "TON": "tonga",
+  "TUV": "tuvalu",
+  "TCA": "turksAndCaicos",
+  "VUT": "vanuatu",
+  "AIA": "anguilla",
+  "COK": "cookIslands",
+  "MSR": "montserrat",
+  "TKL": "tokelau",
+  "NIU": "niue"
+}
 //
 //
 //
@@ -134,19 +175,19 @@ export const regionsDict = {
 //   };
 //
 export const  mviIndicatorsDict = {
-    expConc: "mvi-ldc-XCON-Index-economic",
-    expInst: "mvi-ldc-XIN-Index-economic",
-    agrInst: "mvi-ldc-AIN-Index-economic",
-    agrGDP: "mvi-ldc-AFF-Index-environmental",
-    victims: "mvi-ldc-VIC-Index-environmental",
-    popLECZ: "mvi-ldc-LECZ-Index-geographic",
-    remote: "mvi-ldc-REM-Index-geographic", //"popDry": "%mvi-ldc-DRY-Index-geographic",
-    tourism: "mvi-ST.INT.RCPT.XP.ZS-financial",
-    fdi: "mvi-BX.KLT.DINV.WD.GD.ZS-financial",
-    remit: "mvi-BX.TRF.PWKR.DT.GD.ZS-financial",
+    expConc: "mvi-ldc-XCON-Index",
+    expInst: "mvi-ldc-XIN-Index",
+    agrInst: "mvi-ldc-AIN-Index",
+    agrGDP: "mvi-ldc-AFF-Index",
+    victims: "mvi-ldc-VIC-Index",
+    popLECZ: "mvi-ldc-LECZ-Index",
+    remote: "mvi-ldc-REM-Index", //"popDry": "%mvi-ldc-DRY-Index-geographic",
+    tourism: "mvi-wdi2-ST.INT.RCPT.XP.ZS",
+    fdi: "mvi-wdi-BX.KLT.DINV.WD.GD.ZS",
+    remit: "mvi-wdi-BX.TRF.PWKR.DT.GD.ZS",
   };
 //
-export const indexDict = {"mvi":"mvi-index-index"};
+export const indexDict = {"mvi":"mvi-index"};
 //
 export const mviDimensionColors = {
   Financial: "#0DB14B",

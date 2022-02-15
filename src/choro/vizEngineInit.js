@@ -3,7 +3,7 @@ import tippy from 'tippy.js';
 
 import { indexColors } from './index-data'
 import {regionColors, getBoundingBox, nFormatter} from './vizEngineHelperFunctions'
-import {countryListLongitude, sidsDict, regionsDict} from './vizEngineGlobals'
+import {countryListLongitude, sidsDict, regionsDict, isoToIds} from './vizEngineGlobals'
 // countryListSpider
 //runs this right away (it works, for some reason it doesn't draw the titles if executed on click )
 ///////////////////////////////////
@@ -74,6 +74,8 @@ export function appendAllElements(){
 //////////////////////////////////////
 //
 export function initChoroLegend(quantize) {
+
+  let textPadding = this.vizWidth <= 800 ? (this.vizWidth - 40)/2 : 400
 //   $("#indicatorExport").show();
   d3.select("#regionLegend").style('display','none');
 
@@ -114,7 +116,7 @@ export function initChoroLegend(quantize) {
   d3.select(this.legendContainerSelector).select("svg")
     .append("text")
     .attr("class", "choroLegendTitle")
-    .attr("x", 400)
+    .attr("x", textPadding)
     .attr("y", 14)
     .attr("text-anchor", "middle")
     // .transition()
@@ -171,14 +173,13 @@ export function showChoroLegend(choroLegend, quantize) {
 
 function appendLinesMapAndRegions() {
 //    main_chart_svg = d3.select("#choro_map_container")//.select("svg");
-
     this.main_chart_svg
       .append("svg:image")
       .attr("x", -18)
       .attr("y", -415)
       .attr("width", 879)
       .attr("height", 1000)
-      .attr("xlink:href", "/SIDSDataPlatform/static/SIDS_map_clean-01.png")
+      .attr("xlink:href", require("@/assets/media/SIDS_map_clean-01.png"))
       .attr("opacity", 0)
       .attr("class", "choroMap")
       .attr("z-index", -10);
@@ -291,6 +292,9 @@ export function initCountrySvgs(){
     //   });
     // })
     .on("click", function () {
+      if(rootThis.vizWidth >=800) {
+        rootThis.clickCallback(isoToIds[this.id])
+      }
       // TODO: uncomment to male zoom works
 
 
@@ -510,7 +514,7 @@ export function appendCountryRectangles() {
 export function initVizEngineTooltips() {
   let rootThis = this;
 
-  tippy('.countrySvg, .choroCircle', {
+  tippy('.countrySvg, .choroCircle, .choroRectMvi, .choroRect', {
     theme: 'light',
     delay: 300,
     onShow: function(instance) {
@@ -693,7 +697,7 @@ export function appendMultiRectangles() {
   d3.select("#allSids")
   .selectAll("g")
   .append("rect")
-  .style("fill", indexColors["mvi-index-index"]["Financial"])
+  .style("fill", indexColors["mvi-index"]["Financial"])
   .attr("x", 160)
   .attr("y", 100)
   .attr("width", 0)
@@ -703,7 +707,7 @@ export function appendMultiRectangles() {
 d3.select("#allSids")
   .selectAll("g")
   .append("rect")
-  .style("fill", indexColors["mvi-index-index"]["Economic"])
+  .style("fill", indexColors["mvi-index"]["Economic"])
   .attr("x", 160)
   .attr("y", 200)
   .attr("width", 0)
@@ -713,7 +717,7 @@ d3.select("#allSids")
 d3.select("#allSids")
   .selectAll("g")
   .append("rect")
-  .style("fill", indexColors["mvi-index-index"]["Geographic"])
+  .style("fill", indexColors["mvi-index"]["Geographic"])
   .attr("x", 160)
   .attr("y", 300)
   .attr("width", 0)
@@ -723,7 +727,7 @@ d3.select("#allSids")
 d3.select("#allSids")
   .selectAll("g")
   .append("rect")
-  .style("fill", indexColors["mvi-index-index"]["Environmental"])
+  .style("fill", indexColors["mvi-index"]["Environmental"])
   .attr("x", 160)
   .attr("y", 400)
   .attr("width", 0)

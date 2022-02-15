@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row class="goals-selector">
     <v-col cols="5">
       <v-list dense>
         <v-list-item-group
@@ -7,19 +7,6 @@
           @change="emitTypeChange"
           mandatory
         >
-          <!-- <v-tooltip
-            top
-            v-for="(item, i) in goalTypes"
-            :key="i"
-            eager
-            max-width="400"
-            nudge-right="106"
-            :nudge-top="20 + (40*i)"
-            content-class="indicator-tooltip"
-            allow-overflow
-          >
-           <template v-slot:activator="{ on, attrs }"> -->
-
           <v-list-item
             v-for="(item, i) in goalTypes"
             :value="item.value"
@@ -30,20 +17,6 @@
               <v-list-item-title v-text="item.name"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <!-- </template> -->
-          <!-- <v-card class="tooltip-card">
-            <v-card-title>
-              <v-img
-                class="tooltip-card_img"
-                max-width="160"
-                :src="item.headerImg"
-              ></v-img>
-            </v-card-title>
-            <v-card-text>
-              {{item.description}}
-            </v-card-text>
-          </v-card> -->
-          <!-- </v-tooltip> -->
         </v-list-item-group>
       </v-list>
     </v-col>
@@ -65,49 +38,26 @@
             open-on-hover
             bottom
             :nudge-left="255"
-            :nudge-bottom="46"
-            content-class="sdg-menu"
+            :nudge-bottom="80"
+            content-class="goals-selector-sdg-menu"
           >
             <template v-slot:activator="{ on }">
               <img
                 v-on="on"
                 :src="getGoalImage(index)"
-                height="56"
-                :width="activeGoalType === 'signature-solutions' ? 138 : 56"
+                width="120"
               />
             </template>
-            <div class="goals-tooltip-content">
-              <!-- <v-tooltip
-                right
-                  v-for="(n, index) in activeGoalTypes"
-                  :key="n"
-                eager
-                :nudge-right="(5 - index%6) * 56 || 6"
-                :nudge-top="getGoalsTooltipNudgeTop(index)"
-                max-width="380"
-                content-class="indicator-tooltip"
-                allow-overflow
-              >
-                <template v-slot:activator="{ on, attrs }"> -->
+            <div class="goals-selector-tooltip-content">
               <img
                 v-for="(n, index) in activeGoalTypes"
                 :key="n"
                 @click="selectGoal(index + 1)"
                 :src="getGoalImage(index)"
-                class="tooltip-image"
-                height="56"
-                :width="activeGoalType === 'signature-solutions' ? 138 : 56"
+                class="goals-selector-tooltip-image"
+                :width="activeGoalType === 'signature-solutions' ? 240 : 80"
+
               />
-              <!-- </template>
-                <v-card>
-                  <v-card-title class="coal-title">
-                    {{goalDescriptions[n].title}}
-                  </v-card-title>
-                  <v-card-text>
-                    {{goalDescriptions[n].content}}
-                  </v-card-text>
-                </v-card>
-              </v-tooltip> -->
             </div>
           </v-menu>
         </v-slide-item>
@@ -125,20 +75,14 @@ export default {
         {
           name: "SAMOA Pathway",
           value: "samoa",
-          // headerImg:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/samoaPathway.png',
-          // description: 'The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.'
         },
         {
           name: "SDGs",
           value: "sdgs",
-          // headerImg:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/SDGs.png',
-          // description: 'The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS\'s ownership and leadership in overcoming these challenges.'
         },
         {
           name: "Signature solutions",
           value: "signature-solutions",
-          // headerImg:'https://sids-dashboard.github.io/SIDSDataPlatform/gisPanel/assets/img/icons/sidsOfferPillars.png',
-          // description: 'UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.'
         },
       ],
       activeGoal: 1,
@@ -403,26 +347,11 @@ export default {
   methods: {
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
-        let goalNmber = (index + 1).toString();
-        if (goalNmber.length < 2) {
-          goalNmber = "0" + goalNmber;
-        }
-        // return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SDG%20Icons%202019_WEB/E-WEB-Goal-${goalNmber}.png`;
-        return `https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/SDG_Icons_2019_WEB/E-WEB-Goal-${goalNmber}.png`;
+        return require(`@/assets/media/goals-icons/SDGs/${index+1}.png`)
       } else if (this.activeGoalType === "samoa") {
-        // return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/samoaIcons/100w/Asset%20${
-        //   index + 1
-        // }samoaIcons.png`;
-        return `https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/samoaIcons/100w/Asset_${
-          index + 1
-        }samoaIcons.png`;
+        return require(`@/assets/media/goals-icons/SAMOA/${index+1}.png`)
       } else if (this.activeGoalType === "signature-solutions") {
-        // return `https://sids-dashboard.github.io/SIDSDataPlatform/icons/SSicons/1x/${this[
-        //   "signature-solutions"
-        // ][index].toLowerCase()}SS.png`;
-        return `https://brandonserrao.github.io/SIDSDataPlatform/assets/gis/icons/SSicons/1x/${this[
-          "signature-solutions"
-        ][index].toLowerCase()}SS.png`;
+        return require(`@/assets/media/goals-icons/SS/${index+1}.png`)
       }
     },
     goalUpdateNext() {
@@ -437,9 +366,8 @@ export default {
       this.activeGoal = goalNumber;
       this.$store.commit("goals/setActiveGoal", this.activeGoal);
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
-      this.$refs.slider.scrollOffset =
-        (this.activeGoalType === "signature-solutions" ? 138 : 56) *
-        (goalNumber - 1);
+      this.$refs.slider.scrollOffset = 120 * (goalNumber - 1);
+
     },
     emitTypeChange(type) {
       this.$store.commit("goals/setActiveGoal", 1);
@@ -466,55 +394,38 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.goals-slider {
+.goals-selector .goals-slider {
   padding: 8px 0;
-  width: 106px;
+  width: 170px;
   margin: auto;
 }
-.goals-slider-ss {
-  width: 188px;
-}
-.goals-slider .v-slide-group__next,
-.goals-slider .v-slide-group__prev {
+.goals-selector .goals-slider .v-slide-group__next,
+.goals-selector .goals-slider .v-slide-group__prev {
   min-width: 25px;
 }
-.goals-tooltip-content {
+.goals-selector-tooltip-content {
   display: flex;
-  max-width: 336px;
+  max-width: 240px;
   flex-wrap: wrap;
   background: #fff;
 }
-.tooltip-image {
+.goals-selector-tooltip-image {
   transition: 200ms;
   cursor: pointer;
 }
-.indicator-tooltip {
-  background: none !important;
-  padding: 0 !important;
-}
-.tooltip-card_img {
-  margin: auto;
-}
-.pillars_icon {
+.goals-selector-pillars_icon {
   margin-right: 5px !important;
 }
-.pillar {
+.goals-selector .pillar {
   padding: 0 8px;
 }
-.pillar-tooltip_img {
-  margin-right: 10px;
+.goals-selector-tooltip-image:hover {
+  transform: scale(110%);
 }
-.tooltip-image:hover {
-  transform: scale(120%);
-}
-.sdg-menu {
+.goals-selector-sdg-menu {
   padding: 10px;
+  background: #FFF;
   box-shadow: none !important;
   overflow: visible !important;
-}
-.coal-title {
-  word-break: keep-all !important;
-  word-wrap: normal;
-  /* white-space: nowrap */
 }
 </style>

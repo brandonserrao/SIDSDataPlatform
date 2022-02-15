@@ -37,7 +37,7 @@ export function preprocessIndexWeights(){
 
   let indexWeights = JSON.parse(JSON.stringify(indexWeightsDict[this.indicatorCode]));//deep copy
 
-  if (this.indicatorCode == "mvi-index-index") {
+  if (this.indicatorCode == "mvi-index") {
     for (let subindexCode in indexWeights["subindices"]) {
       let subindexWeight=0
       for (let subsubindexCode in indexWeights["subindices"][subindexCode]["subsubindices"]) {

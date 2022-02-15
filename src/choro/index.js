@@ -71,13 +71,14 @@ import {
     // <script src="scripts/vizEngineInit.js"></script>
     // <script src="scripts/processIndexData.js"></script>
 export default class Choro {
-  constructor({viz, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
-    this.initState({viz, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
+  constructor({viz, clickCallback, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
+    this.initState({viz, clickCallback, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
     this.initVizEngine({sidsXML})
   }
   initState({
     viz,
     year,
+    clickCallback,
     countyType,
     page, selectedIndis,
     indicatorMeta,
@@ -104,8 +105,11 @@ export default class Choro {
     };
     this.bboxInit = 0;
     this.bboxDict = {};
+    this.clickCallback = clickCallback;
     this.indicatorMeta = indicatorMeta;
     this.textBBoxDict = {};
+    this.vizWidth = vizContainerWidth;
+    this.vizHeigh = vizContainerHeight;
     this.legendContainerSelector = legendContainerSelector;
     this.profileData = profileData;
     this.selectedIndis = selectedIndis;
@@ -117,7 +121,7 @@ export default class Choro {
       .append("svg")
       .attr("width", vizContainerWidth)
       .attr("height", vizContainerHeight);
-    if(indicatorCode!=='region'){
+    if(indicatorCode!=='region' || this.vizWidth<800){
       this.updateVizEngine(indicatorCode)
     }
   }

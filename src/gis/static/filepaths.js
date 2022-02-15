@@ -1,5 +1,5 @@
 const filepaths = {
-  cablesFilePath: "/static/cable-geo.json",
-  pointdataFilePath: "/static/pvaph.geojson",
+  cablesFilePath: `${process.env.BASE_URL}static/cable-geo.json`,
+  pointdataFilePath: `${process.env.BASE_URL}static/pvaph.geojson`,
 };
 export default filepaths;
