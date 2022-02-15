@@ -232,7 +232,7 @@
       <v-row v-else class="spacing-row"> </v-row>
 
       <!-- DUPLICATE START for dualmode selector -->
-      <v-row dense v-show="dualModeEnabled">
+      <!-- <v-row dense v-show="dualModeEnabled">
         <v-col>
           <v-select
             rounded
@@ -290,10 +290,12 @@
           ></v-slider>
         </v-col>
       </v-row>
-      <v-row v-else class="spacing-row" v-show="dualModeEnabled"> </v-row>
+      <v-row v-else class="spacing-row" v-show="dualModeEnabled"> </v-row> -->
       <!-- DUPLICATE END -->
     </v-card>
-    <v-card v-show="!dualModeEnabled" class="mb-1 block-info background-grey">
+
+    <!-- INFO CARD -->
+    <v-card class="mb-1 block-info background-grey">
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
@@ -316,28 +318,23 @@
       </v-card-text>
     </v-card>
 
-    <!-- Tab System for Compare/Dual Mode -->
-    <!-- <v-card v-show="dualModeEnabled" class="mb-1 block-info background-grey">
-      Placeholder content
-    </v-card> -->
-    <v-tabs
-      v-model="tabSystem"
-      v-show="dualModeEnabled"
-      class="background-grey"
-    >
-      <!-- <v-tabs-slider color="purple"></v-tabs-slider> -->
-      <v-tab v-for="n in tabs" :key="n">
-        {{ n }}
-      </v-tab>
-    </v-tabs>
-    <v-tabs-items
-      v-model="tabSystem"
-      v-show="dualModeEnabled"
-      class="mb-1 block-info background-grey"
-    >
-      <v-tab-item><v-card flat>Placeholder 1</v-card></v-tab-item>
-      <v-tab-item><v-card flat>Placeholder 2</v-card></v-tab-item>
-    </v-tabs-items>
+    <!-- TESTING - TAB SYSTEM -->
+    <v-card class="mb-1 block-info background-grey">
+      <div class="content">
+        <vue-tabs-chrome
+          ref="tab"
+          :minHiddenWidth="120"
+          v-model="tab"
+          :tabs="tabs"
+          @contextmenu="handleClick"
+        />
+        <div class="btns">
+          <button @click="addTab">New Tab</button>
+          <button @click="removeTab">Remove active Tab</button>
+        </div>
+      </div>
+    </v-card>
+
     <!-- New Legend/Histogram -->
     <!-- <v-card v-if="displayLegend" class="histogram_frame"> -->
     <v-card v-show="displayLegend" class="background-grey histogram_frame">
@@ -365,15 +362,42 @@
 <script>
 // import { gis_store } from "../gis/gis_store.js";
 import datasets from "@/gis/static/layers";
+import VueTabsChrome from "vue-tabs-chrome";
 
 export default {
   name: "MapDatasetController",
+  components: {
+    VueTabsChrome,
+  },
   props: [
     "displayLegend", //"map"
     "dualModeEnabled",
   ],
   data() {
     return {
+      // TESTING - TAB SYSTEM
+      // tabSystem: null, //used for v-model of tabs/tab-items
+      tab: "google",
+      tabs: [
+        {
+          label: "google",
+          key: "google",
+          favicon: require("../assets/testing/google.jpg"),
+        },
+        {
+          label: "facebook",
+          key: "facebook",
+          favicon: require("../assets/testing/fb.jpg"),
+        },
+        {
+          label: "New Tab",
+          key: "any-string-key",
+        },
+      ],
+      //
+      comparisonDatasetName: null,
+      comparisonLayerName: null,
+      //
       activeGoal: 1,
       activeDatasetName: null,
       activeLayerName: null,
@@ -642,14 +666,6 @@ export default {
         },
       },
       layers: [],
-      // gis_store,
-      tabSystem: null, //used for v-model of tabs/tab-items
-      tabs: {
-        leftLayer: "placeholder 1",
-        rightLayer: "placeholder 2",
-      },
-      comparisonDatasetName: null,
-      comparisonLayerName: null,
     };
   },
   computed: {
@@ -725,6 +741,27 @@ export default {
     },
   },
   methods: {
+    //TESTING - TAB SYSTEM
+    addTab() {
+      let item = "tab" + Date.now();
+      let newTabs = [
+        {
+          label: "New Tab",
+          key: item,
+        },
+      ];
+      console.log(this.$refs);
+      this.$refs.tab.addTab(...newTabs);
+      this.tab = item;
+    },
+    removeTab() {
+      console.log(this.$refs.tab);
+      this.$refs.tab.removeTab(this.tab);
+    },
+    handleClick(e, tab, i) {
+      console.log(e, tab, i);
+    },
+    //
     /**
      *passes current dataset+layer selection upwards
      */
@@ -841,6 +878,7 @@ export default {
   }
 }
 /*End of Brandon additions*/
+
 .histogram_placeholder {
   height: 200px;
 }
@@ -910,4 +948,56 @@ export default {
   height: 200px;
   overflow-y: scroll;
 }
+
+/* TESTING - TAB SYSTEM */
+/* .vue-tabs-chrome.theme-custom {
+  padding-top: 0;
+  background-color: transparent;
+  overflow: hidden;
+}
+.vue-tabs-chrome.theme-custom .tabs-footer,
+.vue-tabs-chrome.theme-custom .tabs-divider,
+.vue-tabs-chrome.theme-custom .tabs-background-before,
+.vue-tabs-chrome.theme-custom .tabs-background-after {
+  display: none;
+}
+.vue-tabs-chrome.theme-custom .tabs-item {
+  cursor: pointer;
+}
+.vue-tabs-chrome.theme-custom .tabs-content {
+  overflow: unset;
+  border-bottom: 1px solid #e4e7ed;
+}
+.vue-tabs-chrome.theme-custom .tabs-background {
+  padding: 0;
+}
+.vue-tabs-chrome.theme-custom .tabs-background-content {
+  border-top: 1px solid #e4e7ed;
+  border-left: 1px solid #e4e7ed;
+  border-right: 1px solid #e4e7ed;
+  border-radius: 0;
+  background-color: #fff;
+}
+.vue-tabs-chrome.theme-custom .tabs-content {
+  height: 40px;
+}
+.vue-tabs-chrome.theme-custom .active {
+  color: #409eff;
+}
+.vue-tabs-chrome.theme-custom .active .tabs-background::before,
+.vue-tabs-chrome.theme-custom .active .tabs-background::after {
+  top: 100%;
+  left: 0;
+  content: "";
+  width: 100%;
+  height: 1px;
+  background-color: #fff;
+  z-index: 1;
+  position: absolute;
+}
+.vue-tabs-chrome.theme-custom .active .tabs-background::before {
+  top: 0;
+  height: 2px;
+  background-color: #409eff;
+} */
 </style>
