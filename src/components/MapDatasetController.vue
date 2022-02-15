@@ -294,8 +294,19 @@
       <!-- DUPLICATE END -->
     </v-card>
 
+    <!-- TESTING - TAB SYSTEM -->
+    <vue-tabs-chrome
+      ref="tab"
+      :minHiddenWidth="120"
+      v-model="tab"
+      :tabs="tabs"
+      @contextmenu="handleRightClick"
+      @click="handleTabClick"
+      @swap="handleSwap"
+    />
     <!-- INFO CARD -->
     <v-card class="mb-1 block-info background-grey">
+      <b>Info Card</b>
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
@@ -316,22 +327,10 @@
         This map visualizes data for the SIDS at different resolutions. Select a
         dataset above or a country to view spatial data about that region.
       </v-card-text>
-    </v-card>
-
-    <!-- TESTING - TAB SYSTEM -->
-    <v-card class="mb-1 block-info background-grey">
-      <div class="content">
-        <vue-tabs-chrome
-          ref="tab"
-          :minHiddenWidth="120"
-          v-model="tab"
-          :tabs="tabs"
-          @contextmenu="handleClick"
-        />
-        <div class="btns">
-          <button @click="addTab">New Tab</button>
-          <button @click="removeTab">Remove active Tab</button>
-        </div>
+      <!-- TESTING - BUTTONS TO ADD/REMOVE TABS FOR DEBUG -->
+      <div class="btns">
+        <button @click="addTab">New Tab</button>
+        <button @click="removeTab">Remove active Tab</button>
       </div>
     </v-card>
 
@@ -377,22 +376,17 @@ export default {
     return {
       // TESTING - TAB SYSTEM
       // tabSystem: null, //used for v-model of tabs/tab-items
-      tab: "google",
+      tab: "info", //"google",
       tabs: [
-        {
+        /* {
           label: "google",
           key: "google",
           favicon: require("../assets/testing/google.jpg"),
         },
         {
-          label: "facebook",
-          key: "facebook",
-          favicon: require("../assets/testing/fb.jpg"),
-        },
-        {
           label: "New Tab",
           key: "any-string-key",
-        },
+        }, */
       ],
       //
       comparisonDatasetName: null,
@@ -731,24 +725,34 @@ export default {
   },
   methods: {
     //TESTING - TAB SYSTEM
-    addTab() {
-      let item = "tab" + Date.now();
+    addTab(label = null, id = null) {
+      // let item = "tab" + Date.now();
+      let item = "tab";
+      item += id ? id : Date.now();
       let newTabs = [
         {
-          label: "New Tab",
+          label: label ? label : "New Tab",
           key: item,
         },
       ];
       console.log(this.$refs);
       this.$refs.tab.addTab(...newTabs);
       this.tab = item;
+
+      //
     },
     removeTab() {
       console.log(this.$refs.tab);
       this.$refs.tab.removeTab(this.tab);
     },
-    handleClick(e, tab, i) {
-      console.log(e, tab, i);
+    handleRightClick(e, tab, index) {
+      console.log(e, tab, index);
+    },
+    handleTabClick(e, tab, index) {
+      console.log(e, tab, index);
+    },
+    handleSwap(tab, targetTab) {
+      console.info("swap", tab, targetTab);
     },
     //
     /**
@@ -758,7 +762,29 @@ export default {
       // this.gis_store.testIncrement();
       // console.log(`emitUpdate of activeDataset and activeLayer`);
       let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
+      console.log("$emit update:", active);
       this.$emit("update", active);
+
+      //TESTING - TAB SYSTEM
+      if (this.activeDataset.type === "single") {
+        console.log("Tab add for single-type dataset");
+        this.addTab(this.activeDataset.name, this.activeLayer?.Field_Name);
+      } else if (this.activeDataset.type === "temporal") {
+        console.log("Tab add for temporal-type dataset");
+        this.addTab(
+          `${this.activeLayer.Temporal}:${this.activeDataset.name}`,
+          this.activeLayer.Field_Name
+        );
+      } else if (this.activeDataset.type === "layers" && this.activeLayer) {
+        console.log("Tab add for multilayers-type dataset");
+        this.addTab(this.activeLayer.Description, this.activeLayer.Field_Name);
+      } else {
+        console.warn(
+          "Tab could not be added for:",
+          this.activeDataset.name,
+          this.activeLayer.Field_Name
+        );
+      }
     },
     emitComparisonUpdate() {
       console.warn("emitComparisonUpdate");
