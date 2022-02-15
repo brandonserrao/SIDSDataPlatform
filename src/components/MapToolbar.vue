@@ -1,4 +1,3 @@
-<!--BRANDON: Ben's New Form RIGHTHAND SIDEBAR-->
 <template>
   <div class="sidebarWrapper">
     <!-- Keep this div outside the row   -->
@@ -8,11 +7,10 @@
       <div class="col-lg-9 HACK"></div>
       <div class="col-lg-3 HACK">
         <div class="menu-box col-flex space-evely align-items-center">
-          <div style="font-weight: 600; color: white; font-size: 18px">
+          <!-- <div style="font-weight: 600; color: white; font-size: 18px">
             View
-          </div>
-
-          <div class="row-flex full-width">
+          </div> -->
+          <div class="row-flex full-width view-tools">
             <div class="col-flex space-evenly">
               <!-- Country Select Menu -->
               <div class="menu row-flex">
@@ -62,51 +60,6 @@
                       <div class="flag" style="margin-right: 40px">Search</div>
                     </div>
 
-                    <!-- Ben's original hardcoded country-options -->
-                    <!--
-                    <div
-                      class="col-flex country-options display-none options-drop"
-                    >
-                      <div
-                        class="row-flex country-option align-items-center"
-                        @click="handleCountryChange('Fiji', 'flag fiji')"
-                      >
-                        <div class="country-name">Fiji</div>
-                        <div class="flag fiji" style="margin-right: 10px"></div>
-                      </div>
-                      <div
-                        class="row-flex country-option align-items-center"
-                        @click="handleCountryChange('Bermuda', 'flag bermuda')"
-                      >
-                        <div class="country-name">Bermuda</div>
-                        <div
-                          class="flag bermuda"
-                          style="margin-right: 10px"
-                        ></div>
-                      </div>
-                      <div
-                        class="row-flex country-option align-items-center"
-                        @click="handleCountryChange('Haiti', 'flag haiti')"
-                      >
-                        <div class="country-name">Haiti</div>
-                        <div
-                          class="flag haiti"
-                          style="margin-right: 10px"
-                        ></div>
-                      </div>
-                      <div
-                        class="row-flex country-option align-items-center"
-                        @click="handleCountryChange('Grenada', 'flag grenada')"
-                      >
-                        <div class="country-name">Grenada</div>
-                        <div
-                          class="flag grenada"
-                          style="margin-right: 10px"
-                        ></div>
-                      </div>
-                    </div> -->
-
-                    <!-- Brandon's component-based country-options-->
                     <div
                       id="countryOptions"
                       class="col-flex country-options display-none options-drop"
@@ -117,6 +70,7 @@
                         :name="name.NAME_0"
                         :id="name.GID_0"
                         :flagCode="name.flagCode"
+                        :bbox="name.bbox"
                         @option-select="handleCountryChange($event)"
                       ></country-selector-option>
                     </div>
@@ -158,9 +112,7 @@
                   class="icon resolution-icon hex5"
                   @click="toggleMenu(1)"
                 ></div>
-                <div class="description hover">
-                  Resolution: Select Resolution
-                </div>
+                <div class="description hover">Change Data Resolution</div>
                 <div class="menu-drop row-flex display-none menu-big">
                   <div
                     class="col-flex"
@@ -338,8 +290,8 @@
                         <div
                           style="margin-top: 12px; font-size: 12px; width: 80%"
                         >
-                          Toggle administrative boundaries on for areas where
-                          they are available.
+                          Choose different level of aggregation of the data
+                          layer.
                         </div>
                       </div>
                     </div>
@@ -357,7 +309,7 @@
                   class="icon color-icon color-icon-1"
                   @click="toggleMenu(2)"
                 ></div>
-                <div class="description hover">Color: Select Color</div>
+                <div class="description hover">Palette Switcher</div>
                 <div
                   class="
                     menu-drop
@@ -533,7 +485,7 @@
                   class="icon basemap-icon-handle basemap-icon"
                   @click="toggleMenu(3)"
                 ></div>
-                <div class="description hover">Basemap: Select Basemap</div>
+                <div class="description hover">Basemap Switch</div>
                 <div
                   class="
                     menu-drop
@@ -598,12 +550,12 @@
                         "
                         @click="
                           handleBasemapChange(
-                            'Mapbox Satellite Streets',
+                            'Satellite Imagery',
                             'satellite-icon'
                           )
                         "
                       >
-                        <div>Mapbox Satellite Streets</div>
+                        <div>Satellite Imagery</div>
                         <div
                           class="menu-option-icon-satellite satellite-icon"
                           style="margin-right: 10px"
@@ -617,10 +569,10 @@
                           align-items-center
                         "
                         @click="
-                          handleBasemapChange('Mapbox Light', 'satellite-icon')
+                          handleBasemapChange('Light Theme', 'satellite-icon')
                         "
                       >
-                        <div>Mapbox Light</div>
+                        <div>Light Theme</div>
                         <div
                           class="menu-option-icon-satellite satellite-icon"
                           style="margin-right: 10px"
@@ -634,10 +586,10 @@
                           align-items-center
                         "
                         @click="
-                          handleBasemapChange('Mapbox Dark', 'satellite-icon')
+                          handleBasemapChange('Dark Theme', 'satellite-icon')
                         "
                       >
-                        <div>Mapbox Dark</div>
+                        <div>Dark Theme</div>
                         <div
                           class="menu-option-icon-satellite satellite-icon"
                           style="margin-right: 10px"
@@ -658,7 +610,7 @@
                   class="icon add-boundaries-icon"
                   @click="toggleMenu(4)"
                 ></div>
-                <div class="description hover">Boundaries</div>
+                <div class="description hover">Administrative Boundaries</div>
                 <div class="menu-drop row-flex display-none menu-big">
                   <div
                     class="col-flex"
@@ -725,7 +677,7 @@
                             name="admin-region"
                             value="admin-region-one"
                             @change="
-                              handleBoundryChange({
+                              handleBoundryChange('select-boundary-layer', {
                                 'admin1-overlay': $event.target.checked,
                               })
                             "
@@ -743,7 +695,7 @@
                             name="admin-region"
                             value="admin-region-two"
                             @change="
-                              handleBoundryChange({
+                              handleBoundryChange('select-boundary-layer', {
                                 'admin2-overlay': $event.target.checked,
                               })
                             "
@@ -787,8 +739,7 @@
                         <div
                           style="margin-top: 12px; font-size: 12px; width: 80%"
                         >
-                          Draw mode is a nice mode in which you draw some
-                          polygons and triangles really great.
+                          Toggles the display of administrative boundaries.
                         </div>
                       </div>
                     </div>
@@ -809,31 +760,16 @@
                   class="icon twoD-icon display-none"
                   @click="handleHeightChange('twoD', 'threeD')"
                 ></div>
-                <div class="description hover">3D 2D</div>
+                <div class="description hover">Toggle 3D</div>
                 <div
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>
               </div>
-              <!--
-              <div class="menu row-flex">
-                <div
-                  class="icon threeD-icon"
-                  @click="handleHeightChange('toggle-3D', 'twoD')"
-                ></div>
-                <div
-                  class="icon twoD-icon display-none"
-                  @click="handleHeightChange('toggle-3D', 'threeD')"
-                ></div>
-                <div class="description hover">3D 2D</div>
-                <div
-                  class="menu-drop row-flex align-items-center display-none"
-                ></div>
-              </div>
- -->
+
               <!-- Opacity Select Menu -->
               <div class="menu row-flex">
                 <div class="icon opacity-icon" @click="toggleMenu(6)"></div>
-                <div class="description hover">Opacity</div>
+                <div class="description hover">Opacity Slider</div>
                 <div class="menu-drop row-flex align-items-center display-none">
                   <div
                     class="row-flex align-items-center"
@@ -861,17 +797,8 @@
                 </div>
               </div>
 
-              <!-- Labels Select Menu
-
-              "handleLabelsChange('aminus', 'aplus')"
-
-              -->
+              <!-- Labels Select Menu-->
               <div class="menu row-flex">
-                <!--
-                <div
-                  class="icon aminus-icon"
-                  @click="emit_toggle_legend()"
-                ></div> -->
                 <div
                   class="icon aminus-icon display-none"
                   @click="handleLabelsChange('aminus', 'aplus')"
@@ -880,12 +807,203 @@
                   class="icon aplus-icon"
                   @click="handleLabelsChange('aplus', 'aminus')"
                 ></div>
-                <div class="description hover">Map Labels: Toggle On/Off</div>
+                <div class="description hover">Toggle on/off Map Labels</div>
                 <div
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>
               </div>
             </div>
+          </div>
+
+          <!-- Bottom half of toolbar  -->
+          <div class="row-flex analysis-tools">
+            <div class="col-flex space-evenly">
+              <!-- Raster Calculator -->
+              <div class="menu row-flex display-none">
+                <div class="icon calculator-icon" @click="toggleMenu(8)"></div>
+                <div class="description hover">Calculator</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="raster-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+
+              <!-- Bivariate Mode -->
+              <div class="menu row-flex display-none">
+                <div
+                  class="icon bivariate-mode-icon"
+                  @click="handleBivariateMode()"
+                ></div>
+                <div class="description hover">Bivariate</div>
+                <!-- <div class="menu-drop row-flex align-items-center display-none bivariate menu-with-blue">
+                      <div class="row-flex align-items-center" style="height: 40px;margin:0 6px 0 0;">
+                        <div class="row-flex" style="font-weight: bold; padding-left: 10px;line-height:40px;margin:0 10px 0 0;height: 40px;width:200px;background-color:#DFDFDF;">Bivariate Mode Enabled</div>
+                        <div class="info-nobg-icon"></div>
+                      </div>
+                    </div> 
+                <div class="blue-box blue-box-bivariate display-none"></div>-->
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="bivariate-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+
+              <!-- Draw Menu hidden due to unresolved issue (see github link on trello) -->
+              <div class="menu row-flex display-none">
+                <div class="icon draw-icon" @click="toggleMenu(10)"></div>
+                <!-- <div class="icon draw-icon" onClick="handleDrawMenu()"></div> -->
+                <div class="description hover">Custom Regional Analysis</div>
+                <!-- <div class="menu-drop row-flex display-none menu-big menu-with-blue" id="draw-menu">
+                  
+                      <div class="col-flex align-items-center" style="height:auto; width:auto;">
+                        <div class="row-flex align-items-center space-evenly" style="border-top-left-radius:5px; height:52px; width: 280px;background-color:#C4C4C4;">
+                          <div class="row-flex" style="margin-left: 15px; line-height:52px; font-weight:bold; font-size:16px;">Draw Mode - Region Analysis</div>
+                          <div class="info-nobg-icon"></div>
+                        </div>
+                        <div class="col-flex align-items-center" style="width:280px;background-color:#C4C4C4;border-bottom-left-radius:5px; border-bottom-right-radius:5px;">
+                          <div class="row-flex space-between align-items-center" style="height:30px;width:250px;background-color:#DFDFDF">
+                            <div style="font-weight:bold; margin:0 10px;" id='drawControls'>Region Polygon 1</div>
+                            <div style="margin:0 10px 0 0;"><i>edit</i></div>
+                          </div>
+                          <div class="row-flex align-items-center" style="margin-top:5px; width:250px;height:90px">
+                             <div style="margin:0 10px">Draw a polygon for regional analysis.</div>
+                          </div>
+                          <div class="row-flex align-items-center space-evenly" style="margin: 10px 0;width:250px;height:30px;background-color:#DFDFDF;border-radius:5px;">
+                            <div style="color:#949494;margin:0 10px;">Add polygon to compares</div>
+                            <div class="grey-plus-icon"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-flex">
+                        <div class="col-flex" style="width:6px;height:52px;background-color:#C4C4C4"></div>
+                      </div>
+                    </div>
+                    <div class="blue-box blue-box-draw display-none"></div> -->
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="draw-menu"
+                >
+                  <!-- Placeholder Draw Menu content -->
+                  <div id="drawControls"></div>
+                </div>
+              </div>
+
+              <!-- Download Menu -->
+              <div class="menu row-flex display-none">
+                <div class="icon download-icon" @click="toggleMenu(11)"></div>
+                <div class="description hover">Download Geodata</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="download-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+            </div>
+
+            <div class="col-flex">
+              <!-- Upload Menu -->
+              <div class="menu row-flex display-none">
+                <div class="icon upload-icon" @click="toggleMenu(12)"></div>
+                <div class="description hover">Upload Geodata</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="upload-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+
+              <!-- Dual Mode -->
+              <div class="menu row-flex">
+                <div
+                  class="icon dual-mode-icon"
+                  @click="handleDualMode()"
+                ></div>
+                <div class="description hover">Comparison Slider</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="dual-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+
+              <!-- Voronoi -->
+              <div class="menu row-flex display-none">
+                <div
+                  class="icon tbd-icon"
+                  id="voro"
+                  @click="toggleMenu(14)"
+                ></div>
+                <div class="description hover">Unused Voroni</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="voronoi-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+
+              <!-- Info Menu -->
+              <div class="menu row-flex display-none">
+                <div class="icon info-icon" @click="toggleMenu(15)"></div>
+                <div class="description hover">Info about this product</div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="info-menu"
+                >
+                  Placeholder content
+                </div>
+              </div>
+            </div>
+            <!-- </div>
+            </div> -->
+            <!--end sidebar!-->
           </div>
         </div>
       </div>
@@ -894,11 +1012,12 @@
 </template>
 
 <script>
+// import { gis_store } from "../gis/gis_store.js";
 import names from "@/gis/static/names";
 import CountrySelectorOption from "@/components/CountrySelectorOption";
 
 export default {
-  props: ["active_dataset", "active_layer"], //to receive from MapDatasetController via GeospatialData
+  props: ["active_dataset", "active_layer", "dualModeEnabled"], //to receive from MapDatasetController via GeospatialData; //currently active_dataset informs handleResolutionChange
   name: "MapToolbar",
   components: {
     CountrySelectorOption,
@@ -906,30 +1025,34 @@ export default {
   data() {
     return {
       names: names, //consider redoing these via props
-      debug: true,
-      currentCountry: "Search Country or Region", //placeholder text for country select searchbar
+      currentCountry: "Search Country or Region", //placeholder text for country select searchbar,
+      // gis_store,
     };
   },
-  methods: {
-    emit_toggle_legend() {
-      this.$emit("toggle-legend");
+
+  computed: {
+    sidsByName() {
+      let sidsDictionary = {};
+      for (let entry of names) {
+        sidsDictionary[entry.NAME_0] = entry;
+      }
+
+      return sidsDictionary;
     },
-    handleGisMenuChange(change_type, object) {
+  },
+
+  methods: {
+    //A) emit update - interpret and emit the desired interaction and necessary data to the parent (GeospatialData.vue)
+    handleGisMenuChange(change_type, object = null) {
+      // this.gis_store.testIncrement(); // testing use of a store
       //determine type of menuchange based on eventType
-      console.log(`change_type: ${change_type}`);
-      console.log("handleGisMenuChange: object passed:");
-      console.log(object);
 
       //display loader spinner
-      if (!(change_type === "change-opacity")) {
-        /* 
-        console.log("showing loading spinner");
-        let spinner = document.getElementsByClassName("loader-gis")[0];
-        console.log(spinner);
-        spinner.classList.remove("display-none");
-        console.log(spinner); */
+      if (!["change-opacity", "toggle-dualmode"].includes(change_type)) {
+        console.log(change_type);
+        console.log("show spinner for longer GISMenuChange behaviour");
 
-        console.log("show loading spinner");
+        //repainting opacity expected to be near-instantaneous so not require significant loading time
         let spinner = document.getElementsByClassName("loader-gis")[0];
         let modal = document.getElementsByClassName("loader-gis-modal")[0];
         spinner.classList.remove("display-none");
@@ -940,14 +1063,9 @@ export default {
       if (change_type === "select-country") {
         //value will be country name; returning the names.js object of sids info
         let name = object.text;
-        let flag = object.flag;
-        console.log(`name: ${name} flag: ${flag}`);
         let countryObject = this.sidsByName[name];
-        let bbox = this.sidsByName[name].bb;
-        console.log(`bounding box ${bbox}`);
-
-        this.$emit(change_type, countryObject); //custom event for parent to hear
-
+        console.log("handleGISMenuChange countryObject", countryObject);
+        this.$emit(change_type, countryObject);
         document.getElementsByClassName("country-name")[0].textContent = name;
       } else if (change_type === "select-resolution") {
         let resolution = object.resolution;
@@ -967,7 +1085,6 @@ export default {
         let colorObject = { color: color };
         this.$emit(change_type, colorObject);
       } else if (change_type === "toggle-3D") {
-        //obj.value = "2D" or "3D"
         let threeD = object.value;
         let threeDObject = { threeD: threeD };
         this.$emit(change_type, threeDObject);
@@ -975,48 +1092,31 @@ export default {
         let label = object.label;
         let labelObject = { label: label };
         this.$emit(change_type, labelObject);
+      } else if (change_type === "toggle-dualmode") {
+        console.log("toggle-dualmode emitting");
+        this.$emit("toggle-dualmode", object);
+      } else if (change_type === "select-boundary-layer") {
+        console.log("select-boundary-layer emitting");
+        this.$emit("select-boundary-layer", object);
       } else {
-        console.log(`${change_type} not yet handled by handleGisMenuChange`);
+        alert(`${change_type} not yet handled by handleGisMenuChange`);
       }
     },
 
+    //B) handle specific toolbar interactions------------------------------------------------------
     handleResolutionChange(index = 1, resolution = "hex5") {
-      //index=1, resolution='hex5' are the desired default state
-      console.log("handleResolutionChange");
-
-      //case: empty arguments; shouldn't happen due to default arguements
-      /*       if (!index || !resolution) {
-        //handle empty args as a reset event and raise higher level log
-        alert(`handleResolutionChange called with: ${index} and ${resolution}`);
-        console.log("empty handleResolutionChange called: doing nothing");
-        return;
-      } */
-
       var resolutionOptions =
         document.getElementsByClassName("resolution-option");
 
       if (this.active_dataset === "Ocean Data") {
-        //handle if called while ocean dataset active
-        console.log(
-          `active_dataset: ${this.active_dataset}; set resolution selector to 10, do nothing`
-        );
-
         for (let i = 0; i < resolutionOptions.length; i++) {
           if (i === 2) {
-            //i = 2 is the hardcoded index for the 10km selector
             resolutionOptions[i].classList.add("border-blue");
           } else {
             resolutionOptions[i].classList.remove("border-blue");
           }
         }
       } else {
-        //handle if non-ocean dataset active
-        console.log(
-          `active_dataset: ${this.active_dataset}; switching resolution`
-        );
-        /*
-        var resolutionOptions = document.getElementsByClassName("resolution-option");
- */
         for (let i = 0; i < resolutionOptions.length; i++) {
           if (index === i) {
             resolutionOptions[i].classList.add("border-blue");
@@ -1029,23 +1129,17 @@ export default {
           "icon resolution-icon " + resolution;
 
         let eventData = { index: index, resolution: resolution };
-        // this.handleGisMenuChange({ Resolution: text });
-        console.log("passing eventData to handleGisMenuChange");
         this.handleGisMenuChange("select-resolution", eventData); //text needs renaming to a better variable name
       }
     },
 
-    //my version: handleBoundariesChange
-    handleBoundryChange(object) {
-      //my code from handleBoundariesChange(object)
-      console.log("handleBoundryChange $emitting object");
-      console.log(object);
-      // addBoundaryLayer(object);//old code; replace with an emit
-      this.$emit("select-boundary-layer", object);
+    handleBoundryChange(change_type, object) {
+      // this.$emit("select-boundary-layer", object);
+      console.log("handleBoundryChange");
+      this.handleGisMenuChange("select-boundary-layer", object);
     },
 
     handleBasemapChange(text, image) {
-      console.log("handleBasemapChange");
       var selected = document.getElementsByClassName("selected-basemap")[0];
       var basemapMenu = document.getElementsByClassName("basemap-options")[0];
       basemapMenu.classList.add("growUp");
@@ -1060,21 +1154,14 @@ export default {
       document.getElementsByClassName("basemap-icon-handle")[0].className =
         "icon basemap-icon-handle " + image;
 
-      // this.handleGisMenuChange({ basemap: text });
-      console.log(
-        "passing handleBasemapChange eventData to handleGisMenuChange"
-      );
       let eventData = { name: text, icon: image };
       this.handleGisMenuChange("select-basemap", eventData);
     },
 
     handleCountryChange(eventData) {
-      console.log(`handleCountryChange:`);
-      console.log(eventData);
       let text = eventData.name;
       let image = eventData.id;
 
-      //Brandon - considering changing to tak
       var selected = document.getElementsByClassName("big-menu")[0];
       var countryMenu = document.getElementsByClassName("country-options")[0];
       countryMenu.classList.add("growUp");
@@ -1090,15 +1177,96 @@ export default {
       selected2.children[0].className = image;
       selected2.children[0].innerHTML = "";
 
-      // this.handleGisMenuChange({ Country: text });
-      console.log(
-        "passing handleCountryChange eventData to handleGisMenuChange"
-      );
       this.handleGisMenuChange("select-country", eventData); //text needs renaming to a better variable name
     },
 
+    handleHeightChange(first, second) {
+      var curr = document.getElementsByClassName(first + "-icon")[0];
+      var reqd = document.getElementsByClassName(second + "-icon")[0];
+
+      this.closeAllMenu();
+
+      //animation triggering of the button
+      curr.classList.add("flip1");
+      setTimeout(() => {
+        reqd.classList.remove("display-none");
+        reqd.classList.add("flip2");
+        curr.classList.add("display-none");
+        curr.classList.remove("flip1");
+      }, 140);
+      setTimeout(() => {
+        reqd.classList.remove("flip2");
+      }, 280);
+
+      //packaging info object to pass on
+      var value;
+      var object = {};
+
+      if (first === "threeD") {
+        value = "2D";
+      } else {
+        value = "3D";
+      }
+
+      object["height"] = value;
+
+      this.handleGisMenuChange("toggle-3D", object);
+    },
+
+    handleLabelsChange(first, second) {
+      var curr = document.getElementsByClassName(first + "-icon")[0];
+      var reqd = document.getElementsByClassName(second + "-icon")[0];
+
+      this.closeAllMenu();
+      curr.classList.add("flip1");
+      setTimeout(() => {
+        reqd.classList.remove("display-none");
+        reqd.classList.add("flip2");
+        curr.classList.add("display-none");
+        curr.classList.remove("flip1");
+      }, 140);
+      setTimeout(() => {
+        reqd.classList.remove("flip2");
+      }, 280);
+
+      let object = { label: first === "aminus" ? true : false };
+
+      this.handleGisMenuChange("toggle-labels", object);
+    },
+
+    handleColorChange(text, image) {
+      var selected = document.getElementsByClassName("selected-color")[0];
+      var colorMenu = document.getElementsByClassName("color-options")[0];
+
+      colorMenu.classList.add("growUp");
+      setTimeout(() => {
+        colorMenu.classList.add("display-none");
+        colorMenu.classList.remove("growUp");
+      }, 280);
+
+      selected.children[0].innerHTML = text;
+      selected.children[1].className = "menu-icon " + image;
+
+      document.getElementsByClassName("color-icon")[0].className =
+        "icon color-icon " + image;
+
+      this.handleGisMenuChange("select-color", { color: text });
+    },
+
+    handleDualMode() {
+      console.log("handleDualMode");
+      this.handleGisMenuChange("toggle-dualmode");
+    },
+
+    handleBivariateMode() {
+      console.warn("handleBivariateMode not yet implemented");
+      // this.handleGisMenuChange("toggle-bivariate");
+    },
+
+    //C) UI manipulation - functions that only change the UI-------------------------------------
+
     closeAllMenu(index) {
-      console.log(`closeAllMenu(${index})`);
+      //closes all open toolbar menus
       var allMenu = document.getElementsByClassName("menu-drop");
 
       for (let i = 0; i < allMenu.length; i++) {
@@ -1141,10 +1309,16 @@ export default {
         infoIconBlue[i].classList.add("display-none");
         infoNoBgIconBlue[i].classList.remove("display-none");
       }
-    },
 
-    //handles open/closing related behaviour for sidebar menu
+      //hide information controls when done using tools from toolbar
+      let drawInfoControl = document
+        .getElementById("draw-info-control")
+        ?.classList.add("display-none");
+      console.log(drawInfoControl);
+    },
+    //handles open/closing related behaviour for specified sidebar menu button
     toggleMenu(index) {
+      console.log("toggleMenu called for index: ", index);
       var allMenu = document.getElementsByClassName("menu-drop");
 
       for (let i = 0; i < allMenu.length; i++) {
@@ -1166,6 +1340,52 @@ export default {
               .classList.add("display-none");
           }
         }
+      }
+    },
+
+    // TODO: consolidate these toggle functions into a single  toggleXMenu
+    toggleBasemapMenu() {
+      console.log("toggleBasemapMenu");
+      var basemapMenu = document.getElementsByClassName("basemap-options")[0];
+      if (basemapMenu.classList.contains("display-none")) {
+        basemapMenu.classList.remove("display-none");
+      } else {
+        basemapMenu.classList.add("growUp");
+        setTimeout(() => {
+          basemapMenu.classList.add("display-none");
+          basemapMenu.classList.remove("growUp");
+        }, 280);
+      }
+    },
+
+    toggleCountryMenu(state = null) {
+      console.log("toggleBasemapMenu, state: ", state);
+      var countryMenu = document.getElementsByClassName("country-options")[0];
+      if (
+        state == true ||
+        (state === null && countryMenu.classList.contains("display-none"))
+      ) {
+        countryMenu.classList.remove("display-none");
+      } else {
+        countryMenu.classList.add("growUp");
+        setTimeout(() => {
+          countryMenu.classList.add("display-none");
+          countryMenu.classList.remove("growUp");
+        }, 280);
+      }
+    },
+
+    toggleColorMenu() {
+      console.log("toggleColorMenu");
+      var colorMenu = document.getElementsByClassName("color-options")[0];
+      if (colorMenu.classList.contains("display-none")) {
+        colorMenu.classList.remove("display-none");
+      } else {
+        colorMenu.classList.add("growUp");
+        setTimeout(() => {
+          colorMenu.classList.add("display-none");
+          colorMenu.classList.remove("growUp");
+        }, 280);
       }
     },
 
@@ -1202,9 +1422,10 @@ export default {
         .getElementsByClassName("small-menu")[0]
         .classList.remove("display-none");
     },
+    //country-select related
     filterCountries() {
       this.toggleCountryMenu(true); //expand country menu to be visible if closed
-      console.log("filterCountries firing");
+
       // Declare variables
       var input, filter, list, options, country, i, txtValue;
       input = document.getElementById("country-search-input");
@@ -1248,22 +1469,6 @@ export default {
       } */
     },
 
-    //NEW--------------------------------------------
-    toggleInputBlueColor(event) {
-      if (event.classList.contains("color-black")) {
-        event.className = "color-blue";
-      } else {
-        event.className = "color-black";
-      }
-    },
-
-    toggleBlueColor(event) {
-      if (event.classList.contains("color-black")) {
-        event.className = "color-blue layers-N";
-      } else {
-        event.className = "color-black layers-N";
-      }
-    },
     hideInfo(val) {
       document
         .getElementsByClassName("info-hover-icon-" + val)[0]
@@ -1303,477 +1508,11 @@ export default {
         description[i].classList.add("hover");
       }
     },
-
-    //IRRELEVANT RIGHT NOW---------------------------
-
-    //only used in this function apparently; why is it even outside?
-    //  let count = "a";
-    addLayer() {
-      let count = "a"; //moved in from outside
-      var layers = document.getElementsByClassName("layer-input");
-      var index = [];
-
-      for (let i = 0; i < layers.length; i++) {
-        index.push(layers[i].selectedIndex);
-      }
-
-      document.getElementById("layers").innerHTML =
-        document.getElementById("layers").innerHTML +
-        `
-          <div id='` +
-        count +
-        `-layer' class="row-flex align-items-center" style="margin-top:6px;">
-            <div class="row-flex align-items-center space-evenly" style="margin-right:6px; background-color:#A9A9A9;width:30px; height:30px;border-radius:5px;text-align:center; cursor:pointer;" @click="addVariables('` +
-        count +
-        `')"><i class='layers-value'><b>` +
-        count +
-        `</b></i></div>
-            <div class="row-flex space-between align-items-center" style="height:30px;width:304px;background-color:#DFDFDF; border-radius:5px;">
-
-              <div class="row-flex align-items-center" style="margin: 0 10px;">
-                <select name="` +
-        count +
-        `" class="layer-input" id="` +
-        count +
-        `layer-input" style=" padding: 0 0 0 4px; width: 240px; height: 30px;border:0; outline:none; background-color:#DFDFDF;">
-                  <option value="">Select New Dataset</option>
-                  <option value="Aaaaa">Aaaaa</option>
-                  <option value="Bbbbb">Bbbbb</option>
-                  <option value="Ccccc">Ccccc</option>
-                </select>
-              </div>
-
-              <div class="row-flex align-items-center">
-                <div class="color-black layers-N" style="cursor:pointer;" @click="toggleBlueColor(this)">N</div>
-                <div class="row-flex align-items-center" style="margin: 0 10px;cursor: pointer;height:10px;width:11px;" @click="removeLayer('` +
-        count +
-        `')">
-                  <div style="width:11px; height:1.5px; background-color:brown"></div>
-                </div>
-              </div>
-            </div>
-          </div>`;
-
-      for (let i = 0; i < layers.length; i++) {
-        layers[i].selectedIndex = index[i];
-      }
-
-      count = String.fromCharCode(count.charCodeAt(0) + 1);
-    },
-
-    calculatorRun() {
-      var object = {};
-
-      var value = document.getElementsByClassName("calc-function")[0].value;
-      var inputN = document.getElementById("input-N");
-
-      if (inputN.classList.contains("color-blue")) {
-        object["calc-input"] = { Value: value, Normalize: 1 };
-      } else {
-        object["calc-input"] = { Value: value, Normalize: 0 };
-      }
-
-      var layersValue = document.getElementsByClassName("layer-input");
-      var layersN = document.getElementsByClassName("layers-N");
-
-      var layers = [];
-      for (let i = 0; i < layersValue.length; i++) {
-        if (layersN[i].classList.contains("color-blue")) {
-          layers.push({
-            Variable: layersValue[i].name,
-            Value: layersValue[i].value,
-            Normalize: 1,
-          });
-        } else {
-          layers.push({
-            Variable: layersValue[i].name,
-            Value: layersValue[i].value,
-            Normalize: 0,
-          });
-        }
-      }
-      object["layers"] = layers;
-
-      console.log("caculatorRun->handleGisMenuChange");
-      this.handleGisMenuChange(object);
-    },
-
-    calcButtonPress(val) {
-      document.getElementsByClassName("calc-function")[0].value =
-        document.getElementsByClassName("calc-function")[0].value + val;
-      document.getElementsByClassName("calc-function")[0].focus();
-    },
-
-    addVariables(val) {
-      document.getElementsByClassName("calc-function")[0].value =
-        document.getElementsByClassName("calc-function")[0].value + val;
-      document.getElementsByClassName("calc-function")[0].focus();
-
-      var layerVariables = document.getElementById("layer-variables");
-
-      if (layerVariables.innerHTML == "") {
-        layerVariables.innerHTML += val;
-      } else {
-        var string = layerVariables.innerHTML;
-        var present = false;
-        for (let i = 0; i < string.length; i++) {
-          if (string[i] === val) {
-            present = true;
-          }
-        }
-        if (!present) {
-          layerVariables.innerHTML += "," + val;
-        }
-      }
-    },
-    //a calculator-related function i believe
-    removeLayer(layer) {
-      document.getElementById("" + layer + "-layer").remove();
-      let layerVariables = document.getElementById("layer-variables");
-      if (layerVariables.innerHTML.length === 1) {
-        layerVariables.innerHTML = "";
-      } else {
-        let string = layerVariables.innerHTML;
-        for (let i = 0; i < string.length; i++) {
-          if (string[i] === layer) {
-            if (i != 0 && string[i - 1] === ",") {
-              let val = string.replace("," + layer, "");
-              layerVariables.innerHTML = val;
-              break;
-            } else {
-              let val = string.replace(layer + ",", "");
-              layerVariables.innerHTML = val;
-              break;
-            }
-          }
-        }
-      }
-    },
-
-    handleDownload() {
-      var object = {};
-
-      var regions = document.getElementsByClassName("region");
-      for (let i = 0; i < regions.length; i++) {
-        if (regions[i].checked === true) {
-          if (regions[i].value === "Visible-Area") {
-            object["region"] = "Visible-Area";
-          } else if (regions[i].value === "CountryOrRegion") {
-            object["region"] =
-              "Country" + document.getElementById("cuntryorregion").value;
-          } else {
-            object["region"] =
-              "Polygon " + document.getElementById("polygon").value;
-          }
-        }
-      }
-
-      var temporalResolution = document.getElementsByClassName(
-        "temporal-resolution"
-      );
-      for (let i = 0; i < temporalResolution.length; i++) {
-        if (temporalResolution[i].checked === true) {
-          if (temporalResolution[i].value === "chosen-year") {
-            object["Temporal-resolution"] = "Chosen-year";
-          } else if (temporalResolution[i].value === "year-range") {
-            object["Temporal-resolution"] =
-              "From " +
-              document.getElementById("year-range-from").value +
-              " to " +
-              document.getElementById("year-range-to").value;
-          }
-        }
-      }
-
-      var spatialResolution =
-        document.getElementsByClassName("spatial-resolution");
-      for (let i = 0; i < spatialResolution.length; i++) {
-        if (spatialResolution[i].checked === true) {
-          object["Spatial-resolution"] = spatialResolution[i].value;
-        }
-      }
-
-      var gridType = document.getElementsByClassName("grid-type");
-      for (let i = 0; i < gridType.length; i++) {
-        if (gridType[i].checked === true) {
-          object["Grid-type"] = gridType[i].value;
-        }
-      }
-
-      var fileType = document.getElementsByClassName("file-type");
-      for (let i = 0; i < fileType.length; i++) {
-        if (fileType[i].checked === true) {
-          object["File-type"] = fileType[i].value;
-        }
-      }
-
-      var dataLayers = document.getElementsByClassName("data-layers");
-      for (let i = 0; i < dataLayers.length; i++) {
-        if (dataLayers[i].checked === true) {
-          object["Data-layers"] = dataLayers[i].value;
-        }
-      }
-
-      console.log("handleDownload->handleGisMenuChange");
-      this.handleGisMenuChange(object);
-    },
-
-    handleCalcMenu() {
-      document
-        .getElementsByClassName("close-menu")[0]
-        .classList.add("display-none");
-      var calc = document.getElementById("calc-menu");
-      if (calc.classList.contains("display-none")) {
-        this.removeHover();
-        this.closeAllMenu(8);
-        document
-          .getElementsByClassName("blue-box-calc")[0]
-          .classList.remove("display-none");
-        calc.classList.remove("display-none");
-      } else {
-        this.closeAllMenu();
-        setTimeout(() => {
-          this.addHover();
-        }, 500);
-        document
-          .getElementsByClassName("blue-box-calc")[0]
-          .classList.add("display-none");
-      }
-    },
-
-    handleDrawMenu() {
-      document
-        .getElementsByClassName("close-menu")[0]
-        .classList.add("display-none");
-      var draw = document.getElementById("draw-menu");
-      if (draw.classList.contains("display-none")) {
-        this.removeHover();
-        this.closeAllMenu(10);
-        document
-          .getElementsByClassName("blue-box-draw")[0]
-          .classList.remove("display-none");
-        draw.classList.remove("display-none");
-      } else {
-        this.closeAllMenu();
-        setTimeout(() => {
-          this.addHover();
-        }, 500);
-        document
-          .getElementsByClassName("blue-box-draw")[0]
-          .classList.add("display-none");
-      }
-    },
-
-    //TO LOOK AT STILL--------------------------------
-
-    //need to look at how it works/implemented in old version first
-    handleHeightChange(first, second) {
-      var curr = document.getElementsByClassName(first + "-icon")[0];
-      var reqd = document.getElementsByClassName(second + "-icon")[0];
-
-      this.closeAllMenu();
-
-      //animation triggering of the button
-      curr.classList.add("flip1");
-      setTimeout(() => {
-        reqd.classList.remove("display-none");
-        reqd.classList.add("flip2");
-        curr.classList.add("display-none");
-        curr.classList.remove("flip1");
-      }, 140);
-      setTimeout(() => {
-        reqd.classList.remove("flip2");
-      }, 280);
-
-      //packaging info object to pass on
-      var value;
-      var object = {};
-
-      if (first === "threeD") {
-        value = "2D";
-      } else {
-        value = "3D";
-      }
-
-      object["height"] = value;
-      console.log("handleHeightChange->handleGisMenuChange");
-      this.handleGisMenuChange("toggle-3D", object);
-    },
-
-    handleLabelsChange(first, second) {
-      //TODO: simplify this oldcode logic
-      var curr = document.getElementsByClassName(first + "-icon")[0];
-      var reqd = document.getElementsByClassName(second + "-icon")[0];
-
-      this.closeAllMenu();
-      curr.classList.add("flip1");
-      setTimeout(() => {
-        reqd.classList.remove("display-none");
-        reqd.classList.add("flip2");
-        curr.classList.add("display-none");
-        curr.classList.remove("flip1");
-      }, 140);
-      setTimeout(() => {
-        reqd.classList.remove("flip2");
-      }, 280);
-      /* ///oldcode
-      var value;
-      var object = {};
-
-      if (first === "aminus") {
-        value = "A+";
-      } else {
-        value = "A-";
-      }
-
-      object["Label"] = value;
-       */
-
-      let object = { label: first === "aminus" ? true : false };
-
-      console.log("handleLabelsChange->handleGisMenuChange");
-      this.handleGisMenuChange("toggle-labels", object);
-    },
-
-    handleBivariateMode() {
-      document
-        .getElementsByClassName("close-menu")[0]
-        .classList.add("display-none");
-
-      var bivariate = document.getElementsByClassName("bivariate")[0];
-      var object = {};
-      var key;
-      if (bivariate.classList.contains("display-none")) {
-        this.closeAllMenu(9);
-        this.removeHover();
-        document
-          .getElementsByClassName("blue-box-bivariate")[0]
-          .classList.remove("display-none");
-        bivariate.classList.remove("display-none");
-        key = "Enabled";
-      } else {
-        this.closeAllMenu();
-        setTimeout(() => {
-          this.addHover();
-        }, 500);
-        document
-          .getElementsByClassName("blue-box-bivariate")[0]
-          .classList.add("display-none");
-        key = "Disabled";
-      }
-
-      object["bivariate-mode"] = key;
-      console.log("handleBivariateMode->handleGisMenuChange");
-      this.handleGisMenuChange(object);
-    },
-
-    handleDualMode() {
-      document
-        .getElementsByClassName("close-menu")[0]
-        .classList.add("display-none");
-      var dualMode = document.getElementsByClassName("dual-mode")[0];
-      var object = {};
-      var key;
-      if (dualMode.classList.contains("display-none")) {
-        this.closeAllMenu(13);
-        this.removeHover();
-        document
-          .getElementsByClassName("blue-box-dual")[0]
-          .classList.remove("display-none");
-        dualMode.classList.remove("display-none");
-        key = "Enabled";
-      } else {
-        this.closeAllMenu();
-        setTimeout(() => {
-          this.addHover();
-        }, 500);
-        document
-          .getElementsByClassName("blue-box-dual")[0]
-          .classList.add("display-none");
-        key = "Disabled";
-      }
-
-      object["dual-mode"] = key;
-      console.log("handleDualMode->handleGisMenuChange");
-      this.handleGisMenuChange(object);
-    },
-
-    handleColorChange(text, image) {
-      var selected = document.getElementsByClassName("selected-color")[0];
-      var colorMenu = document.getElementsByClassName("color-options")[0];
-
-      colorMenu.classList.add("growUp");
-      setTimeout(() => {
-        colorMenu.classList.add("display-none");
-        colorMenu.classList.remove("growUp");
-      }, 280);
-
-      selected.children[0].innerHTML = text;
-      selected.children[1].className = "menu-icon " + image;
-
-      document.getElementsByClassName("color-icon")[0].className =
-        "icon color-icon " + image;
-      console.log("handleColorChange->handleGisMenuChange");
-      this.handleGisMenuChange("select-color", { color: text });
-    },
-
-    toggleBasemapMenu() {
-      var basemapMenu = document.getElementsByClassName("basemap-options")[0];
-      if (basemapMenu.classList.contains("display-none")) {
-        basemapMenu.classList.remove("display-none");
-      } else {
-        basemapMenu.classList.add("growUp");
-        setTimeout(() => {
-          basemapMenu.classList.add("display-none");
-          basemapMenu.classList.remove("growUp");
-        }, 280);
-      }
-    },
-
-    toggleCountryMenu(state = null) {
-      console.log("toggleCountryMenu firing");
-      var countryMenu = document.getElementsByClassName("country-options")[0];
-      if (
-        state == true ||
-        (state === null && countryMenu.classList.contains("display-none"))
-      ) {
-        countryMenu.classList.remove("display-none");
-      } else {
-        countryMenu.classList.add("growUp");
-        setTimeout(() => {
-          countryMenu.classList.add("display-none");
-          countryMenu.classList.remove("growUp");
-        }, 280);
-      }
-    },
-
-    toggleColorMenu() {
-      var colorMenu = document.getElementsByClassName("color-options")[0];
-      if (colorMenu.classList.contains("display-none")) {
-        colorMenu.classList.remove("display-none");
-      } else {
-        colorMenu.classList.add("growUp");
-        setTimeout(() => {
-          colorMenu.classList.add("display-none");
-          colorMenu.classList.remove("growUp");
-        }, 280);
-      }
-    },
   },
-  computed: {
-    sidsByName() {
-      let sidsDictionary = {};
-      for (let entry of names) {
-        sidsDictionary[entry.NAME_0] = entry;
-      }
-      console.log("sidsByName computed");
-      return sidsDictionary;
-    },
-  },
+
   mounted() {
     //1)initialize invisible close-menu div
     //2)populate countrySelection with options
-    //from old code populateDropdown.js (first half of it)
     let mapToolbar = this;
     document
       .getElementsByClassName("close-menu")[0]
@@ -2676,5 +2415,9 @@ body {
 
 .display-none {
   display: none;
+}
+
+.display-block {
+  display: block;
 }
 </style>
