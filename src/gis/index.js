@@ -526,19 +526,33 @@ export default class Map {
     this.map.on(type, layerIds, listenerFunction);
   }
   addLayer(input) {
-    this.map.addLayer(input);
+    return this.map.addLayer(input)
+      ? this.map.addLayer(input)
+      : console.warn(`addLayer(${input}) layer not found`);
   }
   removeLayer(input) {
-    this.map.removeLayer(input);
+    // this.map.removeLayer(input);
+    return this.map.getLayer(input)
+      ? this.map.removeLayer(input)
+      : console.warn(`removeLayer(${input}) layer not found`);
   }
   getLayer(input) {
-    this.map.getLayer(input);
+    // this.map.getLayer(input);
+    return this.map.getLayer(input)
+      ? this.map.getLayer(input)
+      : console.warn(`getLayer(${input}) layer not found`);
   }
-  getSource(id) {
-    return this.map.getSource(id);
+  getSource(input) {
+    // return this.map.getSource(id);
+    return this.map.getSource(input)
+      ? this.map.getSource(input)
+      : console.warn(`getSource(${input}) Source not found`);
   }
   removeSource(input) {
-    this.map.removeSource(input);
+    // this.map.removeSource(input);
+    return this.map.getSource(input)
+      ? this.map.removeSource(input)
+      : console.warn(`removeSource(${input}) Source not found`);
   }
 
   makePopUp(options) {
@@ -1904,10 +1918,7 @@ export default class Map {
 
   clearOnClickQuery(mapClassInstance = this.map) {
     console.log("clearOnClickQuery");
-    console.log("this is:");
-    console.log(this);
-    console.log("mapClassInstance:");
-    console.log(mapClassInstance);
+    console.log("mapClassInstance:", mapClassInstance);
 
     /* for (let id of ["iso", "clickedone", "highlightS", "joined"]) {
         if (
@@ -1927,28 +1938,27 @@ export default class Map {
     }
     for (let id of ["clickedone", "highlightS", "joined"]) {
       console.log(`removing existing source and layer for: ${id}`);
-      try {
-        if (
-          //this.map.
-          mapClassInstance.getSource(id)
-        ) {
-          if (id === "highlightS") {
-            //special case for naming convention
-            mapClassInstance.removeLayer("highlight");
+      // try {
+      if (mapClassInstance.getSource(id)) {
+        if (id === "highlightS") {
+          //special case for naming convention
+          mapClassInstance.removeLayer("highlight");
+          mapClassInstance.removeSource(id);
+        } else {
+          if (mapClassInstance.getLayer(id)) {
+            console.log(`removeLayer:`, id);
+            mapClassInstance.removeLayer(id);
+          }
+          if (mapClassInstance.getSource(id)) {
+            console.log(`removeSource:`, id);
             mapClassInstance.removeSource(id);
-          } else {
-            if (mapClassInstance.getLayer(id)) {
-              mapClassInstance.removeLayer(id);
-            }
-            if (mapClassInstance.getSource(id)) {
-              mapClassInstance.removeSource(id);
-            }
           }
         }
-      } catch (err) {
-        console.warn(`attempted to remove ${id} from map`);
-        console.warn(err.stack);
       }
+      // } catch (err) {
+      // console.warn(`attempted to remove ${id} from map`);
+      // console.warn(err.stack);
+      // }
     }
 
     //toggle the custom control displaying value display off
