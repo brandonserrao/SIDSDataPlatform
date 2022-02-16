@@ -62,7 +62,7 @@
             :items="sidsListFiltered"
             item-text="name"
             item-value="id"
-            placeholder="Overlay countries to compare indicator rank among SIDS"
+            placeholder="Overlay countries to compare indicator rank"
             @change="setCompareCountries"
             chips
             outlined
@@ -88,6 +88,24 @@
             ></i>
             {{ data.item.name }}
             </template>
+          </v-select>
+        </div>
+      </v-col>
+      <v-col class="d-flex align-center" md="1">
+        <p class="mt-auto mb-auto">among</p>
+      </v-col>
+      <v-col cols="11" md="3" lg="2">
+        <div class="select">
+          <v-select
+            rounded
+            v-model="rankType"
+            :items="rankTypes"
+            item-text="name"
+            item-value="id"
+            outlined
+            dense
+            hide-details
+          >
           </v-select>
         </div>
       </v-col>
@@ -142,7 +160,7 @@
             :items="sidsListFiltered"
             item-text="name"
             item-value="id"
-            placeholder="Overlay countries to compare indicator rank among SIDS"
+            placeholder="Overlay countries to compare indicator rank"
             @change="setCompareCountries"
             chips
             outlined
@@ -168,6 +186,26 @@
             ></i>
             {{ data.item.name }}
             </template>
+          </v-select>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row class="d-flex d-none-print d-md-none" justify="center">
+      <v-col cols="3" class="d-flex align-center" md="1">
+        <p class="mt-auto mb-auto">among</p>
+      </v-col>
+      <v-col cols="8" md="3" lg="2">
+        <div class="select">
+          <v-select
+            rounded
+            v-model="rankType"
+            :items="rankTypes"
+            item-text="name"
+            item-value="id"
+            outlined
+            dense
+            hide-details
+          >
           </v-select>
         </div>
       </v-col>
@@ -224,6 +262,19 @@ export default {
     flagGodes,
     region:'All SIDS',
     regions:["All SIDS", "Caribbean", "AIS", "Pacific"],
+    rankType: 'sids',
+    rankTypes: [
+      {
+        name:'Globally',
+        id:'global'
+      },{
+        name:'Regionally',
+        id:'region'
+      },{
+        name:'SIDS counties',
+        id:'sids'
+      }
+    ],
     colorScheme: ["#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"],
     pillars:['Climate', 'Blue', 'Digital', 'MVI'],
     tab:'Climate',
@@ -328,9 +379,10 @@ export default {
       this.pillars.map(pillar => {
         result[pillar] = countriesList.map(countyId => {
           let countyAxes = this.profiles[countyId][pillar].map(axis => {
+            let rank = this.rankType + 'Rank'
             return {
               axis: this.indicatorsMetadata[axis.axis].indicator,
-              value: axis.globalRank || axis.value,
+              value: axis[rank] || axis.value,
               code: axis.axis
             }
           })
