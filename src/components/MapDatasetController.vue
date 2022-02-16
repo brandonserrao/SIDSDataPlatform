@@ -185,7 +185,7 @@
             item-text="name"
             item-value="name"
             label="Dataset"
-            @input="emitUpdate"
+            @input="onInput"
             outlined
           ></v-autocomplete>
         </v-col>
@@ -206,7 +206,7 @@
             item-value="Description"
             :items="activeDataset.layers"
             label="Layer"
-            @input="emitUpdate"
+            @input="onInput"
             outlined
           ></v-select>
         </v-col>
@@ -225,7 +225,7 @@
             step="1"
             ticks="always"
             tick-size="4"
-            @input="emitUpdate"
+            @input="onInput"
           ></v-slider>
         </v-col>
       </v-row>
@@ -294,19 +294,23 @@
       <!-- DUPLICATE END -->
     </v-card>
 
-    <!-- TESTING - TAB SYSTEM -->
-    <vue-tabs-chrome
-      ref="tab"
-      :minHiddenWidth="120"
-      v-model="tab"
-      :tabs="tabs"
-      @contextmenu="handleRightClick"
-      @click="handleTabClick"
-      @swap="handleSwap"
-    />
     <!-- INFO CARD -->
     <v-card class="mb-1 block-info background-grey">
-      <b>Info Card</b>
+      <!-- TESTING - TAB SYSTEM -->
+      <vue-tabs-chrome
+        theme="custom"
+        ref="tab"
+        :minHiddenWidth="120"
+        v-model="tab"
+        :tabs="tabs"
+        @contextmenu="handleRightClick"
+        @click="handleTabClick"
+        @swap="handleSwap"
+        @dragstart="handleDragStart"
+        @dragging="handleDragging"
+        @dragend="handleDragEnd"
+        @remove="handleRemove"
+      />
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
@@ -328,10 +332,10 @@
         dataset above or a country to view spatial data about that region.
       </v-card-text>
       <!-- TESTING - BUTTONS TO ADD/REMOVE TABS FOR DEBUG -->
-      <div class="btns">
+      <!-- <div class="btns">
         <button @click="addTab">New Tab</button>
         <button @click="removeTab">Remove active Tab</button>
-      </div>
+      </div> -->
     </v-card>
 
     <!-- New Legend/Histogram -->
@@ -379,6 +383,11 @@ export default {
       tab: "info", //"google",
       tabs: [
         /* {
+          label: "info",
+          key: "info",
+          // closable: false,
+        }, */
+        /* {
           label: "google",
           key: "google",
           favicon: require("../assets/testing/google.jpg"),
@@ -401,24 +410,21 @@ export default {
         {
           name: "SIDS offer Pillars",
           value: "pillars",
-          headerImg:
-            require("@/assets/media/goals-icons/sidsOfferPillars.png"),
+          headerImg: require("@/assets/media/goals-icons/sidsOfferPillars.png"),
           description:
             "UNDP’s SIDS offer – Rising Up for SIDS – presents an integrated approach for tapping into areas with potential to accelerate green recovery and transform societies based on three interconnected pillars and responds to the ambitions and demands SIDS expressed during the 2019 midterm review of the S.A.M.O.A. Pathway.",
         },
         {
           name: "SDGs",
           value: "sdgs",
-          headerImg:
-            require("@/assets/media/goals-icons/SDGs.png"),
+          headerImg: require("@/assets/media/goals-icons/SDGs.png"),
           description:
             "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
         },
         {
           name: "SAMOA Pathway",
           value: "samoaPriorities",
-          headerImg:
-            require("@/assets/media/goals-icons/samoaPathway.png"),
+          headerImg: require("@/assets/media/goals-icons/samoaPathway.png"),
           description:
             "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
         },
@@ -689,7 +695,7 @@ export default {
       );
     },
     activeLayer() {
-      if (!this.activeDataset) return null;
+      if (!this.activeDataset || this.comparisonDataset === "info") return null;
       if (this.activeDataset.type === "temporal") {
         return this.activeDataset.layers[this.activeLayerName];
       } else if (this.activeDataset.type === "layers") {
@@ -703,7 +709,8 @@ export default {
 
     comparisonLayer() {
       console.log(this.comparisonDataset);
-      if (!this.comparisonDataset) return null;
+      if (!this.comparisonDataset || this.comparisonDataset === "info")
+        return null;
       if (this.comparisonDataset.type === "temporal") {
         return this.comparisonDataset.layers[this.comparisonLayerName];
       } else if (this.comparisonDataset.type === "layers") {
@@ -728,14 +735,18 @@ export default {
   },
   methods: {
     //TESTING - TAB SYSTEM
-    addTab(label = null, id = null) {
-      // let item = "tab" + Date.now();
-      let item = "tab";
-      item += id ? id : Date.now();
+    addTab() {
+      let item = ""; //"tab";
+      item += Date.now(); //timecode used for a unique id
+      let tabLabel = this.createTabLabel();
       let newTabs = [
         {
-          label: label ? label : "New Tab",
+          label: tabLabel ? tabLabel : "New Tab",
           key: item,
+          data: {
+            dataset: this.activeDatasetName,
+            layer: this.activeLayerName,
+          },
         },
       ];
       console.log(this.$refs);
@@ -751,12 +762,59 @@ export default {
     handleRightClick(e, tab, index) {
       console.log(e, tab, index);
     },
-    handleTabClick(e, tab, index) {
-      console.log(e, tab, index);
-    },
     handleSwap(tab, targetTab) {
       console.info("swap", tab, targetTab);
     },
+    handleDragStart(e, tab, index) {
+      console.info("dragstart", e, tab, index);
+    },
+    handleDragging(e, tab, index) {
+      console.info("dragging", e, tab, index);
+    },
+    handleDragEnd(e, tab) {
+      console.info("dragend", e, tab);
+    },
+    handleRemove(tab, index) {
+      console.info("remove", tab, index);
+    },
+    handleTabClick(e, tab, index) {
+      //should look for the corresponding dataset and layer in filtered datasets
+      //and update the reactive data/computed props in this components:
+      //activeDatasetName and activeLayerName are computed properties and inform activeLayer and activeDataset
+      //which in turn informs the dataset selector and slider
+      this.updateControllerFromTab(tab);
+      console.info(e, tab, index);
+      this.emitUpdate();
+    },
+
+    updateControllerFromTab(tab) {
+      console.log("updateControllerFromTab", tab);
+      console.log(tab.data);
+      // let label = tab.label;
+      this.activeDatasetName = tab.data.dataset;
+      this.activeLayerName = tab.data.layer;
+    },
+
+    createTabLabel() {
+      let labelString = "Placeholder Label";
+      if (this.activeDataset.type === "single") {
+        labelString = this.activeDataset.name;
+      } else if (this.activeDataset.type === "temporal") {
+        labelString = `${this.activeLayer.Temporal}:${this.activeDataset.name}`;
+      } else if (this.activeDataset.type === "layers" && this.activeLayer) {
+        labelString = this.activeLayer.Description;
+      } else {
+        console.warn(
+          "Tab label couldn't be created for:",
+          this.activeDataset.name,
+          this.activeLayer.Field_Name
+        );
+        return null;
+      }
+
+      return labelString;
+    },
+
     //
     /**
      *passes current dataset+layer selection upwards
@@ -797,12 +855,24 @@ export default {
       }; //package data to pass to parents with update
       this.$emit("updateComparison", active);
     },
+    onInput() {
+      this.emitUpdate();
+      this.addTab();
+    },
+    emitComparisonUpdate() {
+      console.warn("emitComparisonUpdate");
+      let active = {
+        dataset: this.comparisonDataset,
+        layer: this.comparisonLayer,
+      }; //package data to pass to parents with update
+      this.$emit("updateComparison", active);
+    },
 
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
-        return require(`@/assets/media/goals-icons/SDGs/${index+1}.png`)
+        return require(`@/assets/media/goals-icons/SDGs/${index + 1}.png`);
       } else {
-        return require(`@/assets/media/goals-icons/SAMOA/${index+1}.png`)
+        return require(`@/assets/media/goals-icons/SAMOA/${index + 1}.png`);
       }
     },
     goalUpdateNext() {
@@ -943,7 +1013,7 @@ export default {
 }
 
 /* TESTING - TAB SYSTEM */
-/* .vue-tabs-chrome.theme-custom {
+.vue-tabs-chrome.theme-custom {
   padding-top: 0;
   background-color: transparent;
   overflow: hidden;
@@ -965,17 +1035,18 @@ export default {
   padding: 0;
 }
 .vue-tabs-chrome.theme-custom .tabs-background-content {
-  border-top: 1px solid #e4e7ed;
+  /* border-top: 1px solid #e4e7ed;
   border-left: 1px solid #e4e7ed;
-  border-right: 1px solid #e4e7ed;
+  border-right: 1px solid #e4e7ed; */
   border-radius: 0;
-  background-color: #fff;
+  /* background-color: #fff; */
 }
 .vue-tabs-chrome.theme-custom .tabs-content {
-  height: 40px;
+  /* height: 40px; */
+  height: 28px;
 }
 .vue-tabs-chrome.theme-custom .active {
-  color: #409eff;
+  /* color: #409eff; */
 }
 .vue-tabs-chrome.theme-custom .active .tabs-background::before,
 .vue-tabs-chrome.theme-custom .active .tabs-background::after {
@@ -984,9 +1055,14 @@ export default {
   content: "";
   width: 100%;
   height: 1px;
-  background-color: #fff;
+  /* background-color: #fff; */
   z-index: 1;
   position: absolute;
+}
+.vue-tabs-chrome.theme-custom .active .tabs-background::before {
+  top: 0;
+  height: 2px;
+  background-color: #409eff;
 }
 .vue-tabs-chrome.theme-custom .active .tabs-background::before {
   top: 0;
