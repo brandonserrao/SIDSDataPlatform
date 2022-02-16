@@ -825,6 +825,35 @@ export default {
       let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
       console.log("$emit update:", active);
       this.$emit("update", active);
+
+      //TESTING - TAB SYSTEM
+      if (this.activeDataset.type === "single") {
+        console.log("Tab add for single-type dataset");
+        this.addTab(this.activeDataset.name, this.activeLayer?.Field_Name);
+      } else if (this.activeDataset.type === "temporal") {
+        console.log("Tab add for temporal-type dataset");
+        this.addTab(
+          `${this.activeLayer.Temporal}:${this.activeDataset.name}`,
+          this.activeLayer.Field_Name
+        );
+      } else if (this.activeDataset.type === "layers" && this.activeLayer) {
+        console.log("Tab add for multilayers-type dataset");
+        this.addTab(this.activeLayer.Description, this.activeLayer.Field_Name);
+      } else {
+        console.warn(
+          "Tab could not be added for:",
+          this.activeDataset.name,
+          this.activeLayer.Field_Name
+        );
+      }
+    },
+    emitComparisonUpdate() {
+      console.warn("emitComparisonUpdate");
+      let active = {
+        dataset: this.comparisonDataset,
+        layer: this.comparisonLayer,
+      }; //package data to pass to parents with update
+      this.$emit("updateComparison", active);
     },
     onInput() {
       this.emitUpdate();
@@ -1035,4 +1064,9 @@ export default {
   height: 2px;
   background-color: #409eff;
 }
+.vue-tabs-chrome.theme-custom .active .tabs-background::before {
+  top: 0;
+  height: 2px;
+  background-color: #409eff;
+} */
 </style>
