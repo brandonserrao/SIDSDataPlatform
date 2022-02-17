@@ -279,12 +279,16 @@ export default {
       return null
     },
     activeIndicatorYears(){
-      return Object.keys(this.data.data).filter(year => year !== 'recentYear').map(year => {
-        return {
-          name: year === 'recentValue' ? 'Recent value' : year,
-          id: year
-        }
-      }).reverse()
+      if(this.data && this.data.data) {
+        return Object.keys(this.data.data).filter(year => year !== 'recentYear').map(year => {
+          return {
+            name: year === 'recentValue' ? 'Recent value' : year,
+            id: year
+          }
+        }).reverse()
+      } else {
+        return []
+      }
     },
     indicatorCategories() {
       if(this.activeDataset) {
