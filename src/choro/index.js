@@ -130,7 +130,8 @@ export default class Choro {
     this.data = data;
     this.updateVizEngine(code)
   }
-  updateVizType (vizType) {
+  updateVizType (vizType, data) {
+    this.data = data;
     this.indiSelections.viz = vizType;
     this.updateVizEngine(this.indicatorCodeInitial)
   }

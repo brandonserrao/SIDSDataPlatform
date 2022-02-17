@@ -224,9 +224,6 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
           maxx+=1;
         }
         let normValue = (val - minn) / (maxx - minn);
-        if(maxx === minn) {
-          maxx+=1;
-        }
         //console.log(country,normValue,rank,minn)
 
           //console.log(val, typeof val)

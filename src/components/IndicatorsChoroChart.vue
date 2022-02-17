@@ -76,7 +76,7 @@ export default {
     },
     chartType() {
       if(this.choro && this.page === this.choro.page) {
-        this.choro.updateVizType(this.chartType);
+        this.choro.updateVizType(this.chartType, this.activeIndicatorData);
       }
     },
     indicatorCode() {
