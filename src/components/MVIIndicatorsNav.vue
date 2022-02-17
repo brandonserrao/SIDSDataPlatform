@@ -7,9 +7,9 @@
           grow
           class="mb-2 mvi-nav-tabs tabs tabs-small"
         >
-          <v-tab value="0" @change="setPreset('MVI')">MVI</v-tab>
-          <v-tab value="1" @change="setPreset('EVI')">EVI</v-tab>
-          <v-tab value="2">Custom</v-tab>
+          <v-tab :value="0" @change="setPreset('MVI')">MVI</v-tab>
+          <v-tab :value="1" @change="setPreset('EVI')">EVI</v-tab>
+          <v-tab :value="2">Custom</v-tab>
         </v-tabs>
       </v-col>
       <v-col class="flex-grow-0">
