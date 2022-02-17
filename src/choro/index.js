@@ -135,10 +135,11 @@ export default class Choro {
     this.indiSelections.viz = vizType;
     this.updateVizEngine(this.indicatorCodeInitial)
   }
-  updatePageType ({page, chartType, codes, code, data}) {
+  updatePageType ({page, chartType, codes, year, code, data}) {
     this.page = page;
       this.data = data;
     this.indiSelections.viz = chartType;
+    this.indiSelections.year = year;
     if(codes) {
       this.selectedIndis = codes;
     }
