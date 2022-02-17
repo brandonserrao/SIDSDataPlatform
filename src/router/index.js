@@ -72,13 +72,14 @@ const routes = [
     ]
   },
   {
-    path: '/development-indicators/:indicator?/:chartType?',
+    path: '/development-indicators/:indicator?/:year?/:chartType?',
     link: '/development-indicators',
     name: 'Development Indicators',
     component: () => import(/* webpackChunkName: "about" */ '../views/DevelopmentIndicators.vue'),
     beforeEnter: async (to, from, next) => {
       let chartType = to.params.chartType || 'choro',
-      indicator = to.params.indicator || 'region';
+      indicator = to.params.indicator || 'region',
+      year = to.params.year || 'recentValue';
       if((vuetify.framework.breakpoint.xs || vuetify.framework.breakpoint.sm)
         && chartType !== 'series'
       ) {
@@ -88,16 +89,21 @@ const routes = [
       await store.dispatch('indicators/getCategories');
       await store.dispatch('indicators/getMeta');
       await store.dispatch('indicators/getProfileData');
-      if(indicator === to.params.indicator && chartType === to.params.chartType) {
+      if(
+        indicator === to.params.indicator &&
+        year === to.params.year &&
+        chartType === to.params.chartType
+      ) {
         next()
       } else {
-        next({ path: `/development-indicators/${indicator}/${chartType}`})
+        next({ path: `/development-indicators/${indicator}/${year}/${chartType}`})
       }
     },
     props: (to) => (
       {
         chartType: to.params.chartType,
         indicator: to.params.indicator,
+        year: to.params.year,
         page: 'devIdictors'
       }
     ),
@@ -121,14 +127,15 @@ const routes = [
       if(chartType === to.params.chartType) {
         next()
       } else {
-        next({ path: `/vulnerability/mvi/${chartType}`})
+        next({ path: `/vulnerability/mvi-index/${chartType}`})
       }
     },
     props: (to) => (
       {
         chartType: to.params.chartType,
-        indicator: 'mvi',
-        page: 'mvi'
+        indicator: 'mvi-index',
+        page: 'mvi',
+        year: 'recentValue',
       }
     ),
   },

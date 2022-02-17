@@ -37,11 +37,8 @@ export function updateVizEngine(indicatorCode) {
   }
   if (Object.keys(indexCodes).includes(this.indicatorCode)) {
     this.vizMode = "index";
-    this.apiCode="/indices/" + indexCodes[this.indicatorCode];
   } else {
     this.vizMode = "indicator";
-    let codeSplit = this.indicatorCode.split("-");
-    this.apiCode=`/indicators/${codeSplit[0]}/${this.indicatorCode}`
   }
     // updateVizSliders();
 //   //package selections
@@ -63,18 +60,14 @@ export function updateVizEngine(indicatorCode) {
 //
 //
 //
-  d3.json(
-    "https://raw.githubusercontent.com/SIDS-Dashboard/api/main/data"+  this.apiCode + ".json"
-  ).then((dat) => {
-
     this.updateLinesAndMap();
     if(this.vizMode=="indicator"){
-      this.indicatorData = dat[this.indicatorCode];
+      this.indicatorData = this.data;
       this.indexData={};
       this.indexWeights={"subindices":{},"normalization":false};
     }
     if(this.vizMode=="index"){
-      this.indexData = this.getIndexValues(dat);
+      this.indexData = this.getIndexValues(this.data);
       this.indicatorData = this.indexData.index
       this.indexWeights = JSON.parse(JSON.stringify(indexWeightsDict[this.indicatorCode]));//deep copy
       this.countryOrder = this.getIndexCountryList()
@@ -121,8 +114,6 @@ export function updateVizEngine(indicatorCode) {
       }
 //
 //       updateVizSliders()//again, just for fun
-  });
-
 }
 
 ///////////////////////
@@ -167,7 +158,6 @@ export function countriesWithNoData() {
         // console.log(this.id)
         let iso = this.id;
         ////need to update this to indiSelections["year"] variable
-        rootThis.indiSelections["year"] = "recentValue";
         let value = rootThis.indicatorData["data"][rootThis.indiSelections["year"]][iso];
         //console.log(value)
         if (value == "No Data" || typeof value != "number") {

@@ -1,4 +1,5 @@
 import service from '@/services'
+import { indexCodes } from '@/choro/index-data';
 
 export default {
   namespaced: true,
@@ -7,6 +8,7 @@ export default {
     indicatorsCategories: null,
     indicatorsMeta: null,
     profileData: null,
+    activeIndicatorData:null
   },
   mutations: {
     setDatasetsList(state, data) {
@@ -14,15 +16,15 @@ export default {
     },
     setCategories(state, data) {
       state.indicatorsCategories = data;
-      console.log(data, '1')
     },
     setMeta(state, data) {
       state.indicatorsMeta = data;
-      console.log(data, '2')
     },
     setProfileData(state, data) {
       state.profileData = data;
-      console.log(data, '3')
+    },
+    setActiveIndicator(state, data) {
+      state.activeIndicatorData = data;
     },
   },
   actions: {
@@ -74,6 +76,22 @@ export default {
           .reduce( (res, indicatorCode) => (res[indicatorCode] = meta[indicatorCode], res), {} );
         commit("setMeta", meta);
       }
+    },
+    async getIndicatorData({ commit}, indicatorCode) {
+      let APIcode = indicatorCode,
+      code = indicatorCode;
+      if (indicatorCode == "region") {
+        code = "hdr-137506";///temp so has something to attach to data
+      }
+      if (Object.keys(indexCodes).includes(indicatorCode)) {
+        APIcode="/indices/" + code.replace('-index','');
+      } else {
+        let codeSplit = code.split("-");
+        APIcode=`/indicators/${codeSplit[0]}/${code}`
+      }
+      let indicatorData = await service.loadIndicatorData(APIcode);
+      indicatorData = Object.keys(indexCodes).includes(indicatorCode) ? indicatorData : indicatorData[code];
+      return commit('setActiveIndicator', indicatorData)
     }
   }
 }

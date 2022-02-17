@@ -523,13 +523,17 @@ export function initVizEngineTooltips() {
       let countryCode = instance.reference.parentElement.id;
       let year = rootThis.indiSelections.year === 'recentValue' ? 'Most recent value' : rootThis.indiSelections.year;
       let value = 1;
-      if(rootThis.vizMode === 'index') {
+      if(rootThis.vizMode === 'index' && rootThis.indexData) {
         value = rootThis.indexData.index.data[rootThis.indiSelections.year][countryCode];
-      } else {
+      } else if (rootThis.indicatorData) {
         value = rootThis.indicatorData.data[rootThis.indiSelections.year][countryCode];
+        year = rootThis.indiSelections.year === 'recentValue' ? `Most recent value (${rootThis.indicatorData.data.recentYear[countryCode]})` : year;
+        year = rootThis.indicatorData.data[rootThis.indiSelections.year][countryCode] === 'No Data' ? rootThis.indicatorData.data.recentYear[countryCode] : year;
       }
-      value = typeof value === 'string' ? value : nFormatter(value,2);
-      content.innerHTML = `Value: ${value} <br/> Year: ${year}`;
+      if(rootThis.indexData || rootThis.indicatorData) {
+        value = typeof value === 'string' ? value : nFormatter(value,2);
+        content.innerHTML = `Value: ${value} <br/> Year: ${year}`;
+      }
     },
     content: function (reference) {
         let tooltipElement = document.createElement('div'),

@@ -2,7 +2,7 @@
   <div class="mt-5">
   <v-row dense>
     <v-col  class="d-none d-lg-block" v-if="page==='devIdictors'" cols='3'>
-      <indicators-nav :activeIndicatorCode="indicator" @indicatorChange="indicatorUpdate"/>
+      <indicators-nav :activeIndicatorCode="indicator" @indicatorChange="indicatorUpdate" :year="year" @yearChange="yearUpdate"/>
     </v-col>
     <v-col  class="d-none d-lg-block" v-else cols='3'>
       <mvi-indicators-nav @MviIndicatorsChange="MVIindicatorUpdate"/>
@@ -14,7 +14,7 @@
       content-class="dialog-box"
       transition="dialog-right-transition"
     >
-      <indicators-nav @close="dialog = !dialog" v-if="page==='devIdictors'" :activeIndicatorCode="indicator" @indicatorChange="indicatorUpdate"/>
+      <indicators-nav @close="dialog = !dialog" v-if="page==='devIdictors'" :activeIndicatorCode="indicator" :year="year" @indicatorChange="indicatorUpdate" @yearChange="yearUpdate"/>
       <mvi-indicators-nav v-else @close="dialog = !dialog" @MviIndicatorsChange="MVIindicatorUpdate"/>
     </v-dialog>
 
@@ -89,7 +89,7 @@
       </v-row>
       <v-row dense v-if="chartType !== 'info'">
         <v-col  v-if="chartType !== 'info'" cols='12'>
-          <indicators-choro-chart :region="region" :mviCodes="mviCodes" :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
+          <indicators-choro-chart :region="region" :mviCodes="mviCodes" :year="year" :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
         </v-col>
       </v-row>
       <v-row  v-else class="justify-center" >
@@ -144,10 +144,11 @@
 import IndicatorsNav from '@/components/IndicatorsNav.vue'
 import MVIIndicatorsNav from '@/components/MVIIndicatorsNav.vue'
 import IndicatorsChoroChart from '@/components/IndicatorsChoroChart.vue'
+import store from '@/store'
 
 export default {
   name: 'DevelopmentIndicators',
-  props:['chartType', 'indicator', 'page'],
+  props:['chartType', 'indicator', 'page', 'year'],
   data: function() {
     return {
       dialog:false,
@@ -236,7 +237,7 @@ export default {
     },
     activeTab() {
       return this.tabs.findIndex(menuItem => menuItem.chartType === this.chartType)
-    },
+    }
   },
   methods: {
     transitionTo(chartType) {
@@ -244,11 +245,14 @@ export default {
         this.$router.push({path:`/vulnerability/${this.indicator}/${chartType}`})
       }
       else {
-        this.$router.push({path:`/development-indicators/${this.indicator}/${chartType}`})
+        this.$router.push({path:`/development-indicators/${this.indicator}/${this.year}/${chartType}`})
       }
     },
     indicatorUpdate(indicatorCode) {
-      this.$router.push({path:`/development-indicators/${indicatorCode}/${this.chartType}`})
+      this.$router.push({path:`/development-indicators/${indicatorCode}/recentValue/${this.chartType}`})
+    },
+    yearUpdate(year) {
+      this.$router.push({path:`/development-indicators/${this.indicator}/${year}/${this.chartType}`})
     },
     MVIindicatorUpdate(mviCodes){
       this.mviCodes = mviCodes;
@@ -258,7 +262,23 @@ export default {
     page() {
       this.sorting = 0
     }
-  }
+  },
+  async beforeRouteUpdate(to, from, next) {
+    try {
+      await store.dispatch('indicators/getIndicatorData',to.params.indicator)
+      next()
+    } catch (e) {
+      next(from)
+    }
+  },
+  async beforeRouteEnter(to, from, next) {
+    try {
+      await store.dispatch('indicators/getIndicatorData',to.params.indicator)
+      next()
+    } catch (e) {
+      next(from)
+    }
+  },
 }
 </script>
 <style media="screen">
