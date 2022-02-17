@@ -133,7 +133,9 @@ function quantizeData(indicatorData,indiSelections){
     min = 0;
 
       // Math.min(...Object.values(indicatorData).filter(function (el) { return !isNaN(parseFloat(el)) && isFinite(el);  }))
-
+    if(max === min) {
+      max+= 1
+    }
       //quantize is the scale used for the choropleth and the legend
     let quantize = d3
       .scaleQuantize()
@@ -711,7 +713,9 @@ export function updateBarAxis() {
     })
   ),
   min = 0;
-
+  if(max === min) {
+    max+=1;
+  }
   if (this.indiSelections["viz"] == "Multi-indicator") {
     margin.left = 60;
     width = 440;
@@ -832,7 +836,9 @@ export function updateYAxis() {
     ),
     // min = Math.min(...Object.values(indicatorData2).filter(function (el) { return !isNaN(parseFloat(el)) && isFinite(el); }))
     min = 0;
-
+    if(max === min) {
+      max+=1;
+    }
     yScale.domain([min, max]).range([height, 0]);
 
     yAxisContainer.attr("visibility", "visible");

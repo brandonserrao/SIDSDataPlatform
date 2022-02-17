@@ -157,9 +157,11 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
         margin = 4;
 
         let maxx = Math.max(...indicatorValues),
-        minn =  0, //Math.min(...indicatorValues),
-        normValue = (val - minn) / (maxx - minn);
-
+        minn =  0; //Math.min(...indicatorValues),
+        if(maxx === minn) {
+          maxx+=1;
+        }
+        let normValue = (val - minn) / (maxx - minn);
         //console.log(country,normValue,rank,minn)
         //console.log(totalHeight,totalVals,rank)
         let x = this.vizWidth < 800 ? 0 : 160;
@@ -217,9 +219,14 @@ export function rectTransform(country, bBox, indicatorDataObj, indiSelections) {
         //console.log(totalVals)
 
         let maxx = Math.max(...indicatorValues),
-        minn = 0, //Math.min(...indicatorValues)
-        normValue = (val - minn) / (maxx - minn);
-
+        minn = 0; //Math.min(...indicatorValues)
+        if(maxx === minn) {
+          maxx+=1;
+        }
+        let normValue = (val - minn) / (maxx - minn);
+        if(maxx === minn) {
+          maxx+=1;
+        }
         //console.log(country,normValue,rank,minn)
 
           //console.log(val, typeof val)
@@ -406,6 +413,9 @@ export function multiRectTransform(country, bBox, indicatorDataObj, indexDataObj
       minn = 0, //Math.min(...indicatorValues)
       normValue,
       normX;
+      if(maxx === minn) {
+        maxx+=1;
+      }
 // TODO: Ask Ben about min (now is 0)
       if (maxx>0&&!isNaN(val)&&!isNaN(x)){
         normValue = (val - minn) / (maxx - minn);
