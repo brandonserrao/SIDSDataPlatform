@@ -71,6 +71,7 @@ export default {
         page: this.page,
         chartType: this.chartType,
         code: this.indicatorCode,
+        year: this.year,
         data: this.activeIndicatorData
       });
     },
