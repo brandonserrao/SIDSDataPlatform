@@ -193,7 +193,7 @@
     </v-virtual-scroll>
   </v-card>
     <v-card flat class="mt-2" v-if="activeIndicator">
-      <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.indicator}}</v-card-title>
+      <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.indicator}} ({{activeIndicator.units}})</v-card-title>
       <v-card-text class="active-indicator-info">
         <div class="mb-1 d-flex">
           <v-select class='dimensions-select' v-if="activeIndicatorYears.length > 2"
@@ -207,7 +207,6 @@
           ></v-select>
         </div>
         <div class="mb-1 d-flex">
-          <div class="active-dimension"> {{activeIndicator.units}} </div>
           <v-select class='dimensions-select' v-if="activeIndicatorDimensions.length > 1"
             :items="activeIndicatorDimensions"
             :value="activeIndicatorCode"
