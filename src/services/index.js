@@ -15,11 +15,9 @@ export default {
   loadProfileData,
   loadSidsSVG,
   loadMapLocations,
-
+  loadIndicatorData,
   loadCountryProfile,
   loadProfileIndicarotsMetadata,
-
-
   loadDatasetsList
 
 }
@@ -88,5 +86,10 @@ async function loadSidsSVG () {
 }
 async function loadMapLocations () {
   const resp = await axios.get(`${NEW_API_URl}/data/exports/mapLocations.json`)
+  return resp.data
+}
+
+async function loadIndicatorData (apiCode) {
+  const resp = await axios.get(`${NEW_API_URl_2}${apiCode}.json`)
   return resp.data
 }

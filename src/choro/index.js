@@ -71,18 +71,21 @@ import {
     // <script src="scripts/vizEngineInit.js"></script>
     // <script src="scripts/processIndexData.js"></script>
 export default class Choro {
-  constructor({viz, clickCallback, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
-    this.initState({viz, clickCallback, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
+  constructor({viz, data, clickCallback, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
+    this.initState({viz, data, clickCallback, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
     this.initVizEngine({sidsXML})
+    if(indicatorCode!=='region' || this.vizWidth<800){
+      this.updateVizEngine(indicatorCode)
+    }
   }
   initState({
     viz,
+    data,
     year,
     clickCallback,
     countyType,
     page, selectedIndis,
     indicatorMeta,
-    indicatorCode,
     mapLocations,
     mapContainerSelector,
     legendContainerSelector,
@@ -108,6 +111,7 @@ export default class Choro {
     this.clickCallback = clickCallback;
     this.indicatorMeta = indicatorMeta;
     this.textBBoxDict = {};
+    this.data = data;
     this.vizWidth = vizContainerWidth;
     this.vizHeigh = vizContainerHeight;
     this.legendContainerSelector = legendContainerSelector;
@@ -121,16 +125,18 @@ export default class Choro {
       .append("svg")
       .attr("width", vizContainerWidth)
       .attr("height", vizContainerHeight);
-    if(indicatorCode!=='region' || this.vizWidth<800){
-      this.updateVizEngine(indicatorCode)
-    }
+  }
+  updateVizData(code, data) {
+    this.data = data;
+    this.updateVizEngine(code)
   }
   updateVizType (vizType) {
     this.indiSelections.viz = vizType;
     this.updateVizEngine(this.indicatorCodeInitial)
   }
-  updatePageType ({page, chartType, codes, code}) {
+  updatePageType ({page, chartType, codes, code, data}) {
     this.page = page;
+      this.data = data;
     this.indiSelections.viz = chartType;
     if(codes) {
       this.selectedIndis = codes;
@@ -149,6 +155,10 @@ export default class Choro {
   }
   updateCountryTypeFilterType(countyType) {
     this.countyType = countyType
+    this.updateVizEngine(this.indicatorCodeInitial)
+  }
+  updateVizYear(year) {
+    this.indiSelections.year = year
     this.updateVizEngine(this.indicatorCodeInitial)
   }
 }

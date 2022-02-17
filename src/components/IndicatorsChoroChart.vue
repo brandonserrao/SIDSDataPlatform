@@ -27,11 +27,12 @@ export default {
       choro:null
     }
   },
-  props:['indicatorCode', 'region', 'page', 'chartType', 'sorting', 'mviCodes'],
+  props:['indicatorCode', 'region', 'page', 'chartType', 'sorting', 'mviCodes', 'year'],
   computed: {
     ...mapState({
       profileData: state => state.indicators.profileData,
-      indicatorMeta: state => state.indicators.indicatorsMeta
+      indicatorMeta: state => state.indicators.indicatorsMeta,
+      activeIndicatorData: state => state.indicators.activeIndicatorData
     })
   },
   methods:{
@@ -41,13 +42,14 @@ export default {
 
       this.choro = new Choro({
         viz:this.chartType,
-        year:'recentValue',
         sidsXML,
         mapLocations,
         indicatorCode:this.indicatorCode,
         indicatorMeta:this.indicatorMeta,
         profileData: this.profileData,
         page:this.page,
+        year: this.year,
+        data: this.activeIndicatorData,
         clickCallback:this.counntryClickCallback,
         selectedIndis:this.mviCodes,
         vizContainerWidth:(document.body.clientWidth - 40) > 800 ? 800 : (document.body.clientWidth - 40),
@@ -68,17 +70,18 @@ export default {
       this.choro && this.choro.updatePageType({
         page: this.page,
         chartType: this.chartType,
-        code: this.indicatorCode
+        code: this.indicatorCode,
+        data: this.activeIndicatorData
       });
     },
     chartType() {
       if(this.choro && this.page === this.choro.page) {
-      this.choro.updateVizType(this.chartType);
+        this.choro.updateVizType(this.chartType);
       }
     },
     indicatorCode() {
       if(this.choro && this.page === this.choro.page) {
-        this.choro.updateVizEngine(this.indicatorCode);
+        this.choro.updateVizData(this.indicatorCode, this.activeIndicatorData);
       }
     },
     region() {
@@ -96,6 +99,11 @@ export default {
         this.choro && this.choro.updateMviCodes(this.mviCodes);
       }
     },
+    year() {
+      if(this.choro && this.page === this.choro.page) {
+        this.choro.updateVizYear(this.year)
+      }
+    }
   }
 }
 </script>
