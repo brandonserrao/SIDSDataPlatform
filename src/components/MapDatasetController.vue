@@ -310,7 +310,16 @@
         @dragging="handleDragging"
         @dragend="handleDragEnd"
         @remove="handleRemove"
-      />
+      >
+        <button
+          id="chrome-tabs-slot-button"
+          class="chrome-tabs-slot-button"
+          @click="addTab"
+          slot="after"
+        >
+          ➕
+        </button></vue-tabs-chrome
+      >
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
@@ -815,6 +824,11 @@ export default {
       return labelString;
     },
 
+    onInput() {
+      //interaction handler for dataset and layer selectors of the dataset controller
+      this.emitUpdate();
+      // this.addTab(); //disabled, not desired to add tab on every selection
+    },
     //
     /**
      *passes current dataset+layer selection upwards
@@ -854,10 +868,6 @@ export default {
         layer: this.comparisonLayer,
       }; //package data to pass to parents with update
       this.$emit("updateComparison", active);
-    },
-    onInput() {
-      this.emitUpdate();
-      this.addTab();
     },
     emitComparisonUpdate() {
       console.warn("emitComparisonUpdate");
@@ -1013,6 +1023,12 @@ export default {
 }
 
 /* TESTING - TAB SYSTEM */
+.chrome-tabs-slot-button {
+  height: 20px;
+  line-height: 20px;
+  padding: 0 10px;
+}
+
 .vue-tabs-chrome.theme-custom {
   padding-top: 0;
   background-color: transparent;
