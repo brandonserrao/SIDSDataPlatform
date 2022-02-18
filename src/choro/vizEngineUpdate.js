@@ -705,7 +705,6 @@ export function updateBarAxis() {
   var margin = { left: this.vizWidth < 800 ? 0 : 160, right: 5 };
   var xAxis = d3.axisTop(x);
   var width = this.vizWidth < 800 ? this.vizWidth - 40 : 440;
-  var height = 90;
 
   let max = Math.max(
     ...Object.values(indicatorDataYear).filter(function (el) {
@@ -754,7 +753,7 @@ export function updateBarAxis() {
   barAxis
     .transition()
     .duration(1200)
-    .attr("transform", `translate(${margin.left}, ${height / 2})`)
+    .attr("transform", `translate(${margin.left}, 25)`)
     .call(xAxis);
 }
 //

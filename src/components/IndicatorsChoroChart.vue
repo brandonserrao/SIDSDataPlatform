@@ -39,7 +39,7 @@ export default {
       activeIndicatorData: state => state.indicators.activeIndicatorData
     }),
     activeIndicatorsMeta() {
-      return this.indicatorMeta[this.indicatorCode]
+      return this.indicatorMeta[this.indicatorCode] || this.indicatorMeta['hdr-137506']
     }
   },
   methods:{
@@ -445,7 +445,7 @@ export default {
 }
 
 #choro_legend_container {
-  height: 57px;
+  height: 45px;
   overflow: visible;
 }
 
