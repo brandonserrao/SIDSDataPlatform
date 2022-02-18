@@ -310,7 +310,16 @@
         @dragging="handleDragging"
         @dragend="handleDragEnd"
         @remove="handleRemove"
-      />
+      >
+        <button
+          id="chrome-tabs-slot-button"
+          class="chrome-tabs-slot-button"
+          @click="addTab"
+          slot="after"
+        >
+          ➕
+        </button></vue-tabs-chrome
+      >
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
@@ -736,6 +745,7 @@ export default {
   methods: {
     //TESTING - TAB SYSTEM
     addTab() {
+      //TODO - ADD CHECK FOR MAX TAB AMOUNT BEFORE AADDING
       let item = ""; //"tab";
       item += Date.now(); //timecode used for a unique id
       let tabLabel = this.createTabLabel();
@@ -746,6 +756,12 @@ export default {
           data: {
             dataset: this.activeDatasetName,
             layer: this.activeLayerName,
+            filters: {
+              //intended to facilitate resetting the filter
+              pillar: this.activePillar, //int
+              goal: this.activeGoal, ///int
+              goalType: this.activeGoalType, //str
+            },
           },
         },
       ];
@@ -778,6 +794,10 @@ export default {
       console.info("remove", tab, index);
     },
     handleTabClick(e, tab, index) {
+      //intended to facilitate resetting the filter
+      this.activeGoalType = tab.data.filters.goalType; //str
+      this.activeGoal = tab.data.filters.goal; ///int
+      this.activePillar = tab.data.filters.pillar; //int
       //should look for the corresponding dataset and layer in filtered datasets
       //and update the reactive data/computed props in this components:
       //activeDatasetName and activeLayerName are computed properties and inform activeLayer and activeDataset
@@ -815,6 +835,11 @@ export default {
       return labelString;
     },
 
+    onInput() {
+      //interaction handler for dataset and layer selectors of the dataset controller
+      this.emitUpdate();
+      // this.addTab(); //disabled, not desired to add tab on every selection
+    },
     //
     /**
      *passes current dataset+layer selection upwards
@@ -825,7 +850,7 @@ export default {
       let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
       console.log("$emit update:", active);
       this.$emit("update", active);
-
+      /* 
       //TESTING - TAB SYSTEM
       if (this.activeDataset.type === "single") {
         console.log("Tab add for single-type dataset");
@@ -845,19 +870,7 @@ export default {
           this.activeDataset.name,
           this.activeLayer.Field_Name
         );
-      }
-    },
-    emitComparisonUpdate() {
-      console.warn("emitComparisonUpdate");
-      let active = {
-        dataset: this.comparisonDataset,
-        layer: this.comparisonLayer,
-      }; //package data to pass to parents with update
-      this.$emit("updateComparison", active);
-    },
-    onInput() {
-      this.emitUpdate();
-      this.addTab();
+      } */
     },
     emitComparisonUpdate() {
       console.warn("emitComparisonUpdate");
@@ -1013,6 +1026,12 @@ export default {
 }
 
 /* TESTING - TAB SYSTEM */
+.chrome-tabs-slot-button {
+  height: 20px;
+  line-height: 20px;
+  padding: 0 10px;
+}
+
 .vue-tabs-chrome.theme-custom {
   padding-top: 0;
   background-color: transparent;
