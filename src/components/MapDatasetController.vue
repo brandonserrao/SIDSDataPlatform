@@ -850,7 +850,7 @@ export default {
       let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
       console.log("$emit update:", active);
       this.$emit("update", active);
-
+      /* 
       //TESTING - TAB SYSTEM
       if (this.activeDataset.type === "single") {
         console.log("Tab add for single-type dataset");
@@ -870,15 +870,7 @@ export default {
           this.activeDataset.name,
           this.activeLayer.Field_Name
         );
-      }
-    },
-    emitComparisonUpdate() {
-      console.warn("emitComparisonUpdate");
-      let active = {
-        dataset: this.comparisonDataset,
-        layer: this.comparisonLayer,
-      }; //package data to pass to parents with update
-      this.$emit("updateComparison", active);
+      } */
     },
     emitComparisonUpdate() {
       console.warn("emitComparisonUpdate");
@@ -1095,5 +1087,5 @@ export default {
   top: 0;
   height: 2px;
   background-color: #409eff;
-} */
+}
 </style>
