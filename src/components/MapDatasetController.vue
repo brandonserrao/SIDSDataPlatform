@@ -745,6 +745,7 @@ export default {
   methods: {
     //TESTING - TAB SYSTEM
     addTab() {
+      //TODO - ADD CHECK FOR MAX TAB AMOUNT BEFORE AADDING
       let item = ""; //"tab";
       item += Date.now(); //timecode used for a unique id
       let tabLabel = this.createTabLabel();
@@ -755,6 +756,12 @@ export default {
           data: {
             dataset: this.activeDatasetName,
             layer: this.activeLayerName,
+            filters: {
+              //intended to facilitate resetting the filter
+              pillar: this.activePillar, //int
+              goal: this.activeGoal, ///int
+              goalType: this.activeGoalType, //str
+            },
           },
         },
       ];
@@ -787,6 +794,10 @@ export default {
       console.info("remove", tab, index);
     },
     handleTabClick(e, tab, index) {
+      //intended to facilitate resetting the filter
+      this.activeGoalType = tab.data.filters.goalType; //str
+      this.activeGoal = tab.data.filters.goal; ///int
+      this.activePillar = tab.data.filters.pillar; //int
       //should look for the corresponding dataset and layer in filtered datasets
       //and update the reactive data/computed props in this components:
       //activeDatasetName and activeLayerName are computed properties and inform activeLayer and activeDataset
