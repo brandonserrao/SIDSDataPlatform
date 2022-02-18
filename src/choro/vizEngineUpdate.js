@@ -900,19 +900,6 @@ export function updateChoroLegend(quantize) {
 
     //var choroLegend = d3.select("#choro_legend_container").selectAll('g.choroLegendEntry')
 
-    choro_legend_container.select(".choroLegendTitle").text(() => {
-      //extent will be a two-element array, format it however you want:
-      //return format(extent[0]) + " - " + format(+extent[1])
-      // if (indiSelections["page"] == "mviTab") {
-      //     return "Multidimensional Vulnerability Index"
-      // }
-      // else {
-
-      return `${this.indicatorMeta[this.indicatorCode].indicator} (${this.indicatorMeta[this.indicatorCode].units})`; //["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " +
-
-      // }
-    });
-
     choroLegend.selectAll("rect").attr("class", function (d) {
       return d;
     });
@@ -927,20 +914,6 @@ export function updateChoroLegend(quantize) {
       this.indiSelections["viz"] == "global"
     ) {
       this.hideChoroLegend(choroLegend, quantize);//only hide rectangles and labels
-    }
-    if (
-      this.indiSelections["viz"] == "Info" ||
-      this.indiSelections["viz"] == "global"
-    ) {
-        this.choro_legend_svg
-        .selectAll(".choroLegendTitle")
-        .transition().duration(1200)
-        .attr("fill-opacity", 0);
-    } else {
-        this.choro_legend_svg
-        .selectAll(".choroLegendTitle")
-        .transition().duration(1200)
-        .attr("fill-opacity", 1);
     }
   }
 

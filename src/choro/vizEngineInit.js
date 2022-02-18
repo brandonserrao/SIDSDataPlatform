@@ -75,7 +75,6 @@ export function appendAllElements(){
 //
 export function initChoroLegend(quantize) {
 
-  let textPadding = this.vizWidth <= 800 ? (this.vizWidth - 40)/2 : 400
 //   $("#indicatorExport").show();
   d3.select("#regionLegend").style('display','none');
 
@@ -112,16 +111,6 @@ export function initChoroLegend(quantize) {
       return i * 70 + 90;
     }) //leave 5 pixel space after the <rect>
     .attr("y", 30);
-
-  d3.select(this.legendContainerSelector).select("svg")
-    .append("text")
-    .attr("class", "choroLegendTitle")
-    .attr("x", textPadding)
-    .attr("y", 14)
-    .attr("text-anchor", "middle")
-    // .transition()
-    // .duration(1200)
-    .attr("fill-opacity", 1);
 }
 
 export function hideChoroLegend(choroLegend) {

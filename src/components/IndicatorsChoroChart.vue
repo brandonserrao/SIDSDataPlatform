@@ -1,5 +1,9 @@
 <template>
   <div class="choro">
+    <h4 class="text-center" v-if="page!=='global'">
+      {{activeIndicatorsMeta.indicator}}
+      ({{activeIndicatorsMeta.units}})
+    </h4>
     <div id="choro_legend_container">
       <img id="regionLegend" src="@/assets/media/choro-legend.jpeg" style="margin-top:-15">
     </div>
@@ -33,7 +37,10 @@ export default {
       profileData: state => state.indicators.profileData,
       indicatorMeta: state => state.indicators.indicatorsMeta,
       activeIndicatorData: state => state.indicators.activeIndicatorData
-    })
+    }),
+    activeIndicatorsMeta() {
+      return this.indicatorMeta[this.indicatorCode]
+    }
   },
   methods:{
     async initChart() {
@@ -45,7 +52,6 @@ export default {
         sidsXML,
         mapLocations,
         indicatorCode:this.indicatorCode,
-        indicatorMeta:this.indicatorMeta,
         profileData: this.profileData,
         page:this.page,
         year: this.year,
