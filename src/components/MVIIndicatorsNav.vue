@@ -1,6 +1,6 @@
 <template>
   <div class="mvi-indicators-nav">
-    <v-row>
+    <v-row class="nav-row">
       <v-col>
         <v-tabs
           :value="activePreset"
@@ -189,5 +189,8 @@ export default {
 }
 .mvi-indicators-nav .v-list-item__action {
   margin: 0 !important;
+}
+.mvi-indicators-nav .nav-row {
+  max-width: 100%;
 }
 </style>
