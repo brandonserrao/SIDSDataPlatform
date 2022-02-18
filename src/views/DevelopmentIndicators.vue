@@ -89,7 +89,8 @@
       </v-row>
       <v-row dense v-if="chartType !== 'info'">
         <v-col  v-if="chartType !== 'info'" cols='12'>
-          <indicators-choro-chart :region="region" :mviCodes="mviCodes" :year="year" :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
+          <indicators-choro-chart v-if='!noData' :region="region" :mviCodes="mviCodes" :year="year" :sorting="sortingName" :page="page" :chartType="chartType" :indicatorCode="indicator"/>
+          <h4 class="text-center" v-else>No data for selected indicator</h4>
         </v-col>
       </v-row>
       <v-row  v-else class="justify-center" >
@@ -144,6 +145,7 @@
 import IndicatorsNav from '@/components/IndicatorsNav.vue'
 import MVIIndicatorsNav from '@/components/MVIIndicatorsNav.vue'
 import IndicatorsChoroChart from '@/components/IndicatorsChoroChart.vue'
+import { mapState } from 'vuex'
 import store from '@/store'
 
 export default {
@@ -219,6 +221,9 @@ export default {
     MviIndicatorsNav:MVIIndicatorsNav
   },
   computed: {
+    ...mapState({
+      activeIndicatorData: state => state.indicators.activeIndicatorData
+    }),
     sortingName() {
       if(this.sorting === 0) {
         return 'rank'
@@ -234,6 +239,11 @@ export default {
         return this.menuBar[this.page].filter(bar => bar.mobile)
       }
       return this.menuBar[this.page]
+    },
+    noData() {
+      return this.page !== 'mvi' && !Object.keys(this.activeIndicatorData.data.recentValue).some(value => {
+        return this.activeIndicatorData.data.recentValue[value] !== 'No Data'
+      })
     },
     activeTab() {
       return this.tabs.findIndex(menuItem => menuItem.chartType === this.chartType)

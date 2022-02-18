@@ -71,8 +71,8 @@ import {
     // <script src="scripts/vizEngineInit.js"></script>
     // <script src="scripts/processIndexData.js"></script>
 export default class Choro {
-  constructor({viz, data, clickCallback, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
-    this.initState({viz, data, clickCallback, year, countyType, selectedIndis, indicatorCode, page, indicatorMeta,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
+  constructor({viz, data, clickCallback, year, countyType, selectedIndis, indicatorCode, page, legendContainerSelector, mapContainerSelector, profileData, vizContainerWidth, vizContainerHeight, sidsXML, mapLocations}) {
+    this.initState({viz, data, clickCallback, year, countyType, selectedIndis, indicatorCode, page,legendContainerSelector, mapLocations, mapContainerSelector, vizContainerWidth, vizContainerHeight, profileData})
     this.initVizEngine({sidsXML})
     if(indicatorCode!=='region' || this.vizWidth<800){
       this.updateVizEngine(indicatorCode)
@@ -85,7 +85,6 @@ export default class Choro {
     clickCallback,
     countyType,
     page, selectedIndis,
-    indicatorMeta,
     mapLocations,
     mapContainerSelector,
     legendContainerSelector,
@@ -109,7 +108,6 @@ export default class Choro {
     this.bboxInit = 0;
     this.bboxDict = {};
     this.clickCallback = clickCallback;
-    this.indicatorMeta = indicatorMeta;
     this.textBBoxDict = {};
     this.data = data;
     this.vizWidth = vizContainerWidth;
