@@ -241,7 +241,7 @@ export default {
       return this.menuBar[this.page]
     },
     noData() {
-      return this.page !== 'mvi' && !Object.keys(this.activeIndicatorData.data.recentValue).some(value => {
+      return this.page !== 'mvi' && this.activeIndicatorData.data && !Object.keys(this.activeIndicatorData.data.recentValue).some(value => {
         return this.activeIndicatorData.data.recentValue[value] !== 'No Data'
       })
     },
