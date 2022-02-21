@@ -931,6 +931,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 /*Brandon additions*/
+.data-controller .v-sheet.v-card {
+  border-radius: 0;
+}
 .tab-system-box {
   /* should force the chrome-tabs and tab-add towards extreme ends of container */
   display: flex;
