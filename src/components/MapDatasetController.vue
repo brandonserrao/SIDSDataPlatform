@@ -401,7 +401,8 @@ export default {
       // TESTING - TAB SYSTEM
       // tabSystem: null, //used for v-model of tabs/tab-items
       // tabsAreVisible: this.tabs.length <= 1 ? "hidden" : "visible",
-      tab: "info", //"google",
+      // currentTabInstance: null, //obsoleted by directly accessing via $refs..._props.tabs
+      tab: "starting-tab", //"google",
       tabs: [
         /*  {
           label: "info",
@@ -415,7 +416,17 @@ export default {
         }, */
         {
           label: "New Tab",
-          key: "any-string-key",
+          key: "starting-tab",
+          data: {
+            dataset: null,
+            layer: null,
+            filters: {
+              //intended to facilitate resetting the filter
+              pillar: null, //int
+              goal: null, ///int
+              goalType: null, //str
+            },
+          },
         },
       ],
       //
@@ -755,20 +766,58 @@ export default {
     },
 
     tabsAreVisible() {
-      return this.tabs.length <= 1 ? false : true;
+      return this.tabs.length <= 0 ? false : true;
     },
   },
   methods: {
     //TESTING - TAB SYSTEM
+    replaceCurrentTab() {
+      //find current tab by looking through .getTabs() for matching this.tab key and overwrite the data and label values
+      let currentTabKey = this.tab;
+      // let tabList = this.$refs.tab.getTabs();
+      let tabList = this.$refs.tab._props.tabs; //directly accessing the storage of tab instances
+      console.info("currentTabKey", currentTabKey, "tabList:", tabList);
+
+      for (const tab of tabList) {
+        console.log(
+          `${currentTabKey} vs
+          ${tab.key},`
+        );
+        if (tab.key === currentTabKey) {
+          console.log("found current tab; overwriting", tab);
+          tab.label = this.createTabLabel();
+          tab.data.dataset = this.activeDatasetName;
+          tab.data.layer = this.activeLayerName;
+          tab.data.filters.pillar = this.activePillar;
+          tab.data.filters.pillar = this.activeGoal;
+          tab.data.filters.pillar = this.activeGoalType;
+          console.log("tab new config: ", tab);
+          break;
+        } else
+          console.warn(
+            "!no matching current tab found for currentTabKey:",
+            currentTabKey
+          );
+      }
+
+      /* let tab = this.currentTabInstance;
+      console.log("current tab; overwriting", tab);
+      tab.label = this.createTabLabel();
+      tab.data.dataset = this.activeDatasetName;
+      tab.data.layer = this.activeLayerName;
+      tab.data.filters.pillar = this.activePillar;
+      tab.data.filters.pillar = this.activeGoal;
+      tab.data.filters.pillar = this.activeGoalType;*/
+    },
     addTab() {
       //TODO - ADD CHECK FOR MAX TAB AMOUNT BEFORE AADDING
-      let item = ""; //"tab";
-      item += Date.now(); //timecode used for a unique id
+      let key = ""; //"tab";
+      key += Date.now(); //timecode used for a unique id
       let tabLabel = this.createTabLabel();
       let newTabs = [
         {
           label: tabLabel ? tabLabel : "New Tab",
-          key: item,
+          key: key,
           data: {
             dataset: this.activeDatasetName,
             layer: this.activeLayerName,
@@ -783,16 +832,18 @@ export default {
       ];
       console.log(this.$refs);
       this.$refs.tab.addTab(...newTabs);
-      this.tab = item;
+      this.tab = key;
 
       //
     },
-    removeTab() {
+    /* removeTab() {
       console.log(this.$refs.tab);
       this.$refs.tab.removeTab(this.tab);
-    },
+    }, */
     handleRightClick(e, tab, index) {
       console.log("e, tab, index", e, tab, index);
+      // this.tab = tab.key;
+      // this.currentTabInstance.label = "rightclick";
       console.log("getTabs", this.$refs.tab.getTabs());
     },
     handleSwap(tab, targetTab) {
@@ -832,6 +883,7 @@ export default {
       //activeDatasetName and activeLayerName are computed properties and inform activeLayer and activeDataset
       //which in turn informs the dataset selector and slider
       this.updateControllerFromTab(tab);
+      //update tab instance reference stored for use in replacing current active tab
       console.info(e, tab, index);
       this.emitUpdate();
     },
@@ -860,12 +912,13 @@ export default {
         );
         return null;
       }
-
+      console.log("labelString created: ", labelString);
       return labelString;
     },
 
     onInput() {
       //interaction handler for dataset and layer selectors of the dataset controller
+      this.replaceCurrentTab();
       this.emitUpdate();
       // this.addTab(); //disabled, not desired to add tab on every selection
     },
