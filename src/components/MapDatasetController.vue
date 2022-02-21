@@ -792,7 +792,7 @@ export default {
       this.$refs.tab.removeTab(this.tab);
     },
     handleRightClick(e, tab, index) {
-      console.log(e, tab, index);
+      console.log("e, tab, index", e, tab, index);
       console.log("getTabs", this.$refs.tab.getTabs());
     },
     handleSwap(tab, targetTab) {
@@ -810,6 +810,17 @@ export default {
     },
     handleRemove(e, tab, index) {
       console.info("remove", e, tab, index);
+      //on close, if length of tabs is 1, get that tab and call handleClick to select that layer automatically
+      let tabs = this.$refs.tab.getTabs();
+      if (tabs.length === 1) {
+        console.log("only 1 tab, defaulting to that tab's layer");
+        let loneTab = tabs[0];
+        this.handleTabClick(e, loneTab, 0);
+      } else if (tabs.length < 1) {
+        console.warn(
+          "! last tab removed, needs handling; maybe default infobox content"
+        );
+      }
     },
     handleTabClick(e, tab, index) {
       //intended to facilitate resetting the filter
