@@ -326,7 +326,7 @@
                 ➕
               </button> -->
       </vue-tabs-chrome>
-      <button class="tab-add" @click="addTab">+</button>
+      <button class="tab-add" @click="addEmptyTab">+</button>
       <!-- ➕ -->
     </div>
     <!-- INFO CARD -->
@@ -809,6 +809,41 @@ export default {
       tab.data.filters.pillar = this.activeGoal;
       tab.data.filters.pillar = this.activeGoalType;*/
     },
+    addEmptyTab() {
+      /* let tabLabel = ;
+      let key = ""; //"tab";
+      key += Date.now(); //timecode used for a unique id
+      let data = {
+        dataset: null,
+        layer: null,
+        filters: {
+          //intended to facilitate resetting the filter
+          pillar: null, //int
+          goal: null, ///int
+          goalType: null, //str
+        },
+      }; */
+      let key = Date.now();
+      let newTabs = [
+        {
+          label: "New Tab",
+          key: key,
+          data: {
+            dataset: null,
+            layer: null,
+            filters: {
+              //intended to facilitate resetting the filter
+              pillar: null, //int
+              goal: null, ///int
+              goalType: null, //str
+            },
+          },
+        },
+      ];
+
+      this.$refs.tab.addTab(...newTabs);
+      this.tab = key;
+    },
     addTab() {
       //TODO - ADD CHECK FOR MAX TAB AMOUNT BEFORE AADDING
       let key = ""; //"tab";
@@ -932,27 +967,6 @@ export default {
       let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
       console.log("$emit update:", active);
       this.$emit("update", active);
-      /*
-      //TESTING - TAB SYSTEM
-      if (this.activeDataset.type === "single") {
-        console.log("Tab add for single-type dataset");
-        this.addTab(this.activeDataset.name, this.activeLayer?.Field_Name);
-      } else if (this.activeDataset.type === "temporal") {
-        console.log("Tab add for temporal-type dataset");
-        this.addTab(
-          `${this.activeLayer.Temporal}:${this.activeDataset.name}`,
-          this.activeLayer.Field_Name
-        );
-      } else if (this.activeDataset.type === "layers" && this.activeLayer) {
-        console.log("Tab add for multilayers-type dataset");
-        this.addTab(this.activeLayer.Description, this.activeLayer.Field_Name);
-      } else {
-        console.warn(
-          "Tab could not be added for:",
-          this.activeDataset.name,
-          this.activeLayer.Field_Name
-        );
-      } */
     },
     emitComparisonUpdate() {
       console.warn("emitComparisonUpdate");
