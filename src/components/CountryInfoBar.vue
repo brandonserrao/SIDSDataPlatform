@@ -140,7 +140,7 @@ export default {
   flex: 0 1 auto !important;
   margin-right: 8px !important;
   text-overflow: none;
-  overflow:visible;
+  overflow: visible;
 }
 .info-bar_header {
   padding-top: 10px;

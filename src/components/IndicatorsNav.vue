@@ -193,10 +193,20 @@
     </v-virtual-scroll>
   </v-card>
     <v-card flat class="mt-2" v-if="activeIndicator">
-      <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.indicator}}</v-card-title>
+      <v-card-title class="mb-1 active-indicator_header">{{activeIndicator.indicator}} ({{activeIndicator.units}})</v-card-title>
       <v-card-text class="active-indicator-info">
         <div class="mb-1 d-flex">
-          <div class="active-dimension"> {{activeIndicator.units}} </div>
+          <v-select class='dimensions-select' v-if="activeIndicatorYears.length > 2"
+            :items="activeIndicatorYears"
+            :value="year"
+            item-text="name"
+            item-value="id"
+            @change="emitYearChange"
+            label="Year"
+            dense
+          ></v-select>
+        </div>
+        <div class="mb-1 d-flex">
           <v-select class='dimensions-select' v-if="activeIndicatorDimensions.length > 1"
             :items="activeIndicatorDimensions"
             :value="activeIndicatorCode"
@@ -222,7 +232,7 @@ import { datasetMeta } from '@/assets/datasets/datasetMeta';
 
 export default {
   name: 'indicatorsNav',
-  props:['activeIndicatorCode'],
+  props:['activeIndicatorCode', 'year'],
   data() {
     return {
       activeSearch: false,
@@ -259,13 +269,26 @@ export default {
   computed: {
     ...mapState({
       indicatorsCategories: state => state.indicators.indicatorsCategories,
-      indicatorsMeta: state => state.indicators.indicatorsMeta
+      indicatorsMeta: state => state.indicators.indicatorsMeta,
+      data: state => state.indicators.activeIndicatorData
     }),
     activeDataset() {
       if(this.dataset) {
         return this.indicatorsCategories[this.dataset];
       }
       return null
+    },
+    activeIndicatorYears(){
+      if(this.data && this.data.data) {
+        return Object.keys(this.data.data).filter(year => year !== 'recentYear').map(year => {
+          return {
+            name: year === 'recentValue' ? 'Recent value' : year,
+            id: year
+          }
+        }).reverse()
+      } else {
+        return []
+      }
     },
     indicatorCategories() {
       if(this.activeDataset) {
@@ -324,7 +347,6 @@ export default {
       let indicatorsWithMetaArray = this.activeIndicators.map(codesArray => {
         codesArray.map(code =>  {
           let metaData = this.indicatorsMeta[code];
-          console.log(this.indicatorsMeta, 'metadata')
           metaData.codesArray = codesArray;
         })
         let metaData = this.indicatorsMeta[codesArray[0]];
@@ -392,6 +414,9 @@ export default {
     },
     emitindicatorChange(indicator) {
       this.$emit('indicatorChange', indicator)
+    },
+    emitYearChange(year) {
+      this.$emit('yearChange', year)
     },
     setActiveindicator(indicator) {
       this.activeIndicator = indicator;

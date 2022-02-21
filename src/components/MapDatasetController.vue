@@ -51,7 +51,11 @@
           </v-list>
         </v-col>
         <v-col cols="6">
-          <v-list class="background-none" v-if="activeGoalType === 'pillars'" dense>
+          <v-list
+            class="background-none"
+            v-if="activeGoalType === 'pillars'"
+            dense
+          >
             <v-list-item-group v-model="activePillar" mandatory>
               <v-tooltip
                 right
@@ -138,7 +142,7 @@
                     transition="none"
                     open-delay="300"
                     :nudge-right="(4 - (index % 5)) * 80 || 6"
-                    :nudge-top="(Math.floor(index/5)) * 80 || 6"
+                    :nudge-top="Math.floor(index / 5) * 80 || 6"
                     max-width="400"
                     content-class="indicator-tooltip"
                     allow-overflow
@@ -186,7 +190,11 @@
           ></v-autocomplete>
         </v-col>
       </v-row>
-      <v-row class="spacing-row" v-if="activeDataset && activeDataset.type === 'layers'" dense>
+      <v-row
+        class="spacing-row"
+        v-if="activeDataset && activeDataset.type === 'layers'"
+        dense
+      >
         <v-col>
           <v-select
             rounded
@@ -203,7 +211,11 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row class="spacing-row" v-else-if="activeDataset && activeDataset.type === 'temporal'" dense >
+      <v-row
+        class="spacing-row"
+        v-else-if="activeDataset && activeDataset.type === 'temporal'"
+        dense
+      >
         <v-col>
           <v-slider
             class="map-input"
@@ -217,10 +229,84 @@
           ></v-slider>
         </v-col>
       </v-row>
-      <v-row v-else class="spacing-row">
+      <v-row v-else class="spacing-row"> </v-row>
+
+      <!-- DUPLICATE START for dualmode selector -->
+      <!-- <v-row dense v-show="dualModeEnabled">
+        <v-col>
+          <v-select
+            rounded
+            class="map-input"
+            dense
+            hide-details
+            v-model="comparisonDatasetName"
+            :items="filteredDatasets"
+            item-text="name"
+            item-value="name"
+            label="Dataset"
+            @input="emitComparisonUpdate"
+            outlined
+          ></v-select>
+        </v-col>
       </v-row>
+      <v-row
+        v-show="dualModeEnabled"
+        class="spacing-row"
+        v-if="comparisonDataset && comparisonDataset.type === 'layers'"
+        dense
+      >
+        <v-col>
+          <v-select
+            rounded
+            dense
+            hide-details
+            class="map-input"
+            v-model="comparisonLayerName"
+            item-text="Description"
+            item-value="Description"
+            :items="comparisonDataset.layers"
+            label="Layer"
+            @input="emitComparisonUpdate"
+            outlined
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-row
+        v-show="dualModeEnabled"
+        class="spacing-row"
+        v-else-if="comparisonDataset && comparisonDataset.type === 'temporal'"
+        dense
+      >
+        <v-col>
+          <v-slider
+            class="map-input"
+            v-model="comparisonLayerName"
+            :tick-labels="comparisonTicksLabels"
+            :max="comparisonDataset.layers.length - 1"
+            step="1"
+            ticks="always"
+            tick-size="4"
+            @input="emitComparisonUpdate"
+          ></v-slider>
+        </v-col>
+      </v-row>
+      <v-row v-else class="spacing-row" v-show="dualModeEnabled"> </v-row> -->
+      <!-- DUPLICATE END -->
     </v-card>
-    <v-card class="mb-1 block-info background-grey" >
+
+    <!-- TESTING - TAB SYSTEM -->
+    <vue-tabs-chrome
+      ref="tab"
+      :minHiddenWidth="120"
+      v-model="tab"
+      :tabs="tabs"
+      @contextmenu="handleRightClick"
+      @click="handleTabClick"
+      @swap="handleSwap"
+    />
+    <!-- INFO CARD -->
+    <v-card class="mb-1 block-info background-grey">
+      <b>Info Card</b>
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
@@ -238,14 +324,24 @@
         </a>
       </v-card-text>
       <v-card-text v-else>
-        This map visualizes data for the SIDS at different resolutions. Select a dataset above or a country to view spatial data about that region.
+        This map visualizes data for the SIDS at different resolutions. Select a
+        dataset above or a country to view spatial data about that region.
       </v-card-text>
+      <!-- TESTING - BUTTONS TO ADD/REMOVE TABS FOR DEBUG -->
+      <div class="btns">
+        <button @click="addTab">New Tab</button>
+        <button @click="removeTab">Remove active Tab</button>
+      </div>
     </v-card>
 
     <!-- New Legend/Histogram -->
     <!-- <v-card v-if="displayLegend" class="histogram_frame"> -->
     <v-card v-show="displayLegend" class="background-grey histogram_frame">
-      <div v-show="activeLayer" id="histogram_frame" class="pic app-body population-per-km col-flex">
+      <div
+        v-show="activeLayer"
+        id="histogram_frame"
+        class="pic app-body population-per-km col-flex"
+      >
         <div class="row-flex space-evenly" id="legendTitle"></div>
         <div class="row-flex space-evenly" id="updateLegend"></div>
         <canvas
@@ -263,18 +359,39 @@
 </template>
 
 <script>
+// import { gis_store } from "../gis/gis_store.js";
 import datasets from "@/gis/static/layers";
-// import globals from "@/gis/static/globals";
-/*
-import * as d3 from "d3";
-import chroma from "chroma-js"; */
-// import Chart from "chart.js";
+import VueTabsChrome from "vue-tabs-chrome";
 
 export default {
   name: "MapDatasetController",
-  props: ["displayLegend", "map"],
+  components: {
+    VueTabsChrome,
+  },
+  props: [
+    "displayLegend", //"map"
+    "dualModeEnabled",
+  ],
   data() {
     return {
+      // TESTING - TAB SYSTEM
+      // tabSystem: null, //used for v-model of tabs/tab-items
+      tab: "info", //"google",
+      tabs: [
+        /* {
+          label: "google",
+          key: "google",
+          favicon: require("../assets/testing/google.jpg"),
+        },
+        {
+          label: "New Tab",
+          key: "any-string-key",
+        }, */
+      ],
+      //
+      comparisonDatasetName: null,
+      comparisonLayerName: null,
+      //
       activeGoal: 1,
       activeDatasetName: null,
       activeLayerName: null,
@@ -295,8 +412,7 @@ export default {
           headerImg:
             require("@/assets/media/goals-icons/SDGs.png"),
           description:
-          "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
-
+            "The Global Goals designed to guide development for a better and more sustainable future for all, set up by the UNGA in 2015 and are intended to be achieved in 2030, as per Agenda 2030.",
         },
         {
           name: "SAMOA Pathway",
@@ -304,7 +420,7 @@ export default {
           headerImg:
             require("@/assets/media/goals-icons/samoaPathway.png"),
           description:
-          "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
+            "The SAMOA Pathway (SIDS Accelerated Modalities of Action) reaffirms that SIDS remain a special case for sustainable development, recognizing SIDS's ownership and leadership in overcoming these challenges.",
         },
       ],
       activePillar: 1,
@@ -584,15 +700,102 @@ export default {
         return this.activeDataset.layers[0];
       }
     },
+
+    comparisonLayer() {
+      console.log(this.comparisonDataset);
+      if (!this.comparisonDataset) return null;
+      if (this.comparisonDataset.type === "temporal") {
+        return this.comparisonDataset.layers[this.comparisonLayerName];
+      } else if (this.comparisonDataset.type === "layers") {
+        return this.comparisonDataset.layers.find(
+          (layer) => layer.Description === this.comparisonLayerName
+        );
+      } else {
+        console.log(this.comparisonDataset.layers[0]);
+        return this.comparisonDataset.layers[0];
+      }
+    },
+    comparisonTicksLabels() {
+      console.log("comparisonTicksLabels()");
+      return this.comparisonDataset.layers.map((layer) => layer.Temporal);
+    },
+    comparisonDataset() {
+      console.log("comparisonDataset()");
+      return this.filteredDatasets.find(
+        (dataset) => dataset.name === this.comparisonDatasetName
+      );
+    },
   },
   methods: {
+    //TESTING - TAB SYSTEM
+    addTab(label = null, id = null) {
+      // let item = "tab" + Date.now();
+      let item = "tab";
+      item += id ? id : Date.now();
+      let newTabs = [
+        {
+          label: label ? label : "New Tab",
+          key: item,
+        },
+      ];
+      console.log(this.$refs);
+      this.$refs.tab.addTab(...newTabs);
+      this.tab = item;
+
+      //
+    },
+    removeTab() {
+      console.log(this.$refs.tab);
+      this.$refs.tab.removeTab(this.tab);
+    },
+    handleRightClick(e, tab, index) {
+      console.log(e, tab, index);
+    },
+    handleTabClick(e, tab, index) {
+      console.log(e, tab, index);
+    },
+    handleSwap(tab, targetTab) {
+      console.info("swap", tab, targetTab);
+    },
+    //
     /**
      *passes current dataset+layer selection upwards
      */
     emitUpdate() {
+      // this.gis_store.testIncrement();
       // console.log(`emitUpdate of activeDataset and activeLayer`);
       let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
+      console.log("$emit update:", active);
       this.$emit("update", active);
+
+      //TESTING - TAB SYSTEM
+      if (this.activeDataset.type === "single") {
+        console.log("Tab add for single-type dataset");
+        this.addTab(this.activeDataset.name, this.activeLayer?.Field_Name);
+      } else if (this.activeDataset.type === "temporal") {
+        console.log("Tab add for temporal-type dataset");
+        this.addTab(
+          `${this.activeLayer.Temporal}:${this.activeDataset.name}`,
+          this.activeLayer.Field_Name
+        );
+      } else if (this.activeDataset.type === "layers" && this.activeLayer) {
+        console.log("Tab add for multilayers-type dataset");
+        this.addTab(this.activeLayer.Description, this.activeLayer.Field_Name);
+      } else {
+        console.warn(
+          "Tab could not be added for:",
+          this.activeDataset.name,
+          this.activeLayer.Field_Name
+        );
+      }
+    },
+    emitComparisonUpdate() {
+      console.warn("emitComparisonUpdate");
+      let active = {
+        dataset: this.comparisonDataset,
+        layer: this.comparisonLayer,
+      }; //package data to pass to parents with update
+      this.$emit("updateComparison", active);
     },
 
     getGoalImage(index) {
@@ -619,8 +822,8 @@ export default {
       this.activeGoal = goalNumber;
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
       this.$refs.slider.scrollOffset = 120 * (goalNumber - 1);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -656,12 +859,6 @@ export default {
     overflow-x: hidden;
     overscroll-behavior: contain;
   }
-
-  /* .toolbar {
-    overflow-y: auto;
-    overflow-x: hidden;
-    overscroll-behavior: contain;
-  } */
 }
 @media (orientation: landscape) and (max-width: 750px) {
   .data-controller {
@@ -672,15 +869,9 @@ export default {
     overflow-x: hidden;
     /* overscroll-behavior: contain; */
   }
-
-  /* to stop accidental moving out of the map area when scrolling on UI elements of the gis map section for thin devices in landscape */
-  /*   .data-controller,
-  .toolbar,
-  .menu-box {
-    overscroll-behavior: contain;
-  } */
 }
 /*End of Brandon additions*/
+
 .histogram_placeholder {
   height: 200px;
 }
@@ -749,6 +940,57 @@ export default {
 .block-info {
   height: 200px;
   overflow-y: scroll;
-
 }
+
+/* TESTING - TAB SYSTEM */
+/* .vue-tabs-chrome.theme-custom {
+  padding-top: 0;
+  background-color: transparent;
+  overflow: hidden;
+}
+.vue-tabs-chrome.theme-custom .tabs-footer,
+.vue-tabs-chrome.theme-custom .tabs-divider,
+.vue-tabs-chrome.theme-custom .tabs-background-before,
+.vue-tabs-chrome.theme-custom .tabs-background-after {
+  display: none;
+}
+.vue-tabs-chrome.theme-custom .tabs-item {
+  cursor: pointer;
+}
+.vue-tabs-chrome.theme-custom .tabs-content {
+  overflow: unset;
+  border-bottom: 1px solid #e4e7ed;
+}
+.vue-tabs-chrome.theme-custom .tabs-background {
+  padding: 0;
+}
+.vue-tabs-chrome.theme-custom .tabs-background-content {
+  border-top: 1px solid #e4e7ed;
+  border-left: 1px solid #e4e7ed;
+  border-right: 1px solid #e4e7ed;
+  border-radius: 0;
+  background-color: #fff;
+}
+.vue-tabs-chrome.theme-custom .tabs-content {
+  height: 40px;
+}
+.vue-tabs-chrome.theme-custom .active {
+  color: #409eff;
+}
+.vue-tabs-chrome.theme-custom .active .tabs-background::before,
+.vue-tabs-chrome.theme-custom .active .tabs-background::after {
+  top: 100%;
+  left: 0;
+  content: "";
+  width: 100%;
+  height: 1px;
+  background-color: #fff;
+  z-index: 1;
+  position: absolute;
+}
+.vue-tabs-chrome.theme-custom .active .tabs-background::before {
+  top: 0;
+  height: 2px;
+  background-color: #409eff;
+} */
 </style>

@@ -4,14 +4,6 @@
     @click="emitCountryChange()"
   >
     <div class="country-name">{{ name }}</div>
-    <!-- <div
-      class="flag flag-icon"
-      :class="{
-        id: this.id,
-        flagCode: !flagCode ? 'flag-icon-' + flagCode : 'flag-icon-xx',
-      }"
-      style="margin-right: 10px"
-    ></div> -->
     <div
       class="flag flag-icon"
       :class="classObject"
@@ -35,12 +27,9 @@ export default {
       object[!this.id ? "" : this.id] = true;
       return object;
     },
-    // flagClassString: !flagCode ? 'flag-icon-' + flagCode : 'flag-icon-xx',
-    // id : this.id,
   },
   methods: {
     emitCountryChange() {
-      console.log(`emitCountryChange ${this.name} ${this.id}`);
       this.$emit("option-select", { text: this.name, flag: this.id }); //emit the name and css selector that links to flag url
     },
   },

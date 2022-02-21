@@ -3,6 +3,8 @@ import constants from "@/gis/static/constants.js";
 //taken from old code
 
 const globals = {
+  compareMode: null,
+  drawingMode: null,
   firstSymbolId: "tunnel-oneway-arrow-blue",
   basemapLabels: [], //current basemap labels, for use in addLabels -> the toggling of the labels of a current basemap style
   //current layer state manager
@@ -18,6 +20,9 @@ const globals = {
     color: null,
     breaks: null,
     dataLayer: null,
+    /**String; id of the current data layer;
+     * legacy code only had a few layer possibilities, mainly hex# and ocean
+     */
     hexSize: "hex5",
   },
   sources: {

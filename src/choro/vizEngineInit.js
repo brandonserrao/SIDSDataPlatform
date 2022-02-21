@@ -75,7 +75,6 @@ export function appendAllElements(){
 //
 export function initChoroLegend(quantize) {
 
-  let textPadding = this.vizWidth <= 800 ? (this.vizWidth - 40)/2 : 400
 //   $("#indicatorExport").show();
   d3.select("#regionLegend").style('display','none');
 
@@ -112,16 +111,6 @@ export function initChoroLegend(quantize) {
       return i * 70 + 90;
     }) //leave 5 pixel space after the <rect>
     .attr("y", 30);
-
-  d3.select(this.legendContainerSelector).select("svg")
-    .append("text")
-    .attr("class", "choroLegendTitle")
-    .attr("x", textPadding)
-    .attr("y", 14)
-    .attr("text-anchor", "middle")
-    // .transition()
-    // .duration(1200)
-    .attr("fill-opacity", 1);
 }
 
 export function hideChoroLegend(choroLegend) {
@@ -523,13 +512,17 @@ export function initVizEngineTooltips() {
       let countryCode = instance.reference.parentElement.id;
       let year = rootThis.indiSelections.year === 'recentValue' ? 'Most recent value' : rootThis.indiSelections.year;
       let value = 1;
-      if(rootThis.vizMode === 'index') {
+      if(rootThis.vizMode === 'index' && rootThis.indexData) {
         value = rootThis.indexData.index.data[rootThis.indiSelections.year][countryCode];
-      } else {
+      } else if (rootThis.indicatorData) {
         value = rootThis.indicatorData.data[rootThis.indiSelections.year][countryCode];
+        year = rootThis.indiSelections.year === 'recentValue' ? `Most recent value (${rootThis.indicatorData.data.recentYear[countryCode]})` : year;
+        year = rootThis.indicatorData.data[rootThis.indiSelections.year][countryCode] === 'No Data' ? rootThis.indicatorData.data.recentYear[countryCode] : year;
       }
-      value = typeof value === 'string' ? value : nFormatter(value,2);
-      content.innerHTML = `Value: ${value} <br/> Year: ${year}`;
+      if(rootThis.indexData || rootThis.indicatorData) {
+        value = typeof value === 'string' ? value : nFormatter(value,2);
+        content.innerHTML = `Value: ${value} <br/> Year: ${year}`;
+      }
     },
     content: function (reference) {
         let tooltipElement = document.createElement('div'),
