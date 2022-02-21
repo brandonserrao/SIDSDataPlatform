@@ -296,30 +296,36 @@
 
     <!-- INFO CARD -->
     <v-card class="mb-1 block-info background-grey">
-      <!-- TESTING - TAB SYSTEM -->
-      <vue-tabs-chrome
-        theme="custom"
-        ref="tab"
-        :minHiddenWidth="120"
-        v-model="tab"
-        :tabs="tabs"
-        @contextmenu="handleRightClick"
-        @click="handleTabClick"
-        @swap="handleSwap"
-        @dragstart="handleDragStart"
-        @dragging="handleDragging"
-        @dragend="handleDragEnd"
-        @remove="handleRemove"
-      >
-        <button
-          id="chrome-tabs-slot-button"
-          class="chrome-tabs-slot-button"
-          @click="addTab"
-          slot="after"
+      <!-- TESTING - FLEXBOX TO CONTROL TABS AND ADDTAB BUTTON LAYOUT -->
+      <div class="tab-system-box">
+        <!-- TESTING - TAB SYSTEM -->
+        <vue-tabs-chrome
+          class="vue-tabs-component"
+          theme="custom"
+          ref="tab"
+          :minHiddenWidth="120"
+          v-model="tab"
+          :tabs="tabs"
+          @contextmenu="handleRightClick"
+          @click="handleTabClick"
+          @swap="handleSwap"
+          @dragstart="handleDragStart"
+          @dragging="handleDragging"
+          @dragend="handleDragEnd"
+          @remove="handleRemove"
         >
-          ➕
-        </button></vue-tabs-chrome
-      >
+          <!-- <button
+            id="chrome-tabs-slot-button"
+            class="chrome-tabs-slot-button"
+            @click="addTab"
+            slot="after"
+          >
+            ➕
+          </button> -->
+        </vue-tabs-chrome>
+        <button class="tab-add" @click="addTab">➕</button>
+      </div>
+
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
@@ -391,20 +397,20 @@ export default {
       // tabSystem: null, //used for v-model of tabs/tab-items
       tab: "info", //"google",
       tabs: [
-        /* {
+        /*  {
           label: "info",
           key: "info",
           // closable: false,
-        }, */
-        /* {
+        },
+        {
           label: "google",
           key: "google",
           favicon: require("../assets/testing/google.jpg"),
-        },
+        }, */
         {
           label: "New Tab",
           key: "any-string-key",
-        }, */
+        },
       ],
       //
       comparisonDatasetName: null,
@@ -913,6 +919,21 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 /*Brandon additions*/
+.tab-system-box {
+  /* should force the chrome-tabs and tab-add towards extreme ends of container */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.tab-system-box .vue-tabs-component {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+}
+.tab-add {
+  color: brown;
+}
 .data-controller {
   display: flex;
   flex-direction: column;
