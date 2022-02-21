@@ -294,32 +294,43 @@
       <!-- DUPLICATE END -->
     </v-card>
 
-    <!-- INFO CARD -->
-    <v-card class="mb-1 block-info background-grey">
+    <!-- TESTING - FLEXBOX TO CONTROL TABS AND ADDTAB BUTTON LAYOUT -->
+    <div
+      class="tab-system-box"
+      v-bind:style="{
+        'background-color': tabsAreVisible ? 'transparent' : '#e4e1e1',
+      }"
+    >
       <!-- TESTING - TAB SYSTEM -->
       <vue-tabs-chrome
-        theme="custom"
+        class="vue-tabs-component"
+        v-bind:style="{ visibility: tabsAreVisible ? 'visible' : 'hidden' }"
+        theme="default"
         ref="tab"
         :minHiddenWidth="120"
         v-model="tab"
         :tabs="tabs"
         @contextmenu="handleRightClick"
-        @click="handleTabClick"
         @swap="handleSwap"
         @dragstart="handleDragStart"
         @dragging="handleDragging"
         @dragend="handleDragEnd"
         @remove="handleRemove"
       >
-        <button
-          id="chrome-tabs-slot-button"
-          class="chrome-tabs-slot-button"
-          @click="addTab"
-          slot="after"
-        >
-          ➕
-        </button></vue-tabs-chrome
-      >
+        <!-- <button
+                id="chrome-tabs-slot-button"
+                class="chrome-tabs-slot-button"
+                @click="addTab"
+                slot="after"
+              >
+                ➕
+              </button> -->
+      </vue-tabs-chrome>
+      <button class="tab-add" @click="addTab">+</button>
+      <!-- ➕ -->
+    </div>
+    <!-- INFO CARD -->
+    <v-card class="mb-1 block-info background-grey">
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
@@ -389,22 +400,23 @@ export default {
     return {
       // TESTING - TAB SYSTEM
       // tabSystem: null, //used for v-model of tabs/tab-items
+      // tabsAreVisible: this.tabs.length <= 1 ? "hidden" : "visible",
       tab: "info", //"google",
       tabs: [
-        /* {
+        /*  {
           label: "info",
           key: "info",
           // closable: false,
-        }, */
-        /* {
+        },
+        {
           label: "google",
           key: "google",
           favicon: require("../assets/testing/google.jpg"),
-        },
+        }, */
         {
           label: "New Tab",
           key: "any-string-key",
-        }, */
+        },
       ],
       //
       comparisonDatasetName: null,
@@ -741,6 +753,10 @@ export default {
         (dataset) => dataset.name === this.comparisonDatasetName
       );
     },
+
+    tabsAreVisible() {
+      return this.tabs.length <= 1 ? false : true;
+    },
   },
   methods: {
     //TESTING - TAB SYSTEM
@@ -777,21 +793,23 @@ export default {
     },
     handleRightClick(e, tab, index) {
       console.log(e, tab, index);
+      console.log("getTabs", this.$refs.tab.getTabs());
     },
     handleSwap(tab, targetTab) {
       console.info("swap", tab, targetTab);
     },
     handleDragStart(e, tab, index) {
       console.info("dragstart", e, tab, index);
+      this.handleTabClick(e, tab, index); //to trigger auto select
     },
     handleDragging(e, tab, index) {
       console.info("dragging", e, tab, index);
     },
-    handleDragEnd(e, tab) {
-      console.info("dragend", e, tab);
+    handleDragEnd(e, tab, index) {
+      console.info("dragend", e, tab, index);
     },
-    handleRemove(tab, index) {
-      console.info("remove", tab, index);
+    handleRemove(e, tab, index) {
+      console.info("remove", e, tab, index);
     },
     handleTabClick(e, tab, index) {
       //intended to facilitate resetting the filter
@@ -850,7 +868,7 @@ export default {
       let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
       console.log("$emit update:", active);
       this.$emit("update", active);
-      /* 
+      /*
       //TESTING - TAB SYSTEM
       if (this.activeDataset.type === "single") {
         console.log("Tab add for single-type dataset");
@@ -913,6 +931,26 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 /*Brandon additions*/
+.data-controller .v-sheet.v-card {
+  border-radius: 0;
+}
+.tab-system-box {
+  /* should force the chrome-tabs and tab-add towards extreme ends of container */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.tab-system-box .vue-tabs-component {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+}
+.tab-add {
+  font-size: larger;
+  color: #fff;
+  padding: 0 5px;
+}
 .data-controller {
   display: flex;
   flex-direction: column;
@@ -1026,66 +1064,47 @@ export default {
 }
 
 /* TESTING - TAB SYSTEM */
+
+.vue-tabs-chrome {
+  font-size: smaller;
+  padding-top: 0;
+  background-color: transparent;
+  position: relative;
+}
+.vue-tabs-chrome .tabs-background {
+  /* disabling highlight glow on selectedactive tab */
+  width: 0;
+  height: 0;
+}
+.vue-tabs-chrome .tabs-main {
+  background-color: #babcc1;
+  /* background-color: #e4e1e1; */
+  border-radius: 0;
+  margin: 0 10px;
+}
+.vue-tabs-chrome .tabs-main,
+.tab-add {
+  background-color: #babcc1;
+  /* background-color: #e4e1e1; */
+}
+.vue-tabs-chrome .active .tabs-main {
+  background-color: #e4e1e1;
+  /* background-color: #fff; */
+}
+/* .vue-tabs-chrome .tabs-main :hover {
+  background-color: #fff !important;
+} */
+
 .chrome-tabs-slot-button {
   height: 20px;
   line-height: 20px;
   padding: 0 10px;
 }
 
-.vue-tabs-chrome.theme-custom {
-  padding-top: 0;
-  background-color: transparent;
-  overflow: hidden;
-}
-.vue-tabs-chrome.theme-custom .tabs-footer,
-.vue-tabs-chrome.theme-custom .tabs-divider,
-.vue-tabs-chrome.theme-custom .tabs-background-before,
-.vue-tabs-chrome.theme-custom .tabs-background-after {
+.vue-tabs-chrome .tabs-footer,
+.vue-tabs-chrome .tabs-divider,
+.vue-tabs-chrome .tabs-background-before,
+.vue-tabs-chrome .tabs-background-after {
   display: none;
-}
-.vue-tabs-chrome.theme-custom .tabs-item {
-  cursor: pointer;
-}
-.vue-tabs-chrome.theme-custom .tabs-content {
-  overflow: unset;
-  border-bottom: 1px solid #e4e7ed;
-}
-.vue-tabs-chrome.theme-custom .tabs-background {
-  padding: 0;
-}
-.vue-tabs-chrome.theme-custom .tabs-background-content {
-  /* border-top: 1px solid #e4e7ed;
-  border-left: 1px solid #e4e7ed;
-  border-right: 1px solid #e4e7ed; */
-  border-radius: 0;
-  /* background-color: #fff; */
-}
-.vue-tabs-chrome.theme-custom .tabs-content {
-  /* height: 40px; */
-  height: 28px;
-}
-.vue-tabs-chrome.theme-custom .active {
-  /* color: #409eff; */
-}
-.vue-tabs-chrome.theme-custom .active .tabs-background::before,
-.vue-tabs-chrome.theme-custom .active .tabs-background::after {
-  top: 100%;
-  left: 0;
-  content: "";
-  width: 100%;
-  height: 1px;
-  /* background-color: #fff; */
-  z-index: 1;
-  position: absolute;
-}
-.vue-tabs-chrome.theme-custom .active .tabs-background::before {
-  top: 0;
-  height: 2px;
-  background-color: #409eff;
-}
-.vue-tabs-chrome.theme-custom .active .tabs-background::before {
-  top: 0;
-  height: 2px;
-  background-color: #409eff;
 }
 </style>
