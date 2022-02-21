@@ -16,7 +16,8 @@
               <div class="menu row-flex">
                 <div class="icon country-icon" @click="toggleMenu(0)"></div>
                 <div class="description hover">
-                  Map : Select country of your choice
+                  Country Select - Focus map on the country or region of
+                  interest
                 </div>
                 <div
                   class="
@@ -112,7 +113,10 @@
                   class="icon resolution-icon hex5"
                   @click="toggleMenu(1)"
                 ></div>
-                <div class="description hover">Change Data Resolution</div>
+                <div class="description hover">
+                  Data Resolution - Change the data aggregation level (hexagonal
+                  grids, administrative regions, etc.)
+                </div>
                 <div class="menu-drop row-flex display-none menu-big">
                   <div
                     class="col-flex"
@@ -309,7 +313,10 @@
                   class="icon color-icon color-icon-1"
                   @click="toggleMenu(2)"
                 ></div>
-                <div class="description hover">Palette Switcher</div>
+                <div class="description hover">
+                  Color Chooser - Change between several color palettes for the
+                  displayed data
+                </div>
                 <div
                   class="
                     menu-drop
@@ -485,7 +492,10 @@
                   class="icon basemap-icon-handle basemap-icon"
                   @click="toggleMenu(3)"
                 ></div>
-                <div class="description hover">Basemap Switch</div>
+                <div class="description hover">
+                  Change Basemap - Switch between Satellite Imagery and abstract
+                  map themes
+                </div>
                 <div
                   class="
                     menu-drop
@@ -610,7 +620,10 @@
                   class="icon add-boundaries-icon"
                   @click="toggleMenu(4)"
                 ></div>
-                <div class="description hover">Administrative Boundaries</div>
+                <div class="description hover">
+                  Overlay Boundaries - Toggle On/Off different levels of
+                  administrative regions
+                </div>
                 <div class="menu-drop row-flex display-none menu-big">
                   <div
                     class="col-flex"
@@ -760,7 +773,9 @@
                   class="icon twoD-icon display-none"
                   @click="handleHeightChange('twoD', 'threeD')"
                 ></div>
-                <div class="description hover">Toggle 3D</div>
+                <div class="description hover">
+                  3D Mode - Visualize data values using 3-dimensional height
+                </div>
                 <div
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>
@@ -769,7 +784,9 @@
               <!-- Opacity Select Menu -->
               <div class="menu row-flex">
                 <div class="icon opacity-icon" @click="toggleMenu(6)"></div>
-                <div class="description hover">Opacity Slider</div>
+                <div class="description hover">
+                  Transparency Slider - Change data layers' opacity
+                </div>
                 <div class="menu-drop row-flex align-items-center display-none">
                   <div
                     class="row-flex align-items-center"
@@ -807,7 +824,9 @@
                   class="icon aplus-icon"
                   @click="handleLabelsChange('aplus', 'aminus')"
                 ></div>
-                <div class="description hover">Toggle on/off Map Labels</div>
+                <div class="description hover">
+                  Map Labels - Toggle On/Off labels (Towns, roads, etc.)
+                </div>
                 <div
                   class="menu-drop row-flex align-items-center display-none"
                 ></div>
@@ -862,37 +881,14 @@
                 </div>
               </div>
 
-              <!-- Draw Menu hidden due to unresolved issue (see github link on trello) -->
-              <div class="menu row-flex display-none">
+              <!-- Draw Menu has due to unresolved issue (see github link on trello) -->
+              <div class="menu row-flex">
                 <div class="icon draw-icon" @click="toggleMenu(10)"></div>
                 <!-- <div class="icon draw-icon" onClick="handleDrawMenu()"></div> -->
-                <div class="description hover">Custom Regional Analysis</div>
-                <!-- <div class="menu-drop row-flex display-none menu-big menu-with-blue" id="draw-menu">
-                  
-                      <div class="col-flex align-items-center" style="height:auto; width:auto;">
-                        <div class="row-flex align-items-center space-evenly" style="border-top-left-radius:5px; height:52px; width: 280px;background-color:#C4C4C4;">
-                          <div class="row-flex" style="margin-left: 15px; line-height:52px; font-weight:bold; font-size:16px;">Draw Mode - Region Analysis</div>
-                          <div class="info-nobg-icon"></div>
-                        </div>
-                        <div class="col-flex align-items-center" style="width:280px;background-color:#C4C4C4;border-bottom-left-radius:5px; border-bottom-right-radius:5px;">
-                          <div class="row-flex space-between align-items-center" style="height:30px;width:250px;background-color:#DFDFDF">
-                            <div style="font-weight:bold; margin:0 10px;" id='drawControls'>Region Polygon 1</div>
-                            <div style="margin:0 10px 0 0;"><i>edit</i></div>
-                          </div>
-                          <div class="row-flex align-items-center" style="margin-top:5px; width:250px;height:90px">
-                             <div style="margin:0 10px">Draw a polygon for regional analysis.</div>
-                          </div>
-                          <div class="row-flex align-items-center space-evenly" style="margin: 10px 0;width:250px;height:30px;background-color:#DFDFDF;border-radius:5px;">
-                            <div style="color:#949494;margin:0 10px;">Add polygon to compares</div>
-                            <div class="grey-plus-icon"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-flex">
-                        <div class="col-flex" style="width:6px;height:52px;background-color:#C4C4C4"></div>
-                      </div>
-                    </div>
-                    <div class="blue-box blue-box-draw display-none"></div> -->
+                <div class="description hover">
+                  Regional Analysis - Draw an area of interest to compute
+                  statistics for the region
+                </div>
                 <div
                   class="
                     menu-drop
@@ -902,7 +898,104 @@
                   "
                   id="draw-menu"
                 >
-                  <!-- Placeholder Draw Menu content -->
+                  <!--<div
+                    class="col-flex align-items-center"
+                    style="height: auto; width: auto"
+                  >
+                    <div
+                      class="row-flex align-items-center space-evenly"
+                      style="
+                        border-top-left-radius: 5px;
+                        height: 52px;
+                        width: 280px;
+                        background-color: #c4c4c4;
+                      "
+                    >
+                      <div
+                        class="row-flex"
+                        style="
+                          margin-left: 15px;
+                          line-height: 52px;
+                          font-weight: bold;
+                          font-size: 16px;
+                        "
+                      >
+                        Draw Mode - Region Analysis
+                      </div>
+                      <div class="info-nobg-icon"></div>
+                    </div>
+                    <div
+                      class="col-flex align-items-center"
+                      style="
+                        width: 280px;
+                        background-color: #c4c4c4;
+                        border-bottom-left-radius: 5px;
+                        border-bottom-right-radius: 5px;
+                      "
+                    >
+                      <div
+                        class="row-flex space-between align-items-center"
+                        style="
+                          height: 30px;
+                          width: 250px;
+                          background-color: #dfdfdf;
+                        "
+                      >
+                        <div
+                          style="font-weight: bold; margin: 0 10px"
+                          id="drawControls"
+                        >
+                          Region Polygon 1
+                        </div>
+                        <div style="margin: 0 10px 0 0"><i>edit</i></div>
+                      </div>
+                      <div
+                        class="row-flex align-items-center"
+                        style="margin-top: 5px; width: 250px; height: 90px"
+                      >
+                        <div style="margin: 0 10px">
+                          Draw a polygon for regional analysis.
+                        </div>
+                      </div>
+                      <div
+                        class="row-flex align-items-center space-evenly"
+                        style="
+                          margin: 10px 0;
+                          width: 250px;
+                          height: 30px;
+                          background-color: #dfdfdf;
+                          border-radius: 5px;
+                        "
+                      >
+                        <div style="color: #949494; margin: 0 10px">
+                          Add polygon to compares
+                        </div>
+                        <div class="grey-plus-icon"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-flex">
+                    <div
+                      class="col-flex"
+                      style="
+                        width: 6px;
+                        height: 52px;
+                        background-color: #c4c4c4;
+                      "
+                    ></div>
+                  </div>
+                </div>
+                <div class="blue-box blue-box-draw display-none"></div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    display-none
+                    menu-big menu-with-blue
+                  "
+                  id="draw-menu"
+                >
+                   -->
                   <div id="drawControls"></div>
                 </div>
               </div>
@@ -949,7 +1042,10 @@
                   class="icon dual-mode-icon"
                   @click="handleDualMode()"
                 ></div>
-                <div class="description hover">Comparison Slider</div>
+                <div class="description hover">
+                  Comparison - Enable a draggable slider to visually compare
+                  datasets
+                </div>
                 <div
                   class="
                     menu-drop

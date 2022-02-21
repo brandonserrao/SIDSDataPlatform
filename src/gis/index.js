@@ -76,7 +76,7 @@ export default class Map {
 
     //for the mapbox drawing functionality, used in region analysis/drawing polygons
     this.drawModeDisabled = false;
-    if (this.drawModeDisabled) {
+    if (!this.drawModeDisabled) {
       this.Draw = new MapboxDraw({
         displayControlsDefault: false,
         // Select which mapbox-gl-draw control buttons to add to the map.
@@ -103,7 +103,7 @@ export default class Map {
       this.getBasemapLabels();
 
       // this.map.addControl(this.Draw, "bottom-right"); //ui buttons for drawing//TESTING - reimplementing Draw functionality
-      if (this.drawModeDisabled) {
+      if (!this.drawModeDisabled) {
         document
           .getElementById("drawControls")
           .appendChild(this?.Draw.onAdd(this.map));
