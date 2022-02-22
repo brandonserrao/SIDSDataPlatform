@@ -299,6 +299,7 @@
       class="tab-system-box"
       v-bind:style="{
         'background-color': tabsAreVisible ? 'transparent' : '#e4e1e1',
+        display: tabsAreVisible ? 'flex' : 'none',
       }"
     >
       <!-- TESTING - TAB SYSTEM -->
@@ -310,6 +311,7 @@
         :minHiddenWidth="120"
         v-model="tab"
         :tabs="tabs"
+        :gap="2"
         @contextmenu="handleRightClick"
         @swap="handleSwap"
         @dragstart="handleDragStart"
@@ -331,6 +333,14 @@
     </div>
     <!-- INFO CARD -->
     <v-card class="mb-1 block-info background-grey">
+      <button
+        v-bind:style="{ display: tabsAreVisible ? 'none' : 'block' }"
+        style="position: absolute; top: 0; right: 0"
+        class="tab-add"
+        @click="addTab"
+      >
+        +
+      </button>
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
@@ -1142,7 +1152,10 @@ export default {
 }
 
 /* TESTING - TAB SYSTEM */
-
+.vue-tabs-chrome .tabs-content,
+.tab-add {
+  height: 22px;
+}
 .vue-tabs-chrome {
   font-size: smaller;
   padding-top: 0;
@@ -1158,8 +1171,10 @@ export default {
   background-color: #babcc1;
   /* background-color: #e4e1e1; */
   border-radius: 0;
-  margin: 0 10px;
+  /* margin: 0 5px; */
+  margin: 0 7px 0 0; /* removing leftmargin to allow tabs to align with infocard's leftedge*/
 }
+
 .vue-tabs-chrome .tabs-main,
 .tab-add {
   background-color: #babcc1;
