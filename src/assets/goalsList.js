@@ -30,11 +30,11 @@ let goals = {
     },
     {
       name: "Sustainable Transportation",
-      color: "green"
+      color: "#fd6920"
     },
     {
       name: "Sustainable Consumption and Production",
-      color: "blue"
+      color: "#c08c2b"
     },
     {
       name: "Chemical and Waste management",
