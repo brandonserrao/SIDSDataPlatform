@@ -299,6 +299,7 @@
       class="tab-system-box"
       v-bind:style="{
         'background-color': tabsAreVisible ? 'transparent' : '#e4e1e1',
+        display: tabsAreVisible ? 'flex' : 'none',
       }"
     >
       <!-- TESTING - TAB SYSTEM -->
@@ -332,6 +333,14 @@
     </div>
     <!-- INFO CARD -->
     <v-card class="mb-1 block-info background-grey">
+      <button
+        v-bind:style="{ display: tabsAreVisible ? 'none' : 'block' }"
+        style="position: absolute; top: 0; right: 0"
+        class="tab-add"
+        @click="addEmptyTab"
+      >
+        +
+      </button>
       <v-card-subtitle class="block-header" v-if="activeLayer">
         <b
           >{{ activeLayer.Description }}
