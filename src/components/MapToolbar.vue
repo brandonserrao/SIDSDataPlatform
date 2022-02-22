@@ -16,7 +16,7 @@
               <div class="menu row-flex">
                 <div class="icon country-icon" @click="toggleMenu(0)"></div>
                 <div class="description hover">
-                  Country Select - Focus map on the country or region of
+                  <b>Country Select</b> - Focus map on the country or region of
                   interest
                 </div>
                 <div
@@ -114,8 +114,8 @@
                   @click="toggleMenu(1)"
                 ></div>
                 <div class="description hover">
-                  Data Resolution - Change the data aggregation level (hexagonal
-                  grids, administrative regions, etc.)
+                  <b>Data Resolution</b> - Change the data aggregation level
+                  (hexagonal grids, administrative regions, etc.)
                 </div>
                 <div class="menu-drop row-flex display-none menu-big">
                   <div
@@ -314,8 +314,8 @@
                   @click="toggleMenu(2)"
                 ></div>
                 <div class="description hover">
-                  Color Chooser - Change between several color palettes for the
-                  displayed data
+                  <b>Color Chooser</b> - Change between several color palettes
+                  for the displayed data
                 </div>
                 <div
                   class="
@@ -493,8 +493,8 @@
                   @click="toggleMenu(3)"
                 ></div>
                 <div class="description hover">
-                  Change Basemap - Switch between Satellite Imagery and abstract
-                  map themes
+                  <b>Change Basemap</b> - Switch between Satellite Imagery and
+                  abstract map themes
                 </div>
                 <div
                   class="
@@ -621,7 +621,7 @@
                   @click="toggleMenu(4)"
                 ></div>
                 <div class="description hover">
-                  Overlay Boundaries - Toggle On/Off different levels of
+                  <b>Overlay Boundaries</b> - Toggle On/Off different levels of
                   administrative regions
                 </div>
                 <div class="menu-drop row-flex display-none menu-big">
@@ -774,7 +774,8 @@
                   @click="handleHeightChange('twoD', 'threeD')"
                 ></div>
                 <div class="description hover">
-                  3D Mode - Visualize data values using 3-dimensional height
+                  <b>3D Mode</b> - Visualize data values using 3-dimensional
+                  height
                 </div>
                 <div
                   class="menu-drop row-flex align-items-center display-none"
@@ -785,7 +786,7 @@
               <div class="menu row-flex">
                 <div class="icon opacity-icon" @click="toggleMenu(6)"></div>
                 <div class="description hover">
-                  Transparency Slider - Change data layers' opacity
+                  <b>Transparency Slider</b> - Change data layers' opacity
                 </div>
                 <div class="menu-drop row-flex align-items-center display-none">
                   <div
@@ -825,7 +826,7 @@
                   @click="handleLabelsChange('aplus', 'aminus')"
                 ></div>
                 <div class="description hover">
-                  Map Labels - Toggle On/Off labels (Towns, roads, etc.)
+                  <b>Map Labels</b> - Toggle On/Off labels (Towns, roads, etc.)
                 </div>
                 <div
                   class="menu-drop row-flex align-items-center display-none"
@@ -860,7 +861,7 @@
                   class="icon bivariate-mode-icon"
                   @click="handleBivariateMode()"
                 ></div>
-                <div class="description hover">Bivariate</div>
+                <div class="description hover"><b>Bivariate</b></div>
                 <!-- <div class="menu-drop row-flex align-items-center display-none bivariate menu-with-blue">
                       <div class="row-flex align-items-center" style="height: 40px;margin:0 6px 0 0;">
                         <div class="row-flex" style="font-weight: bold; padding-left: 10px;line-height:40px;margin:0 10px 0 0;height: 40px;width:200px;background-color:#DFDFDF;">Bivariate Mode Enabled</div>
@@ -886,7 +887,7 @@
                 <div class="icon draw-icon" @click="toggleMenu(10)"></div>
                 <!-- <div class="icon draw-icon" onClick="handleDrawMenu()"></div> -->
                 <div class="description hover">
-                  Regional Analysis - Draw an area of interest to compute
+                  <b>Regional Analysis</b> - Draw an area of interest to compute
                   statistics for the region
                 </div>
                 <div
@@ -1043,8 +1044,8 @@
                   @click="handleDualMode()"
                 ></div>
                 <div class="description hover">
-                  Comparison - Enable a draggable slider to visually compare
-                  datasets
+                  <b>Comparison</b> - Enable a draggable slider to visually
+                  compare datasets
                 </div>
                 <div
                   class="
