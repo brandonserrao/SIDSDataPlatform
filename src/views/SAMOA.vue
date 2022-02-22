@@ -8,7 +8,7 @@
       <v-row class="mt-0 bars-container" justify="center">
         <div class="samoa-goal" v-for="(goal, index) in samoaPriorities" :key="goal">
           <img
-          :src="require(`@/assets/media/goals-icons/SAMOA/${index+1}.png`)"
+          :src="require(`@/assets/media/goals-icons/samoa/${index+1}.png`)"
           height="56"
           width="56"
           >

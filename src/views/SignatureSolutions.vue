@@ -6,11 +6,11 @@
         </div>
       </v-row>
       <v-row class="mt-0 bars-container" justify="center">
-        <div class="ss-goal" v-for="(goal, index) in ss" :key="goal">
+        <div class="ss-goal" v-for="(goal, index) in ss" :key="goal.name">
           <img
           height="56"
           width="144"
-          :src="require(`@/assets/media/goals-icons/SS/${index+1}.png`)">
+          :src="require(`@/assets/media/goals-icons/signature-solutions/${index+1}.png`)">
         </div>
       </v-row>
     </div>

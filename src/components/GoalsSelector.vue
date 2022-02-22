@@ -347,11 +347,11 @@ export default {
   methods: {
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
-        return require(`@/assets/media/goals-icons/SDGs/${index+1}.png`)
+        return require(`@/assets/media/goals-icons/sdgs/${index+1}.png`)
       } else if (this.activeGoalType === "samoa") {
-        return require(`@/assets/media/goals-icons/SAMOA/${index+1}.png`)
+        return require(`@/assets/media/goals-icons/samoa/${index+1}.png`)
       } else if (this.activeGoalType === "signature-solutions") {
-        return require(`@/assets/media/goals-icons/SS/${index+1}.png`)
+        return require(`@/assets/media/goals-icons/signature-solutions/${index+1}.png`)
       }
     },
     goalUpdateNext() {
