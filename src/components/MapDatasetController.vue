@@ -310,6 +310,7 @@
         :minHiddenWidth="120"
         v-model="tab"
         :tabs="tabs"
+        :gap="2"
         @contextmenu="handleRightClick"
         @swap="handleSwap"
         @dragstart="handleDragStart"
@@ -1142,7 +1143,10 @@ export default {
 }
 
 /* TESTING - TAB SYSTEM */
-
+.vue-tabs-chrome .tabs-content,
+.tab-add {
+  height: 22px;
+}
 .vue-tabs-chrome {
   font-size: smaller;
   padding-top: 0;
@@ -1158,8 +1162,10 @@ export default {
   background-color: #babcc1;
   /* background-color: #e4e1e1; */
   border-radius: 0;
-  margin: 0 10px;
+  /* margin: 0 5px; */
+  margin: 0 7px 0 0; /* removing leftmargin to allow tabs to align with infocard's leftedge*/
 }
+
 .vue-tabs-chrome .tabs-main,
 .tab-add {
   background-color: #babcc1;
