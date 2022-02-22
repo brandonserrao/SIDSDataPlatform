@@ -337,7 +337,7 @@
         v-bind:style="{ display: tabsAreVisible ? 'none' : 'block' }"
         style="position: absolute; top: 0; right: 0"
         class="tab-add"
-        @click="addEmptyTab"
+        @click="addTab"
       >
         +
       </button>
