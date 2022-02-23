@@ -138,7 +138,12 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-
   routes
+})
+
+router.beforeEach((toRoute, fromRoute, next) => {
+  let pagetitle = toRoute && toRoute.name ? toRoute.name : 'Home';
+  window.document.title = `${pagetitle} - UNDP SIDS Data Platform`
+  next();
 })
 export { router, routes }
