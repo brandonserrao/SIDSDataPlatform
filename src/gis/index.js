@@ -75,7 +75,9 @@ export default class Map {
     //---------------------------------------------------------------------
 
     //for the mapbox drawing functionality, used in region analysis/drawing polygons
+    this.Draw = null; //storing the Draw Mode instance inside the Map class instance
     this.drawModeDisabled = false;
+    //TODO : extract this creation to a function that fires on clickign the toolbar (and add one that removes it on close)
     if (!this.drawModeDisabled) {
       this.Draw = new MapboxDraw({
         displayControlsDefault: false,
@@ -411,7 +413,8 @@ export default class Map {
 
       mapClassInstance.map.setFilter(globals.currentLayerState.hexSize, null); //map.setFilter(currentGeojsonLayers.hexSize, null);
 
-      let drawInfoDiv = document.getElementById("draw-info-control");
+      // let drawInfoDiv = document.getElementById("draw-info-control");
+      let drawInfoDiv = document.getElementsByClassName("draw-info-box")[0];
       drawInfoDiv.innerHTML = ""; //clear the drawInfoDiv of old content
       drawInfoDiv.style.display = "none";
 
@@ -475,8 +478,9 @@ export default class Map {
             layers: [globals.currentLayerState.hexSize],
           });
 
-          //$("#draw-sidebar").show(); //toggle on display area for the info
-          let drawInfoDiv = document.getElementById("draw-info-control");
+          //toggle on display area for the info
+          // let drawInfoDiv = document.getElementById("draw-info-control");
+          let drawInfoDiv = document.getElementsByClassName("draw-info-box")[0];
           drawInfoDiv.innerHTML = ""; //clear the drawInfoDiv of old content
           // drawInfoDiv.style.display = "block";
           drawInfoDiv.classList.remove("display-none");
@@ -526,7 +530,7 @@ export default class Map {
     this.map.on(type, layerIds, listenerFunction);
   }
   addLayer(input) {
-    return this.map.addLayer(input)
+    return !this.map.getLayer(input) //this.map.addLayer(input)
       ? this.map.addLayer(input)
       : console.warn(`addLayer(${input}) layer not found`);
   }
@@ -1974,28 +1978,32 @@ export default class Map {
       this.map.removeLayer("clickedone");
       this.clearOnClickQuery(); //to remove the onClickQuery div
     }
-    let clickDiv = document.getElementById("on-click-control");
+    // let clickDiv = document.getElementById("on-click-control");
+    let clickDiv = document.getElementsByClassName("click-info-box")[0];
     clickDiv.classList.add("display-none");
   }
   onDataClick(clicked) {
-    console.log(`onDataClick clicked object:`);
-    console.log(clicked);
+    console.log(`onDataClick clicked object:`, clicked);
+    // console.log(clicked);
 
     // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
-    let clickDiv = document.getElementById("on-click-control");
+    // let clickDiv = document.getElementById("on-click-control");
+    let clickDiv = document.getElementsByClassName("click-info-box")[0];
+    clickDiv.textContent = "CLICKED"; //placeholder content
+
     clickDiv.classList.remove("display-none"); // clickDiv.style.display = "block";
     // clickDiv.style.height = "100px";
     clickDiv.style.height = "auto";
     clickDiv.style.width = "200px";
 
     clickDiv.innerHTML =
-      "<h4><b>Value: </b>" +
+      "<p><b>Value: </b>" +
       clicked.features[0].properties[
         globals.currentLayerState.dataLayer
       ].toLocaleString() +
       " " +
       document.getElementById("legendTitle").textContent +
-      "</h4>";
+      "</p>";
     /* //was used with a console log for debugging
   var legData = Vue._.find(allLayers, [
     "field_name",
@@ -2051,7 +2059,8 @@ export default class Map {
   }
   addAdminClick(e, adminLayerId) {
     // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
-    let clickDiv = document.getElementById("on-click-control");
+    // let clickDiv = document.getElementById("on-click-control");
+    let clickDiv = document.getElementsByClassName("click-info-box")[0];
     clickDiv.classList.remove("display-none"); // clickDiv.style.display = "block";
     clickDiv.style.height = "auto";
     // clickDiv.style.height = "100px";
@@ -2084,18 +2093,18 @@ export default class Map {
       });
 
       clickDiv.innerHTML =
-        "<h4><b>" +
+        "<p><b>" +
         e.features[0].properties.NAME_1 +
         " " +
         e.features[0].properties.TYPE_1 +
-        "</b></h4>" +
-        "<br><h4><b>Value: </b>" +
+        "</b></p>" +
+        "<br><p><b>Value: </b>" +
         e.features[0].properties[
           globals.currentLayerState.dataLayer
         ].toLocaleString() +
         " " +
         document.getElementById("legendTitle").textContent +
-        "</h4>";
+        "</p>";
     } else if (globals.currentLayerState.hexSize === "admin2") {
       feats = this.map.querySourceFeatures("admin2", {
         sourceLayer: ["admin2"],
@@ -2103,13 +2112,13 @@ export default class Map {
       });
 
       clickDiv.innerHTML =
-        "<h4><b>Value: </b>" +
+        "<p><b>Value: </b>" +
         e.features[0].properties[
           globals.currentLayerState.dataLayer
         ].toLocaleString() +
         " " +
         document.getElementById("legendTitle").textContent +
-        "</h4>";
+        "</p>";
     }
 
     //console.log(feats);

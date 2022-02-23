@@ -1408,6 +1408,10 @@ export default {
       }
 
       //hide information controls when done using tools from toolbar
+      let drawInfoDiv = document.getElementsByClassName("draw-info-box")[0];
+      drawInfoDiv.innerHTML = ""; //clear the drawInfoDiv of old content
+      drawInfoDiv.classList.add("display-none");
+
       let drawInfoControl = document
         .getElementById("draw-info-control")
         ?.classList.add("display-none");

@@ -51,6 +51,15 @@
       @toggle-dualmode="toggleDualMode()"
     />
 
+    <div class="info-box-container">
+      <div class="click-info-box display-none">
+        Placeholder: on-click-control
+      </div>
+      <div class="draw-info-box display-none">
+        Placeholder: draw-info-control
+      </div>
+    </div>
+
     <div id="mapsContainer">
       <div id="map">
         <div class="loader-gis-modal">
@@ -401,7 +410,7 @@ export default {
           );
 
           if (map.getLayer("admin1-overlay")) {
-            map.moveLayer(layerName, "admin1-overlay"); //brings the layer ontop of admin1-overlay
+            map.map.moveLayer(layerName, "admin1-overlay"); //brings the layer ontop of admin1-overlay
           }
         }
       }
@@ -605,6 +614,23 @@ export default {
 };
 </script>
 <style media="screen">
+.info-box-container {
+  z-index: 998;
+  /* color and backgroound taken from mapbox control style */
+  background-color: hsla(0, 0%, 100%, 0.75);
+  color: #333;
+  padding: 2px 7px;
+  /* border: 2px solid #333; */
+  position: absolute;
+  bottom: 6vh;
+  right: 0.5vw;
+  box-sizing: border-box;
+}
+.click-info-box p,
+.draw-info-box p {
+  margin: 2.5px;
+}
+
 /* to keep the nav drawer above the geospatial data components */
 .v-navigation-drawer,
 .navigation-container {
@@ -760,8 +786,8 @@ export default {
 
 /* onclick of hexes mapbox control bottom-right */
 .my-custom-control {
-  display: block;
-  /* display: none; */
+  /* display: block; */
+  display: none;
   background-color: rgba(221, 221, 221, 0.9);
   height: 0px;
   width: 0px;
@@ -819,6 +845,7 @@ export default {
   /* position: relative; */
   /*  height: 100%;
   width: 100%; */
+  height: 100vh;
 }
 #mapsContainer #map,
 #mapsContainer #map2 {
