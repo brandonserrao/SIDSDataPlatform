@@ -268,6 +268,35 @@ export default {
               appendTo: () => document.body
             });
           })
+
+        axis.append("text")
+          .attr("class", "d-none d-print-block")
+          .style("font-size", "10px")
+          .attr("text-anchor", "middle")
+          .attr("dy", "0.35em")
+          .attr("x", (d, i) => this.fullGraphOptions.textFormat * rScaleNormal(this.maxAxisValue * this.fullGraphOptions.labelFactor) * Math.cos(angleSlice * i - HALF_PI - this.fullGraphOptions.spin))
+          .attr("y", (d, i) => {
+            let lines = document.getElementById(`${this.pillarName}axis${i}`).children.length
+            return (-15 / this.fullGraphOptions.textFormat ** 3 + rScaleNormal(this.maxAxisValue * this.fullGraphOptions.labelFactor) * Math.sin(angleSlice * i - HALF_PI - this.fullGraphOptions.spin)) + lines * 14
+          }).text((d) => {
+            let value = rootThis.values[0].axes.filter(obj => { return obj.axis === d })[0].value;
+            let rank = rootThis.ranks[0].axes.filter(obj => { return obj.axis === d })[0].value;
+            let displayValue = ''
+            if(rootThis.pillarName === 'MVI') {
+              if(isNaN(rank)) {
+                displayValue = rank
+              } else {
+                displayValue = rootThis.nFormatter(rank,2);
+              }
+            } else if (isNaN(value)) {
+              displayValue = `${value}, ${rootThis.rankFormat(rank.toString())}`
+            } else {
+              displayValue = `${rootThis.nFormatter(value,2)}${rootThis.fullGraphOptions.unit}, ${rootThis.rankFormat(rank.toString())}`;
+            }
+            return displayValue
+          })
+          .style("pointer-events","auto")
+          .style("font-weight", "bold")
       }
       const radarLine = d3.radialLine()
         .curve(d3.curveLinearClosed)
@@ -331,7 +360,7 @@ export default {
             .attr("class", "radarStroke")
             .attr("d", function (d) { return radarLine(d.axes); })
             .style("stroke-width", this.fullGraphOptions.strokeWidth + "px")
-            .style("stroke", (d, i) => {console.log(d, i, 'id'); return this.fullGraphOptions.color(i)})
+            .style("stroke", (d, i) => { return this.fullGraphOptions.color(i)})
             .style("fill", "none")
             .style("filter", "url(#glow)")
             .style("pointer-events","none");
@@ -366,35 +395,6 @@ export default {
         .attr("class", "radarCircleWrapper");
 
       //Append a set of invisible circles on top for the mouseover pop-up
-      blobCircleWrapper.selectAll(".radarPrintingTooltip")
-        .data(d => d.axes)
-        .enter()
-        .append("text")
-        .attr('class', 'radarPrintingTooltip d-none d-block-print')
-        .attr("x", (d, i) => {
-          let multiplyer = rootThis.pillarName === 'MVI' ? 1.25 : 0.75;
-          return rScale(d.value * multiplyer) * Math.cos(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin)
-        })
-        .attr("y", (d, i) => {
-          let multiplyer = rootThis.pillarName === 'MVI' ? 1.25 : 0.75
-          return rScale(d.value * multiplyer) * Math.sin(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin)
-        })
-        .style("font-size", "12px")
-        .style("font-weight", "bold")
-        .text(function (d) {
-          let value = rootThis.values[0].axes.filter(obj => { return obj.axis === d.axis })[0].value;
-          if(rootThis.pillarName === 'MVI') {
-            if(isNaN(value)) {
-              return ''
-            }
-            return rootThis.nFormatter(value,2);
-          } else if (isNaN(value)) {
-            return rootThis.rankFormat(d.value.toString()) + rootThis.fullGraphOptions.unit
-          } else {
-            return `${rootThis.nFormatter(value,2)}, ${rootThis.rankFormat(d.value.toString())}${rootThis.fullGraphOptions.unit}`;
-          }
-        })
-        .attr("text-anchor", "middle");
 
       blobCircleWrapper.selectAll(".radarInvisibleCircle")
         .data(d => d.axes)
