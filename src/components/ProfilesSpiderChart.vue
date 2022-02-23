@@ -366,6 +366,36 @@ export default {
         .attr("class", "radarCircleWrapper");
 
       //Append a set of invisible circles on top for the mouseover pop-up
+      blobCircleWrapper.selectAll(".radarPrintingTooltip")
+        .data(d => d.axes)
+        .enter()
+        .append("text")
+        .attr('class', 'radarPrintingTooltip d-none d-block-print')
+        .attr("x", (d, i) => {
+          let multiplyer = rootThis.pillarName === 'MVI' ? 1.25 : 0.75;
+          return rScale(d.value * multiplyer) * Math.cos(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin)
+        })
+        .attr("y", (d, i) => {
+          let multiplyer = rootThis.pillarName === 'MVI' ? 1.25 : 0.75
+          return rScale(d.value * multiplyer) * Math.sin(angleSlice * i - HALF_PI - rootThis.fullGraphOptions.spin)
+        })
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .text(function (d) {
+          let value = rootThis.values[0].axes.filter(obj => { return obj.axis === d.axis })[0].value;
+          if(rootThis.pillarName === 'MVI') {
+            if(isNaN(value)) {
+              return ''
+            }
+            return rootThis.nFormatter(value,2);
+          } else if (isNaN(value)) {
+            return rootThis.rankFormat(d.value.toString()) + rootThis.fullGraphOptions.unit
+          } else {
+            return `${rootThis.nFormatter(value,2)}, ${rootThis.rankFormat(d.value.toString())}${rootThis.fullGraphOptions.unit}`;
+          }
+        })
+        .attr("text-anchor", "middle");
+
       blobCircleWrapper.selectAll(".radarInvisibleCircle")
         .data(d => d.axes)
         .enter().append("circle")
