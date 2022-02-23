@@ -424,7 +424,7 @@ export default {
           key: "google",
           favicon: require("../assets/testing/google.jpg"),
         }, */
-        {
+        /* {
           label: "New Tab",
           key: "starting-tab",
           data: {
@@ -437,7 +437,7 @@ export default {
               goalType: null, //str
             },
           },
-        },
+        }, */
       ],
       //
       comparisonDatasetName: null,

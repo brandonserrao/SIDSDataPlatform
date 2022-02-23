@@ -1113,8 +1113,16 @@
 import names from "@/gis/static/names";
 import CountrySelectorOption from "@/components/CountrySelectorOption";
 
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+
 export default {
-  props: ["active_dataset", "active_layer", "dualModeEnabled"], //to receive from MapDatasetController via GeospatialData; //currently active_dataset informs handleResolutionChange
+  props: [
+    "active_dataset",
+    "active_layer",
+    "dualModeEnabled", //to receive from MapDatasetController via GeospatialData;
+    "map", //mapboxInstance to receive from GeospatiaData.vue
+  ], //currently active_dataset informs handleResolutionChange
   name: "MapToolbar",
   components: {
     CountrySelectorOption,
@@ -1408,14 +1416,88 @@ export default {
       }
 
       //hide information controls when done using tools from toolbar
-      let drawInfoControl = document
+      let drawInfoDiv = document.getElementsByClassName("draw-info-box")[0];
+      drawInfoDiv.innerHTML = ""; //clear the drawInfoDiv of old content
+      drawInfoDiv.classList.add("display-none");
+
+      /* let drawInfoControl = document
         .getElementById("draw-info-control")
+        ?.classList.add("display-none"); */
+      let drawInfoBox = document
+        .getElementById("draw-info-box")
         ?.classList.add("display-none");
-      console.log(drawInfoControl);
+      console.log(drawInfoBox);
+
+      //belowcopied from toggleMenu logic for Draw Mode
+      //removing the mapboxDraw instance if present, due to it blocking mapclicking of data
+      if (index !== 10) {
+        console.log("closeAllMenu removing Draw instance");
+        let mapClassInstance = this.map;
+        if (!(mapClassInstance.Draw === null)) {
+          mapClassInstance.map.removeControl(mapClassInstance.Draw);
+        } else {
+          console.log("mapClassInstance.Draw is null");
+        }
+        mapClassInstance.Draw = null;
+        console.log(
+          "closeAllMenu cleared mapClassInstance.Draw:",
+          mapClassInstance.Draw
+        );
+      }
     },
+
     //handles open/closing related behaviour for specified sidebar menu button
     toggleMenu(index) {
       console.log("toggleMenu called for index: ", index);
+
+      //---------------------------------------------------
+      //workaround to accommodate the preventDefault error (the MapboxDraw blocking touch interactions ie. on dataclick on mobile)
+      //attempt to instantiate/delete the mapInstance.Draw ie. MapboxDraw instance with the clicking on the mapToolbar button click
+      //??the menu #draw-menu's size likely will be affected by the presence/instance
+      if (index === 10) {
+        let mapClassInstance = this.map;
+        if (mapClassInstance.Draw === null) {
+          console.log("instantiating Draw");
+          mapClassInstance.Draw = new MapboxDraw({
+            displayControlsDefault: false,
+            // Select which mapbox-gl-draw control buttons to add to the map.
+            controls: {
+              polygon: true,
+              // trash: true,
+            },
+          });
+          console.log(
+            "instantiated mapClassInstance.Draw",
+            mapClassInstance.Draw
+          );
+
+          let drawControlsDiv = document.getElementById("drawControls");
+          drawControlsDiv.appendChild(
+            mapClassInstance.Draw.onAdd(mapClassInstance.map)
+          );
+          // document
+          //   .getElementById("drawControls")
+          //   .appendChild(mapboxDrawInstance.onAdd(this.map)); //get the hardcoded div from the toolbar template
+          //
+
+          mapClassInstance._addDrawListeners(mapClassInstance);
+        } else {
+          console.log("removing Draw instance");
+          mapClassInstance.map.removeControl(mapClassInstance.Draw);
+          //!!despite map.hasControl => false for this, map.removeControl still removes the mapClassInstance.Draw fed to it as desired;
+          /* //replaced by map.removeControl(mapClassInstance.Draw)
+             let drawControls = document.querySelector(
+            "#drawControls div.mapboxgl-ctrl-group"
+          );
+          drawControls.remove(); */
+          mapClassInstance.Draw = null;
+          console.log("cleared mapClassInstance.Draw:", mapClassInstance.Draw);
+          // console.warn("unexpected Draw instance state", mapboxDrawInstance);
+        }
+        console.log("checking mapClassInstance.Draw", mapClassInstance.Draw);
+      }
+      //-----------------------------------------------------------------
+
       var allMenu = document.getElementsByClassName("menu-drop");
 
       for (let i = 0; i < allMenu.length; i++) {
