@@ -12,6 +12,13 @@
   body {
     transform: scale(1);
   }
+  html{
+    min-width: 900px;
+  }
+
+  .justify-print-space-between {
+    justify: space-between !important;
+  }
 }
 
 .bg-printable {

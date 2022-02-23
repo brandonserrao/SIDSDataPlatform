@@ -17,7 +17,7 @@
         <img
           class="header-bar_logo"
           src="@/assets/media/logo.png"
-          alt="UNDP COVID19 Data Futures Platform Logo">
+          alt="UNDP Data Futures Platform Logo">
       </a>
     </div>
     <main role="main" class="header-text">
