@@ -8,14 +8,15 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/portfolio',
+    path: '/portfolio/:goalsType?',
     link: '/portfolio',
     name: 'UNDP SIDS Portfolio',
-    props: (route) => ({
-      region: route.query.region || 'All',
-      year: route.query.year || 'all',
-      fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
-      fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
+    props: (to) => ({
+      region: to.query.region || 'All',
+      year: to.query.year || 'all',
+      fundingCategory: decodeURIComponent(to.query.fundingCategory || 'All') ,
+      fundingSource: decodeURIComponent(to.query.fundingSource || 'All Funding Sources'),
+      goalsType: to.params.goalsType || 'sdgs'
     }),
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -26,50 +27,7 @@ const routes = [
       await store.dispatch('sids/setSIDSData');
       await store.dispatch('sids/setFundingCategories');
       next()
-    },
-    children: [
-      {
-        path: 'samoa',
-        name: 'SAMOA',
-        component: () => import(/* webpackChunkName: "about" */ '../views/SAMOA.vue'),
-        props: (route) => ({
-          region: route.query.region || 'All',
-          year: route.query.year || 'all',
-          fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
-          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
-        }),
-      },
-      {
-        path: 'sdgs',
-        name: 'SDGS',
-        component: () => import(/* webpackChunkName: "about" */ '../views/SDGS.vue'),
-        props: (route) => ({
-          region: route.query.region || 'All',
-          year: route.query.year || 'all',
-          fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
-          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
-        }),
-      },
-      {
-        path: 'signature-solutions',
-        name: 'SignatureSolutions',
-        component: () => import(/* webpackChunkName: "about" */ '../views/SignatureSolutions.vue'),
-        props: (route) => ({
-          region: route.query.region || 'All',
-          year: route.query.year || 'all',
-          fundingCategory: decodeURIComponent(route.query.fundingCategory || 'All') ,
-          fundingSource: decodeURIComponent(route.query.fundingSource || 'All Funding Sources')
-        }),
-      },
-      {
-        path: '*',
-        redirect: 'sdgs'
-      },
-      {
-        path: '',
-        redirect: 'sdgs'
-      }
-    ]
+    }
   },
   {
     path: '/development-indicators/:indicator?/:year?/:chartType?',
@@ -180,7 +138,12 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-
   routes
+})
+
+router.beforeEach((toRoute, fromRoute, next) => {
+  let pagetitle = toRoute && toRoute.name ? toRoute.name : 'Home';
+  window.document.title = `${pagetitle} - UNDP SIDS Data Platform`
+  next();
 })
 export { router, routes }

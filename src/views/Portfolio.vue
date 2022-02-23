@@ -9,7 +9,9 @@
         ></portfolio-map>
       </v-col>
     </v-row>
-    <router-view class="d-none d-lg-block mb-3 mt-negative"></router-view>
+    <v-row class="d-none d-lg-block mb-3 mt-negative">
+      <portfolio-bars :year='year' :fundingCategory='fundingCategory' :fundingSource='fundingSource' :region='region' :goalsType='goalsType'></portfolio-bars>
+    </v-row>
     <v-row class="flex-lg-nowrap" justify="center">
       <v-col class="d-none d-lg-block margin-wrap-right"></v-col>
       <v-col class="d-none d-md-block tabs-column">
@@ -159,6 +161,7 @@
 import * as d3 from 'd3';
 // @ is an alias to /src
 import PortfolioMap from '@/components/PortfolioMap';
+import PortfolioBars from '@/components/PortfolioBars';
 import PortfolioExport from '@/components/PortfolioExport';
 import PortfolioPieChart from '@/components/PortfolioPieChart';
 import GoalsSelector from '@/components/GoalsSelector';
@@ -172,16 +175,17 @@ export default {
     PortfolioMap,
     PortfolioPieChart,
     PortfolioExport,
-    GoalsSelector
+    GoalsSelector,
+    PortfolioBars
   },
-  props:['year', 'fundingCategory', 'fundingSource', 'region'],
+  props:['year', 'fundingCategory', 'fundingSource', 'region', 'goalsType'],
   mixins:[sidsdata],
   data: function () {
     return {
       goalType:'Sustainable Development Goals',
       selectedGoal: 1,
       pages:['samoa', 'sdgs', 'signature-solutions'],
-      activePage:['samoa', 'sdgs', 'signature-solutions'].indexOf(this.$route.path.split('/')[2]),
+      activePage:['samoa', 'sdgs', 'signature-solutions'].indexOf(this.goalsType),
       fundingCategoriesTypes:['All',"European Union", "Donor Countries", "Programme Countries", "UN Agencies", "UN Pooled Funds", "Vertical Funds", "Other"],
       years:[
         {
@@ -244,7 +248,7 @@ export default {
     ...mapState({
       countries: state => state.sids.countryList,
       fundingCategories: state => state.sids.fundingCategories,
-      SIDSDataWithDonors: state => state.sids.SIDSDataWithDonors,
+      SIDSDataWithDonors: state => state.sids.SIDSDataWithDonors
     }),
     fundingCategoriesFiltered() {
       let projects = this.filteredYearDataSIDS;

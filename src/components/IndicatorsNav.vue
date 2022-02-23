@@ -201,10 +201,18 @@
             :value="year"
             item-text="name"
             item-value="id"
+            :disabled="playingYear"
             @change="emitYearChange"
             label="Year"
             dense
           ></v-select>
+          <v-btn
+            @click="toggleYearPlay"
+            icon
+            >
+            <v-icon v-if="playingYear">mdi-pause</v-icon>
+            <v-icon v-else>mdi-play</v-icon>
+          </v-btn>
         </div>
         <div class="mb-1 d-flex">
           <v-select class='dimensions-select' v-if="activeIndicatorDimensions.length > 1"
@@ -212,6 +220,7 @@
             :value="activeIndicatorCode"
             item-text="dimension"
             item-value="code"
+            :disabled="playingYear"
             @change="emitindicatorChange"
             label="Dimension"
             dense
@@ -237,6 +246,8 @@ export default {
     return {
       activeSearch: false,
       searchString: '',
+      playingYear:false,
+      playInterval:null,
       dataset: null,
       deepSearch:'',
       activeIndicatorDimension:null,
@@ -444,6 +455,39 @@ export default {
     },
     clearDeepSearch() {
       this.deepSearch = '';
+    },
+    toggleYearPlay() {
+      if(this.playingYear) {
+        this.pausePlayYear()
+      } else {
+        this.playYear()
+      }
+    },
+    playYear() {
+      this.playingYear = true;
+      if(this.playInterval) {
+        clearTimeout(this.playInterval)
+      }
+      let years = this.activeIndicatorYears.slice().reverse();
+      let index = 0;
+      this.transitionToNextYear(years, index)
+    },
+    transitionToNextYear(years, index) {
+      if(this.playingYear) {
+        if(index !== this.activeIndicatorYears.length-1) {
+          this.emitYearChange(years[index].id);
+          index++;
+          this.playInterval = setTimeout(()=>{this.transitionToNextYear(years, index)}, 3000)
+        } else {
+          this.pausePlayYear()
+        }
+      } else {
+        clearTimeout(this.playInterval)
+      }
+    },
+    pausePlayYear() {
+      clearTimeout(this.playInterval)
+      this.playingYear = false;
     }
   },
   watch:{
