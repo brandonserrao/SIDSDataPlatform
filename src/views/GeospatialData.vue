@@ -45,6 +45,7 @@
       :active_dataset="activeDatasetName"
       :active_layer="activeLayerName"
       :dualModeEnabled="dualModeEnabled"
+      :map="map"
       @toggle-legend="toggleLegend()"
       @toggle-3D="toggle3D()"
       @toggle-labels="toggleLabels($event)"

@@ -10,6 +10,7 @@ import colors from "@/gis/static/colors.js";
 //3rd party imports-----------------------------------
 import mapboxgl from "@/gis/mapboxgl";
 import "mapbox-gl/dist/mapbox-gl.css";
+// eslint-disable-next-line no-unused-vars
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 // import Compare from "mapbox-gl-compare"; //https://github.com/mapbox/mapbox-gl-compare/issues/1
@@ -78,7 +79,7 @@ export default class Map {
     this.Draw = null; //storing the Draw Mode instance inside the Map class instance
     this.drawModeDisabled = false;
     //TODO : extract this creation to a function that fires on clickign the toolbar (and add one that removes it on close)
-    if (!this.drawModeDisabled) {
+    /* if (!this.drawModeDisabled) {
       this.Draw = new MapboxDraw({
         displayControlsDefault: false,
         // Select which mapbox-gl-draw control buttons to add to the map.
@@ -87,7 +88,7 @@ export default class Map {
           // trash: true,
         },
       });
-    }
+    } */
 
     this.map.on("load", () => {
       // this._createMapComparison(this);
@@ -105,14 +106,15 @@ export default class Map {
       this.getBasemapLabels();
 
       // this.map.addControl(this.Draw, "bottom-right"); //ui buttons for drawing//TESTING - reimplementing Draw functionality
-      if (!this.drawModeDisabled) {
+      console.warn("disabled drawModeDisabled check for debugging");
+      /* if (!this.drawModeDisabled) {
         document
           .getElementById("drawControls")
-          .appendChild(this?.Draw.onAdd(this.map));
+          .appendChild(this?.Draw.onAdd(this.map)); //
 
-        this._initDrawInfoControl(); //display area for region analysis info
+        this._initDrawInfoControl(); //display area for region analysis info //obsoleted by non-mapboxcontrol divs
         this._addDrawListeners(this);
-      }
+      } */
 
       // this._setupComparison(containerId, this.map, this.map2);
       this.createComparison(containerId, this.map, this.map2);
