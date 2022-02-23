@@ -1,5 +1,9 @@
 <template>
   <div class="choro">
+    <h4 class="text-center" v-if="page!=='global'">
+      {{activeIndicatorsMeta.indicator}}
+      ({{activeIndicatorsMeta.units}})
+    </h4>
     <div id="choro_legend_container">
       <img id="regionLegend" src="@/assets/media/choro-legend.jpeg" style="margin-top:-15">
     </div>
@@ -27,12 +31,16 @@ export default {
       choro:null
     }
   },
-  props:['indicatorCode', 'region', 'page', 'chartType', 'sorting', 'mviCodes'],
+  props:['indicatorCode', 'region', 'page', 'chartType', 'sorting', 'mviCodes', 'year'],
   computed: {
     ...mapState({
       profileData: state => state.indicators.profileData,
-      indicatorMeta: state => state.indicators.indicatorsMeta
-    })
+      indicatorMeta: state => state.indicators.indicatorsMeta,
+      activeIndicatorData: state => state.indicators.activeIndicatorData
+    }),
+    activeIndicatorsMeta() {
+      return this.indicatorMeta[this.indicatorCode] || this.indicatorMeta['hdr-137506']
+    }
   },
   methods:{
     async initChart() {
@@ -41,13 +49,13 @@ export default {
 
       this.choro = new Choro({
         viz:this.chartType,
-        year:'recentValue',
         sidsXML,
         mapLocations,
         indicatorCode:this.indicatorCode,
-        indicatorMeta:this.indicatorMeta,
         profileData: this.profileData,
         page:this.page,
+        year: this.year,
+        data: this.activeIndicatorData,
         clickCallback:this.counntryClickCallback,
         selectedIndis:this.mviCodes,
         vizContainerWidth:(document.body.clientWidth - 40) > 800 ? 800 : (document.body.clientWidth - 40),
@@ -68,17 +76,19 @@ export default {
       this.choro && this.choro.updatePageType({
         page: this.page,
         chartType: this.chartType,
-        code: this.indicatorCode
+        code: this.indicatorCode,
+        year: this.year,
+        data: this.activeIndicatorData
       });
     },
     chartType() {
       if(this.choro && this.page === this.choro.page) {
-      this.choro.updateVizType(this.chartType);
+        this.choro.updateVizType(this.chartType, this.activeIndicatorData);
       }
     },
     indicatorCode() {
       if(this.choro && this.page === this.choro.page) {
-        this.choro.updateVizEngine(this.indicatorCode);
+        this.choro.updateVizData(this.indicatorCode, this.activeIndicatorData);
       }
     },
     region() {
@@ -96,6 +106,11 @@ export default {
         this.choro && this.choro.updateMviCodes(this.mviCodes);
       }
     },
+    year() {
+      if(this.choro && this.page === this.choro.page) {
+        this.choro.updateVizYear(this.year)
+      }
+    }
   }
 }
 </script>
@@ -430,7 +445,7 @@ export default {
 }
 
 #choro_legend_container {
-  height: 57px;
+  height: 45px;
   overflow: visible;
 }
 
