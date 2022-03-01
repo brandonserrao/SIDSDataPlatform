@@ -891,7 +891,8 @@ export default class Map {
 
     //recreated histogram
     var nGroup = 200;
-    var breaks_histogram = chroma.limits(selectedData, "e", nGroup);
+    let classBreakMode = "e"; //equidistant (e), quantile (q), logarithmic (l), and k-means (k)
+    var breaks_histogram = chroma.limits(selectedData, classBreakMode, nGroup);
     var break_index = 0;
     var histogram_break_count = Array(4).fill(0);
     for (let i = 0; i < nGroup; i++) {
@@ -1743,16 +1744,18 @@ export default class Map {
 
     let canvas = document.getElementById("histogram");
 
-    // break
-    var nGroup = 200;
+    // compute breaks
+    let classBreakMode = "e"; //equidistant (e), quantile (q), logarithmic (l), and k-means (k)
+    var nGroup = 200; //
     // console.log(`in addHistogram: selectedData = ${selectedData}`);
     // console.log(selectedData);
-    var breaks_histogram = chroma.limits(selectedData, "e", nGroup);
+    //documentation: https://gka.github.io/chroma.js/#chroma-limits
+    var breaks_histogram = chroma.limits(selectedData, classBreakMode, nGroup); //n groups, i.e n+1 values
     //console.log("breaks_histogram",breaks_histogram);
 
     // new color
     var break_index = 0;
-    var histogram_break_count = Array(4).fill(0);
+    var histogram_break_count = Array(4).fill(0); //??init as length 4; the
     for (let i = 0; i < nGroup; i++) {
       if (breaks_histogram[i] > breaks[break_index + 1]) break_index += 1;
       histogram_break_count[break_index] += 1;
@@ -1816,7 +1819,7 @@ export default class Map {
     //console.log(maxY,minY);
     //console.log(Math.min(...histogram_data));
 
-    var option = {
+    var options = {
       responsive: true,
       tooltips: {
         enabled: false,
@@ -1917,7 +1920,7 @@ export default class Map {
     console.log("in updateHistogram creating myHistogram");
     globals.myHistogram = Chart.Bar(canvas, {
       data: data,
-      options: option,
+      options: options,
     });
     console.log(globals.myHistogram);
   }
