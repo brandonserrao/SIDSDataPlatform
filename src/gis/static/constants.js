@@ -1,6 +1,6 @@
 const constants = {
   filepath: {
-    //dirpath+attributeID+resolution+pathtemplate+sas = mvt tile path
+    //dirpath + attributeID + resolution+pathtemplate + sas = mvt tile path
     vectorTilesDirPath:
       "https://undpngddlsgeohubdev01.blob.core.windows.net/sids/vtiles2/",
     vectorTilesPathTemplate: "{z}/{x}/{y}.pbf",

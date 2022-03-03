@@ -997,7 +997,14 @@
                   id="draw-menu"
                 >
                    -->
-                  <div id="drawControls"></div>
+
+                  <div id="drawControls">
+                    <!-- <div>
+                      Click/Tap this button for Drawing mode. <br />Click/Tap to
+                      outline your area of interest, and double tap/double click
+                      to complete.
+                    </div> -->
+                  </div>
                 </div>
               </div>
 

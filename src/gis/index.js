@@ -889,33 +889,14 @@ export default class Map {
       (x) => x.properties[globals.currentLayerState.dataLayer]
     );
 
-    //recreated histogram
-    var nGroup = 200;
-    var breaks_histogram = chroma.limits(selectedData, "e", nGroup);
-    var break_index = 0;
-    var histogram_break_count = Array(4).fill(0);
-    for (let i = 0; i < nGroup; i++) {
-      if (
-        breaks_histogram[i] > globals.currentLayerState.breaks[break_index + 1]
-      )
-        break_index += 1;
-      histogram_break_count[break_index] += 1;
-    }
-    let colorRampNew = [];
+    let colorRampNew = this.computeBreaksAndColorRamp(
+      selectedData
+      // colors, //use default global current
+      // breakMode, // use default equidistant
+      // nGroup, //use default 200
+      // breaks //use default global current
+    ).colorRamp;
 
-    for (var i = 0; i < 4; i++) {
-      // colorRampPart = chroma //from in oldcode, appears to never be explicitly assigned to var/let, so appears to have been made an implict global variable; will attempt to implement using let
-      let colorRampPart = chroma
-        .scale([
-          globals.currentLayerState.color[i],
-          globals.currentLayerState.color[i + 1],
-        ])
-        .mode("lch")
-        .colors(histogram_break_count[i]);
-      // colorRampNew = colorRampNew.concat(colorRampPart); //from in oldcode, appears to never be explicitly assigned to var/let, so appears to have been made an implict global variable; will attempt to implement using let
-      colorRampNew = colorRampNew.concat(colorRampPart);
-      //console.log(colorRampNew);
-    }
     //update the chart with new color ramp
     globals.myHistogram.data.datasets[0].backgroundColor = colorRampNew;
     globals.myHistogram.update();
@@ -1743,37 +1724,26 @@ export default class Map {
 
     let canvas = document.getElementById("histogram");
 
-    // break
-    var nGroup = 200;
-    // console.log(`in addHistogram: selectedData = ${selectedData}`);
-    // console.log(selectedData);
-    var breaks_histogram = chroma.limits(selectedData, "e", nGroup);
-    //console.log("breaks_histogram",breaks_histogram);
+    let breakMode = "e"; //equidistant (e), quantile (q), logarithmic (l), and k-means (k)
+    var nGroup = 200; //
+    let newBreaksAndColorRamp = this.computeBreaksAndColorRamp(
+      selectedData,
+      colors,
+      breakMode,
+      nGroup,
+      breaks
+      // precision
+    );
+    let colorRampNew = newBreaksAndColorRamp.colorRamp;
+    let breaks_histogram = newBreaksAndColorRamp.histogramBreaks;
+    // let breaks_precision = newBreaksAndColorRamp.breaksPrecision;
 
-    // new color
-    var break_index = 0;
-    var histogram_break_count = Array(4).fill(0);
-    for (let i = 0; i < nGroup; i++) {
-      if (breaks_histogram[i] > breaks[break_index + 1]) break_index += 1;
-      histogram_break_count[break_index] += 1;
-    }
-    var colorRampNew = [];
-    for (let i = 0; i < 4; i++) {
-      //old code did not init with var/let anywhere i could find, so init'ing here
-      let colorRampPart = chroma
-        .scale([colors[i], colors[i + 1]])
-        .mode("lch")
-        .colors(histogram_break_count[i]);
-      colorRampNew = colorRampNew.concat(colorRampPart);
-      //console.log(colorRampNew);
-    }
-
-    // precision
-    var breaks_precision = [];
+    //calculate precision
+    let breaks_precision = [];
     for (let i = 0; i < breaks_histogram.length; i++) {
       breaks_precision.push(this.nFormatter(breaks_histogram[i], precision));
     }
-    //console.log("breaks_precision:",breaks_precision)
+    console.warn("DEBUGGING breaks_precision: ", breaks_precision);
 
     var histogram_data = Array(nGroup).fill(0);
     for (let i = 0; i < selectedData.length; i++) {
@@ -1791,15 +1761,6 @@ export default class Map {
     }
     //console.log("histogram_data",histogram_data)
 
-    //commented out as never used
-    /*     var colorRampN = chroma
-      .scale([colors[0], colors[4]])
-      .mode("lch")
-      .colors(nGroup); // yellow to dark-blue
- */
-
-    // chroma.scale([colors[0], colors[4]]).mode("lch").colors(nGroup);
-
     var data = {
       labels: breaks_precision.slice(0, -1),
       datasets: [
@@ -1816,7 +1777,7 @@ export default class Map {
     //console.log(maxY,minY);
     //console.log(Math.min(...histogram_data));
 
-    var option = {
+    var options = {
       responsive: true,
       tooltips: {
         enabled: false,
@@ -1914,10 +1875,10 @@ export default class Map {
     // console.log(option);
     // console.log("myHistogram canvas: ");
     // console.log(canvas);
-    console.log("in updateHistogram creating myHistogram");
+    // console.log("in updateHistogram creating myHistogram");
     globals.myHistogram = Chart.Bar(canvas, {
       data: data,
-      options: option,
+      options: options,
     });
     console.log(globals.myHistogram);
   }
@@ -2356,6 +2317,51 @@ export default class Map {
       valuesAlreadySeen.push(value);
     }
     return false;
+  }
+
+  computeBreaksAndColorRamp(
+    data,
+    colors = globals.currentLayerState.color,
+    breakMode = "e",
+    numGroups = 200,
+    currentBreaks = globals.currentLayerState.breaks
+    // precision
+  ) {
+    let numBreaks = 4; //TODO: DETERMINE THIS IMPLICIT SOURCE
+    //calculate breaks and counts for use in histogram
+    let histogram_breaks = chroma.limits(data, breakMode, numGroups);
+    let break_index = 0;
+    let break_counters = Array(numBreaks).fill(0);
+    for (let i = 0; i < numGroups; i++) {
+      if (histogram_breaks[i] > currentBreaks[break_index + 1]) {
+        break_index++;
+      }
+      break_counters[break_index]++; //increment the counter at current break
+    }
+    console.warn(
+      "DEBUGGING computeBreaks: HISTOGRAM_BREAK_COUNT:",
+      break_counters,
+      "OLD BREAKS",
+      currentBreaks,
+      "NEW BREAKS",
+      histogram_breaks
+    );
+
+    //create new color ramp
+    let colorRampNew = [];
+    for (let i = 0; i < numBreaks; i++) {
+      let colorRampPart = chroma
+        .scale([colors[i], colors[i + 1]]) //scale maps numeric values to a color palette
+        .mode("lch") //interpolation mode in which the colors are interpolated; affects color output results
+        .colors(break_counters[i]); //how many colors to generate in the palette
+      colorRampNew = colorRampNew.concat(colorRampPart);
+    }
+    console.warn("DEBUGGING: NEW COLOR RAMP: ", colorRampNew);
+
+    return {
+      colorRamp: colorRampNew,
+      histogramBreaks: histogram_breaks,
+    };
   }
 
   //E) Unsorted/debugging----------------------------------------------------------------------------------
