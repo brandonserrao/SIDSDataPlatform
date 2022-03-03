@@ -185,23 +185,25 @@
             :items="filteredDatasets"
             item-text="name"
             item-value="name"
-            label="Dataset"
+            :label="dualModeEnabled ? 'Left Dataset' : 'Dataset'"
             @input="onInput"
             outlined
           ></v-autocomplete>
         </v-col>
-        <!-- target map instance selector -->
-        <v-col v-if="dualModeEnabled">
-          <!-- adding Left/Right Radio comparison radio buttons here -->
+        <!--COMPARISON BUTTONS (UNUSED CURRENTLY) target map instance selector -->
+        <!-- <v-col v-if="dualModeEnabled">
           <v-btn-toggle
             class="comparisonButtons"
             v-model="toggle_comparisonButtons"
             mandatory
           >
-            <v-btn>L</v-btn>
-            <v-btn>R</v-btn>
+            <v-btn>Left</v-btn>
+            <v-btn>Right</v-btn>
           </v-btn-toggle>
-        </v-col>
+          <v-btn v-on:click="_debugLog(toggle_comparisonButtons)"
+            >debug log</v-btn
+          >
+        </v-col> -->
       </v-row>
       <v-row
         class="spacing-row"
@@ -218,7 +220,7 @@
             item-text="Description"
             item-value="Description"
             :items="activeDataset.layers"
-            label="Layer"
+            :label="dualModeEnabled ? 'Left Layer' : 'Layer'"
             @input="onInput"
             outlined
           ></v-select>
@@ -245,7 +247,7 @@
       <v-row v-else class="spacing-row"> </v-row>
 
       <!-- DUPLICATE START for dualmode selector -->
-      <!-- <v-row dense v-show="dualModeEnabled">
+      <v-row dense v-show="dualModeEnabled">
         <v-col>
           <v-select
             rounded
@@ -256,7 +258,7 @@
             :items="filteredDatasets"
             item-text="name"
             item-value="name"
-            label="Dataset"
+            :label="dualModeEnabled ? 'Right Dataset' : 'Dataset'"
             @input="emitComparisonUpdate"
             outlined
           ></v-select>
@@ -278,7 +280,7 @@
             item-text="Description"
             item-value="Description"
             :items="comparisonDataset.layers"
-            label="Layer"
+            :label="dualModeEnabled ? 'Right Layer' : 'Layer'"
             @input="emitComparisonUpdate"
             outlined
           ></v-select>
@@ -303,7 +305,7 @@
           ></v-slider>
         </v-col>
       </v-row>
-      <v-row v-else class="spacing-row" v-show="dualModeEnabled"> </v-row> -->
+      <v-row v-else class="spacing-row" v-show="dualModeEnabled"> </v-row>
       <!-- DUPLICATE END -->
     </v-card>
 
@@ -457,11 +459,11 @@ export default {
       //
       comparisonDatasetName: null,
       comparisonLayerName: null,
-      toggle_comparisonButtons: null, //v-model state for left/right buttons
+      toggle_comparisonButtons: null, //v-model state for left 0/right 1 buttons
       //
       activeGoal: 1,
-      activeDatasetName: null,
-      activeLayerName: null,
+      activeDatasetName: null, //this.mainDatasetName,
+      activeLayerName: null, //this.mainLayerName,
       datasets,
       activeGoalType: "sdgs",
       goalTypes: [
@@ -719,6 +721,17 @@ export default {
     };
   },
   computed: {
+    // activeDatasetName() {
+    //   return this.dualModeEnabled
+    //     ? this.mainDatasetName
+    //     : this.comparisonDatasetName;
+    // },
+    // activeLayerName() {
+    //   return this.dualModeEnabled
+    //     ? this.mainLayerName
+    //     : this.comparisonLayerName;
+    // },
+
     filteredDatasets() {
       return this.datasets.reduce((array, dataset) => {
         let filtered = Object.assign({}, dataset);
@@ -990,7 +1003,10 @@ export default {
     emitUpdate() {
       // this.gis_store.testIncrement();
       // console.log(`emitUpdate of activeDataset and activeLayer`);
-      let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
+      let active = {
+        dataset: this.activeDataset,
+        layer: this.activeLayer,
+      }; //package data to pass to parents with update
       console.log("$emit update:", active);
       this.$emit("update", active);
     },
@@ -1027,6 +1043,10 @@ export default {
       this.activeGoal = goalNumber;
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
       this.$refs.slider.scrollOffset = 120 * (goalNumber - 1);
+    },
+
+    _debugLog(dataValue) {
+      console.log(dataValue);
     },
   },
 };
