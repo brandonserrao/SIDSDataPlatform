@@ -355,10 +355,11 @@ export default class Map {
     });
   }
   _bindRecolorListeners(mapClassInstance) {
-    if (globals.compareMode) {
-      console.warn("recolor disabled during comparison mode");
-      return;
-    }
+    // if (globals.compareMode) {
+    //   console.warn("recolor disabled during comparison mode");
+    //   return;
+    // }
+
     let instance = mapClassInstance;
     console.log(instance);
     //this. out here ref the mapClass instance calling this method
@@ -368,13 +369,29 @@ export default class Map {
       console.log(`binding RecolorListener: ${eventType}`);
       this.map.on(eventType, function (e, mapClassInstance = instance) {
         //this. in here would ref the mapboxmap and not our mapClass which has the recolor method
-        console.log("_bindRecolorListeners");
-        console.log("event is:");
-        console.log(e);
-        console.log("instance is:");
-        console.log(instance);
+        console.log(
+          "_bindRecolorListeners",
+          "event is:",
+          e,
+          "instance is:",
+          instance
+        );
 
         mapClassInstance.recolorBasedOnWhatsOnPage();
+      });
+
+      //add listener for the comparison map i.e map2
+      this.map2.on(eventType, function (e, mapClassInstance = instance) {
+        //this. in here would ref the mapboxmap and not our mapClass which has the recolor method
+        console.log(
+          "_bindRecolorListeners",
+          "event is:",
+          e,
+          "instance is:",
+          instance
+        );
+        let recolorComparison = true;
+        mapClassInstance.recolorBasedOnWhatsOnPage(recolorComparison);
       });
     }
   }
@@ -569,7 +586,7 @@ export default class Map {
   //TODO: MOVE UP INTO GEOSPATIALDATA.VUE AND/OR IMPORT THESE FUNCTIONS AS A SEPARATELY WRITTEN MODULE
 
   zoomToCountry(country) {
-    let self = this;
+    let self = this; //the mapclassinstance
     var v2 = new mapboxgl.LngLatBounds(country.bb);
     this.map.fitBounds(v2, {
       linear: true,
@@ -589,7 +606,15 @@ export default class Map {
       console.log("map idle; recoloring non-ocean data");
       if (!self.map.getLayer("ocean")) {
         setTimeout(() => {
-          self.recolorBasedOnWhatsOnPage(), 1000;
+          self.recolorBasedOnWhatsOnPage(self.map), 1000;
+        }); //timeout added to allow data to load in before triggering recolor+legend update
+      }
+    });
+    this.map2.once("idle", function () {
+      console.log("map idle; recoloring non-ocean data");
+      if (!self.map2.getLayer("ocean")) {
+        setTimeout(() => {
+          self.recolorBasedOnWhatsOnPage(self.map2), 1000;
         }); //timeout added to allow data to load in before triggering recolor+legend update
       }
     });
@@ -607,6 +632,7 @@ export default class Map {
   //manages the change when you chang the resolution
   changeHexagonSize(resolutionObject) {
     let map = this.map;
+    let map2 = this.map2;
     let resolution = resolutionObject.resolution;
 
     /* if (
@@ -696,13 +722,23 @@ export default class Map {
       }); */
     map.once("idle", () => {
       console.log("map idle-> recoloring");
-      this.recolorBasedOnWhatsOnPage(); //as it's inside an arrow function this. should refer to the outer scope and should be able to find the function
+      this.recolorBasedOnWhatsOnPage(map); //as it's inside an arrow function this. should refer to the outer scope and should be able to find the function
 
       //console.log('change bins');
       //map.setPaintProperty(globals.currentLayerState.hexSize, 'fill-opacity', 0.7)
       map.moveLayer(resolution, "allsids");
 
       this.hideSpinner();
+    });
+    map2.once("idle", () => {
+      console.log("map2 idle-> recoloring");
+      this.recolorBasedOnWhatsOnPage(map2); //as it's inside an arrow function this. should refer to the outer scope and should be able to find the function
+
+      //console.log('change bins');
+      //map.setPaintProperty(globals.currentLayerState.hexSize, 'fill-opacity', 0.7)
+      map2.moveLayer(resolution, "allsids");
+
+      // this.hideSpinner();
     });
   }
   changeBasemap(selectionObject) {
@@ -1081,6 +1117,9 @@ export default class Map {
   }
   addOcean(activeDataset, activeLayer, comparison = false) {
     let map = !comparison ? this.map : this.map2; //
+    let cls = !comparison
+      ? globals.currentLayerState
+      : globals.comparisonLayerState;
     this.clearHexHighlight();
     this.remove3d();
 
@@ -1091,19 +1130,19 @@ export default class Map {
     }
 
     //update state
-    globals.currentLayerState.dataLayer = activeLayer.Field_Name; //corresponds to the attributeId
-    globals.currentLayerState.hexSize = "ocean";
+    cls.dataLayer = activeLayer.Field_Name; //corresponds to the attributeId
+    cls.hexSize = "ocean";
     //ocean-specific layer state values hardcoded
     //ocean data uses pre-decided breaks and color;
-    globals.currentLayerState.breaks = [-4841, -3805, -2608, -1090, 0];
-    // globals.currentLayerState.color = [
+    cls.breaks = [-4841, -3805, -2608, -1090, 0];
+    // cls.color = [
     //   "#08519c",
     //   "#3182bd",
     //   "#6baed6",
     //   "#bdd7e7",
     //   "#eff3ff",
     // ];
-    globals.currentLayerState.color = colors.colorNatural["ocean-depth"];
+    cls.color = colors.colorNatural["ocean-depth"];
 
     //clear out all userLayers
     console.log(`removing all userLayers`);
@@ -1155,26 +1194,22 @@ export default class Map {
     // this.map2.addLayer(layerOptions, globals.firstSymbolId);
     //---------------------------------------------------------------------------------
 
-    setTimeout(() => {
-      var features = map.queryRenderedFeatures({
-        layers: ["ocean"],
-      });
+    if (!comparison) {
+      setTimeout(() => {
+        var features = map.queryRenderedFeatures({
+          layers: ["ocean"],
+        });
 
-      if (features) {
-        var uniFeatures;
-        uniFeatures = this.getUniqueFeatures(features, "depth"); //depth is field_id for ocean depths layer
-        var selectedData = uniFeatures.map((x) => x.properties["depth"]);
-        this.addLegend(
-          globals.currentLayerState.color,
-          globals.currentLayerState.breaks,
-          2,
-          activeLayer,
-          selectedData
-        );
-      }
-    }, 600);
+        if (features) {
+          var uniFeatures;
+          uniFeatures = this.getUniqueFeatures(features, "depth"); //depth is field_id for ocean depths layer
+          var selectedData = uniFeatures.map((x) => x.properties["depth"]);
+          this.addLegend(cls.color, cls.breaks, 2, activeLayer, selectedData);
+        }
+      }, 600);
 
-    // this.addLegend(); //TODO doesnt this need the extra params that I added to the addLegend function?
+      // this.addLegend(); //TODO doesnt this need the extra params that I added to the addLegend function?
+    }
 
     map.once("idle", () => {
       this.hideSpinner();
@@ -1182,10 +1217,12 @@ export default class Map {
   }
   changeDataOnMap(activeDataset, activeLayer, comparison = false) {
     let map = !comparison ? this.map : this.map2; //
+    let cls = !comparison
+      ? globals.currentLayerState
+      : globals.comparisonLayerState;
     // let map = this.map;
     let Field_Name = activeLayer.Field_Name; //get the selected layer's Field_Name
     console.log(`changeDataOnMap fired: ${Field_Name}, activeLayer:`);
-    console.log();
 
     this.clearHexHighlight();
 
@@ -1203,7 +1240,7 @@ export default class Map {
         );
         map.removeLayer("ocean");
 
-        globals.currentLayerState.hexSize = "hex5"; //default to hex5 since leaving ocean data (which is a fixed 10km hexsize)
+        cls.hexSize = "hex5"; //default to hex5 since leaving ocean data (which is a fixed 10km hexsize)
 
         map.addLayer(
           {
@@ -1230,7 +1267,7 @@ export default class Map {
       console.log(
         `ocean data (non-depth) added; creating empty 'ocean' id layer;`
       );
-      globals.currentLayerState.hexSize = "ocean"; //set to ocean
+      cls.hexSize = "ocean"; //set to ocean
 
       //clear out all userLayers
       console.log(`removing all userLayers`);
@@ -1269,7 +1306,7 @@ export default class Map {
         activeLayer?.Description: ${activeLayer?.Description}`
     );
 
-    globals.currentLayerState.dataLayer = Field_Name; //update global to reflect selected datalayer
+    cls.dataLayer = Field_Name; //update global to reflect selected datalayer
 
     //-------------------------------------------
     if (!map.getSource("hex5")) {
@@ -1282,23 +1319,21 @@ export default class Map {
     //------------------------------------------
 
     //unsure the need for this, pay attention if obsolete
-    console.log("current hexSize: " + globals.currentLayerState.hexSize);
-    if (!map.getLayer(globals.currentLayerState.hexSize)) {
-      console.log(
-        `MAP LACKING LAYER for ${globals.currentLayerState.hexSize}; adding layer;`
-      );
+    console.log("current hexSize: " + cls.hexSize);
+    if (!map.getLayer(cls.hexSize)) {
+      console.log(`MAP LACKING LAYER for ${cls.hexSize}; adding layer;`);
       var currentSourceData = Vue._.find(globals.sourceData, function (source) {
         //get matching sourceData
-        return source.name === globals.currentLayerState.hexSize;
+        return source.name === cls.hexSize;
       });
 
       console.log(
-        `addLayer using ${globals.currentLayerState.hexSize} ${globals.currentLayerState.hexSize} ${currentSourceData.layer}`
+        `addLayer using ${cls.hexSize} ${cls.hexSize} ${currentSourceData.layer}`
       );
       map.addLayer({
-        id: globals.currentLayerState.hexSize,
+        id: cls.hexSize,
         type: "fill",
-        source: globals.currentLayerState.hexSize,
+        source: cls.hexSize,
         "source-layer": currentSourceData.layer,
         layout: {
           visibility: "visible",
@@ -1311,25 +1346,23 @@ export default class Map {
 
       if (globals.firstSymbolId) {
         //put the added layer behind mapbox symbology layers
-        map.moveLayer(globals.currentLayerState.hexSize, globals.firstSymbolId);
+        map.moveLayer(cls.hexSize, globals.firstSymbolId);
       }
     }
 
     setTimeout(() => {
-      console.log(
-        `queryRenderedFeatures on layers: ${globals.currentLayerState.hexSize} `
-      );
+      console.log(`queryRenderedFeatures on layers: ${cls.hexSize} `);
       var features = map.queryRenderedFeatures({
-        layers: [globals.currentLayerState.hexSize],
+        layers: [cls.hexSize],
       });
       // console.log(`features:`);
       // console.log(features);
 
       if (features) {
         var uniFeatures;
-        if (globals.currentLayerState.hexSize === "admin1") {
+        if (cls.hexSize === "admin1") {
           uniFeatures = this.getUniqueFeatures(features, "GID_1");
-        } else if (globals.currentLayerState.hexSize === "admin2") {
+        } else if (cls.hexSize === "admin2") {
           uniFeatures = this.getUniqueFeatures(features, "GID_2");
         } else {
           uniFeatures = this.getUniqueFeatures(features, "hexid");
@@ -1339,11 +1372,10 @@ export default class Map {
 
         //console.log(uniFeatures);
         var selectedData = uniFeatures.map((x) => x.properties[Field_Name]);
-        console.log("selectedData");
-        console.log(selectedData);
+        // console.log("selectedData", selectedData);
 
         var breaks = chroma.limits(selectedData, "q", 4);
-        console.log("breaks:", breaks);
+        // console.log("breaks:", breaks);
         var breaks_new = [];
         globals.precision = 1;
         do {
@@ -1353,10 +1385,10 @@ export default class Map {
               breaks[i].toPrecision(globals.precision)
             );
           }
-          console.log("breaks_new:", breaks_new);
+          // console.log("breaks_new:", breaks_new);
         } while (this.checkForDuplicates(breaks_new) && globals.precision < 10);
         breaks = breaks_new;
-        console.log("new breaks:", breaks);
+        // console.log("new breaks:", breaks);
 
         // console.log("globals.currentLayerState.color:");
         // console.log(globals.currentLayerState.color);
@@ -1389,10 +1421,10 @@ export default class Map {
           colorRamp = colors.colorSeq["ocean"];
         }
 
-        globals.currentLayerState.breaks = breaks;
-        globals.currentLayerState.color = colorRamp;
+        cls.breaks = breaks;
+        cls.color = colorRamp;
 
-        map.setPaintProperty(globals.currentLayerState.hexSize, "fill-color", [
+        map.setPaintProperty(cls.hexSize, "fill-color", [
           "case",
           ["boolean", ["feature-state", "hover"], false],
           "yellow",
@@ -1415,39 +1447,40 @@ export default class Map {
 
         console.log("validating breaks in data");
         if (isNaN(breaks[3]) || breaks[1] == 0) {
-          console.log(
-            `breaks are NaN, ${globals.currentLayerState.hexSize} set to transparent`
-          );
+          console.log(`breaks are NaN, ${cls.hexSize} set to transparent`);
           map.setPaintProperty(
-            globals.currentLayerState.hexSize,
+            cls.hexSize,
             "fill-opacity",
             0.0
             //globals.opacity
           );
           setTimeout(() => {
-            map.setFilter(globals.currentLayerState.hexSize, null);
+            map.setFilter(cls.hexSize, null);
           }, 100);
-          this.addNoDataLegend();
+          if (!comparison) {
+            this.addNoDataLegend();
+          }
         } else {
-          map.setFilter(globals.currentLayerState.hexSize, [
-            ">=",
-            Field_Name,
-            0,
-          ]);
+          map.setFilter(cls.hexSize, [">=", Field_Name, 0]);
           console.log(
             `addLegend called in with intended Field_Name: ${Field_Name}`
           );
 
-          this.addLegend(
-            colorRamp,
-            breaks,
-            globals.precision, //
-            activeLayer,
-            selectedData
-          );
+          if (!comparison) {
+            this.addLegend(
+              colorRamp,
+              breaks,
+              globals.precision, //
+              activeLayer,
+              selectedData
+            );
+          } else {
+            console.log("skipping legend update;");
+          }
+
           setTimeout(() => {
             map.setPaintProperty(
-              globals.currentLayerState.hexSize,
+              cls.hexSize,
               "fill-opacity",
               globals.opacity // 0.8
             );
@@ -1463,36 +1496,49 @@ export default class Map {
       this.hideSpinner();
     });
   }
-  recolorBasedOnWhatsOnPage() {
-    console.log(`recolorBasedOnWhatsOnPage()`);
-    let map = this.map;
-    if (!map.getLayer(globals.currentLayerState.hexSize)) {
+  recolorBasedOnWhatsOnPage(recolorComparison = false) {
+    console.log(
+      `recolorBasedOnWhatsOnPage(recolorComparison = ${recolorComparison})`
+    );
+    ////get the mapbox map instance
+    let map = !recolorComparison ? this.map : this.map2; //this.map;
+    let cls = !recolorComparison
+      ? globals.currentLayerState
+      : globals.comparisonLayerState;
+    // console.log("map", map, "currentLayerState", cls);
+    if (!map.getLayer(cls.hexSize)) {
       //check for existence of the layer before attempting to update it
-      console.warn(
-        "!!!map does not have the current layer:",
-        globals.currentLayerState.hexSize
-      );
+      console.warn("!!!map does not have the current layer:", cls.hexSize);
       return;
     }
 
+    ////get the features rendered on map
     var features = map.queryRenderedFeatures({
-      layers: [globals.currentLayerState.hexSize],
+      layers: [cls.hexSize],
     });
 
-    if (features) {
+    //if not a comparison's update, cull duplicate features that might exist due to the nature of vector tiles
+    if (!features) {
+      console.log(`no data features on map;`);
+      if (!recolorComparison) {
+        this.addNoDataLegend();
+      } else {
+        console.log("recolorComparison:", recolorComparison);
+      }
+    } else {
       var uniFeatures;
-      if (globals.currentLayerState.hexSize === "admin1") {
+      if (cls.hexSize === "admin1") {
         uniFeatures = this.getUniqueFeatures(features, "GID_1");
-      } else if (globals.currentLayerState.hexSize === "admin2") {
+      } else if (cls.hexSize === "admin2") {
         uniFeatures = this.getUniqueFeatures(features, "GID_2");
       } else {
         uniFeatures = this.getUniqueFeatures(features, "hexid");
       }
 
-      var selectedData = uniFeatures.map(
-        (x) => x.properties[globals.currentLayerState.dataLayer]
-      );
-      //console.log(selectedData);
+      var selectedData = uniFeatures.map((x) => x.properties[cls.dataLayer]);
+
+      console.log(selectedData);
+      //-----------------------------------------???
       var breaks = chroma.limits(selectedData, "q", 4);
       console.log("breaks in recolor:", breaks);
       var breaks_new = [];
@@ -1507,64 +1553,63 @@ export default class Map {
       breaks = breaks_new;
       console.log("new breaks:", breaks);
 
-      globals.currentLayerState.breaks = breaks; //update global state
+      cls.breaks = breaks; //update global state
+      //-----------------------------------------
 
-      map.setPaintProperty(globals.currentLayerState.hexSize, "fill-color", [
+      //update layer paint options with the new breaks
+      map.setPaintProperty(cls.hexSize, "fill-color", [
         "interpolate",
         ["linear"],
-        ["get", globals.currentLayerState.dataLayer],
+        ["get", cls.dataLayer],
         breaks[0],
-        globals.currentLayerState.color[0],
+        cls.color[0],
         breaks[1],
-        globals.currentLayerState.color[1],
+        cls.color[1],
         breaks[2],
-        globals.currentLayerState.color[2],
+        cls.color[2],
         breaks[3],
-        globals.currentLayerState.color[3],
+        cls.color[3],
         breaks[4],
-        globals.currentLayerState.color[4],
+        cls.color[4],
       ]);
 
       //map.setPaintProperty(globals.currentLayerState.hexSize, 'fill-opacity', 0.7)
 
       //addLegend(globals.currentLayerState.color, breaks, globals.currentLayerState.dataLayer)
+
+      //detecting cases where computed breaks are bad/unacceptable (perhaps from insufficient data features) => output a legend for the no/insufficient data situation
       if (isNaN(breaks[3]) || breaks[1] == 0) {
         map.setPaintProperty(
-          globals.currentLayerState.hexSize,
+          cls.hexSize,
           "fill-opacity",
           0.0 //globals.opacity
         );
         setTimeout(() => {
-          map.setFilter(globals.currentLayerState.hexSize, null);
+          map.setFilter(cls.hexSize, null);
         }, 1000);
-        console.log("recoloring calliing addNoDataLegend()");
-        this.addNoDataLegend();
+        if (!recolorComparison) {
+          console.log("recoloring calliing addNoDataLegend()");
+          this.addNoDataLegend();
+        }
       } else {
-        let filterCondition =
-          globals.currentLayerState.dataLayer === "depth" ? "<" : ">=";
+        let filterCondition = cls.dataLayer === "depth" ? "<" : ">=";
         console.log(
-          `currentLayerState.dataLayer:  ${globals.currentLayerState.dataLayer}; filterCondition ${filterCondition}`
+          `currentLayerState.dataLayer:  ${cls.dataLayer}; filterCondition ${filterCondition}`
         );
-        map.setFilter(globals.currentLayerState.hexSize, [
+        map.setFilter(cls.hexSize, [
           //">=",
           filterCondition,
-          globals.currentLayerState.dataLayer,
+          cls.dataLayer,
           0,
         ]);
 
         console.log(
           `recoloring calling addLegend with: 
-          currentLayerState.color: ${globals.currentLayerState.color} 
+          currentLayerState.color: ${cls.color} 
           breaks: ${breaks} 
-          currentLayerState.dataLayer: ${globals.currentLayerState.dataLayer}
+          currentLayerState.dataLayer: ${cls.dataLayer}
           `
         );
-        // this.addLegend(
-        //   //!! I added extra params to addLegend, so needs more i think
-        //   globals.currentLayerState.color,
-        //   breaks,
-        //   globals.currentLayerState.dataLayer
-        // );
 
         console.log(`recolor addLegend`);
         this.addLegend(
@@ -1577,23 +1622,13 @@ export default class Map {
 
         setTimeout(() => {
           map.setPaintProperty(
-            globals.currentLayerState.hexSize,
+            cls.hexSize,
             "fill-opacity",
             globals.opacity // 0.8
           );
         }, 400);
       }
-    } else {
-      console.log(`no data features on map; creating noDataLegend`);
-      this.addNoDataLegend();
     }
-    /*     this.addLegend(
-      colors,
-      breaks,
-      undefined, //should be undefined here but default value in addLegend should handle it
-      undefined, //should be undefined here but default value in addLegend should handle it
-      selectedData
-    ); */
 
     map.once("idle", () => {
       this.hideSpinner();
@@ -1641,11 +1676,11 @@ export default class Map {
       return;
     }
     //Debugging logs--------------------------------------
-    console.log("addLegend called with: ");
-    console.log("in addLegend activeLayer");
-    console.log(activeLayer);
-    console.log("in addLegend selectedData: ");
-    console.log(selectedData);
+    // console.log("addLegend called with: ");
+    // console.log("in addLegend activeLayer");
+    // console.log(activeLayer);
+    // console.log("in addLegend selectedData: ");
+    // console.log(selectedData);
     //END-Debugging logs-------------------------------------------------------------------------------
 
     //LEGEND SETUP------------------------------------------------
@@ -2338,14 +2373,14 @@ export default class Map {
       }
       break_counters[break_index]++; //increment the counter at current break
     }
-    console.warn(
-      "DEBUGGING computeBreaks: HISTOGRAM_BREAK_COUNT:",
-      break_counters,
-      "OLD BREAKS",
-      currentBreaks,
-      "NEW BREAKS",
-      histogram_breaks
-    );
+    // console.warn(
+    //   "DEBUGGING computeBreaks: HISTOGRAM_BREAK_COUNT:",
+    //   break_counters,
+    //   "OLD BREAKS",
+    //   currentBreaks,
+    //   "NEW BREAKS",
+    //   histogram_breaks
+    // );
 
     //create new color ramp
     let colorRampNew = [];
@@ -2356,7 +2391,7 @@ export default class Map {
         .colors(break_counters[i]); //how many colors to generate in the palette
       colorRampNew = colorRampNew.concat(colorRampPart);
     }
-    console.warn("DEBUGGING: NEW COLOR RAMP: ", colorRampNew);
+    // console.warn("DEBUGGING: NEW COLOR RAMP: ", colorRampNew);
 
     return {
       colorRamp: colorRampNew,
