@@ -173,6 +173,7 @@
           </v-slide-group>
         </v-col>
       </v-row>
+
       <v-row dense>
         <v-col>
           <v-autocomplete
@@ -188,6 +189,18 @@
             @input="onInput"
             outlined
           ></v-autocomplete>
+        </v-col>
+        <!-- target map instance selector -->
+        <v-col v-if="dualModeEnabled">
+          <!-- adding Left/Right Radio comparison radio buttons here -->
+          <v-btn-toggle
+            class="comparisonButtons"
+            v-model="toggle_comparisonButtons"
+            mandatory
+          >
+            <v-btn>L</v-btn>
+            <v-btn>R</v-btn>
+          </v-btn-toggle>
         </v-col>
       </v-row>
       <v-row
@@ -412,9 +425,11 @@ export default {
       // tabSystem: null, //used for v-model of tabs/tab-items
       // tabsAreVisible: this.tabs.length <= 1 ? "hidden" : "visible",
       // currentTabInstance: null, //obsoleted by directly accessing via $refs..._props.tabs
-      tab: "starting-tab", //"google",
+      tab: "starting-tab",
       tabs: [
-        /*  {
+        /*  
+        //example tabs
+        {
           label: "info",
           key: "info",
           // closable: false,
@@ -442,6 +457,7 @@ export default {
       //
       comparisonDatasetName: null,
       comparisonLayerName: null,
+      toggle_comparisonButtons: null, //v-model state for left/right buttons
       //
       activeGoal: 1,
       activeDatasetName: null,
@@ -1019,6 +1035,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 /*Brandon additions*/
+.comparisonButtons .v-btn {
+  padding: 0 1em !important;
+  height: 100% !important;
+}
+
 .data-controller .v-sheet.v-card {
   border-radius: 0;
 }
