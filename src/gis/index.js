@@ -897,35 +897,6 @@ export default class Map {
       // breaks //use default global current
     ).colorRamp;
 
-    // //recreated histogram
-    // var nGroup = 200;
-    // let classBreakMode = "e"; //equidistant (e), quantile (q), logarithmic (l), and k-means (k)
-    // var breaks_histogram = chroma.limits(selectedData, classBreakMode, nGroup);
-    // var break_index = 0;
-    // var histogram_break_count = Array(4).fill(0);
-    // for (let i = 0; i < nGroup; i++) {
-    //   if (
-    //     breaks_histogram[i] > globals.currentLayerState.breaks[break_index + 1]
-    //   )
-    //     break_index += 1;
-    //   histogram_break_count[break_index] += 1;
-    // }
-    // let colorRampNew = [];
-
-    // for (var i = 0; i < 4; i++) {
-    //   // colorRampPart = chroma //from in oldcode, appears to never be explicitly assigned to var/let, so appears to have been made an implict global variable; will attempt to implement using let
-    //   let colorRampPart = chroma
-    //     .scale([
-    //       globals.currentLayerState.color[i],
-    //       globals.currentLayerState.color[i + 1],
-    //     ])
-    //     .mode("lch")
-    //     .colors(histogram_break_count[i]);
-    //   // colorRampNew = colorRampNew.concat(colorRampPart); //from in oldcode, appears to never be explicitly assigned to var/let, so appears to have been made an implict global variable; will attempt to implement using let
-    //   colorRampNew = colorRampNew.concat(colorRampPart);
-    //   //console.log(colorRampNew);
-    // }
-
     //update the chart with new color ramp
     globals.myHistogram.data.datasets[0].backgroundColor = colorRampNew;
     globals.myHistogram.update();
@@ -1773,49 +1744,7 @@ export default class Map {
       breaks_precision.push(this.nFormatter(breaks_histogram[i], precision));
     }
     console.warn("DEBUGGING breaks_precision: ", breaks_precision);
-    /* 
-    // compute breaks
-    // console.log(`in addHistogram: selectedData = ${selectedData}`);
-    // console.log(selectedData);
-    //documentation: https://gka.github.io/chroma.js/#chroma-limits
-    var breaks_histogram = chroma.limits(selectedData, classBreakMode, nGroup); //n groups, i.e n+1 values
-    //console.log("breaks_histogram",breaks_histogram);
 
-    // new color
-    var break_index = 0;
-    var histogram_break_count = Array(4).fill(0); //??init as length 4; implicitly understod somewhere that this length constrained to this length;
-    for (let i = 0; i < nGroup; i++) {
-      //? appears to be counting the chroma.limits which fall under current breaks
-      if (breaks_histogram[i] > breaks[break_index + 1]) break_index += 1;
-      histogram_break_count[break_index] += 1;
-    }
-    // console.warn(
-    //   "DEBUGGING: HISTOGRAM_BREAK_COUNT:",
-    //   histogram_break_count,
-    //   "OLD BREAKS",
-    //   breaks,
-    //   "NEW BREAKS",
-    //   breaks_histogram
-    // );
-
-    var colorRampNew = [];
-    for (let i = 0; i < 4; i++) {
-      //old code did not init with var/let anywhere i could find, so init'ing here
-      let colorRampPart = chroma
-        .scale([colors[i], colors[i + 1]]) //scale maps numeric values to a color palette
-        .mode("lch") //interpolation mode in which the colors are interpolated; affects color output results
-        .colors(histogram_break_count[i]); //how many colors to generate in the palette
-      colorRampNew = colorRampNew.concat(colorRampPart);
-    }
-    console.warn("DEBUGGING: NEW COLOR RAMP: ", colorRampNew);
-
-    // precision
-    var breaks_precision = [];
-    for (let i = 0; i < breaks_histogram.length; i++) {
-      breaks_precision.push(this.nFormatter(breaks_histogram[i], precision));
-    }
-    //console.log("breaks_precision:",breaks_precision)
-  */
     var histogram_data = Array(nGroup).fill(0);
     for (let i = 0; i < selectedData.length; i++) {
       for (let j = 0; j < nGroup - 1; j++) {
