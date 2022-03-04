@@ -844,6 +844,18 @@ export default class Map {
       map.setPaintProperty("ocean", "fill-opacity", sliderValue * 0.02);
     }
 
+    //doing same for comparison mode's data when enabled
+    if (globals.compareMode) {
+      this.map2.setPaintProperty(
+        globals.comparisonLayerState.hexSize,
+        "fill-opacity",
+        sliderValue * 0.02
+      );
+      if (this.map2.getLayer("ocean")) {
+        // console.log(`adjusting "ocean" layer opacity`);
+        this.map2.setPaintProperty("ocean", "fill-opacity", sliderValue * 0.02);
+      }
+    }
     //update global opacity value
     globals.opacity = (parseInt(sliderValue) * 2) / 100;
     console.log(`globals.opacity`, globals.opacity);
