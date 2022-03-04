@@ -247,7 +247,7 @@
       <v-row v-else class="spacing-row"> </v-row>
 
       <!-- DUPLICATE START for dualmode selector -->
-      <v-row dense v-show="dualModeEnabled">
+      <!-- <v-row dense v-show="dualModeEnabled">
         <v-col>
           <v-select
             rounded
@@ -305,8 +305,15 @@
           ></v-slider>
         </v-col>
       </v-row>
-      <v-row v-else class="spacing-row" v-show="dualModeEnabled"> </v-row>
+      <v-row v-else class="spacing-row" v-show="dualModeEnabled"> </v-row> -->
       <!-- DUPLICATE END -->
+      <v-row
+        v-show="dualModeEnabled"
+        class="row row--dense"
+        style="padding: 0 1em 1em 1em"
+        >Comparison Slider enabled: Compare the leftmost and rightmost
+        tabs</v-row
+      >
     </v-card>
 
     <!-- TESTING - FLEXBOX TO CONTROL TABS AND ADDTAB BUTTON LAYOUT -->
@@ -429,7 +436,7 @@ export default {
       // currentTabInstance: null, //obsoleted by directly accessing via $refs..._props.tabs
       tab: "starting-tab",
       tabs: [
-        /*  
+        /*
         //example tabs
         {
           label: "info",
@@ -798,15 +805,47 @@ export default {
         return this.comparisonDataset.layers[0];
       }
     },
-    comparisonTicksLabels() {
-      console.log("comparisonTicksLabels()");
-      return this.comparisonDataset.layers.map((layer) => layer.Temporal);
-    },
     comparisonDataset() {
       console.log("comparisonDataset()");
       return this.filteredDatasets.find(
         (dataset) => dataset.name === this.comparisonDatasetName
       );
+    },
+    // comparisonLayer: {
+    //   get: function () {
+    //     console.log(this.comparisonDataset);
+    //     if (!this.comparisonDataset || this.comparisonDataset === "info")
+    //       return null;
+    //     if (this.comparisonDataset.type === "temporal") {
+    //       return this.comparisonDataset.layers[this.comparisonLayerName];
+    //     } else if (this.comparisonDataset.type === "layers") {
+    //       return this.comparisonDataset.layers.find(
+    //         (layer) => layer.Description === this.comparisonLayerName
+    //       );
+    //     } else {
+    //       console.log(this.comparisonDataset.layers[0]);
+    //       return this.comparisonDataset.layers[0];
+    //     }
+    //   },
+    //   set: function (layerName) {
+    //     this.comparisonLayerName = layerName;
+    //   },
+    // },
+    // comparisonDataset: {
+    //   get: function () {
+    //     console.log("getter comparisonDataset");
+    //     return this.filteredDatasets.find(
+    //       (dataset) => dataset.name === this.comparisonDatasetName
+    //     );
+    //   },
+    //   // setter
+    //   set: function (datasetName) {
+    //     this.comparisonDatasetName = datasetName;
+    //   },
+    // },
+    comparisonTicksLabels() {
+      console.log("comparisonTicksLabels()");
+      return this.comparisonDataset.layers.map((layer) => layer.Temporal);
     },
 
     tabsAreVisible() {
@@ -925,10 +964,13 @@ export default {
       // this.currentTabInstance.label = "rightclick";
       console.log("getTabs", this.$refs.tab.getTabs());
     },
-    handleSwap(e, tab) {
+    handleSwap(tab, targetTab) {
       // tab, targetTab
       // console.info("swap", tab, targetTab);
-      console.info("swap", e, tab);
+      console.info("swap", tab, targetTab);
+      this.handleDragEnd(null, tab); //sort of a hack that solves two issues noticed right now
+      //1) dragend does not seem to always trigger
+      //2) comparison data layer/map instance/comparisonDataset and comparisonLayer not updating until a second attempt
     },
     handleDragStart(e, tab, index) {
       console.info("dragstart", e, tab, index);
@@ -948,6 +990,7 @@ export default {
 
       //dual mode tab logic //check position the tab has been placed in
       if (this.dualModeEnabled) {
+        console.log("dualmode-dragend start");
         let key = tab.key;
         let tabs = this.$refs.tab.getTabs();
         //check if it's first or last of all tabs
