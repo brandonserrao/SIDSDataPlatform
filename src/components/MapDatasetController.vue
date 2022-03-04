@@ -861,7 +861,12 @@ export default {
       let tabList = this.$refs.tab._props.tabs; //directly accessing the storage of tab instances
       console.info("currentTabKey", currentTabKey, "tabList:", tabList);
 
-      for (const tab of tabList) {
+      //for (const tab of tabList)
+      let index = null;
+      for (let i = 0; i < tabList.length; i++) {
+        let tab = tabList[i];
+        index = i;
+
         console.log(
           `${currentTabKey} vs
           ${tab.key},`
@@ -882,6 +887,8 @@ export default {
             currentTabKey
           );
       }
+
+      return index; //
 
       /* let tab = this.currentTabInstance;
       console.log("current tab; overwriting", tab);
@@ -975,10 +982,23 @@ export default {
     handleDragStart(e, tab, index) {
       console.info("dragstart", e, tab, index);
       //disable for dual mode, allowing dragend logic to take over updating map with data
+      // let tabs = this.$refs.tab.getTabs();
       if (!this.dualModeEnabled) {
+        //check if it's the first or last tab, trigger to update
         this.handleTabClick(e, tab, index); //to trigger auto select
-      } else {
+      }
+      // else if (this.dualModeEnabled && index === tabs.length - 1) {
+      //   //index indicates it's the last tab, do comparison update
+      //   console.log("last tab dragging update");
+      //   this.handleTabClick(e, tab, index, true); //to trigger auto select
+      // } else if (this.dualModeEnabled && index === 0) {
+      //   //index indicates it's the first tab, do normal update
+      //   console.log("first tag dragging update");
+      //   this.handleTabClick(e, tab, index); //to trigger auto select
+      // }
+      else {
         console.log("dragstart skipped due to dualmode on");
+        this.updateControllerFromTab(tab);
       }
     },
     handleDragging() {
@@ -1281,10 +1301,14 @@ export default {
 }
 
 /* TESTING - TAB SYSTEM */
+/* .vue-tabs-chrome {
+} */
 .vue-tabs-chrome .tabs-content,
 .tab-add {
+  /* height: inherit; */
   height: 22px;
 }
+
 .vue-tabs-chrome {
   font-size: smaller;
   padding-top: 0;
