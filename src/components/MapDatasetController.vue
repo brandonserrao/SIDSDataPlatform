@@ -780,6 +780,11 @@ export default {
 
     comparisonLayer() {
       console.log(this.comparisonDataset);
+      // if (name) {
+      //   console.log('overwriting comparisonLayer computed value');
+      //   return name; //testing, to allow reassignment
+      // }
+
       if (!this.comparisonDataset || this.comparisonDataset === "info")
         return null;
       if (this.comparisonDataset.type === "temporal") {
@@ -920,18 +925,52 @@ export default {
       // this.currentTabInstance.label = "rightclick";
       console.log("getTabs", this.$refs.tab.getTabs());
     },
-    handleSwap(tab, targetTab) {
-      console.info("swap", tab, targetTab);
+    handleSwap(e, tab) {
+      // tab, targetTab
+      // console.info("swap", tab, targetTab);
+      console.info("swap", e, tab);
     },
     handleDragStart(e, tab, index) {
       console.info("dragstart", e, tab, index);
-      this.handleTabClick(e, tab, index); //to trigger auto select
+      //disable for dual mode, allowing dragend logic to take over updating map with data
+      if (!this.dualModeEnabled) {
+        this.handleTabClick(e, tab, index); //to trigger auto select
+      } else {
+        console.log("dragstart skipped due to dualmode on");
+      }
     },
-    handleDragging(e, tab, index) {
-      console.info("dragging", e, tab, index);
+    handleDragging() {
+      // e, tab, index
+      // console.info("dragging", e, tab, index);
     },
-    handleDragEnd(e, tab, index) {
-      console.info("dragend", e, tab, index);
+    handleDragEnd(e, tab) {
+      console.info("dragend", e, tab);
+
+      //dual mode tab logic //check position the tab has been placed in
+      if (this.dualModeEnabled) {
+        let key = tab.key;
+        let tabs = this.$refs.tab.getTabs();
+        //check if it's first or last of all tabs
+        if (key === tabs[0].key) {
+          //it's the first, update main map
+          console.log(
+            "tab dragged into first place -> updating main/left map instance"
+          );
+          let index = 0;
+          this.handleTabClick(e, tab, index, false);
+        } else if (key === tabs[tabs.length - 1].key) {
+          //it's the last, update the comparison map
+          console.log(
+            "tab dragged into last place -> updating compare/right map instance"
+          );
+          let index = tabs.length - 1;
+          //update the comparison-related state info, which is used in separate emitComparisonUpdate
+          this.comparisonDatasetName = this.activeDatasetName;
+          this.comparisonLayerName = this.activeLayerName;
+          //trigger update
+          this.handleTabClick(e, tab, index, true);
+        }
+      }
     },
     handleRemove(e, tab, index) {
       console.info("remove", e, tab, index);
@@ -947,7 +986,7 @@ export default {
         );
       }
     },
-    handleTabClick(e, tab, index) {
+    handleTabClick(e, tab, index = null, comparison = false) {
       //intended to facilitate resetting the filter
       this.activeGoalType = tab.data.filters.goalType; //str
       this.activeGoal = tab.data.filters.goal; ///int
@@ -959,7 +998,13 @@ export default {
       this.updateControllerFromTab(tab);
       //update tab instance reference stored for use in replacing current active tab
       console.info(e, tab, index);
-      this.emitUpdate();
+      if (!comparison) {
+        console.log("handleTabClick: updating main map");
+        this.emitUpdate();
+      } else if (comparison === true) {
+        console.log("handleTabClick: updating comparison map");
+        this.emitComparisonUpdate();
+      }
     },
 
     updateControllerFromTab(tab) {
@@ -1011,7 +1056,7 @@ export default {
       this.$emit("update", active);
     },
     emitComparisonUpdate() {
-      console.warn("emitComparisonUpdate");
+      console.log("emitComparisonUpdate");
       let active = {
         dataset: this.comparisonDataset,
         layer: this.comparisonLayer,

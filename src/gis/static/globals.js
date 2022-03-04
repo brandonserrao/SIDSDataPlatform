@@ -24,6 +24,7 @@ const globals = {
      * legacy code only had a few layer possibilities, mainly hex# and ocean
      */
     hexSize: "hex5",
+    lastActive: { dataset: null, layer: null },
   },
   comparisonLayerState: {
     color: null,
@@ -33,6 +34,7 @@ const globals = {
      * legacy code only had a few layer possibilities, mainly hex# and ocean
      */
     hexSize: "hex5",
+    lastActive: { dataset: null, layer: null },
   },
   sources: {
     //{...ID:{SOURCE OBJECT}} USED WHEN ADDING LAYERSOURCES
