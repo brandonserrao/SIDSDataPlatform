@@ -317,6 +317,23 @@
     </v-card>
 
     <!-- TESTING - FLEXBOX TO CONTROL TABS AND ADDTAB BUTTON LAYOUT -->
+
+    <!-- <div
+      class="left-symbol"
+      v-bind:style="{
+        display: tabsAreVisible ? 'block' : 'none',
+      }"
+    >
+      Left
+    </div>
+    <div
+      class="right-symbol"
+      v-bind:style="{
+        display: tabsAreVisible ? 'block' : 'none',
+      }"
+    > 
+      Right
+    </div>-->
     <div
       class="tab-system-box"
       v-bind:style="{
@@ -353,6 +370,7 @@
       <button class="tab-add" @click="addEmptyTab">+</button>
       <!-- ➕ -->
     </div>
+
     <!-- INFO CARD -->
     <v-card class="mb-1 block-info background-grey">
       <button
@@ -1038,14 +1056,14 @@ export default {
         }
         //CSS styling of first/last tabs in dualmode
         //get the tabs html nodes
-        let tabNodeList = document.querySelectorAll(".tabs-content .tabs-item"); // console.log("tabNodeList", tabNodeList);
-        //clear previous first/last custom styling
-        tabNodeList.forEach((tabNode) => {
-          tabNode.classList.remove(
-            "tab-leftmost-highlight",
-            "tab-rightmost-highlight"
-          );
-        });
+        this.clearTabStyles();
+        let tabNodeList = document.querySelectorAll(".tabs-content .tabs-item");
+        // tabNodeList.forEach((tabNode) => {
+        //   tabNode.classList.remove(
+        //     "tab-leftmost-highlight",
+        //     "tab-rightmost-highlight"
+        //   );
+        // });
         //add custom first/last custom styling
         //TODO add consideration for current number of tabs
         // if (tabNodeList.length > 1)
@@ -1117,6 +1135,17 @@ export default {
       }
       console.log("labelString created: ", labelString);
       return labelString;
+    },
+
+    clearTabStyles() {
+      let tabNodeList = document.querySelectorAll(".tabs-content .tabs-item"); // console.log("tabNodeList", tabNodeList);
+      //clear previous first/last custom styling
+      tabNodeList.forEach((tabNode) => {
+        tabNode.classList.remove(
+          "tab-leftmost-highlight",
+          "tab-rightmost-highlight"
+        );
+      });
     },
 
     onInput() {
@@ -1193,11 +1222,60 @@ export default {
   border-radius: 0;
 }
 
+.dualmode-legend-container {
+  background-color: rgba(255, 255, 255, 0.762);
+  position: absolute;
+  width: 80%;
+  top: 90%;
+  left: 10%;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: row;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.main-map-legend,
+.comparison-map-legend {
+  /* position: relative; */
+  background-color: grey;
+}
+
+.main-map-legend {
+  /* left: 25vw;
+  top: 75vh; */
+}
+
+.comparison-map-legend {
+  /* left: 75vw;
+  top: 75vh; */
+}
+
+/* .left-symbol,
+.right-symbol {
+  position: relative;
+  background-color: grey;
+}
+.left-symbol {
+  position: absolute;
+  left: -12px;
+}
+.right-symbol {
+  position: absolute;
+  right: 12px;
+} */
+
+.left-symbol,
 .tab-leftmost-highlight {
   color: red;
+  border: red;
 }
+.right-symbol,
 .tab-rightmost-highlight {
   color: magenta;
+  border: magenta;
 }
 
 .tab-system-box {

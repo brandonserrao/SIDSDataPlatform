@@ -61,6 +61,11 @@
       </div>
     </div>
 
+    <div class="dualmode-legend-container" v-show="dualModeEnabled">
+      <div class="main-map-legend">PLACEHOLDER CONTENT</div>
+      <div class="comparison-map-legend">PLACEHOLDER CONTENT</div>
+    </div>
+
     <div id="mapsContainer">
       <div id="map">
         <div class="loader-gis-modal">
@@ -75,20 +80,6 @@
 
       <div id="map2"></div>
     </div>
-    <!-- <div id="comparison-container" class="display-none">
-        <div id="leftMap" class="comparison_map"></div>
-        <div id="rightMap" class="comparison_map"></div>
-      </div> -->
-    <!-- <div id="map">
-      <div class="loader-gis-modal">
-        <grid-loader
-          class="loader-gis display-none"
-          :loading="gisLoader.loading"
-          :color="gisLoader.color"
-          :size="gisLoader.size"
-        ></grid-loader>
-      </div>
-    </div> -->
   </div>
 </template>
 
