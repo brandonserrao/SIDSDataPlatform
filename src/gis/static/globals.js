@@ -9,8 +9,9 @@ const globals = {
   basemapLabels: [], //current basemap labels, for use in addLabels -> the toggling of the labels of a current basemap style
   //current layer state manager
   precision: null, //modified in changeDataOnMap and recolor etc; TODO deglobalize this
-  myHistogram: null,
+  myHistogram: null, //global storage for modifying main histogram html element by updates and recreation
   lastActive: { dataset: null, layer: null },
+  lastActiveComparison: { dataset: null, layer: null },
   opacity: 0.8,
   /* //were unused; obsoleted by passing these through emits when required
   activeDataset: null,
@@ -24,6 +25,17 @@ const globals = {
      * legacy code only had a few layer possibilities, mainly hex# and ocean
      */
     hexSize: "hex5",
+    lastActive: { dataset: null, layer: null },
+  },
+  comparisonLayerState: {
+    color: null,
+    breaks: null,
+    dataLayer: null,
+    /**String; id of the current data layer;
+     * legacy code only had a few layer possibilities, mainly hex# and ocean
+     */
+    hexSize: "hex5",
+    lastActive: { dataset: null, layer: null },
   },
   sources: {
     //{...ID:{SOURCE OBJECT}} USED WHEN ADDING LAYERSOURCES

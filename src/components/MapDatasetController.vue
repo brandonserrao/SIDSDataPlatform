@@ -173,6 +173,7 @@
           </v-slide-group>
         </v-col>
       </v-row>
+
       <v-row dense>
         <v-col>
           <v-autocomplete
@@ -184,11 +185,25 @@
             :items="filteredDatasets"
             item-text="name"
             item-value="name"
-            label="Dataset"
+            :label="dualModeEnabled ? 'Left Dataset' : 'Dataset'"
             @input="onInput"
             outlined
           ></v-autocomplete>
         </v-col>
+        <!--COMPARISON BUTTONS (UNUSED CURRENTLY) target map instance selector -->
+        <!-- <v-col v-if="dualModeEnabled">
+          <v-btn-toggle
+            class="comparisonButtons"
+            v-model="toggle_comparisonButtons"
+            mandatory
+          >
+            <v-btn>Left</v-btn>
+            <v-btn>Right</v-btn>
+          </v-btn-toggle>
+          <v-btn v-on:click="_debugLog(toggle_comparisonButtons)"
+            >debug log</v-btn
+          >
+        </v-col> -->
       </v-row>
       <v-row
         class="spacing-row"
@@ -205,7 +220,7 @@
             item-text="Description"
             item-value="Description"
             :items="activeDataset.layers"
-            label="Layer"
+            :label="dualModeEnabled ? 'Left Layer' : 'Layer'"
             @input="onInput"
             outlined
           ></v-select>
@@ -243,7 +258,7 @@
             :items="filteredDatasets"
             item-text="name"
             item-value="name"
-            label="Dataset"
+            :label="dualModeEnabled ? 'Right Dataset' : 'Dataset'"
             @input="emitComparisonUpdate"
             outlined
           ></v-select>
@@ -265,7 +280,7 @@
             item-text="Description"
             item-value="Description"
             :items="comparisonDataset.layers"
-            label="Layer"
+            :label="dualModeEnabled ? 'Right Layer' : 'Layer'"
             @input="emitComparisonUpdate"
             outlined
           ></v-select>
@@ -292,9 +307,33 @@
       </v-row>
       <v-row v-else class="spacing-row" v-show="dualModeEnabled"> </v-row> -->
       <!-- DUPLICATE END -->
+      <v-row
+        v-show="dualModeEnabled"
+        class="row row--dense"
+        style="padding: 0 1em 1em 1em"
+        >Comparison Slider enabled: Compare the leftmost and rightmost
+        tabs</v-row
+      >
     </v-card>
 
     <!-- TESTING - FLEXBOX TO CONTROL TABS AND ADDTAB BUTTON LAYOUT -->
+
+    <!-- <div
+      class="left-symbol"
+      v-bind:style="{
+        display: tabsAreVisible ? 'block' : 'none',
+      }"
+    >
+      Left
+    </div>
+    <div
+      class="right-symbol"
+      v-bind:style="{
+        display: tabsAreVisible ? 'block' : 'none',
+      }"
+    > 
+      Right
+    </div>-->
     <div
       class="tab-system-box"
       v-bind:style="{
@@ -331,6 +370,7 @@
       <button class="tab-add" @click="addEmptyTab">+</button>
       <!-- ➕ -->
     </div>
+
     <!-- INFO CARD -->
     <v-card class="mb-1 block-info background-grey">
       <button
@@ -376,8 +416,11 @@
         id="histogram_frame"
         class="pic app-body population-per-km col-flex"
       >
-        <div class="row-flex space-evenly" id="legendTitle"></div>
-        <div class="row-flex space-evenly" id="updateLegend"></div>
+        <div class="row-flex space-evenly legend-title" id="legendTitle"></div>
+        <div
+          class="row-flex space-evenly legend main-legend"
+          id="updateLegend"
+        ></div>
         <canvas
           ref="canvas_histogram"
           id="histogram"
@@ -412,9 +455,11 @@ export default {
       // tabSystem: null, //used for v-model of tabs/tab-items
       // tabsAreVisible: this.tabs.length <= 1 ? "hidden" : "visible",
       // currentTabInstance: null, //obsoleted by directly accessing via $refs..._props.tabs
-      tab: "starting-tab", //"google",
+      tab: "starting-tab",
       tabs: [
-        /*  {
+        /*
+        //example tabs
+        {
           label: "info",
           key: "info",
           // closable: false,
@@ -442,10 +487,11 @@ export default {
       //
       comparisonDatasetName: null,
       comparisonLayerName: null,
+      toggle_comparisonButtons: null, //v-model state for left 0/right 1 buttons
       //
       activeGoal: 1,
-      activeDatasetName: null,
-      activeLayerName: null,
+      activeDatasetName: null, //this.mainDatasetName,
+      activeLayerName: null, //this.mainLayerName,
       datasets,
       activeGoalType: "sdgs",
       goalTypes: [
@@ -703,6 +749,17 @@ export default {
     };
   },
   computed: {
+    // activeDatasetName() {
+    //   return this.dualModeEnabled
+    //     ? this.mainDatasetName
+    //     : this.comparisonDatasetName;
+    // },
+    // activeLayerName() {
+    //   return this.dualModeEnabled
+    //     ? this.mainLayerName
+    //     : this.comparisonLayerName;
+    // },
+
     filteredDatasets() {
       return this.datasets.reduce((array, dataset) => {
         let filtered = Object.assign({}, dataset);
@@ -751,6 +808,11 @@ export default {
 
     comparisonLayer() {
       console.log(this.comparisonDataset);
+      // if (name) {
+      //   console.log('overwriting comparisonLayer computed value');
+      //   return name; //testing, to allow reassignment
+      // }
+
       if (!this.comparisonDataset || this.comparisonDataset === "info")
         return null;
       if (this.comparisonDataset.type === "temporal") {
@@ -764,15 +826,47 @@ export default {
         return this.comparisonDataset.layers[0];
       }
     },
-    comparisonTicksLabels() {
-      console.log("comparisonTicksLabels()");
-      return this.comparisonDataset.layers.map((layer) => layer.Temporal);
-    },
     comparisonDataset() {
       console.log("comparisonDataset()");
       return this.filteredDatasets.find(
         (dataset) => dataset.name === this.comparisonDatasetName
       );
+    },
+    // comparisonLayer: {
+    //   get: function () {
+    //     console.log(this.comparisonDataset);
+    //     if (!this.comparisonDataset || this.comparisonDataset === "info")
+    //       return null;
+    //     if (this.comparisonDataset.type === "temporal") {
+    //       return this.comparisonDataset.layers[this.comparisonLayerName];
+    //     } else if (this.comparisonDataset.type === "layers") {
+    //       return this.comparisonDataset.layers.find(
+    //         (layer) => layer.Description === this.comparisonLayerName
+    //       );
+    //     } else {
+    //       console.log(this.comparisonDataset.layers[0]);
+    //       return this.comparisonDataset.layers[0];
+    //     }
+    //   },
+    //   set: function (layerName) {
+    //     this.comparisonLayerName = layerName;
+    //   },
+    // },
+    // comparisonDataset: {
+    //   get: function () {
+    //     console.log("getter comparisonDataset");
+    //     return this.filteredDatasets.find(
+    //       (dataset) => dataset.name === this.comparisonDatasetName
+    //     );
+    //   },
+    //   // setter
+    //   set: function (datasetName) {
+    //     this.comparisonDatasetName = datasetName;
+    //   },
+    // },
+    comparisonTicksLabels() {
+      console.log("comparisonTicksLabels()");
+      return this.comparisonDataset.layers.map((layer) => layer.Temporal);
     },
 
     tabsAreVisible() {
@@ -788,7 +882,12 @@ export default {
       let tabList = this.$refs.tab._props.tabs; //directly accessing the storage of tab instances
       console.info("currentTabKey", currentTabKey, "tabList:", tabList);
 
-      for (const tab of tabList) {
+      //for (const tab of tabList)
+      let index = null;
+      for (let i = 0; i < tabList.length; i++) {
+        let tab = tabList[i];
+        index = i;
+
         console.log(
           `${currentTabKey} vs
           ${tab.key},`
@@ -809,6 +908,8 @@ export default {
             currentTabKey
           );
       }
+
+      return index; //
 
       /* let tab = this.currentTabInstance;
       console.log("current tab; overwriting", tab);
@@ -892,18 +993,90 @@ export default {
       console.log("getTabs", this.$refs.tab.getTabs());
     },
     handleSwap(tab, targetTab) {
+      // tab, targetTab
+      // console.info("swap", tab, targetTab);
       console.info("swap", tab, targetTab);
+      this.handleDragEnd(null, tab); //sort of a hack that solves two issues noticed right now
+      //1) dragend does not seem to always trigger
+      //2) comparison data layer/map instance/comparisonDataset and comparisonLayer not updating until a second attempt
     },
     handleDragStart(e, tab, index) {
       console.info("dragstart", e, tab, index);
-      this.handleTabClick(e, tab, index); //to trigger auto select
+      //disable for dual mode, allowing dragend logic to take over updating map with data
+      // let tabs = this.$refs.tab.getTabs();
+      if (!this.dualModeEnabled) {
+        //check if it's the first or last tab, trigger to update
+        this.handleTabClick(e, tab, index); //to trigger auto select
+      }
+      // else if (this.dualModeEnabled && index === tabs.length - 1) {
+      //   //index indicates it's the last tab, do comparison update
+      //   console.log("last tab dragging update");
+      //   this.handleTabClick(e, tab, index, true); //to trigger auto select
+      // } else if (this.dualModeEnabled && index === 0) {
+      //   //index indicates it's the first tab, do normal update
+      //   console.log("first tag dragging update");
+      //   this.handleTabClick(e, tab, index); //to trigger auto select
+      // }
+      else {
+        console.log("dragstart skipped due to dualmode on");
+        this.updateControllerFromTab(tab);
+      }
     },
-    handleDragging(e, tab, index) {
-      console.info("dragging", e, tab, index);
+
+    handleDragging() {
+      // e, tab, index
+      // console.info("dragging", e, tab, index);
     },
-    handleDragEnd(e, tab, index) {
-      console.info("dragend", e, tab, index);
+
+    handleDragEnd(e, tab) {
+      console.info("dragend", e, tab);
+
+      //dual mode tab logic
+      //check position the tab has been placed in
+      if (this.dualModeEnabled) {
+        console.log("dualmode-dragend start");
+        let key = tab.key;
+        let tabs = this.$refs.tab.getTabs();
+        //check if it's first or last of all tabs
+        if (key === tabs[0].key) {
+          //it's the first, update main map
+          console.log(
+            "tab dragged into first place -> updating main/left map instance"
+          );
+          let index = 0;
+          this.handleTabClick(e, tab, index, false);
+        } else if (key === tabs[tabs.length - 1].key) {
+          //it's the last, update the comparison map
+          console.log(
+            "tab dragged into last place -> updating compare/right map instance"
+          );
+          let index = tabs.length - 1;
+          //update the comparison-related state info, which is used in separate emitComparisonUpdate
+          this.comparisonDatasetName = this.activeDatasetName;
+          this.comparisonLayerName = this.activeLayerName;
+          //trigger update
+          this.handleTabClick(e, tab, index, true);
+        }
+        //CSS styling of first/last tabs in dualmode
+        //get the tabs html nodes
+        this.clearTabStyles();
+        let tabNodeList = document.querySelectorAll(".tabs-content .tabs-item");
+        // tabNodeList.forEach((tabNode) => {
+        //   tabNode.classList.remove(
+        //     "tab-leftmost-highlight",
+        //     "tab-rightmost-highlight"
+        //   );
+        // });
+        //add custom first/last custom styling
+        //TODO add consideration for current number of tabs
+        // if (tabNodeList.length > 1)
+        tabNodeList[0]?.classList.add("tab-leftmost-highlight");
+        tabNodeList[tabNodeList.length - 1]?.classList.add(
+          "tab-rightmost-highlight"
+        );
+      }
     },
+
     handleRemove(e, tab, index) {
       console.info("remove", e, tab, index);
       //on close, if length of tabs is 1, get that tab and call handleClick to select that layer automatically
@@ -918,7 +1091,7 @@ export default {
         );
       }
     },
-    handleTabClick(e, tab, index) {
+    handleTabClick(e, tab, index = null, comparison = false) {
       //intended to facilitate resetting the filter
       this.activeGoalType = tab.data.filters.goalType; //str
       this.activeGoal = tab.data.filters.goal; ///int
@@ -930,7 +1103,13 @@ export default {
       this.updateControllerFromTab(tab);
       //update tab instance reference stored for use in replacing current active tab
       console.info(e, tab, index);
-      this.emitUpdate();
+      if (!comparison) {
+        console.log("handleTabClick: updating main map");
+        this.emitUpdate();
+      } else if (comparison === true) {
+        console.log("handleTabClick: updating comparison map");
+        this.emitComparisonUpdate();
+      }
     },
 
     updateControllerFromTab(tab) {
@@ -961,6 +1140,17 @@ export default {
       return labelString;
     },
 
+    clearTabStyles() {
+      let tabNodeList = document.querySelectorAll(".tabs-content .tabs-item"); // console.log("tabNodeList", tabNodeList);
+      //clear previous first/last custom styling
+      tabNodeList.forEach((tabNode) => {
+        tabNode.classList.remove(
+          "tab-leftmost-highlight",
+          "tab-rightmost-highlight"
+        );
+      });
+    },
+
     onInput() {
       //interaction handler for dataset and layer selectors of the dataset controller
       this.replaceCurrentTab();
@@ -974,16 +1164,21 @@ export default {
     emitUpdate() {
       // this.gis_store.testIncrement();
       // console.log(`emitUpdate of activeDataset and activeLayer`);
-      let active = { dataset: this.activeDataset, layer: this.activeLayer }; //package data to pass to parents with update
+      let active = {
+        dataset: this.activeDataset,
+        layer: this.activeLayer,
+      }; //package data to pass to parents with update
+      //updating units
       console.log("$emit update:", active);
       this.$emit("update", active);
     },
     emitComparisonUpdate() {
-      console.warn("emitComparisonUpdate");
+      console.log("emitComparisonUpdate");
       let active = {
         dataset: this.comparisonDataset,
         layer: this.comparisonLayer,
       }; //package data to pass to parents with update
+      //updating units
       this.$emit("updateComparison", active);
     },
 
@@ -1012,6 +1207,10 @@ export default {
       // this.$refs.slider && this.$refs.slider.items[goalNumber-1].toggle();
       this.$refs.slider.scrollOffset = 120 * (goalNumber - 1);
     },
+
+    _debugLog(dataValue) {
+      console.log(dataValue);
+    },
   },
 };
 </script>
@@ -1019,9 +1218,92 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 /*Brandon additions*/
+.comparisonButtons .v-btn {
+  padding: 0 1em !important;
+  height: 100% !important;
+}
+
 .data-controller .v-sheet.v-card {
   border-radius: 0;
 }
+
+.dualmode-legend-container {
+  background-color: transparent;
+  position: absolute;
+  width: 80%;
+  top: 90.5%;
+  left: 10%;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.legend-frame {
+  flex: 0 1 320px;
+  text-align: center;
+  padding: 4px 0;
+  border-radius: 5px;
+}
+.main-shadow-color {
+  box-shadow: 0px 0px 20px 10px red;
+}
+.comparison-shadow-color {
+  box-shadow: 0px 0px 20px 10px magenta;
+}
+
+.main-map-legend,
+.comparison-map-legend {
+  /* position: relative; */
+  /* background-color: grey; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.main-map-legend {
+  /* left: 25vw;
+  top: 75vh; */
+}
+
+.comparison-map-legend {
+  /* left: 75vw;
+  top: 75vh; */
+}
+
+/* .left-symbol,
+.right-symbol {
+  position: relative;
+  background-color: grey;
+}
+.left-symbol {
+  position: absolute;
+  left: -12px;
+}
+.right-symbol {
+  position: absolute;
+  right: 12px;
+} */
+.legend-title {
+  font-weight: bold;
+}
+
+/* .left-symbol, */
+#main-legend-title,
+.tab-leftmost-highlight {
+  color: red;
+  border: red;
+}
+/* .right-symbol, */
+#comparison-legend-title,
+.tab-rightmost-highlight {
+  color: magenta;
+  border: magenta;
+}
+
 .tab-system-box {
   /* should force the chrome-tabs and tab-add towards extreme ends of container */
   display: flex;
@@ -1152,10 +1434,14 @@ export default {
 }
 
 /* TESTING - TAB SYSTEM */
+/* .vue-tabs-chrome {
+} */
 .vue-tabs-chrome .tabs-content,
 .tab-add {
+  /* height: inherit; */
   height: 22px;
 }
+
 .vue-tabs-chrome {
   font-size: smaller;
   padding-top: 0;

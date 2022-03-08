@@ -61,6 +61,23 @@
       </div>
     </div>
 
+    <div class="dualmode-legend-container" v-show="dualModeEnabled">
+      <div class="legend-frame background-grey">
+        <div id="main-legend-title" class="legend-title">Left Legend</div>
+        <div id="main-map-legend" class="legend main-map-legend"></div>
+        <!-- <div class="main-units">{{ activeLayer.Unit }}</div> -->
+      </div>
+      <div class="legend-frame background-grey">
+        <div id="comparison-legend-title" class="legend-title">
+          Right Legend
+        </div>
+        <div id="comparison-map-legend" class="legend comparison-map-legend">
+          placeholder legend content
+        </div>
+      </div>
+      <!-- <div class="comparison-units">{{ activeLayer.Unit }}</div> -->
+    </div>
+
     <div id="mapsContainer">
       <div id="map">
         <div class="loader-gis-modal">
@@ -75,20 +92,6 @@
 
       <div id="map2"></div>
     </div>
-    <!-- <div id="comparison-container" class="display-none">
-        <div id="leftMap" class="comparison_map"></div>
-        <div id="rightMap" class="comparison_map"></div>
-      </div> -->
-    <!-- <div id="map">
-      <div class="loader-gis-modal">
-        <grid-loader
-          class="loader-gis display-none"
-          :loading="gisLoader.loading"
-          :color="gisLoader.color"
-          :size="gisLoader.size"
-        ></grid-loader>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -147,7 +150,7 @@ export default {
       this.map.add3D();
     },
     toggleLabels(labelObject) {
-      this.map.addLabels(labelObject);
+      this.map.toggleLabels(labelObject);
     },
     toggleDualMode() {
       this.dualModeEnabled = !this.dualModeEnabled;
@@ -439,6 +442,15 @@ export default {
               `Unrecognized case of activeDataset.type: ${activeDataset.type} in updateComparisonMap`
             );
         }
+
+        //copied and adapted from start of updateMap()
+        /* if (!(activeDataset === globals.lastActive.dataset)) {
+          // console.log(`dataset changing from ${globals.lastActive.dataset?.name} -> ${activeDataset.name}; resetting color palette;`);
+          globals.lastActiveComparison.dataset = activeDataset;
+          globals.comparisonLayerState.color = null;
+          // this.resetToolbarMenus();
+        } */
+
         if (activeLayer) {
           //display loader spinner
           console.log("showing loading spinner");
@@ -623,7 +635,7 @@ export default {
   padding: 2px 7px;
   /* border: 2px solid #333; */
   position: absolute;
-  bottom: 6vh;
+  bottom: 10vh;
   right: 0.5vw;
   box-sizing: border-box;
 }
