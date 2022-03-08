@@ -1095,7 +1095,7 @@ export default class Map {
       console.log(`2D icon visible; no flip animate`);
     }
   }
-  addLabels(labelObject) {
+  toggleLabels(labelObject) {
     let map = this.map;
 
     //adapted from oldcode
@@ -1113,14 +1113,10 @@ export default class Map {
           }
         }
       });
-      //$('#addLabels').toggle();
-      //$('#addLabels')[0].innerText = 'Remove Labels'
     } else {
       globals.basemapLabels.forEach(function (x) {
         map.removeLayer(x.id);
       });
-
-      //$('#addLabels')[0].innerText = 'Add Labels'
     }
 
     map.once("idle", () => {

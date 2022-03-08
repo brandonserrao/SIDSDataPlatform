@@ -1001,14 +1001,17 @@ export default {
         this.updateControllerFromTab(tab);
       }
     },
+
     handleDragging() {
       // e, tab, index
       // console.info("dragging", e, tab, index);
     },
+
     handleDragEnd(e, tab) {
       console.info("dragend", e, tab);
 
-      //dual mode tab logic //check position the tab has been placed in
+      //dual mode tab logic
+      //check position the tab has been placed in
       if (this.dualModeEnabled) {
         console.log("dualmode-dragend start");
         let key = tab.key;
@@ -1033,8 +1036,26 @@ export default {
           //trigger update
           this.handleTabClick(e, tab, index, true);
         }
+        //CSS styling of first/last tabs in dualmode
+        //get the tabs html nodes
+        let tabNodeList = document.querySelectorAll(".tabs-content .tabs-item"); // console.log("tabNodeList", tabNodeList);
+        //clear previous first/last custom styling
+        tabNodeList.forEach((tabNode) => {
+          tabNode.classList.remove(
+            "tab-leftmost-highlight",
+            "tab-rightmost-highlight"
+          );
+        });
+        //add custom first/last custom styling
+        //TODO add consideration for current number of tabs
+        // if (tabNodeList.length > 1)
+        tabNodeList[0]?.classList.add("tab-leftmost-highlight");
+        tabNodeList[tabNodeList.length - 1]?.classList.add(
+          "tab-rightmost-highlight"
+        );
       }
     },
+
     handleRemove(e, tab, index) {
       console.info("remove", e, tab, index);
       //on close, if length of tabs is 1, get that tab and call handleClick to select that layer automatically
@@ -1171,6 +1192,14 @@ export default {
 .data-controller .v-sheet.v-card {
   border-radius: 0;
 }
+
+.tab-leftmost-highlight {
+  color: red;
+}
+.tab-rightmost-highlight {
+  color: magenta;
+}
+
 .tab-system-box {
   /* should force the chrome-tabs and tab-add towards extreme ends of container */
   display: flex;

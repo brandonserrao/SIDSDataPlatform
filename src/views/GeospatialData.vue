@@ -147,7 +147,7 @@ export default {
       this.map.add3D();
     },
     toggleLabels(labelObject) {
-      this.map.addLabels(labelObject);
+      this.map.toggleLabels(labelObject);
     },
     toggleDualMode() {
       this.dualModeEnabled = !this.dualModeEnabled;
