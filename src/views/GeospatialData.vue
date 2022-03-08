@@ -62,8 +62,18 @@
     </div>
 
     <div class="dualmode-legend-container" v-show="dualModeEnabled">
-      <div class="main-map-legend">PLACEHOLDER CONTENT</div>
-      <div class="comparison-map-legend">PLACEHOLDER CONTENT</div>
+      <div class="legend-frame">
+        <div id="main-legend-title">placeholder title</div>
+        <div id="main-map-legend" class="legend main-map-legend">
+          PLACEHOLDER CONTENT
+        </div>
+      </div>
+      <div class="legend-frame">
+        <div id="comparison-legend-title">placeholder title</div>
+        <div id="comparison-map-legend" class="legend comparison-map-legend">
+          PLACEHOLDER CONTENT
+        </div>
+      </div>
     </div>
 
     <div id="mapsContainer">

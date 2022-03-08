@@ -1619,7 +1619,7 @@ export default class Map {
           `
         );
 
-        console.log(`recolor addLegend`);
+        // console.log(`recolor addLegend`);
         this.addLegend(
           undefined,
           breaks,
@@ -1643,31 +1643,88 @@ export default class Map {
     });
   }
   //adapted from oldcode
-  addNoDataLegend() {
-    console.log("!!ATTENTION!! addNoDataLegend called");
+  addNoDataLegend(targetLegend = null) {
+    //targetLegend valuerange = [null, 'main', 'comparison']
+    if (!targetLegend) {
+      //handle updating the data controller's legend
 
-    let legendTitle = document.getElementById("legendTitle");
-    let updateLegend = document.getElementById("updateLegend");
-    updateLegend.innerHTML = "";
-    legendTitle.innerHTML = "";
+      console.log("!!ATTENTION!! addNoDataLegend called");
 
-    //#clear old canvas
-    let old_canvas = document.getElementById("histogram");
-    if (typeof old_canvas != "undefined" && old_canvas != null) {
-      old_canvas.remove();
+      let legendTitle = document.getElementById("legendTitle");
+      let updateLegend = document.getElementById("updateLegend");
+      updateLegend.innerHTML = "";
+      legendTitle.innerHTML = "";
 
-      //#recreate an empty canvas element and add it to the frame
-      let histogram_frame = document.getElementById("histogram_frame");
-      let canvasNode = document.createElement("CANVAS");
-      canvasNode.id = "histogram";
-      canvasNode.classList.add("histogram_canvas");
-      canvasNode.setAttribute("width", 320);
-      canvasNode.setAttribute("height", 115);
-      histogram_frame.appendChild(canvasNode);
-      console.log("new canvasNode added to histogramFrame: ");
-      console.log(canvasNode);
+      //#clear old canvas
+      let old_canvas = document.getElementById("histogram");
+      if (typeof old_canvas != "undefined" && old_canvas != null) {
+        old_canvas.remove();
 
-      legendTitle.innerHTML = "No Data for this Region";
+        //#recreate an empty canvas element and add it to the frame
+        let histogram_frame = document.getElementById("histogram_frame");
+        let canvasNode = document.createElement("CANVAS");
+        canvasNode.id = "histogram";
+        canvasNode.classList.add("histogram_canvas");
+        canvasNode.setAttribute("width", 320);
+        canvasNode.setAttribute("height", 115);
+        histogram_frame.appendChild(canvasNode);
+        console.log("new canvasNode added to histogramFrame: ");
+        console.log(canvasNode);
+
+        legendTitle.innerHTML = "No Data for this Region";
+      } else {
+        if (!(targetLegend === "main" || targetLegend === "comparison")) {
+          console.warn("!!!UNEXPECTED VALUE FOR TARGETLEGEND!!!");
+          return;
+        } else {
+          console.log("!!ATTENTION!! addNoDataLegend called on ", targetLegend);
+          // let old_maincanvas = document.getElementById("histogram");
+          let title = document.getElementById(targetLegend + "-legend-title");
+          let legend = document.getElementById(targetLegend + "-map-legend");
+          title.innerHTML = "No Data for this Region";
+          legend.innerHTML = "No Data Legend";
+        }
+      }
+    }
+  }
+  updateOverlayLegend(/* selectedData ,*/ targetLegend = "main") {
+    //heavily adapted from addLegend code; TODO refactor/merge these two
+    let cls =
+      targetLegend === "main"
+        ? globals.currentLayerState
+        : globals.comparisonLayerState;
+    let colors = cls.color;
+    let breaks = cls.breaks;
+    let precision = globals.precision;
+    let activeLayer = globals.lastActive.layer;
+
+    let title = document.getElementById(targetLegend + "-legend-title");
+    let legend = document.getElementById(targetLegend + "-map-legend");
+
+    //taken from addLegend code
+    //reset the legend elements
+    legend.innerHTML = "";
+    title.innerHTML = "";
+    console.log(`activeLayer: ${activeLayer}`);
+    title.innerHTML = "<span>" + activeLayer.Unit + "</span>";
+    //creating legend-hexagon colored symbols
+    for (let x in colors) {
+      let containerDiv = document.createElement("div");
+      containerDiv.classList.add("col-flex");
+      containerDiv.classList.add("align-items-center");
+
+      let words = document.createElement("div");
+      words.classList.add("population-per-km-text");
+      //words.innerHTML = Number.parseFloat(breaks[x]).toFixed(3)
+      words.innerHTML = this.nFormatter(breaks[x], precision);
+      //words.innerHTML = Number(this.nFormatter(breaks[x], 2))
+      let hexI = document.createElement("div");
+      hexI.classList.add("population-per-km-img");
+      hexI.style.backgroundColor = colors[x];
+
+      containerDiv.appendChild(words);
+      containerDiv.appendChild(hexI);
+      legend.appendChild(containerDiv);
     }
   }
   addLegend(

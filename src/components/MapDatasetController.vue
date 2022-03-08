@@ -416,8 +416,11 @@
         id="histogram_frame"
         class="pic app-body population-per-km col-flex"
       >
-        <div class="row-flex space-evenly" id="legendTitle"></div>
-        <div class="row-flex space-evenly" id="updateLegend"></div>
+        <div class="row-flex space-evenly legend-title" id="legendTitle"></div>
+        <div
+          class="row-flex space-evenly legend main-legend"
+          id="updateLegend"
+        ></div>
         <canvas
           ref="canvas_histogram"
           id="histogram"
@@ -1268,11 +1271,13 @@ export default {
 } */
 
 .left-symbol,
+.main-map-legend,
 .tab-leftmost-highlight {
   color: red;
   border: red;
 }
 .right-symbol,
+.comparison-map-legend,
 .tab-rightmost-highlight {
   color: magenta;
   border: magenta;
