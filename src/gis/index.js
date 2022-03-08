@@ -1713,6 +1713,12 @@ export default class Map {
     let breaks = cls.breaks;
     let precision = globals.precision;
     let activeLayer = globals.lastActive.layer;
+    // let activeMainLayer = globals.lastActive.layer;
+    // let activeComparisonLayer = globals.lastActiveComparison.layer;
+    // let unit =
+    //   targetLegend === "comparison"
+    //     ? activeComparisonLayer.Unit
+    //     : activeMainLayer.Unit;
 
     let title = document.getElementById(targetLegend + "-legend-title");
     let legend = document.getElementById(targetLegend + "-map-legend");
@@ -1721,8 +1727,9 @@ export default class Map {
     //reset the legend elements
     legend.innerHTML = "";
     title.innerHTML = "";
-    console.log(`activeLayer: ${activeLayer}`);
+
     title.innerHTML = "<span>" + activeLayer.Unit + "</span>";
+    // title.innerHTML = "<span>" + unit + "</span>";
     //creating legend-hexagon colored symbols
     for (let x in colors) {
       let containerDiv = document.createElement("div");

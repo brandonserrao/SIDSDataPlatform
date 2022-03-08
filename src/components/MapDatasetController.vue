@@ -1226,10 +1226,10 @@ export default {
 }
 
 .dualmode-legend-container {
-  background-color: rgba(255, 255, 255, 0.762);
+  background-color: transparent;
   position: absolute;
   width: 80%;
-  top: 90%;
+  top: 91%;
   left: 10%;
   z-index: 1;
 
@@ -1242,6 +1242,7 @@ export default {
 
 .legend-frame {
   flex: 0 1 320px;
+  text-align: center;
 }
 
 .main-map-legend,
@@ -1276,15 +1277,18 @@ export default {
   position: absolute;
   right: 12px;
 } */
+.legend-title {
+  font-weight: bold;
+}
 
-.left-symbol,
-.main-map-legend,
+/* .left-symbol, */
+#main-legend-title,
 .tab-leftmost-highlight {
   color: red;
   border: red;
 }
-.right-symbol,
-.comparison-map-legend,
+/* .right-symbol, */
+#comparison-legend-title,
 .tab-rightmost-highlight {
   color: magenta;
   border: magenta;

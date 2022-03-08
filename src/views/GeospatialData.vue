@@ -62,17 +62,21 @@
     </div>
 
     <div class="dualmode-legend-container" v-show="dualModeEnabled">
-      <div class="legend-frame">
-        <div id="main-legend-title">Left Legend</div>
+      <div class="legend-frame background-grey">
+        <div id="main-legend-title" class="legend-title">Left Legend</div>
         <div id="main-map-legend" class="legend main-map-legend"></div>
+        <!-- <div class="main-units">{{ activeLayer.Unit }}</div> -->
       </div>
-      <div class="legend-frame">
-        <div id="comparison-legend-title">Right Legend</div>
+      <div class="legend-frame background-grey">
+        <div id="comparison-legend-title" class="legend-title">
+          Right Legend
+        </div>
         <div
           id="comparison-map-legend"
           class="legend comparison-map-legend"
         ></div>
       </div>
+      <!-- <div class="comparison-units">{{ activeLayer.Unit }}</div> -->
     </div>
 
     <div id="mapsContainer">
@@ -623,7 +627,7 @@ export default {
   padding: 2px 7px;
   /* border: 2px solid #333; */
   position: absolute;
-  bottom: 6vh;
+  bottom: 10vh;
   right: 0.5vw;
   box-sizing: border-box;
 }
