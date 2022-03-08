@@ -63,16 +63,15 @@
 
     <div class="dualmode-legend-container" v-show="dualModeEnabled">
       <div class="legend-frame">
-        <div id="main-legend-title">placeholder title</div>
-        <div id="main-map-legend" class="legend main-map-legend">
-          PLACEHOLDER CONTENT
-        </div>
+        <div id="main-legend-title">Left Legend</div>
+        <div id="main-map-legend" class="legend main-map-legend"></div>
       </div>
       <div class="legend-frame">
-        <div id="comparison-legend-title">placeholder title</div>
-        <div id="comparison-map-legend" class="legend comparison-map-legend">
-          PLACEHOLDER CONTENT
-        </div>
+        <div id="comparison-legend-title">Right Legend</div>
+        <div
+          id="comparison-map-legend"
+          class="legend comparison-map-legend"
+        ></div>
       </div>
     </div>
 

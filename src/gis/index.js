@@ -378,6 +378,9 @@ export default class Map {
         );
 
         mapClassInstance.recolorBasedOnWhatsOnPage();
+
+        mapClassInstance.updateOverlayLegend("main");
+        mapClassInstance.updateOverlayLegend("comparison");
       });
 
       //add listener for the comparison map i.e map2
@@ -392,6 +395,9 @@ export default class Map {
         );
         let recolorComparison = true;
         mapClassInstance.recolorBasedOnWhatsOnPage(recolorComparison);
+
+        mapClassInstance.updateOverlayLegend("main");
+        mapClassInstance.updateOverlayLegend("comparison");
       });
     }
   }
@@ -1486,6 +1492,9 @@ export default class Map {
             console.log("skipping legend update;");
           }
 
+          this.updateOverlayLegend("main");
+          this.updateOverlayLegend("comparison");
+
           setTimeout(() => {
             map.setPaintProperty(
               cls.hexSize,
@@ -1531,7 +1540,7 @@ export default class Map {
       if (!recolorComparison) {
         this.addNoDataLegend();
       } else {
-        console.log("recolorComparison:", recolorComparison);
+        // console.log("recolorComparison:", recolorComparison);
       }
     } else {
       var uniFeatures;
@@ -1545,7 +1554,7 @@ export default class Map {
 
       var selectedData = uniFeatures.map((x) => x.properties[cls.dataLayer]);
 
-      console.log(selectedData);
+      // console.log(selectedData);
       //-----------------------------------------???
       var breaks = chroma.limits(selectedData, "q", 4);
       console.log("breaks in recolor:", breaks);
@@ -1625,8 +1634,14 @@ export default class Map {
           breaks,
           undefined, //should be undefined here but default value in addLegend should handle it
           undefined, //should be undefined here but default value in addLegend should handle it
-          selectedData
+          selectedData,
+          recolorComparison
         );
+
+        //updating overlaid legends for main/comparison maps
+        //moved into recolor listener, needs to fire for both maps
+        // this.updateOverlayLegend("main");
+        // this.updateOverlayLegend("comparison");
 
         setTimeout(() => {
           map.setPaintProperty(
@@ -1688,6 +1703,7 @@ export default class Map {
     }
   }
   updateOverlayLegend(/* selectedData ,*/ targetLegend = "main") {
+    //targetLegend = 'main' OR 'comparison'
     //heavily adapted from addLegend code; TODO refactor/merge these two
     let cls =
       targetLegend === "main"
@@ -1732,9 +1748,20 @@ export default class Map {
     breaks = globals.currentLayerState.breaks,
     precision = globals.precision, //default added to mirror oldcode behaviour of global set/modified precision value
     activeLayer = globals.lastActive.layer, //should eliminate need for id etc; default value added as fallback to cope with call from recolor function
-    selectedData //i believe this is input from updatingMap based on whats features/data on screen
+    selectedData, //i believe this is input from updatingMap based on whats features/data on screen
+    recolorComparison
   ) {
     // let activeLayer = activeLayer; //activeLayer is oldcode variable of the active layer from allLayers globalvariable
+
+    //selected appropriate state management
+    let cls = !recolorComparison
+      ? globals.currentLayerState
+      : globals.comparisonLayerState;
+    //overwrite defaulting arguments if it's a comparison update
+    if (recolorComparison === true) {
+      colors = cls.color;
+      breaks = cls.breaks;
+    }
 
     if (!activeLayer) {
       alert(`activeLayer ${activeLayer} is not valid for addLegend`);
@@ -1788,6 +1815,7 @@ export default class Map {
     precision,
     activeLayer,
     selectedData //i believe this is input from updatingMap based on whats features/data on screen
+    //recolorComparison
 
     /* colors = globals.currentLayerState.colors,
     breaks = globals.currentLayerState.breaks,
@@ -1796,12 +1824,12 @@ export default class Map {
     selectedData //i believe this is input from updatingMap based on whats features/data on screen
      */
   ) {
-    console.log("updateHistogram params passed are:");
-    console.log("colors:", colors);
-    console.log("breaks:", breaks);
-    console.log("precision:", precision);
-    console.log("activeLayer:", activeLayer);
-    console.log("selectedData:", selectedData);
+    // console.log("updateHistogram params passed are:");
+    // console.log("colors:", colors);
+    // console.log("breaks:", breaks);
+    // console.log("precision:", precision);
+    // console.log("activeLayer:", activeLayer);
+    // console.log("selectedData:", selectedData);
 
     //old code
 
@@ -1843,7 +1871,7 @@ export default class Map {
     for (let i = 0; i < breaks_histogram.length; i++) {
       breaks_precision.push(this.nFormatter(breaks_histogram[i], precision));
     }
-    console.warn("DEBUGGING breaks_precision: ", breaks_precision);
+    // console.warn("DEBUGGING breaks_precision: ", breaks_precision);
 
     var histogram_data = Array(nGroup).fill(0);
     for (let i = 0; i < selectedData.length; i++) {

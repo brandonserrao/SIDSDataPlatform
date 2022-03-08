@@ -1235,15 +1235,22 @@ export default {
 
   display: flex;
   flex-direction: row;
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   align-items: center;
   justify-content: space-between;
+}
+
+.legend-frame {
+  flex: 0 1 320px;
 }
 
 .main-map-legend,
 .comparison-map-legend {
   /* position: relative; */
-  background-color: grey;
+  /* background-color: grey; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
 
 .main-map-legend {
