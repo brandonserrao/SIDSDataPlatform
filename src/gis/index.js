@@ -353,6 +353,53 @@ export default class Map {
       clickDiv.style.display = "none";
       clickDiv.innerHTML = ""; */
     });
+
+    //copied listeners for comparison map instance-----------------------------------------
+    //TODO refactor this entire function
+    this.map2.on("click", "hex5", function (e, mapClassInstance = instance) {
+      mapClassInstance.clearOnClickQuery(mapClassInstance.map2);
+      mapClassInstance.onDataClick(e, mapClassInstance.map2);
+    });
+
+    this.map2.on("click", "hex10", function (e, mapClassInstance = instance) {
+      mapClassInstance.clearOnClickQuery(mapClassInstance.map2);
+      mapClassInstance.onDataClick(e, mapClassInstance.map2);
+    });
+
+    this.map2.on("click", "hex1", function (e, mapClassInstance = instance) {
+      mapClassInstance.clearOnClickQuery(mapClassInstance.map2);
+      mapClassInstance.onDataClick(e, mapClassInstance.map2);
+    });
+
+    this.map2.on(
+      "click",
+      "hex5clipped",
+      function (e, mapClassInstance = instance) {
+        mapClassInstance.clearOnClickQuery(mapClassInstance.map2);
+        mapClassInstance.onDataClick(e, mapClassInstance.map2);
+      }
+    );
+
+    this.map2.on("click", "ocean", function (e, mapClassInstance = instance) {
+      mapClassInstance.clearOnClickQuery(mapClassInstance.map2);
+      mapClassInstance.onDataClick(e, mapClassInstance.map2);
+    });
+
+    this.map2.on("click", "admin1", function (e, mapClassInstance = instance) {
+      mapClassInstance.clearOnClickQuery(mapClassInstance.map2);
+      mapClassInstance.addAdminClick(e, "admin1", mapClassInstance.map2);
+    });
+
+    this.map2.on("click", "admin2", function (e, mapClassInstance = instance) {
+      console.log("map.on.click.admin2");
+
+      //clear old selections presents
+      mapClassInstance.clearOnClickQuery(mapClassInstance.map2);
+
+      // this.onDataClick(e);
+      mapClassInstance.addAdminClick(e, "admin2", mapClassInstance.map2);
+    });
+    //--------------------------
   }
   _bindRecolorListeners(mapClassInstance) {
     // if (globals.compareMode) {
@@ -2070,19 +2117,24 @@ export default class Map {
     // clickDiv.style.display = "none";
     clickDiv.innerHTML = "";
   }
-  clearHexHighlight() {
-    if (this.map.getLayer("clickedone")) {
+  clearHexHighlight(mapboxMapInstance = this.map) {
+    if (mapboxMapInstance.getLayer("clickedone")) {
       console.log(`map:removing highlight`);
-      this.map.removeLayer("clickedone");
-      this.clearOnClickQuery(); //to remove the onClickQuery div
+      mapboxMapInstance.removeLayer("clickedone");
+      this.clearOnClickQuery(mapboxMapInstance); //to remove the onClickQuery div
     }
     // let clickDiv = document.getElementById("on-click-control");
     let clickDiv = document.getElementsByClassName("click-info-box")[0];
     clickDiv.classList.add("display-none");
   }
-  onDataClick(clicked) {
+  onDataClick(clicked, mapboxMapInstance = this.map) {
     console.log(`onDataClick clicked object:`, clicked);
     // console.log(clicked);
+    let cls = globals.currentLayerState;
+    if (mapboxMapInstance === this.map2) {
+      console.warn("MAP2 DATA CLICKED");
+      cls = globals.comparisonLayerState;
+    }
 
     // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     // let clickDiv = document.getElementById("on-click-control");
@@ -2096,9 +2148,7 @@ export default class Map {
 
     clickDiv.innerHTML =
       "<p><b>Value: </b>" +
-      clicked.features[0].properties[
-        globals.currentLayerState.dataLayer
-      ].toLocaleString() +
+      clicked.features[0].properties[cls.dataLayer].toLocaleString() +
       " " +
       document.getElementById("legendTitle").textContent +
       "</p>";
@@ -2106,17 +2156,17 @@ export default class Map {
   var legData = Vue._.find(allLayers, [
     "field_name",
     // currentGeojsonLayers.dataLayer,
-    globals.currentLayerState.dataLayer,
+    cls.dataLayer,
   ]); */
 
-    if (this.map.getSource("highlightS")) {
-      this.map.removeLayer("highlight");
-      this.map.removeSource("highlightS");
+    if (mapboxMapInstance.getSource("highlightS")) {
+      mapboxMapInstance.removeLayer("highlight");
+      mapboxMapInstance.removeSource("highlightS");
     }
 
-    if (this.map.getSource("clickedone")) {
-      this.map.removeLayer("clickedone");
-      this.map.removeSource("clickedone");
+    if (mapboxMapInstance.getSource("clickedone")) {
+      mapboxMapInstance.removeLayer("clickedone");
+      mapboxMapInstance.removeSource("clickedone");
     }
 
     // console.log(clicked.features);
@@ -2124,8 +2174,8 @@ export default class Map {
     var currId = clicked.features[0].properties.hexid;
     console.log(`highlighted hex currId: ${currId}`);
 
-    var feats = this.map.queryRenderedFeatures({
-      layers: [globals.currentLayerState.hexSize],
+    var feats = mapboxMapInstance.queryRenderedFeatures({
+      layers: [cls.hexSize],
       filter: ["==", "hexid", currId],
     });
 
@@ -2140,12 +2190,12 @@ export default class Map {
     // var dis = turf.dissolve(fc);
     var dis = dissolve(fc);
 
-    this.map.addSource("clickedone", {
+    mapboxMapInstance.addSource("clickedone", {
       type: "geojson",
       data: dis,
     });
 
-    this.map.addLayer({
+    mapboxMapInstance.addLayer({
       id: "clickedone",
       source: "clickedone",
       type: "line",
@@ -2155,7 +2205,7 @@ export default class Map {
       },
     });
   }
-  addAdminClick(e, adminLayerId) {
+  addAdminClick(e, adminLayerId, mapboxMapInstance = this.map) {
     // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     // let clickDiv = document.getElementById("on-click-control");
     let clickDiv = document.getElementsByClassName("click-info-box")[0];
@@ -2227,17 +2277,17 @@ export default class Map {
 
     //console.log(_.uniq(countries));
 
-    if (this.map.getSource("highlightS")) {
-      this.map.removeLayer("highlight");
-      this.map.removeSource("highlightS");
+    if (mapboxMapInstance.getSource("highlightS")) {
+      mapboxMapInstance.removeLayer("highlight");
+      mapboxMapInstance.removeSource("highlightS");
     }
 
-    if (this.map.getSource("joined")) {
-      this.map.removeLayer("joined");
-      this.map.removeSource("joined");
+    if (mapboxMapInstance.getSource("joined")) {
+      mapboxMapInstance.removeLayer("joined");
+      mapboxMapInstance.removeSource("joined");
     }
 
-    this.map.addSource("highlightS", {
+    mapboxMapInstance.addSource("highlightS", {
       type: "geojson",
       data: {
         type: "FeatureCollection",
@@ -2245,7 +2295,7 @@ export default class Map {
       },
     });
 
-    this.map.addLayer({
+    mapboxMapInstance.addLayer({
       id: "highlight",
       source: "highlightS",
       type: "line",
@@ -2294,7 +2344,7 @@ export default class Map {
       //map.getSource('highlightS').setData(joined)
       // var allGeos = []; //never used
 
-      this.map.addSource("joined", {
+      mapboxMapInstance.addSource("joined", {
         type: "geojson",
         data: {
           type: "FeatureCollection",
@@ -2302,7 +2352,7 @@ export default class Map {
         },
       });
 
-      this.map.addLayer({
+      mapboxMapInstance.addLayer({
         id: "joined",
         source: "joined",
         type: "line",
@@ -2312,9 +2362,9 @@ export default class Map {
         },
       });
 
-      this.map.getSource("joined").setData(joined);
+      mapboxMapInstance.getSource("joined").setData(joined);
     } else {
-      this.map.getSource("highlightS").setData(feats[0]);
+      mapboxMapInstance.getSource("highlightS").setData(feats[0]);
     }
 
     // })

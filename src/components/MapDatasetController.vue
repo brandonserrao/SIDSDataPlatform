@@ -1229,7 +1229,7 @@ export default {
   background-color: transparent;
   position: absolute;
   width: 80%;
-  top: 91%;
+  top: 90.5%;
   left: 10%;
   z-index: 1;
 
@@ -1243,6 +1243,8 @@ export default {
 .legend-frame {
   flex: 0 1 320px;
   text-align: center;
+  padding: 4px 0;
+  border-radius: 5px;
 }
 
 .main-map-legend,
