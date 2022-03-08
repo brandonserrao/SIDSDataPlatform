@@ -1760,6 +1760,9 @@ export default class Map {
     let breaks = cls.breaks;
     let precision = globals.precision;
     let activeLayer = globals.lastActive.layer;
+    // let activeLayer = !(targetLegend === "comparison")
+    //   ? globals.lastActive.layer
+    //   : globals.lastActiveComparison.layer;
     // let activeMainLayer = globals.lastActive.layer;
     // let activeComparisonLayer = globals.lastActiveComparison.layer;
     // let unit =
@@ -1772,10 +1775,14 @@ export default class Map {
 
     //taken from addLegend code
     //reset the legend elements
+
     legend.innerHTML = "";
     title.innerHTML = "";
+    // if (title) {
+    //   title.innerHTML = "";
+    // }
 
-    title.innerHTML = "<span>" + activeLayer.Unit + "</span>";
+    title.innerHTML = "<span>" + activeLayer?.Unit + "</span>";
     // title.innerHTML = "<span>" + unit + "</span>";
     //creating legend-hexagon colored symbols
     for (let x in colors) {

@@ -71,10 +71,9 @@
         <div id="comparison-legend-title" class="legend-title">
           Right Legend
         </div>
-        <div
-          id="comparison-map-legend"
-          class="legend comparison-map-legend"
-        ></div>
+        <div id="comparison-map-legend" class="legend comparison-map-legend">
+          placeholder legend content
+        </div>
       </div>
       <!-- <div class="comparison-units">{{ activeLayer.Unit }}</div> -->
     </div>
@@ -443,6 +442,15 @@ export default {
               `Unrecognized case of activeDataset.type: ${activeDataset.type} in updateComparisonMap`
             );
         }
+
+        //copied and adapted from start of updateMap()
+        /* if (!(activeDataset === globals.lastActive.dataset)) {
+          // console.log(`dataset changing from ${globals.lastActive.dataset?.name} -> ${activeDataset.name}; resetting color palette;`);
+          globals.lastActiveComparison.dataset = activeDataset;
+          globals.comparisonLayerState.color = null;
+          // this.resetToolbarMenus();
+        } */
+
         if (activeLayer) {
           //display loader spinner
           console.log("showing loading spinner");

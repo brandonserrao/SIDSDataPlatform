@@ -1168,6 +1168,7 @@ export default {
         dataset: this.activeDataset,
         layer: this.activeLayer,
       }; //package data to pass to parents with update
+      //updating units
       console.log("$emit update:", active);
       this.$emit("update", active);
     },
@@ -1177,6 +1178,7 @@ export default {
         dataset: this.comparisonDataset,
         layer: this.comparisonLayer,
       }; //package data to pass to parents with update
+      //updating units
       this.$emit("updateComparison", active);
     },
 
@@ -1245,6 +1247,12 @@ export default {
   text-align: center;
   padding: 4px 0;
   border-radius: 5px;
+}
+.main-shadow-color {
+  box-shadow: 0px 0px 20px 10px red;
+}
+.comparison-shadow-color {
+  box-shadow: 0px 0px 20px 10px magenta;
 }
 
 .main-map-legend,
