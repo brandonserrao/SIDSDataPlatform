@@ -709,16 +709,24 @@ export default class Map {
     }
 
     this.remove3d();
+    //update resolution state
     globals.currentLayerState.hexSize = resolution;
+    globals.comparisonLayerState.hexSize = resolution;
 
+    //clear maplayers that are usercontrolled
     for (var x in constants.userLayers) {
-      //clear maplayers that are usercontrolled
       if (map.getLayer(constants.userLayers[x])) {
         map.removeLayer(constants.userLayers[x]);
       }
+      if (globals.compareMode) {
+        if (map2.getLayer(constants.userLayers[x])) {
+          map2.removeLayer(constants.userLayers[x]);
+        }
+      }
     }
 
-    var currentSourceData = Vue._.find(globals.sourceData, function (o) {
+    //get source name
+    let currentSourceData = Vue._.find(globals.sourceData, function (o) {
       if (o.name == globals.currentLayerState.hexSize) {
         console.log(`matching sourceData name: ${o.name}`);
       }
@@ -730,22 +738,23 @@ export default class Map {
     console.log("currentSourceData from in sourceData: ");
     console.log(currentSourceData);
 
-    map.addLayer(
-      {
-        id: resolution,
-        type: "fill",
-        source: resolution,
-        "source-layer": currentSourceData.layer,
-        layout: {
-          visibility: "visible",
-        },
-        paint: {
-          "fill-color": "blue",
-          "fill-opacity": 0.0, //globals.opacity, // 0
-        },
+    let options = {
+      id: resolution,
+      type: "fill",
+      source: resolution,
+      "source-layer": currentSourceData.layer,
+      layout: {
+        visibility: "visible",
       },
-      globals.firstSymbolId
-    );
+      paint: {
+        "fill-color": "blue",
+        "fill-opacity": 0.0, //globals.opacity, // 0
+      },
+    };
+    map.addLayer(options, globals.firstSymbolId);
+    if (globals.compareMode) {
+      map2.addLayer(options, globals.firstSymbolId);
+    }
 
     /* if (resolution === "hex1") {
         //showing loader in expectation of hex1 taking longer to display
@@ -762,6 +771,9 @@ export default class Map {
     if (map.getStyle().name === "Mapbox Satellite") {
       console.log(`map style is Mapbox Satellite; moveLayer to ${resolution}`);
       map.moveLayer(resolution);
+      if (globals.compareMode) {
+        map2.moveLayer(resolution);
+      }
     }
 
     /*     map.once("idle", function (e) {
@@ -2216,6 +2228,11 @@ export default class Map {
     });
   }
   addAdminClick(e, adminLayerId, mapboxMapInstance = this.map) {
+    let cls = globals.currentLayerState;
+    if (mapboxMapInstance === this.map2) {
+      // console.warn("MAP2 DATA CLICKED");
+      cls = globals.comparisonLayerState;
+    }
     // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     // let clickDiv = document.getElementById("on-click-control");
     let clickDiv = document.getElementsByClassName("click-info-box")[0];
@@ -2223,6 +2240,9 @@ export default class Map {
     clickDiv.style.height = "auto";
     // clickDiv.style.height = "100px";
     clickDiv.style.width = "200px";
+    let unitText = !(mapboxMapInstance === this.map2)
+      ? globals.lastActive.layer.Unit
+      : globals.lastActiveComparison.layer.Unit;
 
     console.log(e.features[0].properties);
 
@@ -2244,7 +2264,7 @@ export default class Map {
     });
 
     var feats;
-    if (globals.currentLayerState.hexSize === "admin1") {
+    if (cls.hexSize === "admin1") {
       feats = this.map.querySourceFeatures("admin1", {
         sourceLayer: ["admin1"],
         filter: ["==", "GID_1", e.features[0].id],
@@ -2257,13 +2277,11 @@ export default class Map {
         e.features[0].properties.TYPE_1 +
         "</b></p>" +
         "<br><p><b>Value: </b>" +
-        e.features[0].properties[
-          globals.currentLayerState.dataLayer
-        ].toLocaleString() +
+        e.features[0].properties[cls.dataLayer].toLocaleString() +
         " " +
         document.getElementById("legendTitle").textContent +
         "</p>";
-    } else if (globals.currentLayerState.hexSize === "admin2") {
+    } else if (cls.hexSize === "admin2") {
       feats = this.map.querySourceFeatures("admin2", {
         sourceLayer: ["admin2"],
         filter: ["==", "GID_2", e.features[0].id],
@@ -2271,11 +2289,9 @@ export default class Map {
 
       clickDiv.innerHTML =
         "<p><b>Value: </b>" +
-        e.features[0].properties[
-          globals.currentLayerState.dataLayer
-        ].toLocaleString() +
+        e.features[0].properties[cls.dataLayer].toLocaleString() +
         " " +
-        document.getElementById("legendTitle").textContent +
+        unitText + //document.getElementById("legendTitle").textContent + +
         "</p>";
     }
 
