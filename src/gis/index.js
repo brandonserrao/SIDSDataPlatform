@@ -1412,12 +1412,11 @@ export default class Map {
     }
 
     setTimeout(() => {
-      console.log(`queryRenderedFeatures on layers: ${cls.hexSize} `);
+      // console.log(`queryRenderedFeatures on layers: ${cls.hexSize} `);
       var features = map.queryRenderedFeatures({
         layers: [cls.hexSize],
       });
-      // console.log(`features:`);
-      // console.log(features);
+      // console.warn(`changeDataOnMap unfiltered features:`, features);
 
       if (features) {
         var uniFeatures;
@@ -1428,12 +1427,11 @@ export default class Map {
         } else {
           uniFeatures = this.getUniqueFeatures(features, "hexid");
         }
-        // console.log("uniFeatures");
-        // console.log(uniFeatures);
+        // console.warn("changeDataOnMap uniqueFeatures", uniFeatures);
 
         //console.log(uniFeatures);
         var selectedData = uniFeatures.map((x) => x.properties[Field_Name]);
-        // console.log("selectedData", selectedData);
+        console.warn("changeDataOnMap selectedData", selectedData);
 
         var breaks = chroma.limits(selectedData, "q", 4);
         // console.log("breaks:", breaks);
@@ -1752,14 +1750,16 @@ export default class Map {
   updateOverlayLegend(/* selectedData ,*/ targetLegend = "main") {
     //targetLegend = 'main' OR 'comparison'
     //heavily adapted from addLegend code; TODO refactor/merge these two
-    let cls =
-      targetLegend === "main"
-        ? globals.currentLayerState
-        : globals.comparisonLayerState;
+    let cls = !(targetLegend === "comparison")
+      ? globals.currentLayerState
+      : globals.comparisonLayerState;
     let colors = cls.color;
     let breaks = cls.breaks;
     let precision = globals.precision;
-    let activeLayer = globals.lastActive.layer;
+    // let activeLayer = globals.lastActive.layer;
+    let activeLayer = !(targetLegend === "comparison")
+      ? globals.lastActive.layer
+      : globals.lastActiveComparison.layer;
     // let activeLayer = !(targetLegend === "comparison")
     //   ? globals.lastActive.layer
     //   : globals.lastActiveComparison.layer;

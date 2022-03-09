@@ -502,6 +502,12 @@ export default {
           }
         }
       }
+
+      //TODO: reevaluate this; copied from updateMap from
+      //workaround!!! implemented for recoloring code
+      //, setting a global variable instead of passing it through;
+      globals.lastActiveComparison.layer = activeLayer;
+      globals.lastActiveComparsion.dataset = activeDataset;
     },
     updateMap(activeDataset, activeLayer) {
       if (!(activeDataset === globals.lastActive.dataset)) {
