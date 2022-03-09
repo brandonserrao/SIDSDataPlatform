@@ -2139,25 +2139,28 @@ export default class Map {
     // console.log(clicked);
     let cls = globals.currentLayerState;
     if (mapboxMapInstance === this.map2) {
-      console.warn("MAP2 DATA CLICKED");
+      // console.warn("MAP2 DATA CLICKED");
       cls = globals.comparisonLayerState;
     }
 
     // var clickDiv = document.getElementsByClassName("my-custom-control")[0];
     // let clickDiv = document.getElementById("on-click-control");
     let clickDiv = document.getElementsByClassName("click-info-box")[0];
-    clickDiv.textContent = "CLICKED"; //placeholder content
+    clickDiv.textContent = "CLICKED placeholder content"; //placeholder content
 
     clickDiv.classList.remove("display-none"); // clickDiv.style.display = "block";
     // clickDiv.style.height = "100px";
     clickDiv.style.height = "auto";
     clickDiv.style.width = "200px";
-
+    let unitText = !(mapboxMapInstance === this.map2)
+      ? globals.lastActive.layer.Unit
+      : globals.lastActiveComparison.layer.Unit;
     clickDiv.innerHTML =
       "<p><b>Value: </b>" +
       clicked.features[0].properties[cls.dataLayer].toLocaleString() +
       " " +
-      document.getElementById("legendTitle").textContent +
+      // +document.getElementById("legendTitle").textContent
+      unitText +
       "</p>";
     /* //was used with a console log for debugging
   var legData = Vue._.find(allLayers, [
