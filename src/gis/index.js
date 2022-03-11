@@ -379,7 +379,7 @@ export default class Map {
                 scaleLabel: {
                   display: true,
                   //labelString: Vue._.find(allLayers, ["field_name", attrId_1])["title"], //adapted from oldcode, i presume was looking for the title/name of the dataset in order to label axes
-                  labelString: firstLayer.Name,
+                  labelString: firstLayer.Unit,
                 },
                 ticks: {
                   min: X_breaks[0], //minimum tick
@@ -425,7 +425,7 @@ export default class Map {
                 scaleLabel: {
                   display: true,
                   //labelString: Vue._.find(allLayers, ["field_name", attrId_2])["title"],
-                  labelString: secondLayer.Name,
+                  labelString: secondLayer.Unit,
                 },
                 ticks: {
                   min: Y_breaks[0], //minimum tick
