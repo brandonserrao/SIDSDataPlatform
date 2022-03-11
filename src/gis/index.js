@@ -174,6 +174,344 @@ export default class Map {
       "secondLayer",
       secondLayer
     );
+
+    let mapClassInstance = this;
+    let map = this.map;
+    let cls = globals.currentLayerState;
+
+    //adapted from oldcode createBivar() from bivariate.js
+    if (map.getLayer(cls.hexSize)) {
+      map.setPaintProperty(cls.hexSize, "fill-opacity", 0.0);
+    }
+
+    // if (!(secondLayer == null) && !(firstLayer == null)) {
+    // } else
+    if (secondLayer == null || firstLayer == null) {
+      console.warn(
+        "bivariate mode passed incomplete pair of layers:",
+        firstLayer,
+        secondLayer,
+        "doing nothing"
+      );
+      return;
+    } else {
+      console.log("bivariate passed layers:", firstLayer, secondLayer);
+      //a pair of datalayers passed so proceed to create bivariate
+      //remove existing bivariate map layer
+      console.log("removing preexisting bivariate layer");
+      if (map.getLayer("bivariate")) {
+        map.removeLayer("bivariate");
+        map.removeSource("bivariate");
+      }
+
+      //get map features //TODO refactor to account for future vector tiles being not aggregated; will to fetch multiple tiles; likely better to query sources instead of rendered
+      let features = map.queryRenderedFeatures({ layers: [cls.hexSize] });
+      if (features?.length != 0) {
+        let uniqueFeatures;
+        if (cls.hexSize === "admin1") {
+          uniqueFeatures = this.getUniqueFeatures(features, "GID_1");
+        } else if (cls.hexSize === "admin2") {
+          uniqueFeatures = this.getUniqueFeatures(features, "GID_2");
+        } else {
+          uniqueFeatures = this.getUniqueFeatures(features, "hexid");
+        }
+        //data ids for the two layers of interest
+        let attrId_1 = firstLayer.Field_Name;
+        let attrId_2 = secondLayer.Field_Name;
+        //isolate values from the aggregated property values in the features
+        let data_1 = uniqueFeatures.map(
+          (x_feat) => x_feat.properties[attrId_1]
+        );
+        let data_2 = uniqueFeatures.map(
+          (y_feat) => y_feat.properties[attrId_2]
+        );
+        //compute breakpoint values in these datasets
+        let X_breaks = chroma.limits(data_1, "q", 3);
+        let Y_breaks = chroma.limits(data_2, "q", 3);
+        //choice of bivariate color palette
+        let bivar_colors = colors.colorSeqSeq3["blue-pink-purple"];
+        //containers for tracking class of each feature, and for counting for scatter plot
+        let bivarClass = Array(uniqueFeatures.length).fill(0);
+        let bivarScatter = new Array(10);
+        for (let i = 0; i < 10; i++) {
+          bivarScatter[i] = [];
+        }
+
+        //start computing features' bivarclasses and filling scatter counter
+        for (let i = 0; i < uniqueFeatures.length; i++) {
+          //get the values of concern from that shared feature
+          let x_val = data_1[i];
+          let y_val = data_2[i];
+          //he was using a low/med/high scale so 3x3 grid of classes //TODO generalize and refactor to allow custom scaling
+          //determine class
+          let range_1, range_2;
+          if (x_val < X_breaks[1]) range_1 = 1;
+          else if (x_val < X_breaks[2]) range_1 = 2;
+          else range_1 = 3;
+          if (y_val < Y_breaks[1]) range_2 = 1;
+          else if (y_val < Y_breaks[2]) range_2 = 2;
+          else range_2 = 3;
+          var coord = String(range_1) + String(range_2);
+          //account for data property values for a feature not being defined
+          if (typeof x_val == "undefined" || typeof y_val == "undefined") {
+            coord = "Null";
+          }
+          //assign class to that feature //TODO can be refactored into two consequtive loops that count (along the axis bsaically) and add index to a final counter indicating class
+          switch (coord) {
+            case "11":
+              bivarClass[i] = 0;
+              break; //LL
+            case "12":
+              bivarClass[i] = 1;
+              break; //LM
+            case "13":
+              bivarClass[i] = 2;
+              break; //LH
+            case "21":
+              bivarClass[i] = 3;
+              break; //ML
+            case "22":
+              bivarClass[i] = 4;
+              break; //MM
+            case "23":
+              bivarClass[i] = 5;
+              break; //MH
+            case "31":
+              bivarClass[i] = 6;
+              break; //HL
+            case "32":
+              bivarClass[i] = 7;
+              break; //HM
+            case "33":
+              bivarClass[i] = 8;
+              break; //HH
+            case "Null":
+              bivarClass[i] = 9;
+              break; //NULL
+          }
+          bivarScatter[bivarClass[i]].push({ x: x_val, y: y_val });
+          uniqueFeatures[i]["properties"]["bivarClass"] = bivarClass[i]; //adding a property to the hex features; //TODO needs a better way especially for after switch to non-aggregated features
+        }
+        //convert the unique features into a feature collection for addition to the map as a geojson layer
+        var fc = featureCollection(uniqueFeatures);
+        //remove preexisting bivariate layer
+        if (map.getLayer("bivariate")) {
+          map.removeLayer("bivariate");
+          map.removeSource("bivariate");
+        }
+        //add new source
+        map.addSource("bivariate", {
+          type: "geojson",
+          data: fc, //data is the new geojson
+        });
+        map.addLayer({
+          id: "bivariate",
+          source: "bivariate",
+          type: "fill",
+          paint: {
+            "fill-color": [
+              "step",
+              ["get", "bivarClass"],
+              bivar_colors[0],
+              0,
+              bivar_colors[1],
+              1,
+              bivar_colors[2],
+              2,
+              bivar_colors[3],
+              3,
+              bivar_colors[4],
+              4,
+              bivar_colors[5],
+              5,
+              bivar_colors[6],
+              6,
+              bivar_colors[7],
+              7,
+              bivar_colors[8],
+              8,
+              "rgba(255,255,255,0)",
+            ],
+            "fill-opacity": 0.9,
+          },
+        });
+
+        if (!cls.hexSize === "bivariate") {
+          cls.hexSize = "bivariate";
+        }
+
+        //bivariate legend code
+        //hide histogram stuff legend and title
+        //remove preexisting bivar plot and selector eleements
+
+        // let element = document.getElementById("bivarPlot");
+        // if (typeof element != "undefined" && element != null) {
+        //   $("#bivarPlot").remove();
+        //   $("#bivarSwitcher").remove();
+        // }
+        // let element = document.getElementById("histogram");
+        // if (typeof element != "undefined" && element != null) {
+        //   $("#histogram").remove();
+        // }
+
+        // let bivarFrameElement = document.getElementById("bivariate_frame");
+        // bivarFrameElement.append(
+        //   '<canvas id="bivariate_canvas" ref="canvas_bivariate" width="320" height="200"><canvas>'
+        // );
+        // $("#histogram_frame").append(
+        //   '<select id="bivarSwitcher" onChange="bivarScaleSwitch(this.value);"><option value="logarithmic">logarithmic</option><option value="linear">linear</option></select>'
+        // );
+        // dynamic point size
+        let point_radius;
+        if (uniqueFeatures.length < 100) {
+          point_radius = 3.3;
+        } else if (uniqueFeatures.length > 1000) {
+          point_radius = 1.5;
+        } else {
+          point_radius = ((uniqueFeatures.length - 100) / 100) * 0.2;
+        }
+        let bivar_option = {
+          scales: {
+            xAxes: [
+              {
+                display: true,
+                type: "logarithmic",
+                scaleLabel: {
+                  display: true,
+                  //labelString: Vue._.find(allLayers, ["field_name", attrId_1])["title"], //adapted from oldcode, i presume was looking for the title/name of the dataset in order to label axes
+                  labelString: firstLayer.Name,
+                },
+                ticks: {
+                  min: X_breaks[0], //minimum tick
+                  max: X_breaks[3], //maximum tick
+                  //maxTicksLimit: 4,
+                  maxRotation: 45,
+                  minRotation: 45,
+
+                  callback: function (
+                    valueX
+                    //index,
+                    //values
+                  ) {
+                    if (valueX === 100000000) return "100M";
+                    if (valueX === 10000000) return "10M";
+                    if (valueX === 1000000) return "1M";
+                    if (valueX === 100000) return "100K";
+                    if (valueX === 10000) return "10K";
+                    if (valueX === 1000) return "1K";
+                    if (valueX === 100) return "100";
+                    if (valueX === 10) return "10";
+                    if (valueX === 1) return "1";
+                    if (valueX === 0.1) return "0.1";
+                    if (valueX > 10)
+                      return mapClassInstance.nFormatter(valueX, 1);
+                    else return mapClassInstance.nFormatter(valueX, 2);
+                  },
+                },
+
+                afterBuildTicks: function (chartObjX) {
+                  chartObjX.ticks = [];
+                  chartObjX.ticks.push(X_breaks[3]);
+                  chartObjX.ticks.push(X_breaks[2]);
+                  chartObjX.ticks.push(X_breaks[1]);
+                  chartObjX.ticks.push(X_breaks[0]);
+                },
+              },
+            ],
+            yAxes: [
+              {
+                display: true,
+                type: "logarithmic",
+                scaleLabel: {
+                  display: true,
+                  //labelString: Vue._.find(allLayers, ["field_name", attrId_2])["title"],
+                  labelString: secondLayer.Name,
+                },
+                ticks: {
+                  min: Y_breaks[0], //minimum tick
+                  max: Y_breaks[3], //maximum tick
+                  //maxTicksLimit: 4,
+                  maxRotation: 45,
+                  minRotation: 45,
+
+                  callback: function (
+                    valueY
+                    //index,
+                    //values
+                  ) {
+                    if (valueY === 100000000) return "100M";
+                    if (valueY === 10000000) return "10M";
+                    if (valueY === 1000000) return "1M";
+                    if (valueY === 100000) return "100K";
+                    if (valueY === 10000) return "10K";
+                    if (valueY === 1000) return "1K";
+                    if (valueY === 100) return "100";
+                    if (valueY === 10) return "10";
+                    if (valueY === 1) return "1";
+                    if (valueY === 0.1) return "0.1";
+                    if (valueY > 10)
+                      return mapClassInstance.nFormatter(valueY, 1);
+                    else return mapClassInstance.nFormatter(valueY, 2);
+                  },
+                },
+
+                afterBuildTicks: function (chartObjY) {
+                  chartObjY.ticks = [];
+                  chartObjY.ticks.push(Y_breaks[3]);
+                  chartObjY.ticks.push(Y_breaks[2]);
+                  chartObjY.ticks.push(Y_breaks[1]);
+                  chartObjY.ticks.push(Y_breaks[0]);
+                },
+              },
+            ],
+          },
+
+          legend: {
+            position: "top",
+            display: false,
+          },
+        };
+
+        let bivarClasses = [
+          "L-L",
+          "L-Mid",
+          "L-H",
+          "Mid-L",
+          "Mid-Mid",
+          "Mid-H",
+          "H-L",
+          "H-Mid",
+          "H-H",
+        ];
+        let bivarDatasets = [];
+        for (let i = 0; i < 9; i++) {
+          bivarDatasets.push({
+            label: bivarClasses[i],
+            data: bivarScatter[i],
+            pointRadius: point_radius,
+            pointHoverRadius: 3,
+            backgroundColor: bivar_colors[i],
+            hoverBorderColor: "rgba(0,0,0,1)",
+            pointHoverBorderWidth: 2,
+            borderWidth: 1.5,
+          });
+        }
+        //add the chart
+        //get the target canvas element
+        console.log("adding bivariate to canvas");
+        let canvas = document.getElementById("bivariate_canvas");
+        // eslint-disable-next-line no-unused-vars
+        globals.myBivariateScatterChart = new Chart(canvas, {
+          type: "scatter",
+          data: { datasets: bivarDatasets },
+          options: bivar_option,
+        });
+      } else {
+        console.warn("no features returned for bivariate mode", features);
+        console.log("doing nothing");
+        return;
+      }
+    }
   }
   // removeBivariate() {
   //   console.log("removeBivariate()");

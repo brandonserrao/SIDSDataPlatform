@@ -512,8 +512,8 @@
     <!-- Bivariate Card -->
     <!-- <v-card v-if="displayLegend" class="histogram_frame"> -->
     <v-card class="background-grey bivariate_frame display-none">
-      <div id="bivariate-frame" class="pic app-body population-per-km col-flex">
-        <div
+      <div id="bivariate_frame" class="pic app-body col-flex">
+        <!-- <div
           class="row-flex space-evenly legend-bivariate"
           id="legendBivariate"
         >
@@ -524,12 +524,12 @@
           id="updateBivariate"
         >
           placeholder updateBivariate
-        </div>
+        </div> -->
         <canvas
           ref="canvas_bivariate"
-          id="bivariate"
+          id="bivariate_canvas"
           width="320"
-          height="115"
+          height="200"
         ></canvas>
       </div>
     </v-card>
