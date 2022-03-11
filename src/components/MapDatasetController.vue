@@ -508,6 +508,30 @@
         Select a Dataset and Layer to view data on the map.
       </v-card-text>
     </v-card>
+
+    <!-- Bivariate Card -->
+    <!-- <v-card v-if="displayLegend" class="histogram_frame"> -->
+    <v-card class="background-grey bivariate_frame display-none">
+      <div id="bivariate-frame" class="pic app-body population-per-km col-flex">
+        <div
+          class="row-flex space-evenly legend-bivariate"
+          id="legendBivariate"
+        ></div>
+        <div
+          class="row-flex space-evenly legend main-legend"
+          id="updateBivariate"
+        ></div>
+        <canvas
+          ref="canvas_bivariate"
+          id="bivariate"
+          width="320"
+          height="115"
+        ></canvas>
+      </div>
+      <v-card-text class="histogram_placeholder" v-show="!activeLayer">
+        Select two datasets for the bivariate mode
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 

@@ -164,6 +164,9 @@ export default {
     },
     toggleBivariateMode() {
       this.bivariateModeEnabled = !this.bivariateModeEnabled;
+      document
+        .querySelector(".v-card.histogram_frame")
+        .classList.toggle("display-none"); //toggle display of histogram information
       console.log("bivariateModeEnabled:", this.bivariateModeEnabled);
       this.map.toggleBivariateComponents(); //evoke custom functionality from the map class instance
     },
