@@ -388,9 +388,8 @@
         v-show="dualModeEnabled || bivariateModeEnabled"
         class="row row--dense"
         style="padding: 0 1em 1em 1em"
-        >Comparison Slider enabled: Compare the leftmost and rightmost
-        tabs</v-row
-      >
+        >BIVARIATE MODE ENABLED: Select the pair of datasets
+      </v-row>
     </v-card>
 
     <!-- TESTING - FLEXBOX TO CONTROL TABS AND ADDTAB BUTTON LAYOUT -->
@@ -562,6 +561,9 @@ export default {
           },
         }, */
       ],
+      //
+      bivariateDatasetName: null,
+      bivariateLayerName: null,
       //
       comparisonDatasetName: null,
       comparisonLayerName: null,
@@ -950,6 +952,33 @@ export default {
     tabsAreVisible() {
       return this.tabs.length <= 0 ? false : true;
     },
+
+    bivariateDataset() {
+      console.log("bivariateDataset()");
+      return this.filteredDatasets.find(
+        (dataset) => dataset.name === this.bivariateDatasetName
+      );
+    },
+    bivariateLayer() {
+      console.log(this.bivariateDataset);
+
+      if (!this.bivariateDataset || this.bivariateDataset === "info")
+        return null;
+      if (this.bivariateDataset.type === "temporal") {
+        return this.bivariateDataset.layers[this.bivariateLayerName];
+      } else if (this.bivariateDataset.type === "layers") {
+        return this.bivariateDataset.layers.find(
+          (layer) => layer.Description === this.bivariateLayerName
+        );
+      } else {
+        console.log(this.bivariateDataset.layers[0]);
+        return this.bivariateDataset.layers[0];
+      }
+    },
+    bivariateTicksLabels() {
+      console.log("bivariateTicksLabels()");
+      return this.bivariateDataset.layers.map((layer) => layer.Temporal);
+    },
   },
   methods: {
     //TESTING - TAB SYSTEM
@@ -1258,6 +1287,15 @@ export default {
       }; //package data to pass to parents with update
       //updating units
       this.$emit("updateComparison", active);
+    },
+    emitBivariateUpdate() {
+      console.log("emitBivariateUpdate");
+      let active = {
+        dataset: this.bivariateDataset,
+        layer: this.bivariateLayer,
+      }; //package data to pass to parents with update
+      //updating units
+      this.$emit("updateBivariate", active);
     },
 
     getGoalImage(index) {

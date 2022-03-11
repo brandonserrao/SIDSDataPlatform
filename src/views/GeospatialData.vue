@@ -31,6 +31,7 @@
       @updateComparison="
         updateComparisonMap($event.dataset, $event.layer, true)
       "
+      @updateBivariate="updateBivariate($event.dataset, $event.layer)"
       :displayLegend="displayLegend"
       :dualModeEnabled="dualModeEnabled"
       :bivariateModeEnabled="bivariateModeEnabled"
@@ -163,8 +164,8 @@ export default {
     },
     toggleBivariateMode() {
       this.bivariateModeEnabled = !this.bivariateModeEnabled;
-      // console.log("bivariateModeEnabled:", this.bivariateModeEnabled);
-      //this.map.toggleMapboxGLCompare(); //evoke custom functionality from the map class instance
+      console.log("bivariateModeEnabled:", this.bivariateModeEnabled);
+      this.map.toggleBivariateComponents(); //evoke custom functionality from the map class instance
     },
     toggleLegend() {
       this.displayLegend = !this.displayLegend;
@@ -431,6 +432,16 @@ export default {
       map.map.once("idle", () => {
         map.hideSpinner();
       });
+    },
+    updateBivariate(activeDataset, activeLayer) {
+      console.warn(
+        "updateBivariate:",
+        "activeDataset: ",
+        activeDataset,
+        "activeLayer: ",
+        activeLayer
+      );
+      console.warn("still being implemented");
     },
 
     updateComparisonMap(activeDataset, activeLayer) {

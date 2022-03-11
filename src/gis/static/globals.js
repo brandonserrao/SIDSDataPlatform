@@ -3,6 +3,7 @@ import constants from "@/gis/static/constants.js";
 //taken from old code
 
 const globals = {
+  bivariateMode: null,
   compareMode: null,
   drawingMode: null,
   firstSymbolId: "tunnel-oneway-arrow-blue",

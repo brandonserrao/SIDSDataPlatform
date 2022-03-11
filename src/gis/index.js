@@ -139,6 +139,18 @@ export default class Map {
   //Map class methods:
   //A) map initialization methods----------------------------------------------------------------------------
 
+  toggleBivariateComponents() {
+    console.log("bivariateMode:", globals.bivariateMode);
+    if (!globals.bivariateMode) {
+      console.warn("createBivariate");
+      // this.createComparison(this.containerId, this.map, this.map2);
+    } else {
+      console.warn("removeBivariate");
+      // this.removeComparison();
+    }
+    globals.bivariateMode = !globals.bivariateMode;
+  }
+
   toggleMapboxGLCompare() {
     console.log("globals.compareMode", globals.compareMode);
     if (!globals.compareMode) {
