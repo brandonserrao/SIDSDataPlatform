@@ -258,7 +258,7 @@
             :items="filteredDatasets"
             item-text="name"
             item-value="name"
-            :label="dualModeEnabled ? 'Right Dataset' : 'Dataset'"
+            :label="dualModeEnabled ? 'Right Dataset' : 'Should Not Be Displayed'"
             @input="emitComparisonUpdate"
             outlined
           ></v-select>
@@ -280,7 +280,7 @@
             item-text="Description"
             item-value="Description"
             :items="comparisonDataset.layers"
-            :label="dualModeEnabled ? 'Right Layer' : 'Layer'"
+            :label="dualModeEnabled ? 'Right Layer' : 'Should Not Be Displayed'"
             @input="emitComparisonUpdate"
             outlined
           ></v-select>
@@ -308,7 +308,84 @@
       <v-row v-else class="spacing-row" v-show="dualModeEnabled"> </v-row> -->
       <!-- DUPLICATE END -->
       <v-row
+        id="modeInfoBox"
         v-show="dualModeEnabled"
+        class="row row--dense"
+        style="padding: 0 1em 1em 1em"
+        >Comparison Slider enabled: Compare the leftmost and rightmost
+        tabs</v-row
+      >
+
+      <!-- DUPLICATE START for bivariateMode selectors -->
+      <v-row dense v-show="bivariateModeEnabled">
+        <v-col>
+          <v-select
+            rounded
+            class="map-input"
+            dense
+            hide-details
+            v-model="bivariateDatasetName"
+            :items="filteredDatasets"
+            item-text="name"
+            item-value="name"
+            :label="
+              bivariateModeEnabled
+                ? 'Second Dataset'
+                : 'Should Not Be Displayed'
+            "
+            @input="emitBivariateUpdate"
+            outlined
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-row
+        v-show="bivariateModeEnabled"
+        class="spacing-row"
+        v-if="bivariateDataset && bivariateDataset.type === 'layers'"
+        dense
+      >
+        <v-col>
+          <v-select
+            rounded
+            dense
+            hide-details
+            class="map-input"
+            v-model="bivariateLayerName"
+            item-text="Description"
+            item-value="Description"
+            :items="bivariateDataset.layers"
+            :label="
+              bivariateModeEnabled ? 'Second Layer' : 'Should Not Be Displayed'
+            "
+            @input="emitBivariateUpdate"
+            outlined
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-row
+        v-show="bivariateModeEnabled"
+        class="spacing-row"
+        v-else-if="bivariateDataset && bivariateDataset.type === 'temporal'"
+        dense
+      >
+        <v-col>
+          <v-slider
+            class="map-input"
+            v-model="bivariateLayerName"
+            :tick-labels="bivariateTicksLabels"
+            :max="bivariateDataset.layers.length - 1"
+            step="1"
+            ticks="always"
+            tick-size="4"
+            @input="emitBivariateUpdate"
+          ></v-slider>
+        </v-col>
+      </v-row>
+      <v-row v-else class="spacing-row" v-show="bivariateModeEnabled"> </v-row>
+      <!-- DUPLICATE END -->
+      <v-row
+        id="modeInfoBox"
+        v-show="dualModeEnabled || bivariateModeEnabled"
         class="row row--dense"
         style="padding: 0 1em 1em 1em"
         >Comparison Slider enabled: Compare the leftmost and rightmost
@@ -447,7 +524,8 @@ export default {
   },
   props: [
     "displayLegend", //"map"
-    "dualModeEnabled",
+    "dualModeEnabled", //bool value
+    "bivariateModeEnabled", //bool value
   ],
   data() {
     return {

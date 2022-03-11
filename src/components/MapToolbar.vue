@@ -856,19 +856,47 @@
               </div>
 
               <!-- Bivariate Mode -->
-              <div class="menu row-flex display-none">
+              <div class="menu row-flex">
                 <div
                   class="icon bivariate-mode-icon"
                   @click="handleBivariateMode()"
                 ></div>
-                <div class="description hover"><b>Bivariate</b></div>
-                <!-- <div class="menu-drop row-flex align-items-center display-none bivariate menu-with-blue">
-                      <div class="row-flex align-items-center" style="height: 40px;margin:0 6px 0 0;">
-                        <div class="row-flex" style="font-weight: bold; padding-left: 10px;line-height:40px;margin:0 10px 0 0;height: 40px;width:200px;background-color:#DFDFDF;">Bivariate Mode Enabled</div>
-                        <div class="info-nobg-icon"></div>
-                      </div>
-                    </div> 
-                <div class="blue-box blue-box-bivariate display-none"></div>-->
+                <div class="description hover">
+                  <b>Bivariate Mode</b> - Show the relationships between two
+                  datasets
+                </div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    align-items-center
+                    display-none
+                    bivariate
+                    menu-with-blue
+                  "
+                >
+                  <div
+                    class="row-flex align-items-center"
+                    style="height: 40px; margin: 0 6px 0 0"
+                  >
+                    <div
+                      class="row-flex"
+                      style="
+                        font-weight: bold;
+                        padding-left: 10px;
+                        line-height: 40px;
+                        margin: 0 10px 0 0;
+                        height: 40px;
+                        width: 200px;
+                        background-color: #dfdfdf;
+                      "
+                    >
+                      Bivariate Mode Enabled
+                    </div>
+                    <div class="info-nobg-icon"></div>
+                  </div>
+                </div>
+                <div class="blue-box blue-box-bivariate display-none"></div>
                 <div
                   class="
                     menu-drop
@@ -1210,7 +1238,11 @@ export default {
       } else if (change_type === "select-boundary-layer") {
         console.log("select-boundary-layer emitting");
         this.$emit("select-boundary-layer", object);
+      } else if (change_type === "toggle-bivariate") {
+        console.log("toggle-bivariate emitting", object);
+        this.$emit(change_type, object);
       } else {
+        //
         alert(`${change_type} not yet handled by handleGisMenuChange`);
       }
     },
@@ -1366,13 +1398,13 @@ export default {
     },
 
     handleDualMode() {
-      console.log("handleDualMode");
+      console.log("handleDualMode  under active development");
       this.handleGisMenuChange("toggle-dualmode");
     },
 
     handleBivariateMode() {
-      console.warn("handleBivariateMode not yet implemented");
-      // this.handleGisMenuChange("toggle-bivariate");
+      console.warn("handleBivariateMode under active reimplementation");
+      this.handleGisMenuChange("toggle-bivariate");
     },
 
     //C) UI manipulation - functions that only change the UI-------------------------------------
