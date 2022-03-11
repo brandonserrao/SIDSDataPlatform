@@ -516,11 +516,15 @@
         <div
           class="row-flex space-evenly legend-bivariate"
           id="legendBivariate"
-        ></div>
+        >
+          Placeholder legend-bivariate
+        </div>
         <div
           class="row-flex space-evenly legend main-legend"
           id="updateBivariate"
-        ></div>
+        >
+          placeholder updateBivariate
+        </div>
         <canvas
           ref="canvas_bivariate"
           id="bivariate"
@@ -528,9 +532,6 @@
           height="115"
         ></canvas>
       </div>
-      <v-card-text class="histogram_placeholder" v-show="!activeLayer">
-        Select two datasets for the bivariate mode
-      </v-card-text>
     </v-card>
   </div>
 </template>
@@ -1315,8 +1316,10 @@ export default {
     emitBivariateUpdate() {
       console.log("emitBivariateUpdate");
       let active = {
-        dataset: this.bivariateDataset,
-        layer: this.bivariateLayer,
+        firstDataset: this.activeDataset,
+        firstLayer: this.activeLayer,
+        secondDataset: this.bivariateDataset,
+        secondLayer: this.bivariateLayer,
       }; //package data to pass to parents with update
       //updating units
       this.$emit("updateBivariate", active);

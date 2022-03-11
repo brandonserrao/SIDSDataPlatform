@@ -31,7 +31,14 @@
       @updateComparison="
         updateComparisonMap($event.dataset, $event.layer, true)
       "
-      @updateBivariate="updateBivariate($event.dataset, $event.layer)"
+      @updateBivariate="
+        updateBivariate(
+          $event.firstDataset,
+          $event.firstLayer,
+          $event.secondDataset,
+          $event.secondLayer
+        )
+      "
       :displayLegend="displayLegend"
       :dualModeEnabled="dualModeEnabled"
       :bivariateModeEnabled="bivariateModeEnabled"
@@ -164,9 +171,6 @@ export default {
     },
     toggleBivariateMode() {
       this.bivariateModeEnabled = !this.bivariateModeEnabled;
-      document
-        .querySelector(".v-card.histogram_frame")
-        .classList.toggle("display-none"); //toggle display of histogram information
       console.log("bivariateModeEnabled:", this.bivariateModeEnabled);
       this.map.toggleBivariateComponents(); //evoke custom functionality from the map class instance
     },
@@ -436,15 +440,22 @@ export default {
         map.hideSpinner();
       });
     },
-    updateBivariate(activeDataset, activeLayer) {
-      console.warn(
-        "updateBivariate:",
-        "activeDataset: ",
-        activeDataset,
-        "activeLayer: ",
-        activeLayer
+    updateBivariate(firstDataset, firstLayer, secondDataset, secondLayer) {
+      // console.warn(
+      //   "updateBivariate:",
+      //   "activeDataset: ",
+      //   activeDataset,
+      //   "activeLayer: ",
+      //   activeLayer,
+
+      // );
+      console.warn("updateBivariate(...) still being implemented");
+      this.map.createBivariate(
+        firstDataset,
+        firstLayer,
+        secondDataset,
+        secondLayer
       );
-      console.warn("still being implemented");
     },
 
     updateComparisonMap(activeDataset, activeLayer) {

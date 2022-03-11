@@ -142,14 +142,42 @@ export default class Map {
   toggleBivariateComponents() {
     console.log("bivariateMode:", globals.bivariateMode);
     if (!globals.bivariateMode) {
-      console.warn("createBivariate");
-      // this.createComparison(this.containerId, this.map, this.map2);
+      document
+        .querySelector(".v-card.histogram_frame")
+        .classList.add("display-none"); //toggle display of histogram information
+      console.warn("show Bivariate");
+      document
+        .querySelector(".v-card.bivariate_frame")
+        .classList.remove("display-none"); //toggle display of histogram information
+      // this.createBivariate();
     } else {
-      console.warn("removeBivariate");
-      // this.removeComparison();
+      document
+        .querySelector(".v-card.histogram_frame")
+        .classList.remove("display-none"); //toggle display of histogram information
+      console.warn("hide Bivariate");
+      document
+        .querySelector(".v-card.bivariate_frame")
+        .classList.add("display-none"); //toggle display of histogram information
+      // this.removeBivariate();
     }
     globals.bivariateMode = !globals.bivariateMode;
   }
+  createBivariate(firstDataset, firstLayer, secondDataset, secondLayer) {
+    console.log(
+      "createBivariate()",
+      "firstDataset",
+      firstDataset,
+      "firstLayer",
+      firstLayer,
+      "secondDataset",
+      secondDataset,
+      "secondLayer",
+      secondLayer
+    );
+  }
+  // removeBivariate() {
+  //   console.log("removeBivariate()");
+  // }
 
   toggleMapboxGLCompare() {
     console.log("globals.compareMode", globals.compareMode);
