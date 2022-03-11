@@ -1188,7 +1188,11 @@ export default {
       //determine type of menuchange based on eventType
 
       //display loader spinner
-      if (!["change-opacity", "toggle-dualmode"].includes(change_type)) {
+      if (
+        !["change-opacity", "toggle-dualmode", "toggle-bivariate"].includes(
+          change_type
+        )
+      ) {
         console.log(change_type);
         console.log("show spinner for longer GISMenuChange behaviour");
 
