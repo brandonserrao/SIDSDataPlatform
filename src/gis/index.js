@@ -259,6 +259,17 @@ export default class Map {
         let Y_breaks = chroma.limits(data_2, "q", 3);
         //choice of bivariate color palette
         let bivar_colors = colors.colorSeqSeq3["blue-pink-purple"];
+        if (debug) {
+          console.log(
+            "bivariate color palette: ",
+            bivar_colors,
+            "X_breaks:",
+            X_breaks,
+            "Y_breaks: ",
+            Y_breaks
+          );
+        }
+
         //containers for tracking class of each feature, and for counting for scatter plot
         let bivarClass = Array(featuresUsed.length).fill(0);
         let bivarScatter = new Array(10);
@@ -344,26 +355,28 @@ export default class Map {
           type: "fill",
           paint: {
             "fill-color": [
-              "step",
-              ["get", "bivarClass"],
+              "step", //step operator
+              ["get", "bivarClass"], //the input;retreive a number literal ie. the bivariate class;
+              //values changed from Atlases code, the first output value is used if the input value is less than the first numeric-stop value i.e 1
+              //his code had the first as 0, which was wrong
               bivar_colors[0],
-              0,
-              bivar_colors[1],
               1,
-              bivar_colors[2],
+              bivar_colors[1],
               2,
-              bivar_colors[3],
+              bivar_colors[2],
               3,
-              bivar_colors[4],
+              bivar_colors[3],
               4,
-              bivar_colors[5],
+              bivar_colors[4],
               5,
-              bivar_colors[6],
+              bivar_colors[5],
               6,
-              bivar_colors[7],
+              bivar_colors[6],
               7,
-              bivar_colors[8],
+              bivar_colors[7],
               8,
+              bivar_colors[8],
+              9,
               "rgba(255,255,255,0)",
             ],
             "fill-opacity": 0.9,
