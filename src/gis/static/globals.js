@@ -4,6 +4,22 @@ import constants from "@/gis/static/constants.js";
 
 const globals = {
   bivariateMode: null,
+  bivariateLayerState: {
+    color: null,
+    /**Array; breaks for  the two data layers;
+     * legacy code only had a few layer possibilities, mainly hex# and ocean
+     */
+    breaks: [null, null],
+    /**Array; ids of the two data layers;
+     * legacy code only had a few layer possibilities, mainly hex# and ocean
+     */
+    dataLayer: [null, null],
+    /**String; id of the current data layer;
+     * legacy code only had a few layer possibilities, mainly hex# and ocean
+     */
+    hexSize: "bivariate",
+    lastActive: { dataset: [null, null], layer: [null, null] },
+  },
   compareMode: null,
   drawingMode: null,
   firstSymbolId: "tunnel-oneway-arrow-blue",
