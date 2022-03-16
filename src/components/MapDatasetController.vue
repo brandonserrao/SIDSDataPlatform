@@ -538,6 +538,7 @@
 
 <script>
 // import { gis_store } from "../gis/gis_store.js";
+import globals from "@/gis/static/globals.js";
 import datasets from "@/gis/static/layers";
 import VueTabsChrome from "vue-tabs-chrome";
 
@@ -1303,6 +1304,22 @@ export default {
       //updating units
       console.log("$emit update:", active);
       this.$emit("update", active);
+
+      //handle updating when the selector is used in bivariate mode
+      //TODO: create a separate selector? a FirstLayer selector?
+      if (globals.bivariateMode) {
+        let data = {
+          firstDataset: this.activeDataset,
+          firstLayer: this.activeLayer,
+          secondDataset: this.bivariateDataset,
+          secondLayer: this.bivariateLayer,
+        };
+        console.log(
+          "main dataset selector triggering bivariate update: ",
+          data
+        );
+        this.$emit("updateBivariate", data);
+      }
     },
     emitComparisonUpdate() {
       console.log("emitComparisonUpdate");

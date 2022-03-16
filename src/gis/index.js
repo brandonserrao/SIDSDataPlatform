@@ -173,7 +173,7 @@ export default class Map {
     firstLayer,
     secondDataset,
     secondLayer,
-    debug = false
+    debug = true
   ) {
     if (debug) {
       console.log(
@@ -2772,7 +2772,7 @@ export default class Map {
       console.log(`onBivariateClick clicked object(s):`, clicked);
     }
 
-    // let cls = globals.currentLayerState;
+    let cls = globals.currentLayerState;
     let bvls = globals.bivariateLayerState;
 
     //prepare infobox for display
@@ -2787,7 +2787,7 @@ export default class Map {
     let unitText = [bvls.dataLayer[0].Unit, bvls.dataLayer[1].Unit];
     clickDiv.innerHTML =
       "<p><b>Class: </b>" +
-      clicked.features[0].properties["bivarClass"] +
+      `${clicked.features[0].properties["bivarClass"] + 1}` +
       "</p>" +
       "<p><b>1st Value: </b>" +
       clicked.features[0].properties[
@@ -2814,14 +2814,30 @@ export default class Map {
       mapboxMapInstance.removeSource("clickedone");
     }
 
-    //find which of the rendered features the clicked on is, and create highlight
-    var currId = clicked.features[0].properties.hexid;
-    if (debug) {
-      console.log(`highlighted hex currId: ${currId}`);
+    //determine the styleId based on what current resolution is
+    let property;
+    if (cls.hexSize === "admin1") {
+      property = "GID_1";
+    } else if (cls.hexSize === "admin2") {
+      property = "GID_2";
+    } else {
+      property = "hexid";
     }
+    //find which of the rendered features the clicked on is, and create highlight
+    var featureId = clicked.features[0].properties[property];
+    if (debug) {
+      console.log(`highlighted hex featureId: ${featureId}`);
+    }
+    console.log(
+      "queryRenderedFeatures with:",
+      "property:",
+      property,
+      "featureId:",
+      featureId
+    );
     var feats = mapboxMapInstance.queryRenderedFeatures({
       layers: [bvls.hexSize],
-      filter: ["==", "hexid", currId],
+      filter: ["==", property, featureId],
     });
     if (debug) {
       console.log("queryRenderedFeatures return:", feats);
@@ -2935,7 +2951,7 @@ export default class Map {
       },
     });
   }
-  addAdminClick(e, adminLayerId, mapboxMapInstance = this.map, debug = false) {
+  addAdminClick(e, adminLayerId, mapboxMapInstance = this.map, debug = true) {
     let cls = globals.currentLayerState;
     if (mapboxMapInstance === this.map2) {
       // console.warn("MAP2 DATA CLICKED");
