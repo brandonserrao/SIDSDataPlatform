@@ -201,9 +201,9 @@ export default class Map {
     );
 
     //adapted from oldcode createBivar() from bivariate.js
-    if (map.getLayer(cls.hexSize)) {
-      map.setPaintProperty(cls.hexSize, "fill-opacity", 0.0);
-    }
+    // if (map.getLayer(cls.hexSize)) {
+    //   map.setPaintProperty(cls.hexSize, "fill-opacity", 0.0);
+    // }
 
     // if (!(secondLayer == null) && !(firstLayer == null)) {
     // } else
@@ -232,8 +232,12 @@ export default class Map {
       }
 
       //get map features //TODO refactor to account for future vector tiles being not aggregated; will to fetch multiple tiles; likely better to query sources instead of rendered
-      let features = map.queryRenderedFeatures({ layers: [cls.hexSize] });
+      // let features = map.queryRenderedFeatures({ layers: [cls.hexSize] });
+      let features = map.querySourceFeatures(cls.hexSize, {
+        sourceLayer: [cls.hexSize],
+      });
       if (features?.length != 0) {
+        // eslint-disable-next-line no-unused-vars
         let uniqueFeatures;
         if (cls.hexSize === "admin1") {
           uniqueFeatures = this.getUniqueFeatures(features, "GID_1");
@@ -242,30 +246,28 @@ export default class Map {
         } else {
           uniqueFeatures = this.getUniqueFeatures(features, "hexid");
         }
+        // let featuresUsed = uniqueFeatures;
+        let featuresUsed = features; //vs using uniqueFeatures, since i'm trying to solve the issue of losing features at the maptile border lines
         //data ids for the two layers of interest
         let attrId_1 = firstLayer.Field_Name;
         let attrId_2 = secondLayer.Field_Name;
         //isolate values from the aggregated property values in the features
-        let data_1 = uniqueFeatures.map(
-          (x_feat) => x_feat.properties[attrId_1]
-        );
-        let data_2 = uniqueFeatures.map(
-          (y_feat) => y_feat.properties[attrId_2]
-        );
+        let data_1 = featuresUsed.map((x_feat) => x_feat.properties[attrId_1]);
+        let data_2 = featuresUsed.map((y_feat) => y_feat.properties[attrId_2]);
         //compute breakpoint values in these datasets
         let X_breaks = chroma.limits(data_1, "q", 3);
         let Y_breaks = chroma.limits(data_2, "q", 3);
         //choice of bivariate color palette
         let bivar_colors = colors.colorSeqSeq3["blue-pink-purple"];
         //containers for tracking class of each feature, and for counting for scatter plot
-        let bivarClass = Array(uniqueFeatures.length).fill(0);
+        let bivarClass = Array(featuresUsed.length).fill(0);
         let bivarScatter = new Array(10);
         for (let i = 0; i < 10; i++) {
           bivarScatter[i] = [];
         }
 
         //start computing features' bivarclasses and filling scatter counter
-        for (let i = 0; i < uniqueFeatures.length; i++) {
+        for (let i = 0; i < featuresUsed.length; i++) {
           //get the values of concern from that shared feature
           let x_val = data_1[i];
           let y_val = data_2[i];
@@ -317,10 +319,10 @@ export default class Map {
               break; //NULL
           }
           bivarScatter[bivarClass[i]].push({ x: x_val, y: y_val });
-          uniqueFeatures[i]["properties"]["bivarClass"] = bivarClass[i]; //adding a property to the hex features; //TODO needs a better way especially for after switch to non-aggregated features
+          featuresUsed[i]["properties"]["bivarClass"] = bivarClass[i]; //adding a property to the hex features; //TODO needs a better way especially for after switch to non-aggregated features
         }
         //convert the unique features into a feature collection for addition to the map as a geojson layer
-        var fc = featureCollection(uniqueFeatures);
+        var fc = featureCollection(featuresUsed);
         //remove preexisting bivariate layer
         if (map.getLayer("bivariate")) {
           map.removeLayer("bivariate");
@@ -405,12 +407,12 @@ export default class Map {
         // );
         // dynamic point size
         let point_radius;
-        if (uniqueFeatures.length < 100) {
+        if (featuresUsed.length < 100) {
           point_radius = 3.3;
-        } else if (uniqueFeatures.length > 1000) {
+        } else if (featuresUsed.length > 1000) {
           point_radius = 1.5;
         } else {
-          point_radius = ((uniqueFeatures.length - 100) / 100) * 0.2;
+          point_radius = ((featuresUsed.length - 100) / 100) * 0.2;
         }
         let bivar_option = {
           scales: {
