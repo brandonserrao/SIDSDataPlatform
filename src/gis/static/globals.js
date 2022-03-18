@@ -6,10 +6,10 @@ const globals = {
   bivariateMode: null,
   bivariateLayerState: {
     color: null,
-    /**Array; breaks for  the two data layers;
+    /**Object {X_breaks, Y_breaks}; breaks for  the two data layers;
      * legacy code only had a few layer possibilities, mainly hex# and ocean
      */
-    breaks: [null, null],
+    breaks: { X: null, Y: null },
     /**Array; ids of the two data layers;
      * legacy code only had a few layer possibilities, mainly hex# and ocean
      */

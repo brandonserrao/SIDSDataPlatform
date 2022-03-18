@@ -192,12 +192,13 @@ export default class Map {
     let mapClassInstance = this;
     let map = this.map;
     let cls = globals.currentLayerState;
+    let bvls = globals.bivariateLayerState;
     //updating bivariate global state variables, to inform other functions like onBivariateClick
-    globals.bivariateLayerState.dataLayer[0] = firstLayer;
-    globals.bivariateLayerState.dataLayer[1] = secondLayer;
+    bvls.dataLayer[0] = firstLayer;
+    bvls.dataLayer[1] = secondLayer;
     console.log(
       "updated globals.bivariateLayerState.dataLayer with firstLayer and secondLayer: ",
-      globals.bivariateLayerState.dataLayer
+      bvls.dataLayer
     );
 
     //adapted from oldcode createBivar() from bivariate.js
@@ -238,11 +239,15 @@ export default class Map {
       });
       if (features?.length != 0) {
         // eslint-disable-next-line no-unused-vars
-        let uniqueFeatures;
+        let uniqueFeatures; //unused; originally used instead of duplicate source features but runs into issue of cutting off features crossing tile boundaries;
+        //TODO improve handling of features crossing tile boundaries, perhaps using ID or something; BUG banding of features buffered on tile boundaries, likely due to tile buffering and visible due to a slightly transparent layer paint property of output bivariate layer
+        let idProperty = null; //to use as promoteId for the output bivariate geojson source that powers the bivariate layer
         if (cls.hexSize === "admin1") {
           uniqueFeatures = this.getUniqueFeatures(features, "GID_1");
+          idProperty = "GID_1";
         } else if (cls.hexSize === "admin2") {
           uniqueFeatures = this.getUniqueFeatures(features, "GID_2");
+          idProperty = "GID_2";
         } else {
           uniqueFeatures = this.getUniqueFeatures(features, "hexid");
         }
@@ -254,11 +259,14 @@ export default class Map {
         //isolate values from the aggregated property values in the features
         let data_1 = featuresUsed.map((x_feat) => x_feat.properties[attrId_1]);
         let data_2 = featuresUsed.map((y_feat) => y_feat.properties[attrId_2]);
-        //compute breakpoint values in these datasets
+        //compute breakpoint values in these datasets, and update them in state
         let X_breaks = chroma.limits(data_1, "q", 3);
         let Y_breaks = chroma.limits(data_2, "q", 3);
+        bvls.breaks.X = X_breaks;
+        bvls.breaks.Y = Y_breaks;
         //choice of bivariate color palette
         let bivar_colors = colors.colorSeqSeq3["blue-pink-purple"];
+        bvls.color = bivar_colors; //updating state
         if (debug) {
           console.log(
             "bivariate color palette: ",
@@ -348,6 +356,7 @@ export default class Map {
         map.addSource("bivariate", {
           type: "geojson",
           data: fc, //data is the new geojson
+          promoteId: idProperty,
         });
         map.addLayer({
           id: "bivariate",
@@ -379,7 +388,7 @@ export default class Map {
               9,
               "rgba(255,255,255,0)",
             ],
-            "fill-opacity": 0.9,
+            "fill-opacity": debug ? 0.9 : 1,
           },
         });
 
@@ -904,6 +913,14 @@ export default class Map {
           mapClassInstance.updateOverlayLegend("comparison");
         } else {
           console.log("bivariateMode enabled - skipping recolor");
+          console.log("updating bivariate layer");
+          let bvls = globals.bivariateLayerState; //get stored state
+          mapClassInstance.createBivariate(
+            null,
+            bvls.dataLayer[0],
+            null,
+            bvls.dataLayer[1]
+          );
         }
       });
 
@@ -2785,6 +2802,12 @@ export default class Map {
   onBivariateClick(clicked, mapboxMapInstance = this.map, debug = true) {
     if (debug) {
       console.log(`onBivariateClick clicked object(s):`, clicked);
+    }
+    //check if the clicked feature is an invalid bivariate class ie. bivarClass= 9 (of 0~9 ie. 10)
+    if (clicked.features[0].properties.bivarClass === 9) {
+      if (debug)
+        console.warn("bivar feature clicked is invalid class; doing nothing");
+      return;
     }
 
     let cls = globals.currentLayerState;
