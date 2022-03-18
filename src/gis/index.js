@@ -139,7 +139,7 @@ export default class Map {
   //Map class methods:
   //A) map initialization methods----------------------------------------------------------------------------
 
-  toggleBivariateComponents(debug = false) {
+  toggleBivariateComponents(debug = true) {
     if (debug) {
       console.log("bivariateMode:", globals.bivariateMode);
     }
@@ -154,6 +154,8 @@ export default class Map {
         .querySelector(".v-card.bivariate_frame")
         .classList.remove("display-none"); //toggle display of histogram information
       // this.createBivariate();
+      //set opacity of main mode data layer to full transparent
+      this.changeOpacity({ opacity: 0.0 });
     } else {
       document
         .querySelector(".v-card.histogram_frame")
@@ -165,8 +167,11 @@ export default class Map {
         .querySelector(".v-card.bivariate_frame")
         .classList.add("display-none"); //toggle display of histogram information
       this.removeBivariate();
+      //set opacity of main mode data layer to full transparent
+      this.changeOpacity({ opacity: 40.0 });
     }
-    globals.bivariateMode = !globals.bivariateMode;
+
+    globals.bivariateMode = !globals.bivariateMode; //toggle the value
   }
   createBivariate(
     firstDataset,
