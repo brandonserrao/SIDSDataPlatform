@@ -232,10 +232,10 @@ export default class Map {
       if (debug) {
         console.log("removing preexisting bivariate layer");
       }
-      if (map.getLayer("bivariate")) {
-        map.removeLayer("bivariate");
-        map.removeSource("bivariate");
-      }
+      // if (map.getLayer("bivariate")) {
+      //   map.removeLayer("bivariate");
+      //   map.removeSource("bivariate");
+      // }
 
       //get map features //TODO refactor to account for future vector tiles being not aggregated; will to fetch multiple tiles; likely better to query sources instead of rendered
       // let features = map.queryRenderedFeatures({ layers: [cls.hexSize] });
