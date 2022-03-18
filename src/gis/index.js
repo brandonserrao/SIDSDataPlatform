@@ -2506,14 +2506,9 @@ export default class Map {
     //HISTOGRAM-----------------------------------------------------
     if (debug) {
       console.log("addLegend calling updateHistogram");
-      this.updateHistogram(
-        colors,
-        breaks,
-        precision,
-        activeLayer,
-        selectedData
-      );
     }
+
+    this.updateHistogram(colors, breaks, precision, activeLayer, selectedData);
     //-----------------------------------------------------------
   }
   updateHistogram( //called in addLegend; extracted for cleanliness
