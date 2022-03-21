@@ -91,6 +91,7 @@ export default class Map {
     } */
 
     this.map.on("load", () => {
+      //this._bindMapDebugListeners(this.map); //adds lifecycle and data listeners for debugging to console
       // this._createMapComparison(this);
 
       this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
@@ -223,15 +224,30 @@ export default class Map {
         );
       }
       return;
+    } else if (
+      [firstLayer.Name, secondLayer.Name].includes("Ocean Data") &&
+      firstLayer.Name !== secondLayer.Name
+    ) {
+      if (debug) {
+        console.warn(
+          "bivariate mode passed incompatible pair of ocean+land layers:",
+          firstLayer,
+          secondLayer,
+          "doing nothing"
+        );
+      }
+      return;
     } else {
       if (debug) {
         console.log("bivariate passed layers:", firstLayer, secondLayer);
       }
       //a pair of datalayers passed so proceed to create bivariate
-      //remove existing bivariate map layer
-      if (debug) {
-        console.log("removing preexisting bivariate layer");
-      }
+      //check for a pair of ocean and land data, which would lead to fatal crash
+
+      //obsolete //remove existing bivariate map layer
+      // if (debug) {
+      //   console.log("removing preexisting bivariate layer");
+      // }
       // if (map.getLayer("bivariate")) {
       //   map.removeLayer("bivariate");
       //   map.removeSource("bivariate");
@@ -239,9 +255,14 @@ export default class Map {
 
       //get map features //TODO refactor to account for future vector tiles being not aggregated; will to fetch multiple tiles; likely better to query sources instead of rendered
       // let features = map.queryRenderedFeatures({ layers: [cls.hexSize] });
+
       let features = map.querySourceFeatures(cls.hexSize, {
-        sourceLayer: [cls.hexSize],
+        //sourceLayer: [cls.hexSize],
+        sourceLayer: [cls.hexSize === "ocean" ? "oceans" : cls.hexSize], //TODO improve ocean source naming consistency so can eliminate this quick hack
       });
+      if (debug) {
+        console.log("querying souurcefeatures/layer for:", cls.hexSize);
+      }
       if (features?.length != 0) {
         // eslint-disable-next-line no-unused-vars
         let uniqueFeatures; //unused; originally used instead of duplicate source features but runs into issue of cutting off features crossing tile boundaries;
@@ -262,8 +283,40 @@ export default class Map {
         let attrId_1 = firstLayer.Field_Name;
         let attrId_2 = secondLayer.Field_Name;
         //isolate values from the aggregated property values in the features
-        let data_1 = featuresUsed.map((x_feat) => x_feat.properties[attrId_1]);
-        let data_2 = featuresUsed.map((y_feat) => y_feat.properties[attrId_2]);
+        //and make values absolute if appropriate (eg. ocean depth being negative values)
+        let negativeAttrIds = ["depth"]; //TODO extract this to some settings
+        if (debug) {
+          console.log("attr1Id:", attrId_1, "attr2Id:", attrId_2);
+          if (
+            negativeAttrIds.includes(attrId_1) ||
+            negativeAttrIds.includes(attrId_2)
+          )
+            console.log(
+              "negativeIds present Id1: ",
+              negativeAttrIds.includes(attrId_1),
+              "Id2",
+              negativeAttrIds.includes(attrId_2)
+            );
+        }
+        let data_1 = featuresUsed.map((x_feat) => {
+          let isNegative = negativeAttrIds.includes(attrId_1) ? -1 : 1;
+          let propertyValue = x_feat.properties[attrId_1];
+          return propertyValue * isNegative;
+          // x_feat.properties[attrId_1] *
+          //   negativeAttrIds.includes(attrId_1)
+          //   ? -1
+          //   : 1;
+        });
+        let data_2 = featuresUsed.map((y_feat) => {
+          let isNegative = negativeAttrIds.includes(attrId_2) ? -1 : 1;
+          let propertyValue = y_feat.properties[attrId_2];
+          return propertyValue * isNegative;
+          // y_feat.properties[attrId_2] *
+          //   negativeAttrIds.includes(attrId_2)
+          //   ? -1
+          //   : 1;
+        });
+
         //compute breakpoint values in these datasets, and update them in state
         let X_breaks = chroma.limits(data_1, "q", 3);
         let Y_breaks = chroma.limits(data_2, "q", 3);
@@ -299,15 +352,18 @@ export default class Map {
           //determine class
           let range_1, range_2;
           if (x_val < X_breaks[1]) range_1 = 1;
+          //check range in x
           else if (x_val < X_breaks[2]) range_1 = 2;
           else range_1 = 3;
           if (y_val < Y_breaks[1]) range_2 = 1;
+          //check range in y
           else if (y_val < Y_breaks[2]) range_2 = 2;
           else range_2 = 3;
           var coord = String(range_1) + String(range_2);
           //account for data property values for a feature not being defined
-          if (typeof x_val == "undefined" || typeof y_val == "undefined") {
-            coord = "Null";
+          if (Number.isNaN(x_val) || Number.isNaN(y_val)) {
+            //(typeof x_val == "undefined" || typeof y_val == "undefined")
+            coord = null; //"Null";
           }
           //assign class to that feature //TODO can be refactored into two consequtive loops that count (along the axis bsaically) and add index to a final counter indicating class
           switch (coord) {
@@ -338,15 +394,25 @@ export default class Map {
             case "33":
               bivarClass[i] = 8;
               break; //HH
-            case "Null":
+            case null: //"Null":
               bivarClass[i] = 9;
               break; //NULL
           }
-          bivarScatter[bivarClass[i]].push({ x: x_val, y: y_val });
+          bivarScatter[bivarClass[i]].push({ x: x_val, y: y_val }); //assign the bivarPairValues object to the counter of the scatterObject for hte appropriate class
           featuresUsed[i]["properties"]["bivarClass"] = bivarClass[i]; //adding a property to the hex features; //TODO needs a better way especially for after switch to non-aggregated features
         }
         //convert the unique features into a feature collection for addition to the map as a geojson layer
         var fc = featureCollection(featuresUsed);
+        if (debug) {
+          console.warn(
+            "featuresUsed: ",
+            featuresUsed,
+            "featureCollection",
+            fc,
+            "bivarScatter",
+            bivarScatter
+          );
+        }
         //remove preexisting bivariate layer
         if (map.getLayer("bivariate")) {
           map.removeLayer("bivariate");
@@ -401,15 +467,15 @@ export default class Map {
           cls.hexSize = "bivariate";
         }
 
-        let instance = mapClassInstance;
-        this.map.on(
-          "click",
-          "bivariate",
-          function (e, mapClassInstance = instance) {
-            mapClassInstance.clearOnClickQuery(mapClassInstance);
-            mapClassInstance.onBivariateClick(e);
-          }
-        );
+        // let instance = mapClassInstance;
+        // this.map.on(
+        //   "click",
+        //   "bivariate",
+        //   function (e, mapClassInstance = instance) {
+        //     mapClassInstance.clearOnClickQuery(mapClassInstance);
+        //     mapClassInstance.onBivariateClick(e);
+        //   }
+        // );
 
         //bivariate legend code
         //hide histogram stuff legend and title
@@ -560,7 +626,7 @@ export default class Map {
             label: bivarClasses[i],
             data: bivarScatter[i],
             pointRadius: point_radius,
-            // pointHoverRadius: 3,
+            pointHoverRadius: 0, //3,
             backgroundColor: bivar_colors[i],
             // hoverBorderColor: "rgba(0,0,0,1)",
             // pointHoverBorderWidth: 2,
@@ -590,11 +656,11 @@ export default class Map {
       }
     }
   }
-  removeBivariate(debug = false) {
+  removeBivariate(mapboxMapInstance = this.map, debug = true) {
     if (debug) {
       console.log("removeBivariate(), removing bivariate layer");
     }
-    let map = this.map;
+    let map = mapboxMapInstance;
     //adapted from oldcode createBivar() from bivariate.js
     if (map.getLayer("bivariate")) {
       map.removeLayer("bivariate");
@@ -708,6 +774,71 @@ export default class Map {
       this.hideSpinner();
     });
   }
+  _bindMapDebugListeners(map = this.map1) {
+    // Set an event listener that fires
+    // when any map data begins loading
+    // or changing asynchronously.
+    map.on("dataloading", () => {
+      console.log("A dataloading event occurred.");
+    });
+    // Set an event listener that fires
+    // when map data loads or changes.
+    map.on("data", () => {
+      console.log("A data event occurred.");
+    });
+    // Set an event listener that fires
+    // when the map's style loads or changes.
+    map.on("styledata", () => {
+      console.log("A styledata event occurred.");
+    });
+    // Set an event listener that fires
+    // when the map's style begins loading or
+    // changing asynchronously.
+    map.on("styledataloading", () => {
+      console.log("A styledataloading event occurred.");
+    });
+    // Set an event listener that fires
+    // when the map's sources begin loading or
+    // changing asynchronously.
+    map.on("sourcedataloading", () => {
+      console.log("A sourcedataloading event occurred.");
+    });
+    // Set an event listener that fires
+    // when an icon or pattern is missing.
+    map.on("styleimagemissing", () => {
+      console.log("A styleimagemissing event occurred.");
+    });
+    // Set an event listener that fires
+    // when the map has finished loading.
+    map.on("load", () => {
+      console.log("A load event occurred.");
+    });
+    // Set an event listener that fires
+    // whenever the map is drawn to the screen.
+    map.on("render", () => {
+      console.log("A render event occurred.");
+    });
+    // Set an event listener that fires
+    // just before the map enters an "idle" state.
+    map.on("idle", () => {
+      console.log("A idle event occurred.");
+    });
+    // Set an event listener that fires
+    // when an error occurs.
+    map.on("error", () => {
+      console.log("A error event occurred.");
+    });
+    // Set an event listener that fires
+    // when the WebGL context is lost.
+    map.on("webglcontextlost", () => {
+      console.log("A webglcontextlost event occurred.");
+    });
+    // Set an event listener that fires
+    // when the WebGL context is restored.
+    map.on("webglcontextrestored", () => {
+      console.log("A webglcontextrestored event occurred.");
+    });
+  }
   _bindMapClickListeners(mapClassInstance) {
     let instance = mapClassInstance;
     //listeners for the query-clicks
@@ -760,6 +891,15 @@ export default class Map {
 
         // this.onDataClick(e);
         mapClassInstance.addAdminClick(e, "admin2");
+      }
+    );
+
+    this.map.on(
+      "click",
+      "bivariate",
+      function (e, mapClassInstance = instance) {
+        mapClassInstance.clearOnClickQuery(mapClassInstance);
+        mapClassInstance.onBivariateClick(e);
       }
     );
 
@@ -1210,7 +1350,7 @@ export default class Map {
     this.map2.setMaxBounds(expandedBBox);
   }
   //manages the change when you chang the resolution
-  changeHexagonSize(resolutionObject, debug = false) {
+  changeHexagonSize(resolutionObject, debug = true) {
     let map = this.map;
     let map2 = this.map2;
     let resolution = resolutionObject.resolution;
@@ -2172,7 +2312,7 @@ export default class Map {
       this.hideSpinner();
     });
   }
-  recolorBasedOnWhatsOnPage(recolorComparison = false, debug = false) {
+  recolorBasedOnWhatsOnPage(recolorComparison = false, debug = true) {
     if (debug) {
       console.log(
         `recolorBasedOnWhatsOnPage(recolorComparison = ${recolorComparison})`
@@ -2821,6 +2961,12 @@ export default class Map {
     clickDiv.style.width = "200px";
     if (debug) {
       console.log("bvls.dataLayer: ", bvls.dataLayer);
+      console.log(
+        "Field_Name 1: ",
+        clicked.features[0].properties[bvls.dataLayer[0].Field_Name],
+        "Field_Name 2: ",
+        clicked.features[0].properties[bvls.dataLayer[1].Field_Name]
+      );
     }
     let unitText = [bvls.dataLayer[0].Unit, bvls.dataLayer[1].Unit];
     clickDiv.innerHTML =
@@ -2830,14 +2976,14 @@ export default class Map {
       "<p><b>1st Value: </b>" +
       clicked.features[0].properties[
         bvls.dataLayer[0].Field_Name
-      ].toLocaleString() +
+      ]?.toLocaleString() +
       " " +
       unitText[0] +
       "</p>" +
       "<p><b>2nd Value: </b>" +
       clicked.features[0].properties[
         bvls.dataLayer[1].Field_Name
-      ].toLocaleString() +
+      ]?.toLocaleString() +
       " " +
       unitText[1] +
       "</p>";
