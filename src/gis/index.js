@@ -124,6 +124,17 @@ export default class Map {
       //  map2 having diferent dimensions for some reason not immediately apparent
     });
 
+    //for bivariate mode
+    //create initial scatter plot legend to be mutated later
+    globals.myBivariateScatterChart = new Chart(
+      document.getElementById("bivariate_canvas"),
+      {
+        type: "scatter",
+        data: {}, //empty data
+        options: {},
+      }
+    );
+
     //for debugging--------------------
     let self = this.map;
     this.map.on("click", () => {
@@ -167,7 +178,7 @@ export default class Map {
       document
         .querySelector(".v-card.bivariate_frame")
         .classList.add("display-none"); //toggle display of histogram information
-      this.removeBivariate();
+      this.removeBivariateLayer();
       //set opacity of main mode data layer to full transparent
       this.changeOpacity({ opacity: 40.0 });
     }
@@ -658,9 +669,9 @@ export default class Map {
         });
 
         //testing updating chart
-        let chart = globals.myBivariateScatterChart;
-        chart.options.scales.yAxes[0] = { type: "linear" };
-        chart.update();
+        // let chart = globals.myBivariateScatterChart;
+        // chart.options.scales.yAxes[0] = { type: "linear" };
+        // chart.update();
         //--end test updating
       } else {
         if (debug) {
@@ -673,9 +684,145 @@ export default class Map {
       }
     }
   }
-  removeBivariate(mapboxMapInstance = this.map, debug = false) {
+
+  //taken from https://www.chartjs.org/docs/2.9.4/developers/updates.html
+  //https://www.chartjs.org/samples/2.9.4/scales/toggle-scale-type.html
+  toggleScaleType(chart, axes = ["X", "Y"], debug = true) {
     if (debug) {
-      console.log("removeBivariate(), removing bivariate layer");
+      console.log("togglScaleType", chart, axes);
+    }
+    if (!axes.includes("X") && !axes.includes("Y")) {
+      console.warn("toggleScaleType passed invalid axes; doing nothing");
+      return;
+    }
+    let mapClassInstance = this;
+    let bvls = globals.bivariateLayerState;
+    let X_breaks = bvls.breaks.X;
+    let Y_breaks = bvls.breaks.Y;
+    //updating bivariate global state variables, to inform other functions like onBivariateClick
+    let firstLayer = bvls.dataLayer[0];
+    let secondLayer = bvls.dataLayer[1];
+    let firstLabel = firstLayer.Unit;
+    let secondLabel = secondLayer.Unit;
+
+    let XType = null;
+    let YType = null;
+    if (axes.includes("X")) {
+      // eslint-disable-next-line no-unused-vars
+      XType =
+        chart.options.scales.xAxes[0].type === "linear"
+          ? "logarithmic"
+          : "linear";
+      document.getElementById("XType").innerText = XType; //update text showing scale type
+
+      // let xAxis = { display: true, type: XType };
+      let xAxis = {
+        display: true,
+        type: XType,
+        scaleLabel: {
+          display: true,
+          //labelString: Vue._.find(allLayers, ["field_name", attrId_1])["title"], //adapted from oldcode, i presume was looking for the title/name of the dataset in order to label axes
+          labelString: firstLabel, //firstLayer.Unit,
+        },
+        ticks: {
+          min: X_breaks[0], //minimum tick
+          max: X_breaks[3], //maximum tick
+          //maxTicksLimit: 4,
+          maxRotation: 45,
+          minRotation: 45,
+
+          callback: function (
+            valueX
+            //index,
+            //values
+          ) {
+            if (valueX === 100000000) return "100M";
+            if (valueX === 10000000) return "10M";
+            if (valueX === 1000000) return "1M";
+            if (valueX === 100000) return "100K";
+            if (valueX === 10000) return "10K";
+            if (valueX === 1000) return "1K";
+            if (valueX === 100) return "100";
+            if (valueX === 10) return "10";
+            if (valueX === 1) return "1";
+            if (valueX === 0.1) return "0.1";
+            if (valueX > 10) return mapClassInstance.nFormatter(valueX, 1);
+            else return mapClassInstance.nFormatter(valueX, 2);
+          },
+        },
+
+        afterBuildTicks: function (chartObjX) {
+          chartObjX.ticks = [];
+          chartObjX.ticks.push(X_breaks[3]);
+          chartObjX.ticks.push(X_breaks[2]);
+          chartObjX.ticks.push(X_breaks[1]);
+          chartObjX.ticks.push(X_breaks[0]);
+        },
+      };
+      chart.options.scales.xAxes[0] = xAxis;
+    }
+    if (axes.includes("Y")) {
+      // eslint-disable-next-line no-unused-vars
+      YType =
+        chart.options.scales.yAxes[0].type === "linear"
+          ? "logarithmic"
+          : "linear";
+      document.getElementById("YType").innerText = YType; //update text showing scale type
+      // let yAxis = { display: true, type: YType };
+      let yAxis = {
+        display: true,
+        type: YType,
+        scaleLabel: {
+          display: true,
+          //labelString: Vue._.find(allLayers, ["field_name", attrId_1])["title"], //adapted from oldcode, i presume was looking for the title/name of the dataset in order to label axes
+          labelString: secondLabel, //secondLayer.Unit,
+        },
+        ticks: {
+          min: Y_breaks[0], //minimum tick
+          max: Y_breaks[3], //maximum tick
+          //maxTicksLimit: 4,
+          maxRotation: 45,
+          minRotation: 45,
+
+          callback: function (
+            valueY
+            //index,
+            //values
+          ) {
+            if (valueY === 100000000) return "100M";
+            if (valueY === 10000000) return "10M";
+            if (valueY === 1000000) return "1M";
+            if (valueY === 100000) return "100K";
+            if (valueY === 10000) return "10K";
+            if (valueY === 1000) return "1K";
+            if (valueY === 100) return "100";
+            if (valueY === 10) return "10";
+            if (valueY === 1) return "1";
+            if (valueY === 0.1) return "0.1";
+            if (valueY > 10) return mapClassInstance.nFormatter(valueY, 1);
+            else return mapClassInstance.nFormatter(valueY, 2);
+          },
+        },
+
+        afterBuildTicks: function (chartObjY) {
+          chartObjY.ticks = [];
+          chartObjY.ticks.push(Y_breaks[3]);
+          chartObjY.ticks.push(Y_breaks[2]);
+          chartObjY.ticks.push(Y_breaks[1]);
+          chartObjY.ticks.push(Y_breaks[0]);
+        },
+      };
+      chart.options.scales.yAxes[0] = yAxis;
+    }
+    if (debug) {
+      console.log("XType, YType:", XType, YType);
+    }
+    chart.update();
+  }
+
+  removeBivariateLayer(mapboxMapInstance = this.map, debug = false) {
+    if (debug) {
+      console.log("removeBivariateLayer(), removing bivariate layer");
     }
     let map = mapboxMapInstance;
     //adapted from oldcode createBivar() from bivariate.js

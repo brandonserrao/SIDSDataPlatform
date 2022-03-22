@@ -531,6 +531,22 @@
           width="320"
           height="200"
         ></canvas>
+        <div class="toggleScaleTypeButtonWrapper">
+          <div id="XType">default</div>
+          <button
+            @click="toggleScaleType('bivariate', 'X')"
+            class="toggleScaleType"
+          >
+            Toggle X Scale
+          </button>
+          <div id="YType">default</div>
+          <button
+            @click="toggleScaleType('bivariate', 'Y')"
+            class="toggleScaleType"
+          >
+            Toggle Y Scale
+          </button>
+        </div>
       </div>
     </v-card>
   </div>
@@ -548,7 +564,8 @@ export default {
     VueTabsChrome,
   },
   props: [
-    "displayLegend", //"map"
+    "map", //map class instance
+    "displayLegend",
     "dualModeEnabled", //bool value
     "bivariateModeEnabled", //bool value
   ],
@@ -1007,6 +1024,19 @@ export default {
     },
   },
   methods: {
+    //TESTING - BIVARIATE TOGGLES
+    toggleScaleType(chartName, axisName) {
+      //axisName = array containing "X" and or "Y"
+      let chart;
+      if (chartName === "bivariate") {
+        chart = globals.myBivariateScatterChart;
+      } else {
+        //TODO implement toggles and hadnling for histogram
+        console.warn("unexpected chartName passed, doing nothing");
+        return;
+      }
+      this.map.toggleScaleType(chart, [axisName]); //call class function
+    },
     //TESTING - TAB SYSTEM
     replaceCurrentTab() {
       //find current tab by looking through .getTabs() for matching this.tab key and overwrite the data and label values
@@ -1378,6 +1408,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 /*Brandon additions*/
+.toggleScaleTypeButtonWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.toggleScaleTypeButtonWrapper > button {
+  background-color: white !important;
+  outline: grey !important;
+}
+
 .comparisonButtons .v-btn {
   padding: 0 1em !important;
   height: 100% !important;

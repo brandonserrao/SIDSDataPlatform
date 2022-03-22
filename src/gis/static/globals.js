@@ -20,6 +20,8 @@ const globals = {
     hexSize: "bivariate",
     lastActive: { dataset: [null, null], layer: [null, null] },
   },
+  myBivariateScatterChart: null, //store chart instance
+  bivariateScaleTypes: { Y: "logarithmic", X: "linear" },
   compareMode: null,
   drawingMode: null,
   firstSymbolId: "tunnel-oneway-arrow-blue",
@@ -27,7 +29,6 @@ const globals = {
   //current layer state manager
   precision: null, //modified in changeDataOnMap and recolor etc; TODO deglobalize this
   myHistogram: null, //global storage for modifying main histogram html element by updates and recreation
-  myBivariateScatterChart: null,
   lastActive: { dataset: null, layer: null },
   lastActiveComparison: { dataset: null, layer: null },
   opacity: 0.8,
