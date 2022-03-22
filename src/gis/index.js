@@ -140,7 +140,7 @@ export default class Map {
   //Map class methods:
   //A) map initialization methods----------------------------------------------------------------------------
 
-  toggleBivariateComponents(debug = true) {
+  toggleBivariateComponents(debug = false) {
     if (debug) {
       console.log("bivariateMode:", globals.bivariateMode);
     }
@@ -149,7 +149,7 @@ export default class Map {
         .querySelector(".v-card.histogram_frame")
         .classList.add("display-none"); //toggle display of histogram information
       if (debug) {
-        console.warn("show Bivariate");
+        console.warn("show Bivariate, turn main layer transparent");
       }
       document
         .querySelector(".v-card.bivariate_frame")
@@ -162,7 +162,7 @@ export default class Map {
         .querySelector(".v-card.histogram_frame")
         .classList.remove("display-none"); //toggle display of histogram information
       if (debug) {
-        console.warn("hide Bivariate");
+        console.warn("hide Bivariate, increase main layer opacity");
       }
       document
         .querySelector(".v-card.bivariate_frame")
@@ -179,7 +179,7 @@ export default class Map {
     firstLayer,
     secondDataset,
     secondLayer,
-    debug = true
+    debug = false
   ) {
     if (debug) {
       console.log(
@@ -499,6 +499,16 @@ export default class Map {
         //   '<select id="bivarSwitcher" onChange="bivarScaleSwitch(this.value);"><option value="logarithmic">logarithmic</option><option value="linear">linear</option></select>'
         // );
         // dynamic point size
+        let firstLabel = firstLayer.Unit;
+        // new DOMParser().parseFromString(
+        //   firstLayer.Unit,
+        //   "text/html"
+        // ).body.innerHTML;
+        let secondLabel = secondLayer.Unit;
+        // new DOMParser().parseFromString(
+        //   secondLayer.Unit,
+        //   "text/html"
+        // ).body.innerHTML;
         let point_radius;
         if (featuresUsed.length < 100) {
           point_radius = 3.3;
@@ -516,7 +526,7 @@ export default class Map {
                 scaleLabel: {
                   display: true,
                   //labelString: Vue._.find(allLayers, ["field_name", attrId_1])["title"], //adapted from oldcode, i presume was looking for the title/name of the dataset in order to label axes
-                  labelString: firstLayer.Unit,
+                  labelString: firstLabel, //firstLayer.Unit,
                 },
                 ticks: {
                   min: X_breaks[0], //minimum tick
@@ -562,7 +572,7 @@ export default class Map {
                 scaleLabel: {
                   display: true,
                   //labelString: Vue._.find(allLayers, ["field_name", attrId_2])["title"],
-                  labelString: secondLayer.Unit,
+                  labelString: secondLabel, //secondLayer.Unit,
                 },
                 ticks: {
                   min: Y_breaks[0], //minimum tick
@@ -607,6 +617,7 @@ export default class Map {
             position: "top",
             display: false,
           },
+          tooltips: false,
         };
 
         let bivarClasses = [
@@ -626,7 +637,7 @@ export default class Map {
             label: bivarClasses[i],
             data: bivarScatter[i],
             pointRadius: point_radius,
-            pointHoverRadius: 0, //3,
+            pointHoverRadius: 3,
             backgroundColor: bivar_colors[i],
             // hoverBorderColor: "rgba(0,0,0,1)",
             // pointHoverBorderWidth: 2,
@@ -645,6 +656,12 @@ export default class Map {
           data: { datasets: bivarDatasets },
           options: bivar_option,
         });
+
+        //testing updating chart
+        let chart = globals.myBivariateScatterChart;
+        chart.options.scales.yAxes[0] = { type: "linear" };
+        chart.update();
+        //--end test updating
       } else {
         if (debug) {
           console.warn("no features returned for bivariate mode", features);
@@ -656,7 +673,7 @@ export default class Map {
       }
     }
   }
-  removeBivariate(mapboxMapInstance = this.map, debug = true) {
+  removeBivariate(mapboxMapInstance = this.map, debug = false) {
     if (debug) {
       console.log("removeBivariate(), removing bivariate layer");
     }
@@ -2926,7 +2943,7 @@ export default class Map {
     // clickDiv.style.display = "none";
     clickDiv.innerHTML = "";
   }
-  clearHexHighlight(mapboxMapInstance = this.map, debug = true) {
+  clearHexHighlight(mapboxMapInstance = this.map, debug = false) {
     if (mapboxMapInstance.getLayer("clickedone")) {
       if (debug) {
         console.log(`map:removing highlight`);
@@ -2939,7 +2956,7 @@ export default class Map {
     clickDiv.classList.add("display-none");
   }
 
-  onBivariateClick(clicked, mapboxMapInstance = this.map, debug = true) {
+  onBivariateClick(clicked, mapboxMapInstance = this.map, debug = false) {
     if (debug) {
       console.log(`onBivariateClick clicked object(s):`, clicked);
     }
@@ -2949,6 +2966,19 @@ export default class Map {
         console.warn("bivar feature clicked is invalid class; doing nothing");
       return;
     }
+
+    let classToBivariateClasses = {
+      0: { 1: "Low", 2: "Low" },
+      1: { 1: "Medium", 2: "Low" },
+      2: { 1: "High", 2: "Low" },
+      3: { 1: "Low", 2: "Medium" },
+      4: { 1: "Medium", 2: "Medium" },
+      5: { 1: "High", 2: "Medium" },
+      6: { 1: "Low", 2: "High" },
+      7: { 1: "Medium", 2: "High" },
+      8: { 1: "High", 2: "High" },
+      9: { 1: "Unassigned", 2: "Unassigned" },
+    };
 
     let cls = globals.currentLayerState;
     let bvls = globals.bivariateLayerState;
@@ -2973,14 +3003,18 @@ export default class Map {
       "<p><b>Class: </b>" +
       `${clicked.features[0].properties["bivarClass"] + 1}` +
       "</p>" +
-      "<p><b>1st Value: </b>" +
+      "<p><b>1st Value: (" +
+      classToBivariateClasses[clicked.features[0].properties["bivarClass"]][1] +
+      ") </b>" +
       clicked.features[0].properties[
         bvls.dataLayer[0].Field_Name
       ]?.toLocaleString() +
       " " +
       unitText[0] +
       "</p>" +
-      "<p><b>2nd Value: </b>" +
+      "<p><b>2nd Value: (" +
+      classToBivariateClasses[clicked.features[0].properties["bivarClass"]][2] +
+      ") </b>" +
       clicked.features[0].properties[
         bvls.dataLayer[1].Field_Name
       ]?.toLocaleString() +
