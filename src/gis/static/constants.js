@@ -35,9 +35,9 @@ const constants = {
     "ocean",
   ],
   nogos: [
-    //EXTRACTED FROM WITHIN randomStart()
-    0, 1, 2, 4, 12, 16, 24, 25, 26, 27, 28, 29, 31, 32, 41, 43, 45, 47, 48, 50,
-    52,
+    //EXTRACTED FROM WITHIN randomStart()//was used to randomize starting country in view in legacy code
+    0,
+    1, 2, 4, 12, 16, 24, 25, 26, 27, 28, 29, 31, 32, 41, 43, 45, 47, 48, 50, 52,
   ],
   mapOptions: {
     style: "mapbox://styles/mapbox/satellite-streets-v11", //"mapbox://styles/mapbox/light-v10", //

@@ -1145,6 +1145,7 @@
 
 <script>
 // import { gis_store } from "../gis/gis_store.js";
+import globals from "@/gis/static/globals.js";
 import names from "@/gis/static/names";
 import CountrySelectorOption from "@/components/CountrySelectorOption";
 
@@ -1186,6 +1187,22 @@ export default {
     handleGisMenuChange(change_type, object = null) {
       // this.gis_store.testIncrement(); // testing use of a store
       //determine type of menuchange based on eventType
+
+      //checking for modes that are exclusive functionality
+      let mutuallyExclusiveModes = {
+        "toggle-bivariate": [globals.compareMode],
+        "toggle-dualmode": [globals.bivariateMode],
+      };
+      if (Object.values(mutuallyExclusiveModes[change_type]).includes(true)) {
+        console.warn(
+          "mutually exclusive mode active: ",
+          mutuallyExclusiveModes,
+          "current change type: ",
+          change_type,
+          " doing nothing;"
+        );
+        return;
+      }
 
       //display loader spinner
       if (

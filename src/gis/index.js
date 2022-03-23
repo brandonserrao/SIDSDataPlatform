@@ -152,6 +152,10 @@ export default class Map {
   //A) map initialization methods----------------------------------------------------------------------------
 
   toggleBivariateComponents(debug = false) {
+    if (globals.compareMode) {
+      console.warn("compareMode active; doing nothing;");
+      return;
+    }
     if (debug) {
       console.log("bivariateMode:", globals.bivariateMode);
     }
@@ -190,7 +194,7 @@ export default class Map {
     firstLayer,
     secondDataset,
     secondLayer,
-    debug = false
+    debug = true
   ) {
     if (debug) {
       console.log(
@@ -242,8 +246,8 @@ export default class Map {
       if (debug) {
         console.warn(
           "bivariate mode passed incompatible pair of ocean+land layers:",
-          firstLayer,
-          secondLayer,
+          firstLayer.Name,
+          secondLayer.Name,
           "doing nothing"
         );
       }
@@ -848,6 +852,11 @@ export default class Map {
   }
 
   toggleMapboxGLCompare(debug = false) {
+    //check for other mode eg. bivariate mode being active
+    if (globals.bivariateMode) {
+      console.warn("bivariateMode active, doing nothing");
+      return;
+    }
     if (debug) {
       console.log("globals.compareMode", globals.compareMode);
     }
