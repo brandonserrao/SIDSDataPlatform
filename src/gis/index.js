@@ -528,6 +528,7 @@ export default class Map {
         } else {
           point_radius = ((featuresUsed.length - 100) / 100) * 0.2;
         }
+        // eslint-disable-next-line no-unused-vars
         let bivar_option = {
           scales: {
             xAxes: [
@@ -650,8 +651,8 @@ export default class Map {
             pointRadius: point_radius,
             pointHoverRadius: 3,
             backgroundColor: bivar_colors[i],
-            // hoverBorderColor: "rgba(0,0,0,1)",
-            // pointHoverBorderWidth: 2,
+            hoverBorderColor: "rgba(0,0,0,1)",
+            pointHoverBorderWidth: 2,
             borderWidth: 1.5,
           });
         }
@@ -660,18 +661,32 @@ export default class Map {
         if (debug) {
           console.log("adding bivariate to canvas");
         }
-        let canvas = document.getElementById("bivariate_canvas");
+        // let canvas = document.getElementById("bivariate_canvas");
         // eslint-disable-next-line no-unused-vars
-        globals.myBivariateScatterChart = new Chart(canvas, {
-          type: "scatter",
-          data: { datasets: bivarDatasets },
-          options: bivar_option,
-        });
+        // globals.myBivariateScatterChart = new Chart(canvas, {
+        //   type: "scatter",
+        //   data: { datasets: bivarDatasets },
+        //   options: bivar_option,
+        // }); //to be obsoleted by updating an existing chart instance instead
 
-        //testing updating chart
-        // let chart = globals.myBivariateScatterChart;
-        // chart.options.scales.yAxes[0] = { type: "linear" };
-        // chart.update();
+        //testing updating chart //from https://www.chartjs.org/docs/2.9.4/developers/updates.html
+        let chart = globals.myBivariateScatterChart; //get scatter chart instance
+        //remove old data
+        // chart.data.labels.pop();
+        chart.data.datasets.forEach((dataset) => {
+          dataset.data.pop();
+        });
+        //add newly determined data for this createBivariate run
+        // let label = "# of Votes";
+        // chart.data.labels.push(label);
+        chart.data.datasets = bivarDatasets;
+        //update chart
+        chart.update(0); //no-animation update
+        //mutate options
+        chart.options = bivar_option; //no-animation update
+        //update chart
+        chart.update(0);
+        console.log("updating chart");
         //--end test updating
       } else {
         if (debug) {
