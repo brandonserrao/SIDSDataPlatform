@@ -912,7 +912,7 @@
 
               <!-- Draw Menu has due to unresolved issue (see github link on trello) -->
               <div class="menu row-flex">
-                <div class="icon draw-icon" @click="toggleMenu(10)"></div>
+                <div class="icon draw-icon" @click="toggleMenu(11)"></div>
                 <!-- <div class="icon draw-icon" onClick="handleDrawMenu()"></div> -->
                 <div class="description hover">
                   <b>Regional Analysis</b> - Draw an area of interest to compute
@@ -1442,6 +1442,7 @@ export default {
     //C) UI manipulation - functions that only change the UI-------------------------------------
 
     closeAllMenu(index) {
+      console.log("closeAllMenu: ", index);
       //closes all open toolbar menus
       var allMenu = document.getElementsByClassName("menu-drop");
 
@@ -1501,7 +1502,7 @@ export default {
 
       //belowcopied from toggleMenu logic for Draw Mode
       //removing the mapboxDraw instance if present, due to it blocking mapclicking of data
-      if (index !== 10) {
+      if (index !== 11) {
         console.log("closeAllMenu removing Draw instance");
         let mapClassInstance = this.map;
         if (!(mapClassInstance.Draw === null)) {
@@ -1525,7 +1526,8 @@ export default {
       //workaround to accommodate the preventDefault error (the MapboxDraw blocking touch interactions ie. on dataclick on mobile)
       //attempt to instantiate/delete the mapInstance.Draw ie. MapboxDraw instance with the clicking on the mapToolbar button click
       //??the menu #draw-menu's size likely will be affected by the presence/instance
-      if (index === 10) {
+      let drawmodeIndex = 11;
+      if (index === drawmodeIndex) {
         let mapClassInstance = this.map;
         if (mapClassInstance.Draw === null) {
           console.log("instantiating Draw");
