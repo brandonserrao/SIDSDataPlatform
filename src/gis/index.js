@@ -1210,6 +1210,18 @@ export default class Map {
     );
     //--------------------------
   }
+  _bindDataHoverListeners(mapClassInstance) {
+    let instance = mapClassInstance;
+
+    this.map.on(
+      "click",
+      "bivariate",
+      function (e, mapClassInstance = instance) {
+        mapClassInstance.clearOnClickQuery(mapClassInstance);
+        mapClassInstance.onBivariateClick(e);
+      }
+    );
+  }
   _bindRecolorListeners(mapClassInstance, debug = false) {
     // if (globals.compareMode) {
     //   console.warn("recolor disabled during comparison mode");

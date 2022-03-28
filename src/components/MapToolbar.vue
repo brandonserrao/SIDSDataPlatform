@@ -1184,7 +1184,7 @@ export default {
 
   methods: {
     //A) emit update - interpret and emit the desired interaction and necessary data to the parent (GeospatialData.vue)
-    handleGisMenuChange(change_type, object = null) {
+    handleGisMenuChange(change_type, object = null, debug = true) {
       // this.gis_store.testIncrement(); // testing use of a store
       //determine type of menuchange based on eventType
 
@@ -1193,7 +1193,18 @@ export default {
         "toggle-bivariate": [globals.compareMode],
         "toggle-dualmode": [globals.bivariateMode],
       };
-      if (Object.values(mutuallyExclusiveModes[change_type]).includes(true)) {
+      if (debug) {
+        console.log("mutuallyExclusiveModes:", mutuallyExclusiveModes);
+      }
+      if (Object.keys(mutuallyExclusiveModes).includes(change_type)) {
+        if (Object.values(mutuallyExclusiveModes[change_type]).includes(true)) {
+          console.warn(
+            `a mutually exclusive mode is active; GIS Menu doing nothing`
+          );
+          return;
+        }
+      }
+      /* if (Object.values(mutuallyExclusiveModes[change_type]).includes(true)) {
         console.warn(
           "mutually exclusive mode active: ",
           mutuallyExclusiveModes,
@@ -1202,7 +1213,7 @@ export default {
           " doing nothing;"
         );
         return;
-      }
+      } */
 
       //display loader spinner
       if (

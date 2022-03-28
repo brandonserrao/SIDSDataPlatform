@@ -3,7 +3,7 @@ import constants from "@/gis/static/constants.js";
 //taken from old code
 
 const globals = {
-  bivariateMode: null,
+  bivariateMode: false, //null,
   bivariateLayerState: {
     color: null,
     /**Object {X_breaks, Y_breaks}; breaks for  the two data layers;
@@ -22,7 +22,7 @@ const globals = {
   },
   myBivariateScatterChart: null, //store chart instance
   bivariateScaleTypes: { Y: "logarithmic", X: "linear" },
-  compareMode: null,
+  compareMode: false, //null,
   drawingMode: null,
   firstSymbolId: "tunnel-oneway-arrow-blue",
   basemapLabels: [], //current basemap labels, for use in addLabels -> the toggling of the labels of a current basemap style
