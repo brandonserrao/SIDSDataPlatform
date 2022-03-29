@@ -1056,19 +1056,24 @@
 
             <div class="col-flex">
               <!-- Upload Menu -->
-              <div class="menu row-flex display-none">
+              <div class="menu row-flex">
                 <div class="icon upload-icon" @click="toggleMenu(12)"></div>
                 <div class="description hover">Upload Geodata</div>
                 <div
                   class="
                     menu-drop
                     row-flex
-                    display-none
                     menu-big menu-with-blue
+                    background-grey
                   "
                   id="upload-menu"
                 >
-                  Placeholder content
+                  <div>Placeholder upload box</div>
+                  <div>
+                    Placeholder checkboxes
+                    <input type="checkbox" /><br />
+                    <input type="checkbox" /><br />
+                  </div>
                 </div>
               </div>
 
@@ -1194,6 +1199,7 @@ export default {
         "toggle-dualmode": [globals.bivariateMode],
       };
       if (debug) {
+        console.log("hanldeGisMenuChange", change_type, object);
         console.log("mutuallyExclusiveModes:", mutuallyExclusiveModes);
       }
       if (Object.keys(mutuallyExclusiveModes).includes(change_type)) {
