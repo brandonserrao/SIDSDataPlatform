@@ -274,6 +274,9 @@ export default {
         map.removeSource("upload");
       }
 
+      // let fileName = file.name;
+      // console.log(fileName);
+
       //if geojson do this
       if (ext === "geojson" || ext === "json") {
         res = JSON.parse(res);
@@ -414,7 +417,8 @@ export default {
 
         //if you click on the uploaded feature, display a popup of all fields
         map.on("click", "upload", (e) => {
-          console.log(e.lngLat);
+          //to be obsoleted
+          // console.log(e.lngLat);
           //console.log(e.features[0].properties.lngLat)
           var description = "";
 
@@ -422,12 +426,9 @@ export default {
             console.log(x);
 
             description += x + ": " + e.features[0].properties[x] + "<br>";
-            console.log(e.features[0].properties[x]);
-            console.log("---");
+            // console.log(e.features[0].properties[x]);
+            // console.log("---");
           }
-
-          //change description template to include an selector filled with options of the properties; and a on choose listener to update the displayed details in-popup
-
           new mapboxgl.Popup({
             className: "upload-pop",
           })
@@ -435,6 +436,43 @@ export default {
             .setHTML(description)
             .addTo(map);
         });
+        /* 
+          //testing
+          //change description template to include an selector filled with options of the properties; and a on choose listener to update the displayed details in-popup
+          let optionList = [];
+          //for (var x in e.features[0].properties)
+          for (let x in e.features[0]) {
+            let optionString = `<option value="${e.features[0].properties[x]}">${e.features[0].properties}</option>`;
+            optionList.push(optionString);
+          }
+          console.log("optionList", optionList);
+          let selectorID = "geodataPopupSelect";
+          let popupHTML =
+            `<div>Geodata Source File: ${"placeholder"}</div>
+          <div>Choose by field name:</div>
+          <select id=${selectorID} name='geodataPopupSelector'>` +
+            [...optionList] +
+            `</select>` +
+            `<div id="geodataFieldValue"></div>`;
+          //document.getElementById(selectorID).append(...optionList); //fill the selector with options
+
+          new mapboxgl.Popup({
+            className: "upload-pop",
+          })
+            .setLngLat(e.lngLat)
+            .setHTML(popupHTML)
+            //.setHTML(description)
+            .addTo(map);
+        });
+
+        //add change listener to modify
+        // document
+        //   .getElementById(selectorID)
+        //   .addEventListener("event", function (e) {
+        //     document.getElementById(outputID).innerText = e.target.value;
+        //   });
+
+         */
       } else {
         //if the uploaded data isn't a csv or json
 
@@ -968,6 +1006,12 @@ export default {
   .landscape-enforcer {
     display: none;
   }
+}
+
+.mapboxgl-popup-content {
+  overflow-y: scroll;
+  overflow-x: scroll;
+  max-height: 50vh;
 }
 .loader-gis {
   position: relative;

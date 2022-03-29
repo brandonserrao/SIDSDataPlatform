@@ -1070,8 +1070,10 @@
                   id="upload-menu"
                 >
                   <div class="background-grey">
-                    Upload a CSV or GeoJSON of geodata to display on map.
-                    <label for="avatar">Choose a profile picture:</label>
+                    <label for="avatar"
+                      >Upload a CSV or GeoJSON of geodata to display on
+                      map:</label
+                    >
                     <input
                       type="file"
                       id="fileInput"
@@ -1231,9 +1233,12 @@ export default {
 
       //display loader spinner
       if (
-        !["change-opacity", "toggle-dualmode", "toggle-bivariate"].includes(
-          change_type
-        )
+        ![
+          "change-opacity",
+          "toggle-dualmode",
+          "toggle-bivariate",
+          "file-upload",
+        ].includes(change_type)
       ) {
         console.log(change_type);
         console.log("show spinner for longer GISMenuChange behaviour");
