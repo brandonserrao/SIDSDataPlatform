@@ -1057,22 +1057,30 @@
             <div class="col-flex">
               <!-- Upload Menu -->
               <div class="menu row-flex">
-                <div class="icon upload-icon" @click="toggleMenu(12)"></div>
+                <div class="icon upload-icon" @click="toggleMenu(13)"></div>
                 <div class="description hover">Upload Geodata</div>
                 <div
                   class="
                     menu-drop
                     row-flex
-                    menu-big menu-with-blue
-                    background-grey
+                    menu-big
+                    display-none
+                    menu-with-blue
                   "
                   id="upload-menu"
                 >
-                  <div>Placeholder upload box</div>
-                  <div>
-                    Placeholder checkboxes
-                    <input type="checkbox" /><br />
-                    <input type="checkbox" /><br />
+                  <div class="background-grey">
+                    Upload a CSV or GeoJSON of geodata to display on map.
+                    <label for="avatar">Choose a profile picture:</label>
+                    <input
+                      type="file"
+                      id="fileInput"
+                      name="fileInput"
+                      accept=".csv, .geojson, .json"
+                      @change="
+                        handleGisMenuChange('file-upload', { file: $event })
+                      "
+                    />
                   </div>
                 </div>
               </div>
@@ -1279,6 +1287,9 @@ export default {
       } else if (change_type === "toggle-bivariate") {
         console.log("toggle-bivariate emitting", object);
         this.$emit(change_type, object);
+      } else if (change_type === "file-upload") {
+        console.log("file-upload emitting");
+        this.$emit("file-upload", object);
       } else {
         //
         alert(`${change_type} not yet handled by handleGisMenuChange`);

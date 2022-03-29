@@ -51,6 +51,7 @@
       @select-basemap="changeBasemap($event)"
       @change-opacity="changeOpacity($event)"
       @select-color="changeColor($event)"
+      @file-upload="handleFileSelect($event)"
       :active_dataset="activeDatasetName"
       :active_layer="activeLayerName"
       :dualModeEnabled="dualModeEnabled"
@@ -120,6 +121,9 @@ import MapDatasetController from "@/components/MapDatasetController";
 import MapToolbar from "@/components/MapToolbar"; //my attempt at adapting Ben's Form of new sidebar
 import GridLoader from "vue-spinner/src/GridLoader.vue"; // import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 
+import mapboxgl from "@/gis/mapboxgl";
+import bbox from "@turf/bbox";
+import csv2geojson from "csv2geojson"; //used in file parsing for geodata upload from via toolbar
 // @ is an alias to /src
 
 export default {
@@ -213,6 +217,230 @@ export default {
     },
 
     //B) Main functions
+    handleFileSelect(eventObject) {
+      console.warn("handleFileSelect under development");
+      console.log("eventObject passed: ", eventObject);
+      let event = eventObject.file;
+
+      // taken from handleFileSelect and addUploadToMap from oldcode
+
+      console.log(event.target.files[0]);
+      event.stopPropagation();
+      event.preventDefault();
+      var file;
+      //console.log(event.dataTransfer)
+      if (typeof event.dataTransfer === "undefined") {
+        file = event.target.files[0];
+      } else {
+        file = event.dataTransfer.files[0]; // FileList object.
+      }
+
+      //console.log(file)
+      //console.log(file.size);
+
+      let last_dot = file.name.lastIndexOf(".");
+      let ext = file.name.slice(last_dot + 1);
+
+      //let name = filename.slice(0, last_dot)
+
+      //console.log(file.type);
+      var reader = new FileReader();
+      let componentInstance = this;
+      reader.onloadend = function (e) {
+        // console.log(this.result);
+        console.log(ext, e);
+        // var result = JSON.parse(this.result);
+        //console.log(result);
+
+        componentInstance.addUploadToMap(this.result, ext);
+
+        /* if (file.size > 52428800) {
+              alert('file is too big, aim for under 50mb!')
+          } else {
+              alert('this file is not an acceptable type');
+          } */
+      };
+
+      reader.readAsText(file);
+      //------------------------------------------------
+    },
+    addUploadToMap(res, ext, map = this.map.map) {
+      // console.log(res);
+
+      //remove an uploaded layer if there's already one
+      if (map.getLayer("upload")) {
+        map.removeLayer("upload");
+        map.removeLayer("uploadline");
+        map.removeSource("upload");
+      }
+
+      //if geojson do this
+      if (ext === "geojson" || ext === "json") {
+        res = JSON.parse(res);
+        console.log(res);
+
+        map.addSource("upload", {
+          type: "geojson",
+          data: res,
+        });
+
+        //little tricky here - adds two layers but one is invisible
+        //the invisible fill layer is used for the click feature, otherwise you'd have to click on the line
+        map.addLayer({
+          id: "upload",
+          type: "fill",
+          source: "upload",
+          paint: {
+            "fill-opacity": 0.0,
+          },
+        });
+        map.addLayer({
+          id: "uploadline",
+          type: "line",
+          source: "upload",
+          paint: {
+            "line-color": "red",
+            "line-opacity": 0.7,
+            "line-width": 4,
+          },
+        });
+        // for (var x in res.features){
+        //     //console.log(res.features[x].properties);
+        // }
+
+        //get bounds of uploaded data
+        var uploadBbox = bbox(res);
+
+        //zoom to uploaded data
+        map.fitBounds(uploadBbox, {
+          linear: true,
+          padding: {
+            top: 10,
+            bottom: 25,
+            left: 15,
+            right: 5,
+          },
+        });
+
+        //if you click on the uploaded feature, display a popup of all fields
+        map.on("click", "upload", (e) => {
+          console.log(e.lngLat);
+          //console.log(e.features[0].properties.lngLat)
+          var description = "";
+
+          for (var x in e.features[0].properties) {
+            console.log(x);
+
+            description += x + ": " + e.features[0].properties[x] + "<br>";
+            console.log(e.features[0].properties[x]);
+            console.log("---");
+          }
+
+          new mapboxgl.Popup({
+            className: "upload-pop",
+          })
+            .setLngLat(e.lngLat)
+            .setHTML(description)
+            .addTo(map);
+        });
+      } else if (ext === "csv") {
+        //if csv, assume it's points
+
+        console.log(res);
+        console.log("its a csv");
+
+        let csv_config = {
+          latfield: "LAT",
+          lonfield: "LON",
+          delimiter: ",",
+        };
+        let error_log = [];
+
+        csv2geojson.csv2geojson(res, csv_config, function (err, data) {
+          //if (err) throw err;
+          if (err) {
+            if (
+              err.message ===
+              "A row contained an invalid value for latitude or longitude"
+            ) {
+              error_log.push(err); //log error and its details
+              return; //attempt to skip the entry
+            }
+          } else {
+            console.warn("geodata upload caused unhandled errors");
+            throw err;
+          } //the case of unhandled error type
+          //console.log(err);
+
+          var uploadBbox = bbox(data);
+          console.log(uploadBbox[0]);
+
+          if (uploadBbox[0] === Infinity) {
+            alert(
+              "cannot detect latitude and longitude fields. Make sure data has a spatial component or that the latitude and longitude columns are named Lat and Lng"
+            );
+          } else {
+            console.log(data);
+
+            map.addSource("upload", {
+              type: "geojson",
+              data: data,
+            });
+
+            map.addLayer({
+              id: "upload",
+              type: "circle",
+              source: "upload",
+              paint: {
+                "circle-color": "red",
+                "circle-radius": 4,
+              },
+            });
+
+            /* var uploadBbox = bbox(data)
+             console.log(uploadBbox);*/
+
+            map.fitBounds(uploadBbox, {
+              linear: true,
+              padding: {
+                top: 40,
+                bottom: 40,
+                left: 40,
+                right: 40,
+              },
+            });
+          }
+        });
+
+        //if you click on the uploaded feature, display a popup of all fields
+        map.on("click", "upload", (e) => {
+          console.log(e.lngLat);
+          //console.log(e.features[0].properties.lngLat)
+          var description = "";
+
+          for (var x in e.features[0].properties) {
+            console.log(x);
+
+            description += x + ": " + e.features[0].properties[x] + "<br>";
+            console.log(e.features[0].properties[x]);
+            console.log("---");
+          }
+
+          //change description template to include an selector filled with options of the properties; and a on choose listener to update the displayed details in-popup
+
+          new mapboxgl.Popup({
+            className: "upload-pop",
+          })
+            .setLngLat(e.lngLat)
+            .setHTML(description)
+            .addTo(map);
+        });
+      } else {
+        //if the uploaded data isn't a csv or json
+
+        alert("oops we need a csv or geojson");
+      }
+    },
     addBoundaryLayer(object) {
       console.log("addBoundaryLayer:");
       console.log(object);

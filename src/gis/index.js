@@ -145,6 +145,8 @@ export default class Map {
       // console.log("getMinZoom():", self.getMinZoom());
       // console.log("getMaxZoom():", self.getMaxZoom());
     });
+
+    window.myMapClass = this; //easy access for debugging purposes via the browser console
     //--------------------------------
   }
 
@@ -1210,17 +1212,16 @@ export default class Map {
     );
     //--------------------------
   }
-  _bindDataHoverListeners(mapClassInstance) {
-    let instance = mapClassInstance;
-
-    this.map.on(
-      "click",
-      "bivariate",
-      function (e, mapClassInstance = instance) {
-        mapClassInstance.clearOnClickQuery(mapClassInstance);
-        mapClassInstance.onBivariateClick(e);
-      }
-    );
+  _bindDataHoverListeners() {
+    // let instance = mapClassInstance;
+    // this.map.on(
+    //   "hover",
+    //   "bivariate",
+    //   function (e, mapClassInstance = instance) {
+    //     mapClassInstance.clearOnClickQuery(mapClassInstance);
+    //     mapClassInstance.onBivariateClick(e);
+    //   }
+    // );
   }
   _bindRecolorListeners(mapClassInstance, debug = false) {
     // if (globals.compareMode) {
