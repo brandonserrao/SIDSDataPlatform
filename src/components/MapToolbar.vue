@@ -1069,11 +1069,52 @@
                   "
                   id="upload-menu"
                 >
-                  <div class="background-grey">
-                    <label for="avatar"
-                      >Upload a CSV or GeoJSON of geodata to display on
-                      map:</label
+                  <div class="background-grey" style="padding: 10px">
+                    <label for="fileInput"
+                      >Upload a CSV or GeoJSON of geodata to display on map:
+                      <br />The data should include columns named "LAT" and
+                      "LON" containing point data coordinates for latitude and
+                      longitude respectively.</label
                     >
+                    <div id="fieldNames" class="">
+                      <!-- placeholders -->
+                      <!-- <input
+                        type="radio"
+                        name="radiogroup"
+                        id="ALL"
+                        value="submissionValue"
+                        checked
+                      />
+                      <label for="ALL">Placeholder ALL</label> <br />
+                      <input
+                        type="radio"
+                        name="radiogroup"
+                        id="field1"
+                        value="submissionValue"
+                      />
+                      <label for="field1">Placeholder 1</label> <br />
+                      <input
+                        type="radio"
+                        name="radiogroup"
+                        id="field2"
+                        value="submissionValue"
+                      />
+                      <label for="field2">Placeholder 1</label><br />
+                      <input
+                        type="radio"
+                        name="radiogroup"
+                        id="field3"
+                        value="submissionValue"
+                      />
+                      <label for="field3">Placeholder 1</label><br />
+                      <input
+                        type="radio"
+                        name="radiogroup"
+                        id="field4"
+                        value="submissionValue"
+                      />
+                      <label for="field4">Placeholder 1</label><br /> -->
+                    </div>
                     <input
                       type="file"
                       id="fileInput"
@@ -1577,19 +1618,29 @@ export default {
 
           mapClassInstance._addDrawListeners(mapClassInstance);
         } else {
-          console.log("removing Draw instance");
-          mapClassInstance.map.removeControl(mapClassInstance.Draw);
-          //!!despite map.hasControl => false for this, map.removeControl still removes the mapClassInstance.Draw fed to it as desired;
-          /* //replaced by map.removeControl(mapClassInstance.Draw)
-             let drawControls = document.querySelector(
-            "#drawControls div.mapboxgl-ctrl-group"
+          console.log(
+            "obsoleted mapbox draw removal here; mapbox draw instance exists so doing nothing"
           );
-          drawControls.remove(); */
-          mapClassInstance.Draw = null;
-          console.log("cleared mapClassInstance.Draw:", mapClassInstance.Draw);
-          // console.warn("unexpected Draw instance state", mapboxDrawInstance);
+          //obsoleted, was used to remove the mapbox draw gl with toggling of the menu
+          //new behaviour directly calls draw_polygon from the toolbar button click
+          //so removal/addition cycle unnecessary; draw instance just needs to be created the first time then removed
+          //!! needs testing in mobile to see if it recreates the blocking touch interaction bug
+          // console.log("removing Draw instance");
+          // mapClassInstance.map.removeControl(mapClassInstance.Draw);
+          //!!despite map.hasControl => false for this, map.removeControl still removes the mapClassInstance.Draw fed to it as desired;
+          // mapClassInstance.Draw = null;
+          // console.log("cleared mapClassInstance.Draw:", mapClassInstance.Draw);
         }
-        console.log("checking mapClassInstance.Draw", mapClassInstance.Draw);
+        // console.log("checking mapClassInstance.Draw", mapClassInstance.Draw);
+
+        //testing - triggering draw_polygon mode directly from toolbar click instead of relying on draw control's button
+        mapClassInstance.Draw.changeMode("draw_polygon");
+        console.log(
+          "directly from toolbar menu changing draw mode to draw_polygon"
+        );
+        return console.log(
+          "skipping expansion of menu options and close-menu div"
+        );
       }
       //-----------------------------------------------------------------
 
@@ -1805,6 +1856,12 @@ export default {
 .HACK {
   /*deals with the mapnavigation offset issue; caused by Ben's spacing divs for placing the sidebar creating boxes */
   display: contents;
+}
+
+/* the div container for the fieldnames of the geodata parsed by the upload geodata tool */
+#fieldNames {
+  overflow-y: auto;
+  max-height: 35vh;
 }
 
 .loader-gis {

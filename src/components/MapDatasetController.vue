@@ -1284,6 +1284,9 @@ export default {
     },
 
     createTabLabel() {
+      if (!this.activeDataset)
+        return console.warn("no activeDataset, doing nothing");
+
       let labelString = "Placeholder Label";
       if (this.activeDataset.type === "single") {
         labelString = this.activeDataset.name;

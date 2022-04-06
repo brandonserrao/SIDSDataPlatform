@@ -54,7 +54,7 @@ const constants = {
     style: "mapbox://styles/mapbox/light-v10", //"mapbox://styles/mapbox/satellite-streets-v11",
     center: [-71.5, 19.0],
     zoom: 7,
-    maxZoom: 13.5,
+    maxZoom: 20, //13.5,
     minZoom: 1,
     maxBounds: [
       [-270, -45],

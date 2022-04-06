@@ -264,6 +264,11 @@ export default {
       reader.readAsText(file);
       //------------------------------------------------
     },
+    //testing as alternative to addUploadToMap
+    new_addUploadToMap() {
+      //create modal with options to allow user to check off which fields they want
+      //need to parse and display the fields
+    },
     addUploadToMap(res, ext, map = this.map.map) {
       // console.log(res);
 
@@ -279,8 +284,9 @@ export default {
 
       //if geojson do this
       if (ext === "geojson" || ext === "json") {
+        console.log("parsing upload geodata as geo/json file");
         res = JSON.parse(res);
-        console.log(res);
+        // console.log(res);
 
         map.addSource("upload", {
           type: "geojson",
@@ -360,7 +366,6 @@ export default {
         let error_log = [];
 
         csv2geojson.csv2geojson(res, csv_config, function (err, data) {
-          //if (err) throw err;
           if (err) {
             if (
               err.message ===
@@ -380,10 +385,40 @@ export default {
 
           if (uploadBbox[0] === Infinity) {
             alert(
-              "cannot detect latitude and longitude fields. Make sure data has a spatial component or that the latitude and longitude columns are named Lat and Lng"
+              "cannot determine a bounding box. Make sure data has a spatial component or that the latitude and longitude columns are named Lat and Lng"
             );
           } else {
-            console.log(data);
+            //get list of fields ie. properties from a features in the parsed geojson and store them for use in generating the checklist modal
+            let field_names = Object.keys(data.features?.[0].properties);
+            //iterate through field_names and add them with checkboxes or radio buttons? to it
+
+            let div_fieldNames = document.getElementById("fieldNames"); //should get the div to hold the list of radio buttons which allow toggling primary field of interest
+            div_fieldNames.innerHTML = ""; //clear previous contents;
+            for (const fieldName of field_names) {
+              //create a radio button and append it with its label to the container div
+              // let element = `<input type="radio" name="radioGroup_fieldNames" id=${fieldName} value=${fieldName}/>
+              // <label for=${fieldName}>${fieldName}</label>
+              // <br />`;
+              let radioButton = document.createElement("INPUT");
+              radioButton.setAttribute("type", "radio");
+              radioButton.setAttribute("name", "radioGroup_fieldNames");
+              radioButton.setAttribute("id", `${fieldName}`);
+              radioButton.setAttribute("value", `${fieldName}`);
+
+              let label = document.createElement("LABEL");
+              label.setAttribute("for", `${fieldName}`);
+              label.innerText = `${fieldName}`;
+
+              let wrapper_div = document.createElement("div");
+
+              // div_fieldNames.append(radioButton);
+              // div_fieldNames.append(label);
+              wrapper_div.append(radioButton);
+              wrapper_div.append(label);
+              div_fieldNames.append(wrapper_div);
+            }
+
+            console.log(data, field_names);
 
             map.addSource("upload", {
               type: "geojson",
@@ -436,7 +471,7 @@ export default {
             .setHTML(description)
             .addTo(map);
         });
-        /* 
+        /*
           //testing
           //change description template to include an selector filled with options of the properties; and a on choose listener to update the displayed details in-popup
           let optionList = [];
@@ -1035,7 +1070,8 @@ export default {
   display: none;
 }
 
-#map {
+#map,
+#map2 {
   height: 100vh;
   width: 100%;
 }

@@ -69,7 +69,7 @@ const globals = {
       promoteId: "hexid",
       tiles: [constants.sourceURLs.hex5],
       //'minzoom': 3,
-      maxzoom: 12,
+      maxzoom: 20, //13.5,
     },
     hex5clipped: {
       type: "vector",
@@ -86,25 +86,25 @@ const globals = {
       promoteId: "GID_1",
       tiles: [constants.sourceURLs.admin1],
       //'minzoom': 3,
-      maxzoom: 12,
+      maxzoom: 20, //13.5,
     },
     admin2: {
       type: "vector",
       promoteId: "GID_2",
       tiles: [constants.sourceURLs.admin2],
       //'minzoom': 3,
-      maxzoom: 12,
+      maxzoom: 20, //13.5,
     },
     ocean: {
       type: "vector",
       tiles: [constants.sourceURLs.ocean],
-      maxzoom: 10,
+      maxzoom: 20, //13.5,
     },
     allsids: {
       type: "vector",
       //'url': ocean
       tiles: [constants.sourceURLs.allSids],
-      maxzoom: 12,
+      maxzoom: 20, //13.5,
     },
   },
   sourceData: {

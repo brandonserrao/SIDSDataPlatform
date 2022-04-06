@@ -867,11 +867,19 @@ export default class Map {
         console.log("createComparison");
       }
       this.createComparison(this.containerId, this.map, this.map2);
+      //hide histogram
+      document
+        .querySelector(".v-card.histogram_frame")
+        .classList.add("display-none");
     } else {
       if (debug) {
         console.log("removeComparison");
       }
       this.removeComparison();
+      //reshow histogram
+      document
+        .querySelector(".v-card.histogram_frame")
+        .classList.remove("display-none");
     }
     globals.compareMode = !globals.compareMode;
   }
