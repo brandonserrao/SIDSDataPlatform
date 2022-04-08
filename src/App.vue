@@ -63,6 +63,9 @@ body,
 }
 
 @media all and (max-width: 960px) {
+  #content {
+    min-height: calc(100vh);
+  }
   .root-router {
     padding: 0 0 4em;
   }

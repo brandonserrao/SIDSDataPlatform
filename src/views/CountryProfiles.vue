@@ -1,5 +1,25 @@
 <template>
   <div class="mt-xs-0 mt-sm-0 mt-md-5 mt-lg-5 mt-xl-5">
+    <v-row class="d-none mb-3 d-flex-print">
+      <v-col cols="3">
+        <img
+          class="printed-Logo"
+          src="@/assets/media/RFSIDS-dark.png"
+        >
+      </v-col>
+      <v-col cols="6">
+        <v-row dense>
+          <v-col>
+            <h2 class="printout-header text-center"><b>{{activeCountry.name}}</b> Country profile</h2>
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
+            <h4 class="printout-subheader text-center">UNDP SIDS Data Platform</h4>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
     <v-row class="profile-header-row d-none-print" :style="isMobile ? {'background-image': `url(${require(`@/assets/media/country-photos/${activeCountryId}.jpg`)})`} : {}" justify="center">
       <v-col cols="12" offset-md="1" md="4" offset-lg="3" lg="3">
         <h2 class="page-header country-profile-header">Country profile</h2>
@@ -41,9 +61,6 @@
         </div>
       </v-col>
     </v-row>
-    <h1 class="d-none d-block-print">
-      {{activeCountry.name}}
-    </h1>
     <v-row class="mt-xs-0 mt-sm-0" justify="center" dense>
       <v-col class="pt-xs-0 pt-sm-0" cols="12">
         <country-info-bar
@@ -62,7 +79,7 @@
             :items="sidsListFiltered"
             item-text="name"
             item-value="id"
-            placeholder="Overlay countries to compare indicator rank among SIDS"
+            placeholder="Overlay countries to compare indicator rank"
             @change="setCompareCountries"
             chips
             outlined
@@ -91,16 +108,47 @@
           </v-select>
         </div>
       </v-col>
-    </v-row>
-    <v-row v-if="graphRankData && graphValueData" class="d-flex-print d-none d-md-flex" justify="center">
-      <v-col v-for="pillar in pillars" :key="pillar" cols="6" md="6" lg="4">
-        <profiles-spider-chart
-          :graphOptions="graphOptions[pillar]"
-          :pillarName="pillar"
-          :ranks="graphRankData[pillar]"
-          :values="graphValueData[pillar]"/>
+      <v-col class="d-flex align-center" md="1">
+        <p class="mt-auto mb-auto">among</p>
       </v-col>
-      <v-col cols="12" md="6" lg="4">
+      <v-col cols="11" md="3" lg="2">
+        <div class="select">
+          <v-select
+            rounded
+            v-model="rankType"
+            :items="rankTypes"
+            item-text="name"
+            item-value="id"
+            outlined
+            dense
+            hide-details
+          >
+          </v-select>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row v-if="graphRankData && graphValueData" class="d-flex-print d-none d-md-flex justify-print-space-between" justify="center">
+      <template v-for="(pillar, index) in pillars">
+        <v-col cols="4" md="6" lg="4" :class="{'printing-6':pillar==='MVI'}" :key="pillar">
+          <profiles-spider-chart
+            :graphOptions="graphOptions[pillar]"
+            :pillarName="pillar"
+            :ranks="graphRankData[pillar]"
+            :values="graphValueData[pillar]"/>
+
+          <v-row dense v-if="index === 3" class="mvi-print-desc mb-0 d-none d-print-flex">
+            <v-col class="mt-0 mb-0" cols="12">
+              <p class="mt-0 mb-0 text-center">
+                Values for each indicator for vulnerability are normalized among all countries with available data on a scale from 0 to 100
+              </p>
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col v-if="index === 2" class="d-none d-print-block mt-0 mb-0" :key="`${pillar}des`" cols="12">
+          <p class="mt-0 mb-0 text-center">Values for radar charts for each of the pillars of the SIDS Offer are displayed by rank among AIS countries for visualization purposes</p>
+        </v-col>
+      </template>
+      <v-col class="printing-6" cols="4" md="6" lg="4">
         <profiles-finance
           :countryId="activeCountryId"/>
       </v-col>
@@ -142,7 +190,7 @@
             :items="sidsListFiltered"
             item-text="name"
             item-value="id"
-            placeholder="Overlay countries to compare indicator rank among SIDS"
+            placeholder="Overlay countries to compare indicator rank"
             @change="setCompareCountries"
             chips
             outlined
@@ -172,9 +220,31 @@
         </div>
       </v-col>
     </v-row>
-    <v-row class="d-none d-md-flex" justify="center">
+    <v-row class="d-flex d-none-print d-md-none" justify="center">
+      <v-col cols="3" class="d-flex align-center" md="1">
+        <p class="mt-auto mb-auto">among</p>
+      </v-col>
+      <v-col cols="8" md="3" lg="2">
+        <div class="select">
+          <v-select
+            rounded
+            v-model="rankType"
+            :items="rankTypes"
+            item-text="name"
+            item-value="id"
+            outlined
+            dense
+            hide-details
+          >
+          </v-select>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row class="d-none d-none-print d-md-flex" justify="center">
       <v-col cols="2">
-        <v-menu offset-y>
+        <v-menu
+          content-class="d-none-print"
+          offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               rounded
@@ -199,6 +269,10 @@
         </v-menu>
       </v-col>
     </v-row>
+    <p class="print-footer d-none d-print-block">
+      Live version and links to original data sources available at
+      <a :href="`https://data.undp.org/sids/${activeCountryId}`">https://data.undp.org/sids/{{activeCountryId}}</a>
+    </p>
   </div>
 </template>
 
@@ -224,6 +298,19 @@ export default {
     flagGodes,
     region:'All SIDS',
     regions:["All SIDS", "Caribbean", "AIS", "Pacific"],
+    rankType: 'sids',
+    rankTypes: [
+      {
+        name:'Globally',
+        id:'global'
+      },{
+        name:'Regionally',
+        id:'region'
+      },{
+        name:'SIDS counties',
+        id:'sids'
+      }
+    ],
     colorScheme: ["#EDC951", "#CC333F", "#00A0B0", "#FFFFFF"],
     pillars:['Climate', 'Blue', 'Digital', 'MVI'],
     tab:'Climate',
@@ -328,9 +415,10 @@ export default {
       this.pillars.map(pillar => {
         result[pillar] = countriesList.map(countyId => {
           let countyAxes = this.profiles[countyId][pillar].map(axis => {
+            let rank = this.rankType + 'Rank'
             return {
               axis: this.indicatorsMetadata[axis.axis].indicator,
-              value: axis.globalRank || axis.value,
+              value: axis[rank] || axis.value,
               code: axis.axis
             }
           })
@@ -536,5 +624,33 @@ export default {
   .select-column {
     margin-bottom: 15px;
   }
+ }
+ .printed-Logo {
+   max-width: 100%;
+ }
+ .printout-header{
+   font-weight: 400;
+   font-size: 26px;
+   margin-top: -7px !important;
+ }
+ .printout-subheader{
+   font-weight: 600;
+   font-size: 20px;
+   margin-top: -3px !important;
+ }
+ @media print {
+   .printing-6 {
+     flex: 0 0 50% !important;
+     max-width: 50% !important;
+   }
+   .mvi-print-desc {
+     margin-top: -50px !important;
+   }
+   .print-footer {
+     position: fixed;
+     width: 90%;
+     left: 0;
+     bottom: 0px;
+   }
  }
 </style>

@@ -37,11 +37,8 @@ export function updateVizEngine(indicatorCode) {
   }
   if (Object.keys(indexCodes).includes(this.indicatorCode)) {
     this.vizMode = "index";
-    this.apiCode="/indices/" + indexCodes[this.indicatorCode];
   } else {
     this.vizMode = "indicator";
-    let codeSplit = this.indicatorCode.split("-");
-    this.apiCode=`/indicators/${codeSplit[0]}/${this.indicatorCode}`
   }
     // updateVizSliders();
 //   //package selections
@@ -63,18 +60,14 @@ export function updateVizEngine(indicatorCode) {
 //
 //
 //
-  d3.json(
-    "https://raw.githubusercontent.com/SIDS-Dashboard/api/main/data"+  this.apiCode + ".json"
-  ).then((dat) => {
-
     this.updateLinesAndMap();
     if(this.vizMode=="indicator"){
-      this.indicatorData = dat[this.indicatorCode];
+      this.indicatorData = this.data;
       this.indexData={};
       this.indexWeights={"subindices":{},"normalization":false};
     }
     if(this.vizMode=="index"){
-      this.indexData = this.getIndexValues(dat);
+      this.indexData = this.getIndexValues(this.data);
       this.indicatorData = this.indexData.index
       this.indexWeights = JSON.parse(JSON.stringify(indexWeightsDict[this.indicatorCode]));//deep copy
       this.countryOrder = this.getIndexCountryList()
@@ -121,8 +114,6 @@ export function updateVizEngine(indicatorCode) {
       }
 //
 //       updateVizSliders()//again, just for fun
-  });
-
 }
 
 ///////////////////////
@@ -142,7 +133,9 @@ function quantizeData(indicatorData,indiSelections){
     min = 0;
 
       // Math.min(...Object.values(indicatorData).filter(function (el) { return !isNaN(parseFloat(el)) && isFinite(el);  }))
-
+    if(max === min) {
+      max+= 1
+    }
       //quantize is the scale used for the choropleth and the legend
     let quantize = d3
       .scaleQuantize()
@@ -167,7 +160,6 @@ export function countriesWithNoData() {
         // console.log(this.id)
         let iso = this.id;
         ////need to update this to indiSelections["year"] variable
-        rootThis.indiSelections["year"] = "recentValue";
         let value = rootThis.indicatorData["data"][rootThis.indiSelections["year"]][iso];
         //console.log(value)
         if (value == "No Data" || typeof value != "number") {
@@ -713,7 +705,6 @@ export function updateBarAxis() {
   var margin = { left: this.vizWidth < 800 ? 0 : 160, right: 5 };
   var xAxis = d3.axisTop(x);
   var width = this.vizWidth < 800 ? this.vizWidth - 40 : 440;
-  var height = 90;
 
   let max = Math.max(
     ...Object.values(indicatorDataYear).filter(function (el) {
@@ -721,7 +712,9 @@ export function updateBarAxis() {
     })
   ),
   min = 0;
-
+  if(max === min) {
+    max+=1;
+  }
   if (this.indiSelections["viz"] == "Multi-indicator") {
     margin.left = 60;
     width = 440;
@@ -760,7 +753,7 @@ export function updateBarAxis() {
   barAxis
     .transition()
     .duration(1200)
-    .attr("transform", `translate(${margin.left}, ${height / 2})`)
+    .attr("transform", `translate(${margin.left}, 25)`)
     .call(xAxis);
 }
 //
@@ -842,7 +835,9 @@ export function updateYAxis() {
     ),
     // min = Math.min(...Object.values(indicatorData2).filter(function (el) { return !isNaN(parseFloat(el)) && isFinite(el); }))
     min = 0;
-
+    if(max === min) {
+      max+=1;
+    }
     yScale.domain([min, max]).range([height, 0]);
 
     yAxisContainer.attr("visibility", "visible");
@@ -904,19 +899,6 @@ export function updateChoroLegend(quantize) {
 
     //var choroLegend = d3.select("#choro_legend_container").selectAll('g.choroLegendEntry')
 
-    choro_legend_container.select(".choroLegendTitle").text(() => {
-      //extent will be a two-element array, format it however you want:
-      //return format(extent[0]) + " - " + format(+extent[1])
-      // if (indiSelections["page"] == "mviTab") {
-      //     return "Multidimensional Vulnerability Index"
-      // }
-      // else {
-
-      return `${this.indicatorMeta[this.indicatorCode].indicator} (${this.indicatorMeta[this.indicatorCode].units})`; //["name"];//.toFixed(2))//extent[0].toFixed(2) + " - " +
-
-      // }
-    });
-
     choroLegend.selectAll("rect").attr("class", function (d) {
       return d;
     });
@@ -931,20 +913,6 @@ export function updateChoroLegend(quantize) {
       this.indiSelections["viz"] == "global"
     ) {
       this.hideChoroLegend(choroLegend, quantize);//only hide rectangles and labels
-    }
-    if (
-      this.indiSelections["viz"] == "Info" ||
-      this.indiSelections["viz"] == "global"
-    ) {
-        this.choro_legend_svg
-        .selectAll(".choroLegendTitle")
-        .transition().duration(1200)
-        .attr("fill-opacity", 0);
-    } else {
-        this.choro_legend_svg
-        .selectAll(".choroLegendTitle")
-        .transition().duration(1200)
-        .attr("fill-opacity", 1);
     }
   }
 

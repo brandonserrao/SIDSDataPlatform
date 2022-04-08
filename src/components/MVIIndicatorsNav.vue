@@ -1,15 +1,15 @@
 <template>
   <div class="mvi-indicators-nav">
-    <v-row>
+    <v-row class="nav-row">
       <v-col>
         <v-tabs
           :value="activePreset"
           grow
           class="mb-2 mvi-nav-tabs tabs tabs-small"
         >
-          <v-tab value="0" @change="setPreset('MVI')">MVI</v-tab>
-          <v-tab value="1" @change="setPreset('EVI')">EVI</v-tab>
-          <v-tab value="2">Custom</v-tab>
+          <v-tab :value="0" @change="setPreset('MVI')">MVI</v-tab>
+          <v-tab :value="1" @change="setPreset('EVI')">EVI</v-tab>
+          <v-tab :value="2">Custom</v-tab>
         </v-tabs>
       </v-col>
       <v-col class="flex-grow-0">
@@ -189,5 +189,8 @@ export default {
 }
 .mvi-indicators-nav .v-list-item__action {
   margin: 0 !important;
+}
+.mvi-indicators-nav .nav-row {
+  max-width: 100%;
 }
 </style>

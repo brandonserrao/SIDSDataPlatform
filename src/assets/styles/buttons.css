@@ -26,6 +26,12 @@
   width: 38px !important;
   padding: 0 19px !important
 }
+
+.v-btn--icon.v-size--default {
+  height: 36px !important;
+  width: 36px !important;
+  padding: 0 16px !important;
+}
 .v-btn--fab:hover  {
   width: 50px !important;
   padding: 0 25px !important;

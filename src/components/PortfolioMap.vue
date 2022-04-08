@@ -1,6 +1,6 @@
 <template>
   <div class="map d-flex" :class="regionClass" :style="backgroundData">
-    <h2 class="page-header prtfolio-header mt-md-5 mb-2">UNDP Portfolio in Small Island Developing States</h2>
+    <h2 class="page-header prtfolio-header mt-5 mb-2">UNDP Portfolio in Small Island Developing States</h2>
     <v-row class="justify-md-end justify-center" >
       <v-card
         class="ma-2 portfolio-chip"

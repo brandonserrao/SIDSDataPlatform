@@ -1377,9 +1377,9 @@ export default {
 
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
-        return require(`@/assets/media/goals-icons/SDGs/${index + 1}.png`);
+        return require(`@/assets/media/goals-icons/sdgs/${index+1}.png`)
       } else {
-        return require(`@/assets/media/goals-icons/SAMOA/${index + 1}.png`);
+        return require(`@/assets/media/goals-icons/samoa/${index+1}.png`)
       }
     },
     goalUpdateNext() {
