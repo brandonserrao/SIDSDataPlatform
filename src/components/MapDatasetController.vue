@@ -258,7 +258,7 @@
             :items="filteredDatasets"
             item-text="name"
             item-value="name"
-            :label="dualModeEnabled ? 'Right Dataset' : 'Dataset'"
+            :label="dualModeEnabled ? 'Right Dataset' : 'Should Not Be Displayed'"
             @input="emitComparisonUpdate"
             outlined
           ></v-select>
@@ -280,7 +280,7 @@
             item-text="Description"
             item-value="Description"
             :items="comparisonDataset.layers"
-            :label="dualModeEnabled ? 'Right Layer' : 'Layer'"
+            :label="dualModeEnabled ? 'Right Layer' : 'Should Not Be Displayed'"
             @input="emitComparisonUpdate"
             outlined
           ></v-select>
@@ -308,12 +308,88 @@
       <v-row v-else class="spacing-row" v-show="dualModeEnabled"> </v-row> -->
       <!-- DUPLICATE END -->
       <v-row
+        id="modeInfoBox"
         v-show="dualModeEnabled"
         class="row row--dense"
         style="padding: 0 1em 1em 1em"
         >Comparison Slider enabled: Compare the leftmost and rightmost
         tabs</v-row
       >
+
+      <!-- DUPLICATE START for bivariateMode selectors -->
+      <v-row dense v-show="bivariateModeEnabled">
+        <v-col>
+          <v-select
+            rounded
+            class="map-input"
+            dense
+            hide-details
+            v-model="bivariateDatasetName"
+            :items="filteredDatasets"
+            item-text="name"
+            item-value="name"
+            :label="
+              bivariateModeEnabled
+                ? 'Second Dataset'
+                : 'Should Not Be Displayed'
+            "
+            @input="emitBivariateUpdate"
+            outlined
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-row
+        v-show="bivariateModeEnabled"
+        class="spacing-row"
+        v-if="bivariateDataset && bivariateDataset.type === 'layers'"
+        dense
+      >
+        <v-col>
+          <v-select
+            rounded
+            dense
+            hide-details
+            class="map-input"
+            v-model="bivariateLayerName"
+            item-text="Description"
+            item-value="Description"
+            :items="bivariateDataset.layers"
+            :label="
+              bivariateModeEnabled ? 'Second Layer' : 'Should Not Be Displayed'
+            "
+            @input="emitBivariateUpdate"
+            outlined
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-row
+        v-show="bivariateModeEnabled"
+        class="spacing-row"
+        v-else-if="bivariateDataset && bivariateDataset.type === 'temporal'"
+        dense
+      >
+        <v-col>
+          <v-slider
+            class="map-input"
+            v-model="bivariateLayerName"
+            :tick-labels="bivariateTicksLabels"
+            :max="bivariateDataset.layers.length - 1"
+            step="1"
+            ticks="always"
+            tick-size="4"
+            @input="emitBivariateUpdate"
+          ></v-slider>
+        </v-col>
+      </v-row>
+      <v-row v-else class="spacing-row" v-show="bivariateModeEnabled"> </v-row>
+      <!-- DUPLICATE END -->
+      <v-row
+        id="modeInfoBox"
+        v-show="dualModeEnabled || bivariateModeEnabled"
+        class="row row--dense"
+        style="padding: 0 1em 1em 1em"
+        >BIVARIATE MODE ENABLED: Select the pair of datasets
+      </v-row>
     </v-card>
 
     <!-- TESTING - FLEXBOX TO CONTROL TABS AND ADDTAB BUTTON LAYOUT -->
@@ -432,11 +508,53 @@
         Select a Dataset and Layer to view data on the map.
       </v-card-text>
     </v-card>
+
+    <!-- Bivariate Card -->
+    <!-- <v-card v-if="displayLegend" class="histogram_frame"> -->
+    <v-card class="background-grey bivariate_frame display-none">
+      <div id="bivariate_frame" class="pic app-body col-flex">
+        <!-- <div
+          class="row-flex space-evenly legend-bivariate"
+          id="legendBivariate"
+        >
+          Placeholder legend-bivariate
+        </div>
+        <div
+          class="row-flex space-evenly legend main-legend"
+          id="updateBivariate"
+        >
+          placeholder updateBivariate
+        </div> -->
+        <canvas
+          ref="canvas_bivariate"
+          id="bivariate_canvas"
+          width="320"
+          height="200"
+        ></canvas>
+        <div class="toggleScaleTypeButtonWrapper">
+          <div id="XType">default</div>
+          <button
+            @click="toggleScaleType('bivariate', 'X')"
+            class="toggleScaleType"
+          >
+            Toggle X Scale
+          </button>
+          <div id="YType">default</div>
+          <button
+            @click="toggleScaleType('bivariate', 'Y')"
+            class="toggleScaleType"
+          >
+            Toggle Y Scale
+          </button>
+        </div>
+      </div>
+    </v-card>
   </div>
 </template>
 
 <script>
 // import { gis_store } from "../gis/gis_store.js";
+import globals from "@/gis/static/globals.js";
 import datasets from "@/gis/static/layers";
 import VueTabsChrome from "vue-tabs-chrome";
 
@@ -446,8 +564,10 @@ export default {
     VueTabsChrome,
   },
   props: [
-    "displayLegend", //"map"
-    "dualModeEnabled",
+    "map", //map class instance
+    "displayLegend",
+    "dualModeEnabled", //bool value
+    "bivariateModeEnabled", //bool value
   ],
   data() {
     return {
@@ -484,6 +604,9 @@ export default {
           },
         }, */
       ],
+      //
+      bivariateDatasetName: null,
+      bivariateLayerName: null,
       //
       comparisonDatasetName: null,
       comparisonLayerName: null,
@@ -872,8 +995,48 @@ export default {
     tabsAreVisible() {
       return this.tabs.length <= 0 ? false : true;
     },
+
+    bivariateDataset() {
+      console.log("bivariateDataset()");
+      return this.filteredDatasets.find(
+        (dataset) => dataset.name === this.bivariateDatasetName
+      );
+    },
+    bivariateLayer() {
+      console.log(this.bivariateDataset);
+
+      if (!this.bivariateDataset || this.bivariateDataset === "info")
+        return null;
+      if (this.bivariateDataset.type === "temporal") {
+        return this.bivariateDataset.layers[this.bivariateLayerName];
+      } else if (this.bivariateDataset.type === "layers") {
+        return this.bivariateDataset.layers.find(
+          (layer) => layer.Description === this.bivariateLayerName
+        );
+      } else {
+        console.log(this.bivariateDataset.layers[0]);
+        return this.bivariateDataset.layers[0];
+      }
+    },
+    bivariateTicksLabels() {
+      console.log("bivariateTicksLabels()");
+      return this.bivariateDataset.layers.map((layer) => layer.Temporal);
+    },
   },
   methods: {
+    //TESTING - BIVARIATE TOGGLES
+    toggleScaleType(chartName, axisName) {
+      //axisName = array containing "X" and or "Y"
+      let chart;
+      if (chartName === "bivariate") {
+        chart = globals.myBivariateScatterChart;
+      } else {
+        //TODO implement toggles and hadnling for histogram
+        console.warn("unexpected chartName passed, doing nothing");
+        return;
+      }
+      this.map.toggleScaleType(chart, [axisName]); //call class function
+    },
     //TESTING - TAB SYSTEM
     replaceCurrentTab() {
       //find current tab by looking through .getTabs() for matching this.tab key and overwrite the data and label values
@@ -1121,6 +1284,9 @@ export default {
     },
 
     createTabLabel() {
+      if (!this.activeDataset)
+        return console.warn("no activeDataset, doing nothing");
+
       let labelString = "Placeholder Label";
       if (this.activeDataset.type === "single") {
         labelString = this.activeDataset.name;
@@ -1171,6 +1337,22 @@ export default {
       //updating units
       console.log("$emit update:", active);
       this.$emit("update", active);
+
+      //handle updating when the selector is used in bivariate mode
+      //TODO: create a separate selector? a FirstLayer selector?
+      if (globals.bivariateMode) {
+        let data = {
+          firstDataset: this.activeDataset,
+          firstLayer: this.activeLayer,
+          secondDataset: this.bivariateDataset,
+          secondLayer: this.bivariateLayer,
+        };
+        console.log(
+          "main dataset selector triggering bivariate update: ",
+          data
+        );
+        this.$emit("updateBivariate", data);
+      }
     },
     emitComparisonUpdate() {
       console.log("emitComparisonUpdate");
@@ -1180,6 +1362,17 @@ export default {
       }; //package data to pass to parents with update
       //updating units
       this.$emit("updateComparison", active);
+    },
+    emitBivariateUpdate() {
+      console.log("emitBivariateUpdate");
+      let active = {
+        firstDataset: this.activeDataset,
+        firstLayer: this.activeLayer,
+        secondDataset: this.bivariateDataset,
+        secondLayer: this.bivariateLayer,
+      }; //package data to pass to parents with update
+      //updating units
+      this.$emit("updateBivariate", active);
     },
 
     getGoalImage(index) {
@@ -1218,6 +1411,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 /*Brandon additions*/
+.toggleScaleTypeButtonWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.toggleScaleTypeButtonWrapper > button {
+  background-color: white !important;
+  outline: grey !important;
+}
+
 .comparisonButtons .v-btn {
   padding: 0 1em !important;
   height: 100% !important;

@@ -856,19 +856,47 @@
               </div>
 
               <!-- Bivariate Mode -->
-              <div class="menu row-flex display-none">
+              <div class="menu row-flex">
                 <div
                   class="icon bivariate-mode-icon"
                   @click="handleBivariateMode()"
                 ></div>
-                <div class="description hover"><b>Bivariate</b></div>
-                <!-- <div class="menu-drop row-flex align-items-center display-none bivariate menu-with-blue">
-                      <div class="row-flex align-items-center" style="height: 40px;margin:0 6px 0 0;">
-                        <div class="row-flex" style="font-weight: bold; padding-left: 10px;line-height:40px;margin:0 10px 0 0;height: 40px;width:200px;background-color:#DFDFDF;">Bivariate Mode Enabled</div>
-                        <div class="info-nobg-icon"></div>
-                      </div>
-                    </div> 
-                <div class="blue-box blue-box-bivariate display-none"></div>-->
+                <div class="description hover">
+                  <b>Bivariate Mode</b> - Show the relationships between two
+                  datasets
+                </div>
+                <div
+                  class="
+                    menu-drop
+                    row-flex
+                    align-items-center
+                    display-none
+                    bivariate
+                    menu-with-blue
+                  "
+                >
+                  <div
+                    class="row-flex align-items-center"
+                    style="height: 40px; margin: 0 6px 0 0"
+                  >
+                    <div
+                      class="row-flex"
+                      style="
+                        font-weight: bold;
+                        padding-left: 10px;
+                        line-height: 40px;
+                        margin: 0 10px 0 0;
+                        height: 40px;
+                        width: 200px;
+                        background-color: #dfdfdf;
+                      "
+                    >
+                      Bivariate Mode Enabled
+                    </div>
+                    <div class="info-nobg-icon"></div>
+                  </div>
+                </div>
+                <div class="blue-box blue-box-bivariate display-none"></div>
                 <div
                   class="
                     menu-drop
@@ -884,7 +912,7 @@
 
               <!-- Draw Menu has due to unresolved issue (see github link on trello) -->
               <div class="menu row-flex">
-                <div class="icon draw-icon" @click="toggleMenu(10)"></div>
+                <div class="icon draw-icon" @click="toggleMenu(11)"></div>
                 <!-- <div class="icon draw-icon" onClick="handleDrawMenu()"></div> -->
                 <div class="description hover">
                   <b>Regional Analysis</b> - Draw an area of interest to compute
@@ -1028,19 +1056,75 @@
 
             <div class="col-flex">
               <!-- Upload Menu -->
-              <div class="menu row-flex display-none">
-                <div class="icon upload-icon" @click="toggleMenu(12)"></div>
+              <div class="menu row-flex">
+                <div class="icon upload-icon" @click="toggleMenu(13)"></div>
                 <div class="description hover">Upload Geodata</div>
                 <div
                   class="
                     menu-drop
                     row-flex
+                    menu-big
                     display-none
-                    menu-big menu-with-blue
+                    menu-with-blue
                   "
                   id="upload-menu"
                 >
-                  Placeholder content
+                  <div class="background-grey" style="padding: 10px">
+                    <label for="fileInput"
+                      >Upload a CSV or GeoJSON of geodata to display on map:
+                      <br />The data should include columns named "LAT" and
+                      "LON" containing point data coordinates for latitude and
+                      longitude respectively.</label
+                    >
+                    <div id="fieldNames" class="">
+                      <!-- placeholders -->
+                      <!-- <input
+                        type="radio"
+                        name="radiogroup"
+                        id="ALL"
+                        value="submissionValue"
+                        checked
+                      />
+                      <label for="ALL">Placeholder ALL</label> <br />
+                      <input
+                        type="radio"
+                        name="radiogroup"
+                        id="field1"
+                        value="submissionValue"
+                      />
+                      <label for="field1">Placeholder 1</label> <br />
+                      <input
+                        type="radio"
+                        name="radiogroup"
+                        id="field2"
+                        value="submissionValue"
+                      />
+                      <label for="field2">Placeholder 1</label><br />
+                      <input
+                        type="radio"
+                        name="radiogroup"
+                        id="field3"
+                        value="submissionValue"
+                      />
+                      <label for="field3">Placeholder 1</label><br />
+                      <input
+                        type="radio"
+                        name="radiogroup"
+                        id="field4"
+                        value="submissionValue"
+                      />
+                      <label for="field4">Placeholder 1</label><br /> -->
+                    </div>
+                    <input
+                      type="file"
+                      id="fileInput"
+                      name="fileInput"
+                      accept=".csv, .geojson, .json"
+                      @change="
+                        handleGisMenuChange('file-upload', { file: $event })
+                      "
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -1117,6 +1201,7 @@
 
 <script>
 // import { gis_store } from "../gis/gis_store.js";
+import globals from "@/gis/static/globals.js";
 import names from "@/gis/static/names";
 import CountrySelectorOption from "@/components/CountrySelectorOption";
 
@@ -1155,12 +1240,47 @@ export default {
 
   methods: {
     //A) emit update - interpret and emit the desired interaction and necessary data to the parent (GeospatialData.vue)
-    handleGisMenuChange(change_type, object = null) {
+    handleGisMenuChange(change_type, object = null, debug = true) {
       // this.gis_store.testIncrement(); // testing use of a store
       //determine type of menuchange based on eventType
 
+      //checking for modes that are exclusive functionality
+      let mutuallyExclusiveModes = {
+        "toggle-bivariate": [globals.compareMode],
+        "toggle-dualmode": [globals.bivariateMode],
+      };
+      if (debug) {
+        console.log("hanldeGisMenuChange", change_type, object);
+        console.log("mutuallyExclusiveModes:", mutuallyExclusiveModes);
+      }
+      if (Object.keys(mutuallyExclusiveModes).includes(change_type)) {
+        if (Object.values(mutuallyExclusiveModes[change_type]).includes(true)) {
+          console.warn(
+            `a mutually exclusive mode is active; GIS Menu doing nothing`
+          );
+          return;
+        }
+      }
+      /* if (Object.values(mutuallyExclusiveModes[change_type]).includes(true)) {
+        console.warn(
+          "mutually exclusive mode active: ",
+          mutuallyExclusiveModes,
+          "current change type: ",
+          change_type,
+          " doing nothing;"
+        );
+        return;
+      } */
+
       //display loader spinner
-      if (!["change-opacity", "toggle-dualmode"].includes(change_type)) {
+      if (
+        ![
+          "change-opacity",
+          "toggle-dualmode",
+          "toggle-bivariate",
+          "file-upload",
+        ].includes(change_type)
+      ) {
         console.log(change_type);
         console.log("show spinner for longer GISMenuChange behaviour");
 
@@ -1210,7 +1330,14 @@ export default {
       } else if (change_type === "select-boundary-layer") {
         console.log("select-boundary-layer emitting");
         this.$emit("select-boundary-layer", object);
+      } else if (change_type === "toggle-bivariate") {
+        console.log("toggle-bivariate emitting", object);
+        this.$emit(change_type, object);
+      } else if (change_type === "file-upload") {
+        console.log("file-upload emitting");
+        this.$emit("file-upload", object);
       } else {
+        //
         alert(`${change_type} not yet handled by handleGisMenuChange`);
       }
     },
@@ -1366,18 +1493,19 @@ export default {
     },
 
     handleDualMode() {
-      console.log("handleDualMode");
+      console.log("handleDualMode  under active development");
       this.handleGisMenuChange("toggle-dualmode");
     },
 
     handleBivariateMode() {
-      console.warn("handleBivariateMode not yet implemented");
-      // this.handleGisMenuChange("toggle-bivariate");
+      console.warn("handleBivariateMode under active reimplementation");
+      this.handleGisMenuChange("toggle-bivariate");
     },
 
     //C) UI manipulation - functions that only change the UI-------------------------------------
 
     closeAllMenu(index) {
+      console.log("closeAllMenu: ", index);
       //closes all open toolbar menus
       var allMenu = document.getElementsByClassName("menu-drop");
 
@@ -1437,7 +1565,7 @@ export default {
 
       //belowcopied from toggleMenu logic for Draw Mode
       //removing the mapboxDraw instance if present, due to it blocking mapclicking of data
-      if (index !== 10) {
+      if (index !== 11) {
         console.log("closeAllMenu removing Draw instance");
         let mapClassInstance = this.map;
         if (!(mapClassInstance.Draw === null)) {
@@ -1461,7 +1589,8 @@ export default {
       //workaround to accommodate the preventDefault error (the MapboxDraw blocking touch interactions ie. on dataclick on mobile)
       //attempt to instantiate/delete the mapInstance.Draw ie. MapboxDraw instance with the clicking on the mapToolbar button click
       //??the menu #draw-menu's size likely will be affected by the presence/instance
-      if (index === 10) {
+      let drawmodeIndex = 11;
+      if (index === drawmodeIndex) {
         let mapClassInstance = this.map;
         if (mapClassInstance.Draw === null) {
           console.log("instantiating Draw");
@@ -1489,19 +1618,29 @@ export default {
 
           mapClassInstance._addDrawListeners(mapClassInstance);
         } else {
-          console.log("removing Draw instance");
-          mapClassInstance.map.removeControl(mapClassInstance.Draw);
-          //!!despite map.hasControl => false for this, map.removeControl still removes the mapClassInstance.Draw fed to it as desired;
-          /* //replaced by map.removeControl(mapClassInstance.Draw)
-             let drawControls = document.querySelector(
-            "#drawControls div.mapboxgl-ctrl-group"
+          console.log(
+            "obsoleted mapbox draw removal here; mapbox draw instance exists so doing nothing"
           );
-          drawControls.remove(); */
-          mapClassInstance.Draw = null;
-          console.log("cleared mapClassInstance.Draw:", mapClassInstance.Draw);
-          // console.warn("unexpected Draw instance state", mapboxDrawInstance);
+          //obsoleted, was used to remove the mapbox draw gl with toggling of the menu
+          //new behaviour directly calls draw_polygon from the toolbar button click
+          //so removal/addition cycle unnecessary; draw instance just needs to be created the first time then removed
+          //!! needs testing in mobile to see if it recreates the blocking touch interaction bug
+          // console.log("removing Draw instance");
+          // mapClassInstance.map.removeControl(mapClassInstance.Draw);
+          //!!despite map.hasControl => false for this, map.removeControl still removes the mapClassInstance.Draw fed to it as desired;
+          // mapClassInstance.Draw = null;
+          // console.log("cleared mapClassInstance.Draw:", mapClassInstance.Draw);
         }
-        console.log("checking mapClassInstance.Draw", mapClassInstance.Draw);
+        // console.log("checking mapClassInstance.Draw", mapClassInstance.Draw);
+
+        //testing - triggering draw_polygon mode directly from toolbar click instead of relying on draw control's button
+        mapClassInstance.Draw.changeMode("draw_polygon");
+        console.log(
+          "directly from toolbar menu changing draw mode to draw_polygon"
+        );
+        return console.log(
+          "skipping expansion of menu options and close-menu div"
+        );
       }
       //-----------------------------------------------------------------
 
@@ -1717,6 +1856,12 @@ export default {
 .HACK {
   /*deals with the mapnavigation offset issue; caused by Ben's spacing divs for placing the sidebar creating boxes */
   display: contents;
+}
+
+/* the div container for the fieldnames of the geodata parsed by the upload geodata tool */
+#fieldNames {
+  overflow-y: auto;
+  max-height: 35vh;
 }
 
 .loader-gis {

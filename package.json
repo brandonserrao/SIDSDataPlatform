@@ -18,6 +18,7 @@
     "chart.js": "^2.9.4",
     "chroma-js": "^2.1.2",
     "core-js": "^3.6.5",
+    "csv2geojson": "^5.1.1",
     "d3": "^5.16.0",
     "d3-interpolate-path": "^2.2.3",
     "flag-icon-css": "^4.1.7",
