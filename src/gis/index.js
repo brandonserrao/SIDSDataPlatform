@@ -168,6 +168,8 @@ export default class Map {
       if (debug) {
         console.warn("show Bivariate, turn main layer transparent");
       }
+      document.querySelector(".tab-system-box").classList.add("display-none");
+
       document
         .querySelector(".v-card.bivariate_frame")
         .classList.remove("display-none"); //toggle display of histogram information
@@ -181,6 +183,10 @@ export default class Map {
       if (debug) {
         console.warn("hide Bivariate, increase main layer opacity");
       }
+      document
+        .querySelector(".tab-system-box")
+        .classList.remove("display-none");
+
       document
         .querySelector(".v-card.bivariate_frame")
         .classList.add("display-none"); //toggle display of histogram information
