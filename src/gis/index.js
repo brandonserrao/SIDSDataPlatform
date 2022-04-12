@@ -339,6 +339,31 @@ export default class Map {
           //   ? -1
           //   : 1;
         });
+        if (debug) {
+          console.log("data_1: ", data_1, "data_2", data_2);
+        }
+        //check for case where no data for one of the selected data layers (field ID/name)
+        let hasData = {
+          data_1: data_1.some((x) => !Number.isNaN(x)),
+          data_2: data_2.some((y) => !Number.isNaN(y)),
+        };
+        if (debug) {
+          console.log("bivariate selections hasData:", hasData);
+        }
+        if (!hasData.data_1 || !hasData.data_2) {
+          console.warn(
+            "!! a selected datalayer has no data for this region: ",
+            hasData
+          );
+
+          //remove preexisting bivariate layer
+          if (map.getLayer("bivariate")) {
+            map.removeLayer("bivariate");
+            map.removeSource("bivariate");
+          }
+
+          return;
+        }
 
         //compute breakpoint values in these datasets, and update them in state
         let X_breaks = chroma.limits(data_1, "q", 3);

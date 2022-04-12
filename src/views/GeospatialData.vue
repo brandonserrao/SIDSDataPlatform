@@ -750,7 +750,7 @@ export default {
       //   activeLayer,
 
       // );
-      console.warn("updateBivariate(...) still being implemented");
+      // console.warn("updateBivariate(...) still being implemented");
       this.map.createBivariate(
         firstDataset,
         firstLayer,

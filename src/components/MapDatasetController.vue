@@ -221,7 +221,7 @@
             item-value="Description"
             :items="activeDataset.layers"
             :label="dualModeEnabled ? 'Left Layer' : 'Layer'"
-            @input="onInput"
+            @change="onInput"
             outlined
           ></v-select>
         </v-col>
@@ -333,7 +333,7 @@
                 ? 'Second Dataset'
                 : 'Should Not Be Displayed'
             "
-            @input="emitBivariateUpdate"
+            @change="emitBivariateUpdate"
             outlined
           ></v-select>
         </v-col>
@@ -357,7 +357,7 @@
             :label="
               bivariateModeEnabled ? 'Second Layer' : 'Should Not Be Displayed'
             "
-            @input="emitBivariateUpdate"
+            @change="emitBivariateUpdate"
             outlined
           ></v-select>
         </v-col>
@@ -1341,17 +1341,15 @@ export default {
       //handle updating when the selector is used in bivariate mode
       //TODO: create a separate selector? a FirstLayer selector?
       if (globals.bivariateMode) {
-        let data = {
-          firstDataset: this.activeDataset,
-          firstLayer: this.activeLayer,
-          secondDataset: this.bivariateDataset,
-          secondLayer: this.bivariateLayer,
-        };
-        console.log(
-          "main dataset selector triggering bivariate update: ",
-          data
-        );
-        this.$emit("updateBivariate", data);
+        console.log("main dataset selector triggering bivariate update");
+        // let active = {
+        //   firstDataset: this.activeDataset,
+        //   firstLayer: this.activeLayer,
+        //   secondDataset: this.bivariateDataset,
+        //   secondLayer: this.bivariateLayer,
+        // };
+        // this.$emit("updateBivariate", active);
+        this.emitBivariateUpdate();
       }
     },
     emitComparisonUpdate() {
@@ -1377,9 +1375,9 @@ export default {
 
     getGoalImage(index) {
       if (this.activeGoalType === "sdgs") {
-        return require(`@/assets/media/goals-icons/sdgs/${index+1}.png`)
+        return require(`@/assets/media/goals-icons/sdgs/${index + 1}.png`);
       } else {
-        return require(`@/assets/media/goals-icons/samoa/${index+1}.png`)
+        return require(`@/assets/media/goals-icons/samoa/${index + 1}.png`);
       }
     },
     goalUpdateNext() {
