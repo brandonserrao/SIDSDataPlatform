@@ -122,6 +122,7 @@ export default class Map {
       this.removeComparison(); //!! creating and immediately removing as my attempt to instantiate
       //  the comparison via the toolbar button later on (with toolbar button click) results in
       //  map2 having diferent dimensions for some reason not immediately apparent
+      ////map2 having different dimensions somehow due to window resizing taking place between separate instantiations;
     });
 
     //for bivariate mode
@@ -928,6 +929,9 @@ export default class Map {
     );
     map2Instance.setCenter(map1Instance.getCenter());
     map2Instance.setZoom(map1Instance.getZoom());
+
+    //testing - adding .resize() to handle issue of map2 instance's size being shrunk to a minimum(?) due to window being resized/tiled(?) between uses of the comparison mode
+    map2Instance.resize();
   }
   removeComparison() {
     this.mapCompare.remove(); //remove the  mapboxgl.Compare from the webpage
