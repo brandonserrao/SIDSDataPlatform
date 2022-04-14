@@ -2260,7 +2260,9 @@ body {
   right: 5px;
 }
 
-.country {
+.country,
+.color,
+.basemap {
   position: relative;
   height: 80%;
   background-color: #dfdfdf;
@@ -2272,16 +2274,20 @@ body {
   cursor: pointer;
 }
 
-.country-name {
+.country-name,
+.color-option,
+.basemap-option {
   width: 200px;
 }
 
-.country-options {
+.country-options,
+.color-options,
+.basemap-options {
   position: absolute;
   top: 92%;
   animation: growDown 0.4s;
   transform-origin: top;
-  /*added by me to allow scrolling*/
+  /*added by me to allow scrolling and fit overflowing content to viewport*/
   overflow: auto;
   max-height: 50vh;
 }

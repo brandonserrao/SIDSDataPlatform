@@ -2156,7 +2156,7 @@ export default class Map {
     cls.dataLayer = activeLayer.Field_Name; //corresponds to the attributeId
     cls.hexSize = "ocean";
     //ocean-specific layer state values hardcoded
-    //ocean data uses pre-decided breaks and color;
+    //ocean data uses pre-decided breaks and color;holdover from oldcode
     cls.breaks = [-4841, -3805, -2608, -1090, 0];
     // cls.color = [
     //   "#08519c",
@@ -2193,7 +2193,7 @@ export default class Map {
         "fill-color": [
           "interpolate",
           ["linear"],
-          ["get", "depth"],
+          ["get", "depth"], //TODO remove this hardcoding
           -4841,
           "#08519c",
           -3805,
@@ -2220,18 +2220,40 @@ export default class Map {
     //---------------------------------------------------------------------------------
 
     if (!comparison) {
-      setTimeout(() => {
-        var features = map.queryRenderedFeatures({
-          layers: ["ocean"],
-        });
+      // setTimeout(() => {
+      //   var features = map.queryRenderedFeatures({
+      //     layers: ["ocean"],
+      //   });
 
-        if (features) {
-          var uniFeatures;
-          uniFeatures = this.getUniqueFeatures(features, "depth"); //depth is field_id for ocean depths layer
-          var selectedData = uniFeatures.map((x) => x.properties["depth"]);
-          this.addLegend(cls.color, cls.breaks, 2, activeLayer, selectedData);
+      //   console.warn("areTilesLoaded():", map.areTilesLoaded());
+
+      //   if (features) {
+      //     var uniFeatures;
+      //     uniFeatures = this.getUniqueFeatures(features, "depth"); //depth is field_id for ocean depths layer
+      //     var selectedData = uniFeatures.map((x) => x.properties["depth"]);
+      //     this.addLegend(cls.color, cls.breaks, 2, activeLayer, selectedData);
+      //   }
+      // }, 600);
+
+      //testing - replacing old timeout with an intial check for if tiles have finished loading and a maximum total time before skipping legend loading
+      let waitInterval = 1000;
+      setTimeout(() => {
+        //check if tiles are loaded
+        if (!map.areTilesLoaded()) {
+          console.log("waiting for tiles to fully load"); //skip
+        } else {
+          let features = map.queryRenderedFeatures({
+            layers: ["ocean"],
+          });
+          //create legend
+          if (features) {
+            let uniFeatures;
+            uniFeatures = this.getUniqueFeatures(features, "depth"); //depth is field_id for ocean depths layer
+            let selectedData = uniFeatures.map((x) => x.properties["depth"]);
+            this.addLegend(cls.color, cls.breaks, 2, activeLayer, selectedData);
+          }
         }
-      }, 600);
+      }, waitInterval);
 
       // this.addLegend(); //TODO doesnt this need the extra params that I added to the addLegend function?
     }
