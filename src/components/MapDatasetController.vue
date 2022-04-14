@@ -1403,6 +1403,9 @@ export default {
       console.log(dataValue);
     },
   },
+  mounted() {
+    this.addEmptyTab(); //add empty tab in order to display the tab system and convey its presence to user
+  },
 };
 </script>
 
