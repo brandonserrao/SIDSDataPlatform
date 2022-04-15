@@ -1684,7 +1684,7 @@ export default {
     },
 
     toggleCountryMenu(state = null) {
-      console.log("toggleBasemapMenu, state: ", state);
+      console.log("toggleCountryMenu, state: ", state);
       var countryMenu = document.getElementsByClassName("country-options")[0];
       if (
         state == true ||

@@ -1775,8 +1775,10 @@ export default class Map {
 
     //when done, update: firstSymbolId, basemapLabels
     map.once("idle", function () {
-      self.getBasemapLabels();
+      //TODO refactor in order to combine the repeated code here
+      self.getBasemapLabels(); //update global state storing basemap labels
 
+      //handle main map instance
       //unnecessary: why should the layers be removed if the basemap is switching??
       self._addVectorSources();
       let currentSource = Vue._.find(globals.sourceData, function (o) {
@@ -1784,6 +1786,7 @@ export default class Map {
       });
       //re-add the current layer, with appropriate filtering
       let cls = globals.currentLayerState;
+
       try {
         map.addLayer(
           {
@@ -1827,6 +1830,65 @@ export default class Map {
         }
         //placed to catch error when attempted while no data layer is loaded on main map
       }
+
+      //handle comparison map instance ie. map2
+      self._addVectorSources(true);
+      let comparisonSource = Vue._.find(globals.sourceData, function (o) {
+        return o.name === globals.comparisonLayerState.hexSize;
+      });
+      //re-add the current layer, with appropriate filtering
+      let comparison_cls = globals.comparisonLayerState;
+
+      try {
+        map2.addLayer(
+          {
+            id: comparison_cls.hexSize,
+            type: "fill",
+            source: comparison_cls.hexSize,
+            "source-layer": comparisonSource.layer,
+            layout: {
+              visibility: "visible",
+            },
+            paint: {
+              "fill-opacity": globals.opacity, //0.8
+              "fill-color": [
+                "interpolate",
+                ["linear"],
+                ["get", comparison_cls.dataLayer],
+                comparison_cls.breaks[0],
+                comparison_cls.color[0],
+                comparison_cls.breaks[1],
+                comparison_cls.color[1],
+                comparison_cls.breaks[2],
+                comparison_cls.color[2],
+                comparison_cls.breaks[3],
+                comparison_cls.color[3],
+                comparison_cls.breaks[4],
+                comparison_cls.color[4],
+              ],
+            },
+          },
+          globals.firstSymbolId
+        );
+
+        let filterString = comparison_cls.dataLayer === "depth" ? "<=" : ">=";
+        map2.setFilter(comparison_cls.hexSize, [
+          filterString,
+          comparison_cls.dataLayer,
+          0,
+        ]);
+
+        map2.moveLayer("allsids", globals.firstSymbolId); //ensure allsids outline ontop
+      } catch (err) {
+        if (debug) {
+          console.warn(
+            "attempted while no data layer is loaded on comparison map"
+          );
+          console.warn(err.stack);
+        }
+        //placed to catch error when attempted while no data layer is loaded on main map
+      }
+
       self.hideSpinner();
     });
   }
