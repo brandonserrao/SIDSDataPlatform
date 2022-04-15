@@ -122,6 +122,7 @@ export default class Map {
       this.removeComparison(); //!! creating and immediately removing as my attempt to instantiate
       //  the comparison via the toolbar button later on (with toolbar button click) results in
       //  map2 having diferent dimensions for some reason not immediately apparent
+      ////map2 having different dimensions somehow due to window resizing taking place between separate instantiations;
     });
 
     //for bivariate mode
@@ -339,6 +340,31 @@ export default class Map {
           //   ? -1
           //   : 1;
         });
+        if (debug) {
+          console.log("data_1: ", data_1, "data_2", data_2);
+        }
+        //check for case where no data for one of the selected data layers (field ID/name)
+        let hasData = {
+          data_1: data_1.some((x) => !Number.isNaN(x)),
+          data_2: data_2.some((y) => !Number.isNaN(y)),
+        };
+        if (debug) {
+          console.log("bivariate selections hasData:", hasData);
+        }
+        if (!hasData.data_1 || !hasData.data_2) {
+          console.warn(
+            "!! a selected datalayer has no data for this region: ",
+            hasData
+          );
+
+          //remove preexisting bivariate layer
+          if (map.getLayer("bivariate")) {
+            map.removeLayer("bivariate");
+            map.removeSource("bivariate");
+          }
+
+          return;
+        }
 
         //compute breakpoint values in these datasets, and update them in state
         let X_breaks = chroma.limits(data_1, "q", 3);
@@ -903,6 +929,9 @@ export default class Map {
     );
     map2Instance.setCenter(map1Instance.getCenter());
     map2Instance.setZoom(map1Instance.getZoom());
+
+    //testing - adding .resize() to handle issue of map2 instance's size being shrunk to a minimum(?) due to window being resized/tiled(?) between uses of the comparison mode
+    map2Instance.resize();
   }
   removeComparison() {
     this.mapCompare.remove(); //remove the  mapboxgl.Compare from the webpage
@@ -1746,8 +1775,10 @@ export default class Map {
 
     //when done, update: firstSymbolId, basemapLabels
     map.once("idle", function () {
-      self.getBasemapLabels();
+      //TODO refactor in order to combine the repeated code here
+      self.getBasemapLabels(); //update global state storing basemap labels
 
+      //handle main map instance
       //unnecessary: why should the layers be removed if the basemap is switching??
       self._addVectorSources();
       let currentSource = Vue._.find(globals.sourceData, function (o) {
@@ -1755,6 +1786,7 @@ export default class Map {
       });
       //re-add the current layer, with appropriate filtering
       let cls = globals.currentLayerState;
+
       try {
         map.addLayer(
           {
@@ -1798,6 +1830,65 @@ export default class Map {
         }
         //placed to catch error when attempted while no data layer is loaded on main map
       }
+
+      //handle comparison map instance ie. map2
+      self._addVectorSources(true);
+      let comparisonSource = Vue._.find(globals.sourceData, function (o) {
+        return o.name === globals.comparisonLayerState.hexSize;
+      });
+      //re-add the current layer, with appropriate filtering
+      let comparison_cls = globals.comparisonLayerState;
+
+      try {
+        map2.addLayer(
+          {
+            id: comparison_cls.hexSize,
+            type: "fill",
+            source: comparison_cls.hexSize,
+            "source-layer": comparisonSource.layer,
+            layout: {
+              visibility: "visible",
+            },
+            paint: {
+              "fill-opacity": globals.opacity, //0.8
+              "fill-color": [
+                "interpolate",
+                ["linear"],
+                ["get", comparison_cls.dataLayer],
+                comparison_cls.breaks[0],
+                comparison_cls.color[0],
+                comparison_cls.breaks[1],
+                comparison_cls.color[1],
+                comparison_cls.breaks[2],
+                comparison_cls.color[2],
+                comparison_cls.breaks[3],
+                comparison_cls.color[3],
+                comparison_cls.breaks[4],
+                comparison_cls.color[4],
+              ],
+            },
+          },
+          globals.firstSymbolId
+        );
+
+        let filterString = comparison_cls.dataLayer === "depth" ? "<=" : ">=";
+        map2.setFilter(comparison_cls.hexSize, [
+          filterString,
+          comparison_cls.dataLayer,
+          0,
+        ]);
+
+        map2.moveLayer("allsids", globals.firstSymbolId); //ensure allsids outline ontop
+      } catch (err) {
+        if (debug) {
+          console.warn(
+            "attempted while no data layer is loaded on comparison map"
+          );
+          console.warn(err.stack);
+        }
+        //placed to catch error when attempted while no data layer is loaded on main map
+      }
+
       self.hideSpinner();
     });
   }
@@ -2127,7 +2218,7 @@ export default class Map {
     cls.dataLayer = activeLayer.Field_Name; //corresponds to the attributeId
     cls.hexSize = "ocean";
     //ocean-specific layer state values hardcoded
-    //ocean data uses pre-decided breaks and color;
+    //ocean data uses pre-decided breaks and color;holdover from oldcode
     cls.breaks = [-4841, -3805, -2608, -1090, 0];
     // cls.color = [
     //   "#08519c",
@@ -2164,7 +2255,7 @@ export default class Map {
         "fill-color": [
           "interpolate",
           ["linear"],
-          ["get", "depth"],
+          ["get", "depth"], //TODO remove this hardcoding
           -4841,
           "#08519c",
           -3805,
@@ -2191,18 +2282,40 @@ export default class Map {
     //---------------------------------------------------------------------------------
 
     if (!comparison) {
-      setTimeout(() => {
-        var features = map.queryRenderedFeatures({
-          layers: ["ocean"],
-        });
+      // setTimeout(() => {
+      //   var features = map.queryRenderedFeatures({
+      //     layers: ["ocean"],
+      //   });
 
-        if (features) {
-          var uniFeatures;
-          uniFeatures = this.getUniqueFeatures(features, "depth"); //depth is field_id for ocean depths layer
-          var selectedData = uniFeatures.map((x) => x.properties["depth"]);
-          this.addLegend(cls.color, cls.breaks, 2, activeLayer, selectedData);
+      //   console.warn("areTilesLoaded():", map.areTilesLoaded());
+
+      //   if (features) {
+      //     var uniFeatures;
+      //     uniFeatures = this.getUniqueFeatures(features, "depth"); //depth is field_id for ocean depths layer
+      //     var selectedData = uniFeatures.map((x) => x.properties["depth"]);
+      //     this.addLegend(cls.color, cls.breaks, 2, activeLayer, selectedData);
+      //   }
+      // }, 600);
+
+      //testing - replacing old timeout with an intial check for if tiles have finished loading and a maximum total time before skipping legend loading
+      let waitInterval = 1000;
+      setTimeout(() => {
+        //check if tiles are loaded
+        if (!map.areTilesLoaded()) {
+          console.log("waiting for tiles to fully load"); //skip
+        } else {
+          let features = map.queryRenderedFeatures({
+            layers: ["ocean"],
+          });
+          //create legend
+          if (features) {
+            let uniFeatures;
+            uniFeatures = this.getUniqueFeatures(features, "depth"); //depth is field_id for ocean depths layer
+            let selectedData = uniFeatures.map((x) => x.properties["depth"]);
+            this.addLegend(cls.color, cls.breaks, 2, activeLayer, selectedData);
+          }
         }
-      }, 600);
+      }, waitInterval);
 
       // this.addLegend(); //TODO doesnt this need the extra params that I added to the addLegend function?
     }
